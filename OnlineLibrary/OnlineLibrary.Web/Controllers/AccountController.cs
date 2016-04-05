@@ -89,6 +89,11 @@ namespace OnlineLibrary.Web.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
+            if (UserManager.Users.ToList().Count != 0)
+            {
+                IsFirstLogin = false;
+            }
+
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
@@ -132,11 +137,7 @@ namespace OnlineLibrary.Web.Controllers
             if (UserManager.Users.ToList().Count == 0)
             {
                 IsFirstLogin = true;
-            }
-            else
-            {
-                IsFirstLogin = false;
-            }            
+            }             
 
             if (ModelState.IsValid)
             {
@@ -156,7 +157,6 @@ namespace OnlineLibrary.Web.Controllers
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                         if(IsFirstLogin)
                         {
-
                             return RedirectToAction("Index","Role");
                         }
                         return RedirectToLocal(returnUrl);
