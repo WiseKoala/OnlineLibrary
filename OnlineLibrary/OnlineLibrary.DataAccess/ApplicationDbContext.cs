@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
-using OnlineLibrary.Data.Entities;
+using OnlineLibrary.DataAccess.Entities;
 
 namespace OnlineLibrary.DataAccess
 {
@@ -14,5 +14,7 @@ namespace OnlineLibrary.DataAccess
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<OnlineLibrary.DataAccess.Entities.Role> IdentityRoles { get; set; }
     }
 }
