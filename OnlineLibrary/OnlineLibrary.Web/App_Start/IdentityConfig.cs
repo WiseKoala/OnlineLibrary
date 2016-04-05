@@ -6,8 +6,10 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
-using OnlineLibrary.Data.Entities;
+using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess;
+using System.Web.Mvc;
+using System.Web;
 
 namespace OnlineLibrary.Web
 {
@@ -101,6 +103,26 @@ namespace OnlineLibrary.Web
         public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
         {
             return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
+        }
+    }
+
+    // Configure the application roles manager for this application
+
+    public class ApplicationRoleManager : RoleManager<Role>, IDisposable
+    {
+        public ApplicationRoleManager(RoleStore<Role> store) : base(store) { }
+        public static ApplicationRoleManager Create(IdentityFactoryOptions<ApplicationRoleManager> options, IOwinContext context)
+        {
+            return new ApplicationRoleManager(new RoleStore<Role>(context.Get<ApplicationDbContext>()));
+        }
+    }
+
+    public static class IdentityHelpers
+    {
+        public static MvcHtmlString GetUserName(this HtmlHelper html, string id)
+        {
+            ApplicationUserManager mgr = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            return new MvcHtmlString(mgr.FindByIdAsync(id).Result.UserName);
         }
     }
 }

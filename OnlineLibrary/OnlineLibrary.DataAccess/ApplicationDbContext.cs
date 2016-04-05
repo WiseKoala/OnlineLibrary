@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
-using OnlineLibrary.Data.Entities;
+using OnlineLibrary.DataAccess.Entities;
+using System.Data.Entity;
 
 namespace OnlineLibrary.DataAccess
 {
@@ -8,11 +9,14 @@ namespace OnlineLibrary.DataAccess
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+            Database.SetInitializer(new ApplicationDbInitializer());
         }
 
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<OnlineLibrary.DataAccess.Entities.Role> IdentityRoles { get; set; }
     }
 }

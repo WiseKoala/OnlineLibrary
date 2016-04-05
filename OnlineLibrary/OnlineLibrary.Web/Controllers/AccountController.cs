@@ -5,7 +5,7 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using OnlineLibrary.Data.Entities;
+using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Web.Models;
 
 namespace OnlineLibrary.Web.Controllers
