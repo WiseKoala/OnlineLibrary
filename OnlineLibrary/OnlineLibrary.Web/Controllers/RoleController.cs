@@ -18,11 +18,9 @@ namespace OnlineLibrary.Web.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            if( UserManager.Users.ToList().Count == 0 )
-            {
-                return View(RoleManager.Roles.Include(x => x.Users).ToList());
-            }
-
+           if( AccountController.IsFirstLogin || User.IsInRole("Admin"))
+               return View(RoleManager.Roles.Include(x => x.Users).ToList());
+      
             return Redirect("Home/Index");
         }
 

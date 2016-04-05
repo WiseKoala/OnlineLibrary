@@ -15,6 +15,7 @@ namespace OnlineLibrary.Web.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        public static bool IsFirstLogin { get; private set; }
 
         public AccountController()
         {
@@ -128,6 +129,15 @@ namespace OnlineLibrary.Web.Controllers
                 return RedirectToAction("Index", "Manage");
             }
 
+            if (UserManager.Users.ToList().Count == 0)
+            {
+                IsFirstLogin = true;
+            }
+            else
+            {
+                IsFirstLogin = false;
+            }            
+
             if (ModelState.IsValid)
             {
                 // Get the information about the user from the external login provider
@@ -142,8 +152,13 @@ namespace OnlineLibrary.Web.Controllers
                 {
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
                     if (result.Succeeded)
-                    {
+                    {   
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        if(IsFirstLogin)
+                        {
+
+                            return RedirectToAction("Index","Role");
+                        }
                         return RedirectToLocal(returnUrl);
                     }
                 }
