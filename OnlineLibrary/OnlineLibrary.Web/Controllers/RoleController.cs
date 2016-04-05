@@ -15,9 +15,15 @@ namespace OnlineLibrary.Web.Controllers
 {
     public class RoleController : Controller
     {
+        [Authorize]
         public ActionResult Index()
         {
-            return View(RoleManager.Roles.Include(x => x.Users).ToList());
+            if( UserManager.Users.ToList().Count == 0 )
+            {
+                return View(RoleManager.Roles.Include(x => x.Users).ToList());
+            }
+
+            return Redirect("Home/Index");
         }
 
         public async Task<ActionResult> Edit(string id)
