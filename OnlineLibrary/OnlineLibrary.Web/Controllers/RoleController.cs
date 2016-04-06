@@ -11,11 +11,12 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using OnlineLibrary.Web.Infrastructure.Abstract;
 
 namespace OnlineLibrary.Web.Controllers
 {
     [Authorize]
-    public class RoleController : Controller
+    public class RoleController : BaseController
     {
         public ActionResult Index()
         {
@@ -72,22 +73,6 @@ namespace OnlineLibrary.Web.Controllers
                 return View("Error", new string[] { "Role Not Found" });
             }
             return RedirectToAction("Index", "Home");
-        }
-
-        private ApplicationUserManager UserManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-        }
-
-        private ApplicationRoleManager RoleManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().GetUserManager<ApplicationRoleManager>();
-            }
         }
 
         private bool HasAdminPrivileges(IPrincipal user)

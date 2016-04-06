@@ -173,6 +173,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\Abstract\BaseController.cs" />
+    <Compile Include="Infrastructure\ActionResults\ChallengeResult.cs" />
     <Compile Include="Models\ExternalLoginConfirmationViewModel.cs" />
     <Compile Include="Models\ExternalLoginListViewModel.cs" />
     <Compile Include="Models\RoleEditModel.cs" />
@@ -216,7 +218,6 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
-    <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
@@ -227,6 +228,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -240,6 +242,10 @@
     <ProjectReference Include="..\OnlineLibrary.DataAccess\OnlineLibrary.DataAccess.csproj">
       <Project>{e2cddcde-8e6c-49bf-bc53-fb995d568d05}</Project>
       <Name>OnlineLibrary.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OnlineLibrary.Services\OnlineLibrary.Services.csproj">
+      <Project>{7ec4abf2-350e-4994-8f5b-21946b749f35}</Project>
+      <Name>OnlineLibrary.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
