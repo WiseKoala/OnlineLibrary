@@ -243,6 +243,10 @@
       <Project>{e2cddcde-8e6c-49bf-bc53-fb995d568d05}</Project>
       <Name>OnlineLibrary.DataAccess</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OnlineLibrary.Services\OnlineLibrary.Services.csproj">
+      <Project>{7ec4abf2-350e-4994-8f5b-21946b749f35}</Project>
+      <Name>OnlineLibrary.Services</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

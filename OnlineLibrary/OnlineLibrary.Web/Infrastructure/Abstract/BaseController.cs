@@ -6,24 +6,25 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using OnlineLibrary.Services.Concrete;
 
 namespace OnlineLibrary.Web.Infrastructure.Abstract
 {
     public abstract class BaseController : Controller
     {
-        private ApplicationSignInManager _signInManager;
-        private ApplicationUserManager _userManager;
+        private SignInService _signInManager;
+        private UserManagementService _userManager;
 
         protected BaseController()
         {
 
         }
 
-        protected ApplicationSignInManager SignInManager
+        protected SignInService SignInManager
         {
             get
             {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+                return _signInManager ?? HttpContext.GetOwinContext().Get<SignInService>();
             }
             private set
             {
@@ -31,11 +32,11 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
             }
         }
 
-        protected ApplicationUserManager UserManager
+        protected UserManagementService UserManager
         {
             get
             {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<UserManagementService>();
             }
             private set
             {
@@ -43,11 +44,11 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
             }
         }
 
-        protected ApplicationRoleManager RoleManager
+        protected RoleManagementService RoleManager
         {
             get
             {
-                return HttpContext.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+                return HttpContext.GetOwinContext().GetUserManager<RoleManagementService>();
             }
         }
 
