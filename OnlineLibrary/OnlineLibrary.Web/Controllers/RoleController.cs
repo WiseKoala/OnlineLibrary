@@ -7,62 +7,71 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
 namespace OnlineLibrary.Web.Controllers
 {
+    [Authorize]
     public class RoleController : Controller
     {
-        [Authorize]
         public ActionResult Index()
         {
-           if( AccountController.IsFirstLogin || User.IsInRole("Admin"))
-               return View(RoleManager.Roles.Include(x => x.Users).ToList());
-      
-            return Redirect("Home/Index");
+            if (HasAdminPrivileges(User))
+                return View(RoleManager.Roles.Include(x => x.Users).ToList());
+
+            return RedirectToAction("Index", "Home");
         }
 
         public async Task<ActionResult> Edit(string id)
         {
-            Role role = await RoleManager.FindByIdAsync(id);
-            string[] memberIDs = role.Users.Select(x => x.UserId).ToArray();
-            IEnumerable<User> members = UserManager.Users.Where(x => memberIDs.Any(y => y == x.Id));
-            IEnumerable<User> nonMembers = UserManager.Users.Except(members);
-            return View(new RoleEditModel
+            if( HasAdminPrivileges(User) )
             {
-                Role = role,
-                Members = members,
-                NonMembers = nonMembers
-            });
+                Role role = await RoleManager.FindByIdAsync(id);
+                string[] memberIDs = role.Users.Select(x => x.UserId).ToArray();
+                IEnumerable<User> members = UserManager.Users.Where(x => memberIDs.Any(y => y == x.Id));
+                IEnumerable<User> nonMembers = UserManager.Users.Except(members);
+                return View(new RoleEditModel
+                {
+                    Role = role,
+                    Members = members,
+                    NonMembers = nonMembers
+                });
+            }
+            return RedirectToAction("Index","Home");
         }
 
         [HttpPost]
         public async Task<ActionResult> Edit(RoleModificationModel model)
         {
-            IdentityResult result;
-            if (ModelState.IsValid)
+            if ( HasAdminPrivileges(User) )
             {
-                foreach (string userId in model.IdsToAdd ?? new string[] { })
+                IdentityResult result;
+                if (ModelState.IsValid)
                 {
-                    result = await UserManager.AddToRoleAsync(userId, model.RoleName);
-                    if (!result.Succeeded)
+                    foreach (string userId in model.IdsToAdd ?? new string[] { })
                     {
-                        return View("Error", result.Errors);
+                        result = await UserManager.AddToRoleAsync(userId, model.RoleName);
+                        if (!result.Succeeded)
+                        {
+                            return View("Error", result.Errors);
+                        }
                     }
-                }
-                foreach (string userId in model.IdsToDelete ?? new string[] { })
-                {
-                    result = await UserManager.RemoveFromRoleAsync(userId, model.RoleName);
-                    if (!result.Succeeded)
+                    foreach (string userId in model.IdsToDelete ?? new string[] { })
                     {
-                        return View("Error", result.Errors);
+                        result = await UserManager.RemoveFromRoleAsync(userId, model.RoleName);
+                        if (!result.Succeeded)
+                        {
+                            return View("Error", result.Errors);
+                        }
                     }
+                    return RedirectToAction("Index");
                 }
-                return RedirectToAction("Index");
+                return View("Error", new string[] { "Role Not Found" });
             }
-            return View("Error", new string[] { "Role Not Found" });
+            return RedirectToAction("Index", "Home");
         }
 
         private ApplicationUserManager UserManager
@@ -79,6 +88,11 @@ namespace OnlineLibrary.Web.Controllers
             {
                 return HttpContext.GetOwinContext().GetUserManager<ApplicationRoleManager>();
             }
+        }
+
+        private bool HasAdminPrivileges(IPrincipal user)
+        {
+            return AccountController.IsFirstLogin || user.IsInRole("Admin");
         }
     }
 }
