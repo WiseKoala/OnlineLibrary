@@ -77,7 +77,7 @@ namespace OnlineLibrary.Web.Controllers
 
         private bool HasAdminPrivileges(IPrincipal user)
         {
-            return AccountController.IsFirstLogin || user.IsInRole("Admin");
+            return AccountController.IsFirstLogin || user.IsInRole("System administrator");
         }
     }
 }
