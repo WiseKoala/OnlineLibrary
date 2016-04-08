@@ -98,17 +98,17 @@ namespace OnlineLibrary.Web.Controllers
             {
                 if (!await AddUserToRole(userId, model))
                 {
-                    return false; //View("Error");
+                    return false; 
                 }
             }
             foreach (string userId in model.IdsToDelete ?? new string[] { })
             {
                 if (!await RemoveUserFromRole(userId, model))
                 {
-                    return false; //return View("Error");
+                    return false; 
                 }
             }
-            return true; //RedirectToAction("Index");
+            return true; 
         }
         #endregion
     }
