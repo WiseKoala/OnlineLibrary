@@ -1,8 +1,10 @@
 ﻿@using OnlineLibrary.DataAccess.Entities
 @model IEnumerable<Role>
 @{ ViewBag.Title = "Roles"; }
+
 <div class="panel panel-primary">
     <div class="panel-heading">Roles</div>
+
     <table class="table table-striped">
         <tr><th>Name</th><th>Users</th><th></th></tr>
         @if (Model.Count() == 0)
