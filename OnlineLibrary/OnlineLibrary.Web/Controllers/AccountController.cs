@@ -107,7 +107,10 @@ namespace OnlineLibrary.Web.Controllers
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
+                    // Add login.
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
+                    // Add user to the 'User' role.
+                    UserManager.AddToRole(user.Id, "User");
                     if (result.Succeeded)
                     {   
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
