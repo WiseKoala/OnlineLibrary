@@ -25,17 +25,17 @@ namespace OnlineLibrary.DataAccess
             // Authors
             var authors = new List<Author>
             {
-                new Author() { Id = 1, FirstName = "Jamie", MiddleName = "", LastName = "Chan"},        // Id = 1
-                new Author() { Id = 2, FirstName = "R.", MiddleName = "B.", LastName = "Whitaker" },    // Id = 2
-                new Author() { Id = 3, FirstName = "Brian", MiddleName = "", LastName = "Goetz" },      // Id = 3 <---
-                new Author() { Id = 4, FirstName = "Tim", MiddleName = "", LastName = "Peierls" },      // Id = 4    |
-                new Author() { Id = 5, FirstName = "Joshua", MiddleName = "", LastName = "Bloch" },     // Id = 5    | Same book
-                new Author() { Id = 6, FirstName = "Joseph", MiddleName = "", LastName = "Bowbeer" },   // Id = 6    |
-                new Author() { Id = 7, FirstName = "David", MiddleName = "", LastName = "Holmes" },     // Id = 7    |
-                new Author() { Id = 8, FirstName = "Doug", MiddleName = "", LastName = "Lea" },         // Id = 8 <---
-                new Author() { Id = 9, FirstName = "Harper", MiddleName = "", LastName = "Lee" },       // Id = 9
-                new Author() { Id = 10, FirstName = "Bernard", MiddleName = "", LastName = "Cornwell" }, // Id = 10
-                new Author() { Id = 11, FirstName = "Peter", MiddleName = "H.", LastName = "Wilson" }
+                new Author() { Id = 1, FirstName = "Jamie", LastName = "Chan"},                          // Id = 1
+                new Author() { Id = 2, FirstName = "R.", MiddleName = "B.", LastName = "Whitaker" },     // Id = 2
+                new Author() { Id = 3, FirstName = "Brian", LastName = "Goetz" },                        // Id = 3 <---
+                new Author() { Id = 4, FirstName = "Tim", LastName = "Peierls" },                        // Id = 4    |
+                new Author() { Id = 5, FirstName = "Joshua", LastName = "Bloch" },                       // Id = 5    | Same book
+                new Author() { Id = 6, FirstName = "Joseph", LastName = "Bowbeer" },                     // Id = 6    |
+                new Author() { Id = 7, FirstName = "David", LastName = "Holmes" },                       // Id = 7    |
+                new Author() { Id = 8, FirstName = "Doug", LastName = "Lea" },                           // Id = 8 <---
+                new Author() { Id = 9, FirstName = "Harper", LastName = "Lee" },                         // Id = 9
+                new Author() { Id = 10, FirstName = "Bernard", LastName = "Cornwell" },                  // Id = 10
+                new Author() { Id = 11, FirstName = "Peter", MiddleName = "H.", LastName = "Wilson" }    // Id = 11
             };
 
             // Categories
