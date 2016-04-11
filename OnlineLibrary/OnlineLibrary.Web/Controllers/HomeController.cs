@@ -17,7 +17,9 @@ namespace OnlineLibrary.Web.Controllers
                 InitializeUserNameSessionVariable();
             }
 
+            // Obtain list of books from the database.
             var books = DbContext.Books.Include(b => b.Authors);
+            // Create list of view model objects.
             var booksList = new List<BookViewModel>();
             foreach (var book in books)
             {
@@ -27,7 +29,8 @@ namespace OnlineLibrary.Web.Controllers
                     Title = book.Title,
                     PublishDate = book.PublishDate,
                     FrontCover = book.FrontCover,
-                    Authors = string.Join(", ", book.Authors.Select(a => string.Join(" ", a.FirstName, (a.MiddleName ?? ""), a.LastName)))
+                    Authors = string.Join(", ", book.Authors.Select(a => 
+                        string.Join(" ", a.FirstName, (a.MiddleName ?? ""), a.LastName)))
                 });
             }
             return View(booksList);
