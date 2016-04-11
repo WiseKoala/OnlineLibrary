@@ -17,6 +17,11 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
         {
         }
 
+        protected ApplicationDbContext DbContext
+        {
+            get { return HttpContext.GetOwinContext().Get<ApplicationDbContext>(); }
+        }
+
         protected SignInService SignInManager
         {
             get
