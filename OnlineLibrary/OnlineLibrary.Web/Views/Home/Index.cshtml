@@ -3,6 +3,10 @@
     ViewBag.Title = "Home Page";
 }
 
+@section CSS {
+    <link href="~/Content/Views stylesheets/Home/Index.css" rel="stylesheet" />
+}
+
 <div class="page-header">
     <h1>Available books</h1>
 </div>
@@ -16,7 +20,7 @@
                     <div class="media">
                         <div class="media-left">
                             <a href="#">
-                                <img class="media-object" src="@Url.Content(book.FrontCover)" alt="@book.Title">
+                                <img class="media-object book-cover" src="@Url.Content(book.FrontCover)" alt="@book.Title">
                             </a>
                         </div>
                         <div class="media-body">

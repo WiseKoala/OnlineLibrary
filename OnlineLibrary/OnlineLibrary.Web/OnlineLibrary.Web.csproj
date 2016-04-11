@@ -193,6 +193,7 @@
     <Content Include="Content\Images\Books\front-covers\0985580127.jpg" />
     <Content Include="Content\Images\Books\front-covers\778587687.jpg" />
     <Content Include="Content\Images\Books\front-covers\32830723.jpg" />
+    <Content Include="Content\Views stylesheets\Home\Index.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
