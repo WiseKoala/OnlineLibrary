@@ -1,14 +1,13 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Infrastructure.ActionResults;
 using OnlineLibrary.Web.Models;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -35,8 +34,8 @@ namespace OnlineLibrary.Web.Controllers
         {
             // Request a redirect to the external login provider
             return new ChallengeResult(
-                provider, 
-                Url.Action("ExternalLoginCallback", "Account", 
+                provider,
+                Url.Action("ExternalLoginCallback", "Account",
                 new { ReturnUrl = returnUrl }));
         }
 
@@ -93,7 +92,7 @@ namespace OnlineLibrary.Web.Controllers
             if (!UserManager.Users.ToList().Any())
             {
                 IsFirstLogin = true;
-            }             
+            }
 
             if (ModelState.IsValid)
             {
@@ -112,11 +111,11 @@ namespace OnlineLibrary.Web.Controllers
                     // Add user to the 'User' role.
                     UserManager.AddToRole(user.Id, "User");
                     if (result.Succeeded)
-                    {   
+                    {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                        if(IsFirstLogin)
+                        if (IsFirstLogin)
                         {
-                            return RedirectToAction("Index","Role");
+                            return RedirectToAction("Index", "Role");
                         }
                         return RedirectToLocal(returnUrl);
                     }
