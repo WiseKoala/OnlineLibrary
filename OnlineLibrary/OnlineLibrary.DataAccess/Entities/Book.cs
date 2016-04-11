@@ -15,6 +15,6 @@ namespace OnlineLibrary.DataAccess.Entities
         public string ISBN { get; set; }
         public string FrontCover { get; set; }
         [DataType(DataType.Date)]
-        public DateTime ReleaseDate { get; set; }
+        public DateTime PublishDate { get; set; }
     }
 }
