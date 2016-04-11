@@ -25,16 +25,17 @@ namespace OnlineLibrary.DataAccess
             // Authors
             var authors = new List<Author>
             {
-                new Author() { FirstName = "Jamie", MiddleName = "", LastName = "Chan"},        // Id = 1
-                new Author() { FirstName = "R.", MiddleName = "B.", LastName = "Whitaker" },    // Id = 2
-                new Author() { FirstName = "Brian", MiddleName = "", LastName = "Goetz" },      // Id = 3 <---
-                new Author() { FirstName = "Tim", MiddleName = "", LastName = "Peierls" },      // Id = 4    |
-                new Author() { FirstName = "Joshua", MiddleName = "", LastName = "Bloch" },     // Id = 5    | Same book
-                new Author() { FirstName = "Joseph", MiddleName = "", LastName = "Bowbeer" },   // Id = 6    |
-                new Author() { FirstName = "David", MiddleName = "", LastName = "Holmes" },     // Id = 7    |
-                new Author() { FirstName = "Doug", MiddleName = "", LastName = "Lea" },         // Id = 8 <---
-                new Author() { FirstName = "Harper", MiddleName = "", LastName = "Lee" },       // Id = 9
-                new Author() { FirstName = "Bernard", MiddleName = "", LastName = "Cornwell" }, // Id = 10
+                new Author() { Id = 1, FirstName = "Jamie", MiddleName = "", LastName = "Chan"},        // Id = 1
+                new Author() { Id = 2, FirstName = "R.", MiddleName = "B.", LastName = "Whitaker" },    // Id = 2
+                new Author() { Id = 3, FirstName = "Brian", MiddleName = "", LastName = "Goetz" },      // Id = 3 <---
+                new Author() { Id = 4, FirstName = "Tim", MiddleName = "", LastName = "Peierls" },      // Id = 4    |
+                new Author() { Id = 5, FirstName = "Joshua", MiddleName = "", LastName = "Bloch" },     // Id = 5    | Same book
+                new Author() { Id = 6, FirstName = "Joseph", MiddleName = "", LastName = "Bowbeer" },   // Id = 6    |
+                new Author() { Id = 7, FirstName = "David", MiddleName = "", LastName = "Holmes" },     // Id = 7    |
+                new Author() { Id = 8, FirstName = "Doug", MiddleName = "", LastName = "Lea" },         // Id = 8 <---
+                new Author() { Id = 9, FirstName = "Harper", MiddleName = "", LastName = "Lee" },       // Id = 9
+                new Author() { Id = 10, FirstName = "Bernard", MiddleName = "", LastName = "Cornwell" }, // Id = 10
+                new Author() { Id = 11, FirstName = "Peter", MiddleName = "H.", LastName = "Wilson" }
             };
 
             // Categories
@@ -85,7 +86,7 @@ namespace OnlineLibrary.DataAccess
                          ISBN = "1518800270",
                          Authors = new List<Author>() { authors.First(a => a.Id == 1) },
                          BookCopies = new List<BookCopy>() { bookCopies.First(b => b.Id == 1), bookCopies.First(b => b.Id == 2) },
-                         Description = "",
+                         Description = "If you are a beginning programmer wanting to learn C# .NET programming, this book is the perfect introduction. It is too basic for experienced programmers, but it is just perfect for someone just starting out with C# programming, since it is easy to follow and all the concepts are explained very well.",
                          PublishDate = new DateTime(2015,10,27),
                          SubCategories = new List<SubCategory> { subCategories.First(sc => sc.Id == 1) }
                        },
@@ -94,7 +95,7 @@ namespace OnlineLibrary.DataAccess
                          ISBN = "0985580127",
                          Authors = new List<Author>() { authors.First(a => a.Id == 2) },
                          BookCopies = new List<BookCopy>() { bookCopies.First(b => b.Id == 3), bookCopies.First(b => b.Id == 4), bookCopies.First(b => b.Id == 5) },
-                         Description = "",
+                         Description = "The C# Player's Guide (2nd Edition) is the ultimate guide for people starting out with C#, whether you are new to programming, or an experienced vet. This guide takes you from your journey's beginning, through the most challenging parts of programming in C#, and does so in a way that is casual, informative, and fun. This version of the book is updated for C# 6.0, .NET 4.6, and Visual Studio 2015.",
                          PublishDate = new DateTime(2015,9,22),
                          SubCategories = new List<SubCategory> { subCategories.First(sc => sc.Id == 1) }
                        },
@@ -110,6 +111,7 @@ namespace OnlineLibrary.DataAccess
                                                              authors.First(a => a.Id == 8)
                                                            },
                          BookCopies = new List<BookCopy>() { bookCopies.First(b => b.Id == 6) },
+                         Description = "This book will give you a good grounding in concurrent programming in Java.",
                          PublishDate = new DateTime(2006,5,19),
                          SubCategories = new List<SubCategory> { subCategories.First(sc => sc.Id == 2) }
                        },
@@ -118,6 +120,7 @@ namespace OnlineLibrary.DataAccess
                          ISBN = "778587687",
                          Authors = new List<Author>() { authors.First(a => a.Id == 9) },
                          BookCopies = new List<BookCopy>() { bookCopies.First(b => b.Id == 7), bookCopies.First(b => b.Id == 8) },
+                         Description = "The unforgettable novel of a childhood in a sleepy Southern town and the crisis of conscience that rocked it, To Kill A Mockingbird became both an instant bestseller and a critical success when it was first published in 1960. It went on to win the Pulitzer Prize in 1961 and was later made into an Academy Award-winning film, also a classic. Compassionate, dramatic, and deeply moving, To Kill A Mockingbird takes readers to the roots of human behavior - to innocence and experience, kindness and cruelty, love and hatred, humor and pathos. Now with over 18 million copies in print and translated into forty languages, this regional story by a young Alabama woman claims universal appeal. Harper Lee always considered her book to be a simple love story. Today it is regarded as a masterpiece of American literature.",
                          PublishDate = new DateTime(1988,10,11),
                          SubCategories = new List<SubCategory> { subCategories.First(sc => sc.Id == 3) }
                        },
@@ -126,6 +129,7 @@ namespace OnlineLibrary.DataAccess
                          ISBN = "32830723",
                          Authors = new List<Author>() { authors.First(a => a.Id == 10) },
                          BookCopies = new List<BookCopy>() { bookCopies.First(b => b.Id == 9), bookCopies.First(b => b.Id == 10), bookCopies.First(b => b.Id == 11) },
+                         Description = "The ninth installment of Bernard Cornwell’s bestselling series chronicling the epic saga of the making of England, “like Game of Thrones, but real” (The Observer, London)—the basis for The Last Kingdom, the hit BBC America television series.",
                          PublishDate = new DateTime(2016,1,19),
                          SubCategories = new List<SubCategory> { subCategories.First(sc => sc.Id == 4) }
                        },
@@ -134,6 +138,7 @@ namespace OnlineLibrary.DataAccess
                          ISBN = "189737695",
                          Authors = new List<Author>() { authors.First(a => a.Id == 11) },
                          BookCopies = new List<BookCopy>() { bookCopies.First(b => b.Id == 12) },
+                         Description = "The Holy Roman Empire lasted a thousand years, far longer than ancient Rome. Yet this formidable dominion never inspired the awe of its predecessor. Voltaire distilled the disdain of generations when he quipped it was neither holy, Roman, nor an empire. Yet as Peter Wilson shows, the Holy Roman Empire tells a millennial story of Europe better than the histories of individual nation-states. And its legacy can be seen today in debates over the nature of the European Union.",
                          PublishDate = new DateTime(2016,4,4),
                          SubCategories = new List<SubCategory> { subCategories.First(sc => sc.Id == 5) }
                        }
