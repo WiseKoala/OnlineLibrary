@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnlineLibrary.DataAccess.Entities
 {
@@ -14,7 +11,12 @@ namespace OnlineLibrary.DataAccess.Entities
         public string Description { get; set; }
         public string ISBN { get; set; }
         public string FrontCover { get; set; }
+
         [DataType(DataType.Date)]
         public DateTime PublishDate { get; set; }
+
+        public virtual ICollection<Author> Authors { get; set; }
+        public virtual ICollection<SubCategory> SubCategories { get; set; }
+        public virtual ICollection<BookCopy> BookCopies { get; set; }
     }
 }
