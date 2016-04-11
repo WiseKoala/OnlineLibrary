@@ -18,7 +18,7 @@ namespace OnlineLibrary.Web.Controllers
             }
 
             // Obtain list of books from the database.
-            var books = DbContext.Books.Include(b => b.Authors);
+            var books = DbContext.Books.Include(b => b.Authors).ToList();
             // Create list of view model objects.
             var booksList = new List<BookViewModel>();
             foreach (var book in books)
