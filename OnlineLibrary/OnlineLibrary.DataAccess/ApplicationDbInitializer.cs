@@ -36,7 +36,6 @@ namespace OnlineLibrary.DataAccess
                 new Author() { FirstName = "Harper", MiddleName = "", LastName = "Lee" },       // Id = 9
                 new Author() { FirstName = "Bernard", MiddleName = "", LastName = "Cornwell" }, // Id = 10
             };
-            authors.ForEach(a => context.Authors.Add(a));
 
             // Categories
             var categories = new List<Category>
@@ -45,7 +44,6 @@ namespace OnlineLibrary.DataAccess
                 new Category() { Id = 2, Name = "Literature & Fiction" },
                 new Category() { Id = 3, Name = "History" }
             };
-            categories.ForEach(c => context.Categories.Add(c));
 
             // SubCategories
             var subCategories = new List<SubCategory>
@@ -78,7 +76,6 @@ namespace OnlineLibrary.DataAccess
 
                 new BookCopy() { Id = 12, Condition = BookCondition.New }            // Id = 12
             };
-            bookCopies.ForEach(b => context.BookCopies.Add(b));
 
             // Boooks
             var books = new List<Book>
