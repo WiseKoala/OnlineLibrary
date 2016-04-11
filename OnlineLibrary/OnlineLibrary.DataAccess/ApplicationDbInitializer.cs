@@ -13,9 +13,9 @@ namespace OnlineLibrary.DataAccess
         {
             var roles = new List<Role>
             {
-                new Role() { Id = Guid.NewGuid().ToString(), Name = "User" },
-                new Role() { Id = Guid.NewGuid().ToString(), Name = "System administrator" },
-                new Role() { Id = Guid.NewGuid().ToString(), Name = "Librarian" }
+                new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.User },
+                new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.SysAdmin },
+                new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.Librarian }
             };
             var roleManager = new RoleManager<Role>(new RoleStore<Role>(context));
             roles.ForEach(r => roleManager.Create(r));
