@@ -26,6 +26,7 @@ namespace OnlineLibrary.Web.Controllers
                     Id = book.Id,
                     Title = book.Title,
                     PublishDate = book.PublishDate,
+                    FrontCover = book.FrontCover,
                     Authors = string.Concat(book.Authors.Select(a => string.Concat(a.FirstName, " ", a.LastName, " ")))
                 });
             }

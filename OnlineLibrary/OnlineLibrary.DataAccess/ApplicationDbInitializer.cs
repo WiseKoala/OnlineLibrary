@@ -84,6 +84,7 @@ namespace OnlineLibrary.DataAccess
             new Book() {                                                       // Category: Computers & Technology; Subcategory: C# Programming;
                          Title = "Learn C# in One Day and Learn It Well: C# for Beginners with Hands-on Project (Learn Coding Fast with Hands-On Project) (Volume 3)",
                          ISBN = "1518800270",
+                         FrontCover = "~/Content/Images/Books/front-covers/1518800270.jpg",
                          Authors = new List<Author>() { authors.First(a => a.Id == 1) },
                          BookCopies = new List<BookCopy>() { bookCopies.First(b => b.Id == 1), bookCopies.First(b => b.Id == 2) },
                          Description = "If you are a beginning programmer wanting to learn C# .NET programming, this book is the perfect introduction. It is too basic for experienced programmers, but it is just perfect for someone just starting out with C# programming, since it is easy to follow and all the concepts are explained very well.",
@@ -93,6 +94,7 @@ namespace OnlineLibrary.DataAccess
             new Book() {                                                       // Category: Computers & Technology; Subcategory: C# Programming;
                          Title = "The C# Player's Guide (2nd Edition)",
                          ISBN = "0985580127",
+                         FrontCover = "~/Content/Images/Books/front-covers/0985580127.jpg",
                          Authors = new List<Author>() { authors.First(a => a.Id == 2) },
                          BookCopies = new List<BookCopy>() { bookCopies.First(b => b.Id == 3), bookCopies.First(b => b.Id == 4), bookCopies.First(b => b.Id == 5) },
                          Description = "The C# Player's Guide (2nd Edition) is the ultimate guide for people starting out with C#, whether you are new to programming, or an experienced vet. This guide takes you from your journey's beginning, through the most challenging parts of programming in C#, and does so in a way that is casual, informative, and fun. This version of the book is updated for C# 6.0, .NET 4.6, and Visual Studio 2015.",
@@ -102,6 +104,7 @@ namespace OnlineLibrary.DataAccess
             new Book() {                                                       // Category: Computers & Technology; Subcategory: Java Programming;
                          Title = "Java Concurrency in Practice 1st Edition",
                          ISBN = "7678678676",
+                         FrontCover = "~/Content/Images/Books/front-covers/7678678676.jpg",
                          Authors = new List<Author>() {
                                                              authors.First(a => a.Id == 3),
                                                              authors.First(a => a.Id == 4),
@@ -118,6 +121,7 @@ namespace OnlineLibrary.DataAccess
             new Book() {
                          Title = "To Kill a Mockingbird",        // Category: Literature & Fiction; Subcategory: Classics;
                          ISBN = "778587687",
+                         FrontCover = "~/Content/Images/Books/front-covers/778587687.jpg",
                          Authors = new List<Author>() { authors.First(a => a.Id == 9) },
                          BookCopies = new List<BookCopy>() { bookCopies.First(b => b.Id == 7), bookCopies.First(b => b.Id == 8) },
                          Description = "The unforgettable novel of a childhood in a sleepy Southern town and the crisis of conscience that rocked it, To Kill A Mockingbird became both an instant bestseller and a critical success when it was first published in 1960. It went on to win the Pulitzer Prize in 1961 and was later made into an Academy Award-winning film, also a classic. Compassionate, dramatic, and deeply moving, To Kill A Mockingbird takes readers to the roots of human behavior - to innocence and experience, kindness and cruelty, love and hatred, humor and pathos. Now with over 18 million copies in print and translated into forty languages, this regional story by a young Alabama woman claims universal appeal. Harper Lee always considered her book to be a simple love story. Today it is regarded as a masterpiece of American literature.",
@@ -127,6 +131,7 @@ namespace OnlineLibrary.DataAccess
             new Book() {                                       // Category: Literature & Fiction; Subcategory: Historical;
                          Title = "Warriors of the Storm: A Novel (Saxon Tales)",
                          ISBN = "32830723",
+                         FrontCover = "~/Content/Images/Books/front-covers/32830723.jpg",
                          Authors = new List<Author>() { authors.First(a => a.Id == 10) },
                          BookCopies = new List<BookCopy>() { bookCopies.First(b => b.Id == 9), bookCopies.First(b => b.Id == 10), bookCopies.First(b => b.Id == 11) },
                          Description = "The ninth installment of Bernard Cornwell’s bestselling series chronicling the epic saga of the making of England, “like Game of Thrones, but real” (The Observer, London)—the basis for The Last Kingdom, the hit BBC America television series.",
@@ -136,6 +141,7 @@ namespace OnlineLibrary.DataAccess
             new Book() {                                       // Category: History; Subcategory: Ancient Civilizations;
                          Title = "Heart of Europe: A History of the Holy Roman Empire",
                          ISBN = "189737695",
+                         FrontCover = "~/Content/Images/Books/front-covers/189737695.jpg",
                          Authors = new List<Author>() { authors.First(a => a.Id == 11) },
                          BookCopies = new List<BookCopy>() { bookCopies.First(b => b.Id == 12) },
                          Description = "The Holy Roman Empire lasted a thousand years, far longer than ancient Rome. Yet this formidable dominion never inspired the awe of its predecessor. Voltaire distilled the disdain of generations when he quipped it was neither holy, Roman, nor an empire. Yet as Peter Wilson shows, the Holy Roman Empire tells a millennial story of Europe better than the histories of individual nation-states. And its legacy can be seen today in debates over the nature of the European Union.",

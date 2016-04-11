@@ -187,6 +187,12 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\Books\front-covers\189737695.jpg" />
+    <Content Include="Content\Images\Books\front-covers\7678678676.jpg" />
+    <Content Include="Content\Images\Books\front-covers\1518800270.jpg" />
+    <Content Include="Content\Images\Books\front-covers\0985580127.jpg" />
+    <Content Include="Content\Images\Books\front-covers\778587687.jpg" />
+    <Content Include="Content\Images\Books\front-covers\32830723.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
