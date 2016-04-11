@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using OnlineLibrary.Services.Concrete;
+using System;
+using System.Web;
+using System.Web.Mvc;
 
 namespace OnlineLibrary.Web.Infrastructure.Abstract
 {
@@ -17,7 +15,6 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
 
         protected BaseController()
         {
-
         }
 
         protected SignInService SignInManager
@@ -50,6 +47,20 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
             {
                 return HttpContext.GetOwinContext().GetUserManager<RoleManagementService>();
             }
+        }
+
+        protected void InitializeUserNameSessionVariable(string firstName = "", string lastName = "")
+        {
+            string UserName = String.Empty;
+            if(HttpContext.User.Identity.Name != null && HttpContext.User.Identity.Name != String.Empty)
+            {
+                UserName = UserManagementService.GetTheUsernameByUsersName(HttpContext.GetOwinContext(), HttpContext.User.Identity.Name);
+            }
+            else if(firstName != String.Empty || lastName != String.Empty)
+            {
+                UserName = firstName + lastName;
+            }
+            Session["UserName"] = UserName;
         }
 
         protected override void Dispose(bool disposing)

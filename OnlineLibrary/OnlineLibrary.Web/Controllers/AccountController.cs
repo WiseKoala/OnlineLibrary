@@ -6,6 +6,7 @@ using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Infrastructure.ActionResults;
 using OnlineLibrary.Web.Models;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -73,7 +74,7 @@ namespace OnlineLibrary.Web.Controllers
                     // If the user does not have an account, then prompt the user to create an account
                     ViewBag.ReturnUrl = returnUrl;
                     ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { UserName = loginInfo.DefaultUserName });
+                    return View("ExternalLoginConfirmation");
             }
         }
 
@@ -82,7 +83,7 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
+        public async Task<ActionResult> ExternalLoginConfirmation(string returnUrl)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -102,7 +103,7 @@ namespace OnlineLibrary.Web.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new User { UserName = model.UserName, Email = info.Email };
+                var user = new User { UserName = info.Email, Email = info.Email, FirstName = info.ExternalIdentity.Claims.FirstOrDefault(u => u.Type == ClaimTypes.GivenName).Value, LastName = info.ExternalIdentity.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Surname).Value };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -113,6 +114,7 @@ namespace OnlineLibrary.Web.Controllers
                     if (result.Succeeded)
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        InitializeUserNameSessionVariable(user.FirstName, user.LastName);
                         if (IsFirstLogin)
                         {
                             return RedirectToAction("Index", "Role");
@@ -124,7 +126,7 @@ namespace OnlineLibrary.Web.Controllers
             }
 
             ViewBag.ReturnUrl = returnUrl;
-            return View(model);
+            return View();
         }
 
         //
