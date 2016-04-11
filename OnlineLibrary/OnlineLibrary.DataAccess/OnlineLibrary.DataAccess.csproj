@@ -68,6 +68,7 @@
     <Compile Include="Entities\User.cs" />
     <Compile Include="Enums\BookCondition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserRoles.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

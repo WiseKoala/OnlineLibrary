@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using OnlineLibrary.DataAccess;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Infrastructure.ActionResults;
@@ -103,22 +104,26 @@ namespace OnlineLibrary.Web.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new User { UserName = info.Email, Email = info.Email, FirstName = info.ExternalIdentity.Claims.FirstOrDefault(u => u.Type == ClaimTypes.GivenName).Value, LastName = info.ExternalIdentity.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Surname).Value };
+
+                string firstName = info.ExternalIdentity.Claims.FirstOrDefault(u => u.Type == ClaimTypes.GivenName).Value;
+                string lastName = info.ExternalIdentity.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Surname).Value;
+                var user = new User { UserName = info.Email, Email = info.Email, FirstName = firstName, LastName = lastName };
+
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
                     // Add login.
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
                     // Add user to the 'User' role.
-                    UserManager.AddToRole(user.Id, "User");
+                    UserManager.AddToRole(user.Id, UserRoles.User);
                     if (result.Succeeded)
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                        InitializeUserNameSessionVariable(user.FirstName, user.LastName);
-                        if (IsFirstLogin)
+                        if(IsFirstLogin)
                         {
                             return RedirectToAction("Index", "Role");
                         }
+
                         return RedirectToLocal(returnUrl);
                     }
                 }
@@ -136,6 +141,9 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            UserName.UserNameSessionVariable = null;
+            Session.Abandon();
+
             return RedirectToAction("Index", "Home");
         }
 

@@ -55,18 +55,28 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
             }
         }
 
-        protected void InitializeUserNameSessionVariable(string firstName = "", string lastName = "")
+        protected bool IsUserNameSessionVariableSet()
         {
-            string UserName = String.Empty;
-            if(HttpContext.User.Identity.Name != null && HttpContext.User.Identity.Name != String.Empty)
+            return User.Identity.IsAuthenticated && UserName.UserNameSessionVariable == null;
+        }
+
+        protected void InitializeUserNameSessionVariable()
+        {
+            InitializeUserNameSessionVariable(string.Empty, string.Empty);
+        }
+
+        protected void InitializeUserNameSessionVariable(string firstName, string lastName)
+        {
+            string UserName = string.Empty;
+            if(!string.IsNullOrEmpty(User.Identity.Name))
             {
-                UserName = UserManagementService.GetTheUsernameByUsersName(HttpContext.GetOwinContext(), HttpContext.User.Identity.Name);
+                UserName = UserManagementService.GetTheUsernameByUsersName(HttpContext.GetOwinContext(), User.Identity.Name);
             }
-            else if(firstName != String.Empty || lastName != String.Empty)
+            else if(!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
             {
                 UserName = firstName + lastName;
             }
-            Session["UserName"] = UserName;
+            Abstract.UserName.UserNameSessionVariable = UserName;
         }
 
         protected override void Dispose(bool disposing)

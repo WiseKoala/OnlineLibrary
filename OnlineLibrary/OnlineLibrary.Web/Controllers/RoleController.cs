@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using OnlineLibrary.DataAccess;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -17,7 +18,14 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult Index()
         {
             if (HasAdminPrivileges(User))
+            {
+                if (!IsUserNameSessionVariableSet())
+                {
+                    InitializeUserNameSessionVariable();
+                }
+
                 return View(RoleManager.Roles.Include(x => x.Users).ToList());
+            }
 
             return RedirectToAction("Index", "Home");
         }
@@ -30,6 +38,7 @@ namespace OnlineLibrary.Web.Controllers
                 string[] memberIDs = role.Users.Select(x => x.UserId).ToArray();
                 IEnumerable<User> members = UserManager.Users.Where(x => memberIDs.Any(y => y == x.Id));
                 IEnumerable<User> nonMembers = UserManager.Users.Except(members);
+
                 return View(new RoleEditModel
                 {
                     Role = role,
@@ -61,7 +70,7 @@ namespace OnlineLibrary.Web.Controllers
 
         private bool HasAdminPrivileges(IPrincipal user)
         {
-            return AccountController.IsFirstLogin || user.IsInRole("System administrator");
+            return AccountController.IsFirstLogin || user.IsInRole(UserRoles.SysAdmin);
         }
 
         private async Task<bool> RemoveUserCurrentRoles(string userId)
@@ -83,7 +92,7 @@ namespace OnlineLibrary.Web.Controllers
         private async Task<bool> RemoveUserFromRole(string userId, RoleModificationModel model)
         {
             IdentityResult removeResult = await UserManager.RemoveFromRoleAsync(userId, model.RoleName);
-            IdentityResult addResult = await UserManager.AddToRoleAsync(userId, "User");
+            IdentityResult addResult = await UserManager.AddToRoleAsync(userId, UserRoles.User);
 
             return removeResult.Succeeded && addResult.Succeeded;
         }
