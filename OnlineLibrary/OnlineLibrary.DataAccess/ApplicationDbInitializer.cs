@@ -4,13 +4,10 @@ using OnlineLibrary.DataAccess.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnlineLibrary.DataAccess
 {
-    class ApplicationDbInitializer : CreateDatabaseIfNotExists<ApplicationDbContext>
+    internal class ApplicationDbInitializer : CreateDatabaseIfNotExists<ApplicationDbContext>
     {
         protected override void Seed(ApplicationDbContext context)
         {

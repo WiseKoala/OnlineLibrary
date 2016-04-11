@@ -1,17 +1,13 @@
 ﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using OnlineLibrary.DataAccess.Entities;
+using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
-using OnlineLibrary.Web.Infrastructure.Abstract;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -28,7 +24,7 @@ namespace OnlineLibrary.Web.Controllers
 
         public async Task<ActionResult> Edit(string id)
         {
-            if( HasAdminPrivileges(User) )
+            if (HasAdminPrivileges(User))
             {
                 Role role = await RoleManager.FindByIdAsync(id);
                 string[] memberIDs = role.Users.Select(x => x.UserId).ToArray();
@@ -41,19 +37,19 @@ namespace OnlineLibrary.Web.Controllers
                     NonMembers = nonMembers
                 });
             }
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
         public async Task<ActionResult> Edit(RoleModificationModel model)
         {
-            if ( HasAdminPrivileges(User) )
+            if (HasAdminPrivileges(User))
             {
                 if (ModelState.IsValid)
                 {
-                  if( await EditUsersRoles(model) )
+                    if (await EditUsersRoles(model))
                         return RedirectToAction("Index");
-                  else
+                    else
                         return View("Error");
                 }
                 return View("Error", new string[] { "Role Not Found" });
@@ -98,18 +94,19 @@ namespace OnlineLibrary.Web.Controllers
             {
                 if (!await AddUserToRole(userId, model))
                 {
-                    return false; 
+                    return false;
                 }
             }
             foreach (string userId in model.IdsToDelete ?? new string[] { })
             {
                 if (!await RemoveUserFromRole(userId, model))
                 {
-                    return false; 
+                    return false;
                 }
             }
-            return true; 
+            return true;
         }
-        #endregion
+
+        #endregion Helper Methods
     }
 }

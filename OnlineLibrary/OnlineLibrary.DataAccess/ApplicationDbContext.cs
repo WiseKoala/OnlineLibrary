@@ -17,6 +17,6 @@ namespace OnlineLibrary.DataAccess
             return new ApplicationDbContext();
         }
 
-        public System.Data.Entity.DbSet<OnlineLibrary.DataAccess.Entities.Role> IdentityRoles { get; set; }
+        public System.Data.Entity.DbSet<Role> IdentityRoles { get; set; }
     }
 }
