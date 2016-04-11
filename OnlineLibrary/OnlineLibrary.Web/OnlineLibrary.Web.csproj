@@ -176,7 +176,6 @@
     <Compile Include="Infrastructure\Abstract\BaseController.cs" />
     <Compile Include="Infrastructure\ActionResults\ChallengeResult.cs" />
     <Compile Include="Models\BookViewModel.cs" />
-    <Compile Include="Models\ExternalLoginConfirmationViewModel.cs" />
     <Compile Include="Models\ExternalLoginListViewModel.cs" />
     <Compile Include="Models\RoleEditModel.cs" />
     <Compile Include="Models\RoleModificationModel.cs" />

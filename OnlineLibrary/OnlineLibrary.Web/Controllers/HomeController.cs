@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using OnlineLibrary.Web.Infrastructure.Abstract;
+using System;
 using System.Web.Mvc;
-using OnlineLibrary.Web.Infrastructure.Abstract;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -11,6 +8,10 @@ namespace OnlineLibrary.Web.Controllers
     {
         public ActionResult Index()
         {
+            if(HttpContext.User.Identity.IsAuthenticated && Session["UserName"] == null)
+            {
+                InitializeUserNameSessionVariable();
+            }
             return View();
         }
 
