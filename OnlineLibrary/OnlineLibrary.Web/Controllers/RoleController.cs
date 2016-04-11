@@ -49,35 +49,67 @@ namespace OnlineLibrary.Web.Controllers
         {
             if ( HasAdminPrivileges(User) )
             {
-                IdentityResult result;
                 if (ModelState.IsValid)
                 {
-                    foreach (string userId in model.IdsToAdd ?? new string[] { })
-                    {
-                        result = await UserManager.AddToRoleAsync(userId, model.RoleName);
-                        if (!result.Succeeded)
-                        {
-                            return View("Error", result.Errors);
-                        }
-                    }
-                    foreach (string userId in model.IdsToDelete ?? new string[] { })
-                    {
-                        result = await UserManager.RemoveFromRoleAsync(userId, model.RoleName);
-                        if (!result.Succeeded)
-                        {
-                            return View("Error", result.Errors);
-                        }
-                    }
-                    return RedirectToAction("Index");
+                  if( await EditUsersRoles(model) )
+                        return RedirectToAction("Index");
+                  else
+                        return View("Error");
                 }
                 return View("Error", new string[] { "Role Not Found" });
             }
             return RedirectToAction("Index", "Home");
         }
 
+        #region Helper Methods
+
         private bool HasAdminPrivileges(IPrincipal user)
         {
             return AccountController.IsFirstLogin || user.IsInRole("System administrator");
         }
+
+        private async Task<bool> RemoveUserCurrentRoles(string userId)
+        {
+            var currentUserRoles = await UserManager.GetRolesAsync(userId);
+            IdentityResult result = await UserManager.RemoveFromRoleAsync(userId, currentUserRoles.Single());
+
+            return result.Succeeded;
+        }
+
+        private async Task<bool> AddUserToRole(string userId, RoleModificationModel model)
+        {
+            bool removeResult = await RemoveUserCurrentRoles(userId);
+            IdentityResult addResult = await UserManager.AddToRoleAsync(userId, model.RoleName);
+
+            return removeResult && addResult.Succeeded;
+        }
+
+        private async Task<bool> RemoveUserFromRole(string userId, RoleModificationModel model)
+        {
+            IdentityResult removeResult = await UserManager.RemoveFromRoleAsync(userId, model.RoleName);
+            IdentityResult addResult = await UserManager.AddToRoleAsync(userId, "User");
+
+            return removeResult.Succeeded && addResult.Succeeded;
+        }
+
+        private async Task<bool> EditUsersRoles(RoleModificationModel model)
+        {
+            foreach (string userId in model.IdsToAdd ?? new string[] { })
+            {
+                if (!await AddUserToRole(userId, model))
+                {
+                    return false; 
+                }
+            }
+            foreach (string userId in model.IdsToDelete ?? new string[] { })
+            {
+                if (!await RemoveUserFromRole(userId, model))
+                {
+                    return false; 
+                }
+            }
+            return true; 
+        }
+        #endregion
     }
 }

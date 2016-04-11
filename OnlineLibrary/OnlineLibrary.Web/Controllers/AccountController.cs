@@ -45,7 +45,7 @@ namespace OnlineLibrary.Web.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
-            if (UserManager.Users.ToList().Count != 0)
+            if (IsFirstLogin == true)
             {
                 IsFirstLogin = false;
             }
@@ -90,7 +90,7 @@ namespace OnlineLibrary.Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if (UserManager.Users.ToList().Count == 0)
+            if (!UserManager.Users.ToList().Any())
             {
                 IsFirstLogin = true;
             }             
