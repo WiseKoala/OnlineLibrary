@@ -39,7 +39,7 @@ namespace OnlineLibrary.Web.Controllers
                     {
                         Category = sc.Category.Name,
                         SubCategory = sc.Name
-                    }).ToList()
+                    })
                 });
             }
             return View(booksList);
