@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using OnlineLibrary.Services.Concrete;
+using System;
+using System.Web;
+using System.Web.Mvc;
 
 namespace OnlineLibrary.Web.Infrastructure.Abstract
 {
@@ -17,7 +15,6 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
 
         protected BaseController()
         {
-
         }
 
         protected SignInService SignInManager
@@ -50,6 +47,30 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
             {
                 return HttpContext.GetOwinContext().GetUserManager<RoleManagementService>();
             }
+        }
+
+        protected bool IsUserNameSessionVariableSet()
+        {
+            return User.Identity.IsAuthenticated && UserName.UserNameSessionVariable == null;
+        }
+
+        protected void InitializeUserNameSessionVariable()
+        {
+            InitializeUserNameSessionVariable(string.Empty, string.Empty);
+        }
+
+        protected void InitializeUserNameSessionVariable(string firstName, string lastName)
+        {
+            string UserName = string.Empty;
+            if(!string.IsNullOrEmpty(User.Identity.Name))
+            {
+                UserName = UserManagementService.GetTheUsernameByUsersName(HttpContext.GetOwinContext(), User.Identity.Name);
+            }
+            else if(!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
+            {
+                UserName = firstName + lastName;
+            }
+            Abstract.UserName.UserNameSessionVariable = UserName;
         }
 
         protected override void Dispose(bool disposing)

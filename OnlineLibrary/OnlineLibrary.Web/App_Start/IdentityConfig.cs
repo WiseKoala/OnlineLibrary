@@ -1,16 +1,7 @@
-﻿using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin;
-using Microsoft.Owin.Security;
-using OnlineLibrary.DataAccess.Entities;
-using OnlineLibrary.DataAccess;
-using System.Web.Mvc;
-using System.Web;
+﻿using Microsoft.AspNet.Identity.Owin;
 using OnlineLibrary.Services.Concrete;
+using System.Web;
+using System.Web.Mvc;
 
 namespace OnlineLibrary.Web
 {
