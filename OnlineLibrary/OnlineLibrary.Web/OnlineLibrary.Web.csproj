@@ -168,6 +168,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BookDetailsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Global.asax.cs">
@@ -176,6 +177,7 @@
     <Compile Include="Infrastructure\Abstract\BaseController.cs" />
     <Compile Include="Infrastructure\Abstract\UserName.cs" />
     <Compile Include="Infrastructure\ActionResults\ChallengeResult.cs" />
+    <Compile Include="Models\BookDetailsViewModel.cs" />
     <Compile Include="Models\BookViewModel.cs" />
     <Compile Include="Models\CategoryViewModel.cs" />
     <Compile Include="Models\ExternalLoginListViewModel.cs" />
@@ -195,6 +197,7 @@
     <Content Include="Content\Images\Books\front-covers\0985580127.jpg" />
     <Content Include="Content\Images\Books\front-covers\778587687.jpg" />
     <Content Include="Content\Images\Books\front-covers\32830723.jpg" />
+    <Content Include="Content\Views stylesheets\BookDetails\Index.css" />
     <Content Include="Content\Views stylesheets\Home\Index.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -239,6 +242,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
     <Content Include="Views\Role\Edit.cshtml" />
+    <Content Include="Views\BookDetails\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
