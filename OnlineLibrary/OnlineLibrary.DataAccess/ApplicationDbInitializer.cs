@@ -50,7 +50,7 @@ namespace OnlineLibrary.DataAccess
             var subCategories = new List<SubCategory>
             {
                 new SubCategory { Id = 1, Name = "C# Programming", Category = categories.First(c => c.Id == 1) },
-                new SubCategory { Id = 2, Name = "Java Programming;", Category = categories.First(c => c.Id == 1) },
+                new SubCategory { Id = 2, Name = "Java Programming", Category = categories.First(c => c.Id == 1) },
                 new SubCategory { Id = 3, Name = "Classics", Category = categories.First(c => c.Id == 2) },
                 new SubCategory { Id = 4, Name = "Historical", Category = categories.First(c => c.Id == 2) },
                 new SubCategory { Id = 5, Name = "Ancient Civilizations", Category = categories.First(c => c.Id == 3) },
