@@ -12,5 +12,6 @@ namespace OnlineLibrary.Web.Models
         public string Authors { get; set; }
         public string FrontCover { get; set; }
         public DateTime PublishDate { get; set; }
+        public List<CategoryViewModel> Categories { get; set; }
     }
 }

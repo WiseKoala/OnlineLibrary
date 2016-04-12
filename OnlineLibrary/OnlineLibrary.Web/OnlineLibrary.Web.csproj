@@ -177,6 +177,7 @@
     <Compile Include="Infrastructure\Abstract\UserName.cs" />
     <Compile Include="Infrastructure\ActionResults\ChallengeResult.cs" />
     <Compile Include="Models\BookViewModel.cs" />
+    <Compile Include="Models\CategoryViewModel.cs" />
     <Compile Include="Models\ExternalLoginListViewModel.cs" />
     <Compile Include="Models\RoleEditModel.cs" />
     <Compile Include="Models\RoleModificationModel.cs" />

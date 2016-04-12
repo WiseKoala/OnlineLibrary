@@ -18,7 +18,11 @@ namespace OnlineLibrary.Web.Controllers
             }
 
             // Obtain list of books from the database.
-            var books = DbContext.Books.Include(b => b.Authors).ToList();
+            var books = DbContext.Books
+                .Include(b => b.Authors)
+                .Include(b => b.SubCategories)
+                .Include("SubCategories.Category")
+                .ToList();
             // Create list of view model objects.
             var booksList = new List<BookViewModel>();
             foreach (var book in books)
@@ -29,8 +33,13 @@ namespace OnlineLibrary.Web.Controllers
                     Title = book.Title,
                     PublishDate = book.PublishDate,
                     FrontCover = book.FrontCover,
-                    Authors = string.Join(", ", book.Authors.Select(a => 
-                        string.Join(" ", a.FirstName, (a.MiddleName ?? ""), a.LastName)))
+                    Authors = string.Join(", ", book.Authors.Select(a =>
+                        string.Join(" ", a.FirstName, (a.MiddleName ?? ""), a.LastName))),
+                    Categories = book.SubCategories.Select(sc => new CategoryViewModel
+                    {
+                        Category = sc.Category.Name,
+                        SubCategory = sc.Name
+                    }).ToList()
                 });
             }
             return View(booksList);

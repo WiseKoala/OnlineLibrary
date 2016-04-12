@@ -53,7 +53,8 @@ namespace OnlineLibrary.DataAccess
                 new SubCategory { Id = 2, Name = "Java Programming;", Category = categories.First(c => c.Id == 1) },
                 new SubCategory { Id = 3, Name = "Classics", Category = categories.First(c => c.Id == 2) },
                 new SubCategory { Id = 4, Name = "Historical", Category = categories.First(c => c.Id == 2) },
-                new SubCategory { Id = 5, Name = "Ancient Civilizations", Category = categories.First(c => c.Id == 3) }
+                new SubCategory { Id = 5, Name = "Ancient Civilizations", Category = categories.First(c => c.Id == 3) },
+                new SubCategory { Id = 6, Name = "World", Category = categories.First(c => c.Id == 3) },
             };
 
             // Book items
@@ -146,7 +147,7 @@ namespace OnlineLibrary.DataAccess
                          BookCopies = new List<BookCopy>() { bookCopies.First(b => b.Id == 12) },
                          Description = "The Holy Roman Empire lasted a thousand years, far longer than ancient Rome. Yet this formidable dominion never inspired the awe of its predecessor. Voltaire distilled the disdain of generations when he quipped it was neither holy, Roman, nor an empire. Yet as Peter Wilson shows, the Holy Roman Empire tells a millennial story of Europe better than the histories of individual nation-states. And its legacy can be seen today in debates over the nature of the European Union.",
                          PublishDate = new DateTime(2016,4,4),
-                         SubCategories = new List<SubCategory> { subCategories.First(sc => sc.Id == 5) }
+                         SubCategories = new List<SubCategory> { subCategories.First(sc => sc.Id == 5), subCategories.First(sc => sc.Id == 6) }
                        }
             };
             books.ForEach(b => context.Books.Add(b));

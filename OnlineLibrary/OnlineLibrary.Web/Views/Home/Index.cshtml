@@ -1,4 +1,5 @@
-﻿@model List<OnlineLibrary.Web.Models.BookViewModel>
+﻿@using OnlineLibrary.Web.Models
+@model List<BookViewModel>
 @{
     ViewBag.Title = "Home Page";
 }
@@ -27,6 +28,17 @@
                             <h4 class="media-heading">@book.Title</h4>
                             <p><strong>Author(s):</strong> @book.Authors</p>
                             <p><strong>Publish Date:</strong> @book.PublishDate.ToShortDateString()</p>
+                            <p>
+                                <strong>Categories:</strong>
+                                <ul class="book-categories">
+                                    @foreach (CategoryViewModel category in book.Categories)
+                                    {
+                                        <li>
+                                            <span class="label label-default">@category.Category</span> > <span class="label label-info">@category.SubCategory</span>
+                                        </li>
+                                    }
+                                </ul>
+                            </p>
                         </div>
                     </div>
                 </div>
