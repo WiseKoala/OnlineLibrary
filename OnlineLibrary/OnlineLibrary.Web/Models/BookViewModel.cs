@@ -9,7 +9,7 @@ namespace OnlineLibrary.Web.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Authors { get; set; }
+        public IEnumerable<string> Authors { get; set; }
         public string FrontCover { get; set; }
         public DateTime PublishDate { get; set; }
         public List<CategoryViewModel> Categories { get; set; }

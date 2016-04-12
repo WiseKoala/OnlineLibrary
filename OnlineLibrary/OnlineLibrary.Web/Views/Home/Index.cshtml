@@ -26,7 +26,7 @@
                         </div>
                         <div class="media-body">
                             <h4 class="media-heading">@book.Title</h4>
-                            <p><strong>Author(s):</strong> @book.Authors</p>
+                            <p><strong>Author(s):</strong> @String.Join(", ", book.Authors)</p>
                             <p><strong>Publish Date:</strong> @book.PublishDate.ToShortDateString()</p>
                             <p>
                                 <strong>Categories:</strong>

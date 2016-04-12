@@ -33,8 +33,8 @@ namespace OnlineLibrary.Web.Controllers
                     Title = book.Title,
                     PublishDate = book.PublishDate,
                     FrontCover = book.FrontCover,
-                    Authors = string.Join(", ", book.Authors.Select(a =>
-                        string.Join(" ", a.FirstName, (a.MiddleName ?? ""), a.LastName))),
+                    Authors = book.Authors.Select(a =>
+                        string.Join(" ", a.FirstName, (a.MiddleName ?? ""), a.LastName)),
                     Categories = book.SubCategories.Select(sc => new CategoryViewModel
                     {
                         Category = sc.Category.Name,
