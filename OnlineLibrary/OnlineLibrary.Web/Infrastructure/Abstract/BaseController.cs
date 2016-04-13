@@ -5,6 +5,7 @@ using OnlineLibrary.Services.Concrete;
 using System;
 using System.Web;
 using System.Web.Mvc;
+using OnlineLibrary.DataAccess;
 
 namespace OnlineLibrary.Web.Infrastructure.Abstract
 {
@@ -15,6 +16,11 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
 
         protected BaseController()
         {
+        }
+
+        protected ApplicationDbContext DbContext
+        {
+            get { return HttpContext.GetOwinContext().Get<ApplicationDbContext>(); }
         }
 
         protected SignInService SignInManager
