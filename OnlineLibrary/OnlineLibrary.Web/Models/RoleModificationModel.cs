@@ -1,4 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
 
 namespace OnlineLibrary.Web.Models
 {
@@ -6,8 +10,7 @@ namespace OnlineLibrary.Web.Models
     {
         [Required]
         public string RoleName { get; set; }
-
-        public string[] IdsToAdd { get; set; }
-        public string[] IdsToDelete { get; set; }
+        public List<string> IdsToAdd { get; set; } = new List<string>();
+        public List<string> IdsToDelete { get; set; } = new List<string>();
     }
 }
