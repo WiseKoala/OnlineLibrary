@@ -10,7 +10,7 @@ namespace OnlineLibrary.Web.Models
     {
         [Required]
         public string RoleName { get; set; }
-        public string[] IdsToAdd { get; set; }
-        public string[] IdsToDelete { get; set; }
+        public List<string> IdsToAdd { get; set; } = new List<string>();
+        public List<string> IdsToDelete { get; set; } = new List<string>();
     }
 }

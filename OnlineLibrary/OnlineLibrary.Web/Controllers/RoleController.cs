@@ -94,14 +94,21 @@ namespace OnlineLibrary.Web.Controllers
 
         private async Task<bool> EditUsersRoles(RoleModificationModel model)
         {
-            foreach (string userId in model.IdsToAdd ?? new string[] { })
+            // If current user has changed his/her role, sign the user off.
+            if (model.IdsToAdd.Contains(User.Identity.GetUserId()) ||
+                model.IdsToDelete.Contains(User.Identity.GetUserId()))
+            {
+                AuthenticationManager.SignOut();
+            }
+
+            foreach (string userId in model.IdsToAdd ?? new List<string>())
             {
                 if (!await AddUserToRole(userId, model))
                 {
                     return false; 
                 }
             }
-            foreach (string userId in model.IdsToDelete ?? new string[] { })
+            foreach (string userId in model.IdsToDelete ?? new List<string>())
             {
                 if (!await RemoveUserFromRole(userId, model))
                 {
