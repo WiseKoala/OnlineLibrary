@@ -195,7 +195,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Infrastructure\Abstract\BaseController.cs" />
-    <Compile Include="Infrastructure\Abstract\UserName.cs" />
+    <Compile Include="Infrastructure\Abstract\SessionHelper.cs" />
     <Compile Include="Infrastructure\ActionResults\ChallengeResult.cs" />
     <Compile Include="Models\BookViewModel.cs" />
     <Compile Include="Models\CategoryViewModel.cs" />

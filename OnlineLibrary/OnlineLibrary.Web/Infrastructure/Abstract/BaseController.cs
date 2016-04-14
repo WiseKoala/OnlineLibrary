@@ -57,7 +57,7 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
 
         protected bool IsUserNameSessionVariableSet()
         {
-            return User.Identity.IsAuthenticated && UserName.UserNameSessionVariable == null;
+            return User.Identity.IsAuthenticated && SessionHelper.UserNameSessionVariable == null;
         }
 
         protected void InitializeUserNameSessionVariable()
@@ -76,7 +76,8 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
             {
                 UserName = firstName + lastName;
             }
-            Abstract.UserName.UserNameSessionVariable = UserName;
+
+            Session["UserName"] = UserName;
         }
 
         protected override void Dispose(bool disposing)

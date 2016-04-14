@@ -141,7 +141,6 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            UserName.UserNameSessionVariable = null;
             Session.Abandon();
 
             return RedirectToAction("Index", "Home");
