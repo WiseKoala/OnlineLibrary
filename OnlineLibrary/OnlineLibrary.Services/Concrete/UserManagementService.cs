@@ -90,7 +90,7 @@ namespace OnlineLibrary.Services.Concrete
                 Username = UsersName;
                 string firstName = Regex.Replace(user.FirstName, ".*?: ", String.Empty);
                 string lastName = Regex.Replace(user.LastName, ".*?: ", String.Empty);
-                Username = firstName + lastName;
+                Username = firstName + " " + lastName;
             }
             return Username;
         }
