@@ -1,5 +1,6 @@
-﻿@using OnlineLibrary.DataAccess.Entities
-@model IEnumerable<Role>
+﻿@using OnlineLibrary.Web.Models
+@using OnlineLibrary.DataAccess.Entities
+@model RoleViewModel
 @{ ViewBag.Title = "Roles"; }
 
 <div class="panel panel-primary">
@@ -7,12 +8,12 @@
 
     <table class="table table-striped">
         <tr><th>Name</th><th>Users</th><th></th></tr>
-        @if (Model.Count() == 0)
+        @if (Model.Roles.Count() == 0)
         {
             <tr><td colspan="4" class="text-center">No Roles</td></tr>
         }
         else {
-            foreach (Role role in Model)
+            foreach (Role role in Model.Roles)
             {
                 <tr>
                     <td>@role.Name</td>
@@ -24,7 +25,15 @@
                         else
                         {
                             <p>
-                                @string.Join(", ", role.Users.Select(x => Html.GetUserName(x.UserId)))
+                                @foreach (User user in Model.Users)
+                                {
+                                    if(user.Id == role.Id)
+                                    {
+                                        @user.UserName;
+                                    }
+
+                                }
+                                @string.Join(", ", Model.Users.Where(u => role.Users.Select( ur => ur.UserId).Contains(u.Id) ).Select(u => u.UserName));
                             </p>
                         }
                     </td>

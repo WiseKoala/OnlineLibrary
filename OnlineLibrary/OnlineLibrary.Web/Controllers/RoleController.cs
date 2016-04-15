@@ -24,7 +24,14 @@ namespace OnlineLibrary.Web.Controllers
                     InitializeUserNameSessionVariable();
                 }
 
-                return View(RoleManager.Roles.Include(x => x.Users).ToList());
+                List<Role> roles = RoleManager.Roles.Include( r => r.Users).ToList();                
+                List<User> users = UserManager.Users.ToList();
+
+                return View(new RoleViewModel
+                {
+                    Users = users,
+                    Roles = roles
+                });
             }
 
             return RedirectToAction("Index", "Home");
