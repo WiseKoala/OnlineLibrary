@@ -16,7 +16,7 @@ namespace OnlineLibrary.Web.Controllers
     [Authorize]
     public class AccountController : BaseController
     {
-        public static bool IsFirstLogin { get; private set; }
+        public static bool IsFirstLogin { get; set; }
 
         //
         // GET: /Account/Login

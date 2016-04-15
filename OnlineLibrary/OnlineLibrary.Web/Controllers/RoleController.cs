@@ -20,11 +20,6 @@ namespace OnlineLibrary.Web.Controllers
         {
             if (HasAdminPrivileges(User))
             {
-                if (!IsUserNameSessionVariableSet())
-                {
-                    InitializeUserNameSessionVariable();
-                }
-
                 List<Role> roles = RoleManager.Roles.Include( r => r.Users).ToList();                
                 List<User> users = UserManager.Users.ToList();
 
@@ -107,17 +102,6 @@ namespace OnlineLibrary.Web.Controllers
 
         private async Task<bool> EditUsersRoles(RoleModificationModel model)
         {
-            // Save current user name.
-            var currentUserName = User.Identity.Name;
-
-            // If current user has changed his/her role.
-            if (model.IdsToAdd.Contains(User.Identity.GetUserId()) ||
-                model.IdsToDelete.Contains(User.Identity.GetUserId()))
-            {
-                // Sign the user out.
-                AuthenticationManager.SignOut();
-            }
-
             // Change roles.
             foreach (string userId in model.IdsToAdd ?? new List<string>())
             {
@@ -134,11 +118,27 @@ namespace OnlineLibrary.Web.Controllers
                 }
             }
 
-            // Sign the user back.
-            var currentUser = UserManager.FindByName(currentUserName);
-            var identity = await UserManager.CreateIdentityAsync(
-                currentUser, DefaultAuthenticationTypes.ApplicationCookie);
-            AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = true }, identity);
+            // If current user has changed his/her role.
+            if (model.IdsToAdd.Contains(User.Identity.GetUserId()) ||
+                model.IdsToDelete.Contains(User.Identity.GetUserId()))
+            {
+                // Save current user name.
+                var currentUserName = User.Identity.Name;
+
+                // Sign the user out.
+                AuthenticationManager.SignOut();
+
+                // Sign the user back.
+                if (AccountController.IsFirstLogin == true)
+                {
+                    AccountController.IsFirstLogin = false;
+                }
+                var currentUser = UserManager.FindByName(currentUserName);
+                var identity = await UserManager.CreateIdentityAsync(
+                    currentUser, DefaultAuthenticationTypes.ApplicationCookie);
+                AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = true }, identity);
+            }
+
             return true;
         }
 
