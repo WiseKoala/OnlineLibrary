@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using OnlineLibrary.Web.Infrastructure.Abstract;
+using Microsoft.Owin.Security;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -21,7 +22,14 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult Index()
         {
             if (HasAdminPrivileges(User))
+            {
+                if (!IsUserNameSessionVariableSet())
+                {
+                    InitializeUserNameSessionVariable();
+                }
+
                 return View(RoleManager.Roles.Include(x => x.Users).ToList());
+            }
 
             return RedirectToAction("Index", "Home");
         }
@@ -34,6 +42,7 @@ namespace OnlineLibrary.Web.Controllers
                 string[] memberIDs = role.Users.Select(x => x.UserId).ToArray();
                 IEnumerable<User> members = UserManager.Users.Where(x => memberIDs.Any(y => y == x.Id));
                 IEnumerable<User> nonMembers = UserManager.Users.Except(members);
+
                 return View(new RoleEditModel
                 {
                     Role = role,
@@ -94,13 +103,18 @@ namespace OnlineLibrary.Web.Controllers
 
         private async Task<bool> EditUsersRoles(RoleModificationModel model)
         {
-            // If current user has changed his/her role, sign the user off.
+            // Save current user name.
+            var currentUserName = User.Identity.Name;
+
+            // If current user has changed his/her role.
             if (model.IdsToAdd.Contains(User.Identity.GetUserId()) ||
                 model.IdsToDelete.Contains(User.Identity.GetUserId()))
             {
+                // Sign the user out.
                 AuthenticationManager.SignOut();
             }
 
+            // Change roles.
             foreach (string userId in model.IdsToAdd ?? new List<string>())
             {
                 if (!await AddUserToRole(userId, model))
@@ -115,6 +129,12 @@ namespace OnlineLibrary.Web.Controllers
                     return false; 
                 }
             }
+
+            // Sign the user back.
+            var currentUser = UserManager.FindByName(currentUserName);
+            var identity = await UserManager.CreateIdentityAsync(
+                currentUser, DefaultAuthenticationTypes.ApplicationCookie);
+            AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = true }, identity);
             return true; 
         }
         #endregion
