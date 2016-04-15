@@ -23,11 +23,6 @@ namespace OnlineLibrary.Web.Controllers
         {
             if (HasAdminPrivileges(User))
             {
-                if (!IsUserNameSessionVariableSet())
-                {
-                    InitializeUserNameSessionVariable();
-                }
-
                 return View(RoleManager.Roles.Include(x => x.Users).ToList());
             }
 
