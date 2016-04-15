@@ -15,7 +15,7 @@ namespace OnlineLibrary.Web.Controllers
     [Authorize]
     public class AccountController : BaseController
     {
-        public static bool IsFirstLogin { get; private set; }
+        public static bool IsFirstLogin { get; set; }
 
         //
         // GET: /Account/Login
@@ -112,7 +112,7 @@ namespace OnlineLibrary.Web.Controllers
                     // Add user to the 'User' role.
                     UserManager.AddToRole(user.Id, "User");
                     if (result.Succeeded)
-                    {   
+                    {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                         if(IsFirstLogin)
                         {
