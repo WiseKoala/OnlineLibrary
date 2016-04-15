@@ -25,14 +25,6 @@
                         else
                         {
                             <p>
-                                @foreach (User user in Model.Users)
-                                {
-                                    if(user.Id == role.Id)
-                                    {
-                                        @user.UserName;
-                                    }
-
-                                }
                                 @string.Join(", ", Model.Users.Where(u => role.Users.Select( ur => ur.UserId).Contains(u.Id) ).Select(u => u.UserName));
                             </p>
                         }
