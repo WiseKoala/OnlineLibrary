@@ -1,5 +1,4 @@
 ﻿@using OnlineLibrary.Web.Models
-@using OnlineLibrary.DataAccess.Entities
 @model RoleViewModel
 @{ ViewBag.Title = "Roles"; }
 
@@ -8,32 +7,29 @@
 
     <table class="table table-striped">
         <tr><th>Name</th><th>Users</th><th></th></tr>
-        @if (Model.Roles.Count() == 0)
+        @if (!Model.Roles.Any())
         {
             <tr><td colspan="4" class="text-center">No Roles</td></tr>
         }
         else {
-            foreach (Role role in Model.Roles)
+            int i = 0;
+            foreach (var role in Model.Roles)
             {
                 <tr>
                     <td>@role.Name</td>
                     <td>
-                        @if (role.Users == null || role.Users.Count == 0)
-                        {
-                            @: No Users in Role
-                        }
-                        else
-                        {
-                            <p>
-                                @string.Join(", ", Model.Users.Where(u => role.Users.Select( ur => ur.UserId).Contains(u.Id) ).Select(u => u.UserName));
-                            </p>
-                        }
+                        <p>
+                            @Model.UserNames[i]
+                            @{
+                                i++;
+                            }
+                        </p>
                     </td>
                     <td>
                         @Html.ActionLink("Edit", "Edit", new { id = role.Id }, new { @class = "btn btn-primary btn-xs" })
                     </td>
                 </tr>
-            }
-        }
+             }
+         }
     </table>
 </div>

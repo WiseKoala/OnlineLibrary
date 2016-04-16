@@ -21,13 +21,49 @@ namespace OnlineLibrary.Web.Controllers
             if (HasAdminPrivileges(User))
             {
                 List<Role> roles = RoleManager.Roles.Include( r => r.Users).ToList();                
-                List<User> users = UserManager.Users.ToList();
-
-                return View(new RoleViewModel
+                if (!IsUserNameSessionVariableSet())
                 {
-                    Users = users,
-                    Roles = roles
-                });
+                    InitializeUserNameSessionVariable();
+                }
+
+                // Initializing the model to be passed to the view.
+                var model = new RoleViewModel();
+
+                // Initializing model components.
+                List<Role> roles = RoleManager.Roles.Include(r => r.Users).ToList();
+                model.Roles = roles;
+
+                List<User> users = UserManager.Users.ToList();
+                model.UserNames = new List<string>();
+
+                // Creating a temporary variable to store the information for the model.
+                string userNames;
+
+                // Iterating through the roles to get the usernames for each role.
+                foreach (var role in roles)
+                {
+                    if (role.Users == null || !role.Users.Any())
+                    {
+                        // Show a message if there are no users in a role.
+                        userNames = "No users have this role.";
+                    }
+                    else
+                    {
+                        // Get all users in this role.
+                        var allUsersInRole = role.Users.Select(userInRole => userInRole.UserId);
+                        
+                        // Get the usernames list for the users in this role.
+                        var userNamesList = users.Where(user => allUsersInRole.Contains(user.Id)).Select(user => user.UserName);
+
+                        // Join the usernames list as a string.
+                        userNames = string.Join(", ", userNamesList);
+                    }
+                    
+                    // Add the information about usernames to the model.
+                    model.UserNames.Add(userNames);
+                }
+
+                return View(model);
             }
 
             return RedirectToAction("Index", "Home");
