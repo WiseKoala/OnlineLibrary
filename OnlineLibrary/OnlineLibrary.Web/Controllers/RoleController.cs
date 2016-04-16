@@ -19,8 +19,7 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult Index()
         {
             if (HasAdminPrivileges(User))
-            {
-                List<Role> roles = RoleManager.Roles.Include( r => r.Users).ToList();                
+            {              
                 if (!IsUserNameSessionVariableSet())
                 {
                     InitializeUserNameSessionVariable();
