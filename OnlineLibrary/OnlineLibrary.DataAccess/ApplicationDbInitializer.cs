@@ -173,6 +173,54 @@ namespace OnlineLibrary.DataAccess
             };
             books.ForEach(b => context.Books.Add(b));
 
+            // Add users.
+            var users = new List<User>
+            {
+                new User
+                {
+                    Id = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    FirstName = "Library",
+                    LastName = "User",
+                    Email = "libraryuser9@gmail.com",
+                    SecurityStamp = "0c2030d4-00be-410b-88f2-a4fdd640bf9b",
+                    UserName = "libraryuser9@gmail.com",
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0
+                }
+            };
+            users.ForEach(u => context.Users.Add(u));
+
+            // Add user logins.
+            var userLogins = new List<IdentityUserLogin>()
+            {
+                new IdentityUserLogin { LoginProvider = "Google", ProviderKey = "107735122632514671058", UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328" }
+            };
+            userLogins.ForEach(ul => context.IdentityUserLogins.Add(ul));
+
+            // Add loans.
+            var loans = new List<Loan>()
+            {
+                new Loan
+                {
+                    BookCopyId = 1,
+                    Status = LoanStatus.Loaned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = new DateTime(2016, 4, 25),
+                    EndDate = new DateTime(2016, 5, 9),
+                    BookConditionAtReturn = null
+                },
+                new Loan
+                {
+                    BookCopyId = 2,
+                    Status = LoanStatus.Loaned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = new DateTime(2016, 4, 18),
+                    EndDate = new DateTime(2016, 5, 2),
+                    BookConditionAtReturn = null
+                },
+            };
+            loans.ForEach(l => context.Loans.Add(l));
+
             context.SaveChanges();
         }
 
