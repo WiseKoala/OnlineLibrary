@@ -21,7 +21,7 @@ namespace OnlineLibrary.DataAccess.Entities
 
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
-        public BookCondition BookConditionAtReturn { get; set; }
+        public BookCondition? BookConditionAtReturn { get; set; }
 
         public User User { get; set; }
         public BookCopy BookCopy { get; set; }
