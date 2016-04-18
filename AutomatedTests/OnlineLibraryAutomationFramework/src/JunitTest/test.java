@@ -19,7 +19,7 @@ public class test extends UI{
 	
 	@After
 	public void closeAplication(){
-		//super.closeAplication();
+		super.closeAplication();
 	}
 	
 	@Test 
@@ -29,7 +29,7 @@ public class test extends UI{
 	
 	clickItem("homeMenuBarItem");
 	
-	clickItem("rolesMenuBarItem");
+	
 	
 	clickItem("loginMenuBarItem");
 	
@@ -39,7 +39,7 @@ public class test extends UI{
 	
 	clickItem("googleLoginNextButton");
 	
-	inputInto("LM78bnc32K", "passwordInputGoogleLoginPage");
+	inputInto("LM78bnc32K","passwordInputGoogleLoginPage");
 	
 	clickItem("googleSigninButton");
 	
