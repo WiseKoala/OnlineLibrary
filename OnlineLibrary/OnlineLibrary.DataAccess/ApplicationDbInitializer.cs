@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using OnlineLibrary.DataAccess.Enums;
 using System.Linq;
+using System.Web.Security;
+using System.Configuration;
+using System.IO;
 
 namespace OnlineLibrary.DataAccess
 {
@@ -17,10 +20,15 @@ namespace OnlineLibrary.DataAccess
             {
                 new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.User },
                 new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.SysAdmin },
-                new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.Librarian }
+                new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.Librarian },
+                new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.SuperAdmin }
             };
+
             var roleManager = new RoleManager<Role>(new RoleStore<Role>(context));
             roles.ForEach(r => roleManager.Create(r));
+
+            var userManager = new UserManager<User>(new UserStore<User>(context));
+            CreateSuperAdmin(userManager, roleManager);
 
             // Authors
             var authors = new List<Author>
@@ -153,6 +161,24 @@ namespace OnlineLibrary.DataAccess
             books.ForEach(b => context.Books.Add(b));
 
             context.SaveChanges();
+        }
+
+        public void CreateSuperAdmin(UserManager<User> userManager, RoleManager<Role> roleManager)
+        {
+            var superAdmin = new User { UserName = "Admin", FirstName = "Super", LastName = "Admin" };
+            var superAdminPassword = Membership.GeneratePassword(8, 1);
+            var result = userManager.Create(superAdmin, "Admin.1234");
+
+            if (result.Succeeded)
+            {
+                userManager.AddToRole(superAdmin.Id, UserRoles.SuperAdmin);
+            }
+
+            //using ( StreamWriter sw = new StreamWriter(@"..\..\password.txt") )
+            //{
+            //    sw.Write("asdas");
+            //    sw.Close();
+            //}
         }
     }
 }

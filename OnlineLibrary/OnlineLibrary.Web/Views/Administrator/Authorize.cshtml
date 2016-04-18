@@ -1,0 +1,18 @@
+﻿@using OnlineLibrary.Web.Models
+@model SuperAdminViewModel
+
+@{
+    ViewBag.Title = "Super Administrator";
+}
+
+<h2>@ViewBag.Title.</h2>
+
+@using (Html.BeginForm("Authorize","Administrator",FormMethod.Post))
+{
+    @Html.Label("Enter the password: ")
+    @Html.PasswordFor(m => m.Password)
+    
+    <input type="submit" value="Ok"/>
+}
+
+

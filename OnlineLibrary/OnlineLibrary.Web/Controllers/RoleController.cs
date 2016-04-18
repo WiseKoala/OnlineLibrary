@@ -77,7 +77,7 @@ namespace OnlineLibrary.Web.Controllers
 
         private bool HasAdminPrivileges(IPrincipal user)
         {
-            return AccountController.IsFirstLogin || user.IsInRole(UserRoles.SysAdmin);
+            return AccountController.IsFirstLogin || user.IsInRole(UserRoles.SysAdmin) || user.IsInRole(UserRoles.SuperAdmin);
         }
 
         private async Task<bool> RemoveUserCurrentRoles(string userId)
