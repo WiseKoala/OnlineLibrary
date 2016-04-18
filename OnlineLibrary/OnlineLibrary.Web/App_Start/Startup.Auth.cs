@@ -1,13 +1,13 @@
-﻿using System;
-using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
-using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess;
-using Owin;
+using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Services.Concrete;
+using Owin;
+using System;
 
 namespace OnlineLibrary.Web
 {
@@ -28,6 +28,7 @@ namespace OnlineLibrary.Web
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
+                ExpireTimeSpan = TimeSpan.FromMinutes(30),
                 LoginPath = new PathString("/Account/Login"),
                 Provider = new CookieAuthenticationProvider
                 {

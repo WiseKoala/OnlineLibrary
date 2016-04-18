@@ -7,15 +7,15 @@
 {
     <input type="hidden" name="roleName" value="@Model.Role.Name" />
     <div class="panel panel-primary">
-        <div class="panel-heading">Add To @Model.Role.Name</div>
+        <div class="panel-heading">Add to role "@Model.Role.Name"</div>
         <table class="table table-striped">
-            @if (Model.NonMembers.Count() == 0)
+            @if (!Model.NonMembers.Any())
             {
-                <tr><td colspan="2">All Users Are Members</td></tr>
+                <tr><td colspan="2">All users have this role.</td></tr>
             }
             else {
-                <tr><td>User</td><td>Add To Role</td></tr>
-                foreach (User user in Model.NonMembers)
+                <tr><td>User</td><td>Add to role</td></tr>
+                foreach (var user in Model.NonMembers)
                 {
                     <tr>
                         <td>@user.UserName</td>
@@ -28,15 +28,15 @@
         </table>
     </div>
     <div class="panel panel-primary">
-        <div class="panel-heading">Remove from @Model.Role.Name</div>
+        <div class="panel-heading">Remove from role "@Model.Role.Name"</div>
         <table class="table table-striped">
-            @if (Model.Members.Count() == 0)
+            @if (!Model.Members.Any())
                 {
-                <tr><td colspan="2">No Users Are Members</td></tr>
+                <tr><td colspan="2">No users have this role.</td></tr>
             }
             else {
-                <tr><td>User</td><td>Remove From Role</td></tr>
-                foreach (User user in Model.Members)
+                <tr><td>User</td><td>Remove from role</td></tr>
+                foreach (var user in Model.Members)
                 {
                     <tr>
                         <td>@user.UserName</td>

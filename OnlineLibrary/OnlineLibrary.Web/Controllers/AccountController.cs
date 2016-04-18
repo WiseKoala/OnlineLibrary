@@ -1,14 +1,15 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using OnlineLibrary.DataAccess;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Infrastructure.ActionResults;
 using OnlineLibrary.Web.Models;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -35,8 +36,8 @@ namespace OnlineLibrary.Web.Controllers
         {
             // Request a redirect to the external login provider
             return new ChallengeResult(
-                provider, 
-                Url.Action("ExternalLoginCallback", "Account", 
+                provider,
+                Url.Action("ExternalLoginCallback", "Account",
                 new { ReturnUrl = returnUrl }));
         }
 
@@ -74,7 +75,7 @@ namespace OnlineLibrary.Web.Controllers
                     // If the user does not have an account, then prompt the user to create an account
                     ViewBag.ReturnUrl = returnUrl;
                     ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { UserName = loginInfo.DefaultUserName });
+                    return View("ExternalLoginConfirmation");
             }
         }
 
@@ -83,17 +84,17 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
+        public async Task<ActionResult> ExternalLoginConfirmation(string returnUrl)
         {
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            if (!UserManager.Users.ToList().Any())
+            if (UserManager.Users.Count() == 1)
             {
                 IsFirstLogin = true;
-            }             
+            }
 
             if (ModelState.IsValid)
             {
@@ -103,21 +104,26 @@ namespace OnlineLibrary.Web.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new User { UserName = model.UserName, Email = info.Email };
+
+                string firstName = info.ExternalIdentity.Claims.FirstOrDefault(u => u.Type == ClaimTypes.GivenName).Value;
+                string lastName = info.ExternalIdentity.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Surname).Value;
+                var user = new User { UserName = info.Email, Email = info.Email, FirstName = firstName, LastName = lastName };
+
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
                     // Add login.
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
                     // Add user to the 'User' role.
-                    UserManager.AddToRole(user.Id, "User");
+                    UserManager.AddToRole(user.Id, UserRoles.User);
                     if (result.Succeeded)
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                         if(IsFirstLogin)
                         {
-                            return RedirectToAction("Index","Role");
+                            return RedirectToAction("Index", "Role");
                         }
+
                         return RedirectToLocal(returnUrl);
                     }
                 }
@@ -125,7 +131,7 @@ namespace OnlineLibrary.Web.Controllers
             }
 
             ViewBag.ReturnUrl = returnUrl;
-            return View(model);
+            return View();
         }
 
         //
@@ -135,6 +141,8 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            Session.Abandon();
+
             return RedirectToAction("Index", "Home");
         }
 
