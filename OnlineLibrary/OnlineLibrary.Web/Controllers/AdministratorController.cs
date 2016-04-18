@@ -26,7 +26,7 @@ namespace OnlineLibrary.Web.Controllers
             if (result == SignInStatus.Success)
                 return RedirectToAction("Index", "Role");
 
-            return RedirectToAction("Authorizate", "Administrator");
+            return RedirectToAction("Authorize", "Administrator");
         }
     }
 }

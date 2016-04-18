@@ -28,7 +28,20 @@ namespace OnlineLibrary.DataAccess
             roles.ForEach(r => roleManager.Create(r));
 
             var userManager = new UserManager<User>(new UserStore<User>(context));
-            CreateSuperAdmin(userManager, roleManager);
+
+            // _Set password rules.
+            int passwordLenght = 8;
+            int numberNonAlphanumeric = 1;
+            var superAdminPassword = Membership.GeneratePassword(passwordLenght, numberNonAlphanumeric);
+
+            //_Set the destination of password file
+            string passwordPath = @"D:\password.txt";
+            
+            // _If creating Super Admin is succeed save password.
+            if (CreateSuperAdmin(userManager, roleManager,superAdminPassword))
+            {
+                File.WriteAllText(passwordPath, superAdminPassword);
+            }
 
             // Authors
             var authors = new List<Author>
@@ -163,18 +176,17 @@ namespace OnlineLibrary.DataAccess
             context.SaveChanges();
         }
 
-        public void CreateSuperAdmin(UserManager<User> userManager, RoleManager<Role> roleManager)
+        public bool CreateSuperAdmin(UserManager<User> userManager, RoleManager<Role> roleManager, string password)
         {
             var superAdmin = new User { UserName = "Admin", FirstName = "Super", LastName = "Admin" };
-            var superAdminPassword = Membership.GeneratePassword(8, 1);
-            var result = userManager.Create(superAdmin, "Admin.1234");
+            var result = userManager.Create(superAdmin, password);
 
             if (result.Succeeded)
             {
                 userManager.AddToRole(superAdmin.Id, UserRoles.SuperAdmin);
+                return true;
             }
-
-            //File.WriteAllText(@"password.txt", superAdminPassword);
+            return false;
         }
     }
 }
