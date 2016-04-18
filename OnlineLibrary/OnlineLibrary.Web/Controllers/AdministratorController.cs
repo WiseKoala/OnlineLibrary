@@ -11,8 +11,8 @@ namespace OnlineLibrary.Web.Controllers
 {
     public class AdministratorController : BaseController
     {
-
         [HttpGet]
+        [Route("super")]
         public ActionResult Authorize()
         {
             return View(new SuperAdminViewModel());
