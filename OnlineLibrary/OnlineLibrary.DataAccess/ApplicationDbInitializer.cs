@@ -206,7 +206,7 @@ namespace OnlineLibrary.DataAccess
                     Status = LoanStatus.Loaned,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = new DateTime(2016, 4, 25),
-                    EndDate = new DateTime(2016, 5, 9),
+                    ExpectedReturnDate = new DateTime(2016, 5, 9),
                     BookConditionAtReturn = null
                 },
                 new Loan
@@ -215,7 +215,7 @@ namespace OnlineLibrary.DataAccess
                     Status = LoanStatus.Loaned,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = new DateTime(2016, 4, 18),
-                    EndDate = new DateTime(2016, 5, 2),
+                    ExpectedReturnDate = new DateTime(2016, 5, 2),
                     BookConditionAtReturn = null
                 },
             };
