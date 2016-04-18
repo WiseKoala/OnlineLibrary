@@ -29,10 +29,10 @@ namespace OnlineLibrary.Web.Controllers
                 var model = new RoleViewModel();
 
                 // Initializing model components.
-                List<Role> roles = RoleManager.Roles.Include(r => r.Users).Where(r => r.Name != UserRoles.SuperAdmin).ToList();
+                List<Role> roles = RoleManager.Roles.Include(r => r.Users).Where(r => r.Name != UserRoles.SuperAdmin).OrderBy(r => r.Name).ToList();
                 model.Roles = roles;
 
-                List<User> users = UserManager.Users.Where( u => u.UserName != "Admin" ).ToList();
+                List<User> users = UserManager.Users.Where( u => u.UserName != "Admin" ).OrderBy(u => u.UserName).ToList();
                 model.UserNames = new List<string>();
 
                 // Creating a temporary variable to store the information for the model.
