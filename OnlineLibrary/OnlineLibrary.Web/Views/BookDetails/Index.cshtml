@@ -1,4 +1,5 @@
 ﻿@using OnlineLibrary.Web.Models
+@using OnlineLibrary.DataAccess
 @model OnlineLibrary.Web.Models.BookDetailsViewModel
 @{
     ViewBag.Title = "Book Details Page";
@@ -31,9 +32,12 @@
 
                             <p><strong>ISBN:</strong> @book.ISBN</p>
 
+                            @if (User.IsInRole(UserRoles.Librarian) || User.IsInRole(UserRoles.SysAdmin) || User.IsInRole(UserRoles.SuperAdmin))
+                            {
                             <p><strong>Number of items in stock:</strong> @book.NrOfBooks</p>
 
                             <p><strong>Condition of items in stock:</strong> @book.HowManyInThisCondition</p>
+                            }
 
                             <p><strong>Description:</strong> @book.Description</p>
                      
