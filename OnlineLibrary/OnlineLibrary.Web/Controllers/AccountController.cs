@@ -91,7 +91,7 @@ namespace OnlineLibrary.Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if (!UserManager.Users.ToList().Any())
+            if (UserManager.Users.Count() == 1)
             {
                 IsFirstLogin = true;
             }

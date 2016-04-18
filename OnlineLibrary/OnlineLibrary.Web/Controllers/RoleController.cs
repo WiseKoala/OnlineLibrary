@@ -29,10 +29,10 @@ namespace OnlineLibrary.Web.Controllers
                 var model = new RoleViewModel();
 
                 // Initializing model components.
-                List<Role> roles = RoleManager.Roles.Include(r => r.Users).ToList();
+                List<Role> roles = RoleManager.Roles.Include(r => r.Users).Where(r => r.Name != UserRoles.SuperAdmin).ToList();
                 model.Roles = roles;
 
-                List<User> users = UserManager.Users.ToList();
+                List<User> users = UserManager.Users.Where( u => u.UserName != "Admin" ).ToList();
                 model.UserNames = new List<string>();
 
                 // Creating a temporary variable to store the information for the model.
@@ -75,7 +75,7 @@ namespace OnlineLibrary.Web.Controllers
                 Role role = await RoleManager.FindByIdAsync(id);
                 string[] memberIDs = role.Users.Select(x => x.UserId).ToArray();
                 IEnumerable<User> members = UserManager.Users.Where(x => memberIDs.Any(y => y == x.Id));
-                IEnumerable<User> nonMembers = UserManager.Users.Except(members);
+                IEnumerable<User> nonMembers = UserManager.Users.Where( u => u.UserName != "Admin").Except(members);
 
                 return View(new RoleEditModel
                 {
@@ -108,7 +108,7 @@ namespace OnlineLibrary.Web.Controllers
 
         private bool HasAdminPrivileges(IPrincipal user)
         {
-            return AccountController.IsFirstLogin || user.IsInRole(UserRoles.SysAdmin);
+            return AccountController.IsFirstLogin || user.IsInRole(UserRoles.SysAdmin) || user.IsInRole(UserRoles.SuperAdmin);
         }
 
         private async Task<bool> RemoveUserCurrentRoles(string userId)

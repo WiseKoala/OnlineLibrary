@@ -1,4 +1,5 @@
-﻿using OnlineLibrary.DataAccess.Entities;
+﻿using OnlineLibrary.DataAccess;
+using OnlineLibrary.DataAccess.Entities;
 using System.Collections.Generic;
 
 namespace OnlineLibrary.Web.Models

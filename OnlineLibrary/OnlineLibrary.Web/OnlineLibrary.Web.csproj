@@ -188,6 +188,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdministratorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />
@@ -203,6 +204,7 @@
     <Compile Include="Models\RoleEditModel.cs" />
     <Compile Include="Models\RoleModificationModel.cs" />
     <Compile Include="Models\RoleViewModel.cs" />
+    <Compile Include="Models\SuperAdminViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -261,6 +263,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
     <Content Include="Views\Role\Edit.cshtml" />
+    <Content Include="Views\Administrator\Authorize.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
