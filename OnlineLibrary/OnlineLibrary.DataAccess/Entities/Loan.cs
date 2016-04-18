@@ -17,10 +17,10 @@ namespace OnlineLibrary.DataAccess.Entities
         public string UserId { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime EndDate { get; set; }
+        public DateTime? ExpectedReturnDate { get; set; }
         public BookCondition? BookConditionAtReturn { get; set; }
 
         public User User { get; set; }
