@@ -197,6 +197,10 @@ namespace OnlineLibrary.DataAccess
             };
             userLogins.ForEach(ul => context.IdentityUserLogins.Add(ul));
 
+            // Add roles.
+            context.SaveChanges();
+            userManager.AddToRole("7937c4fb-1bbd-4ca8-af79-331c21d74328", UserRoles.User);
+
             // Add loans.
             var loans = new List<Loan>()
             {
