@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using OnlineLibrary.DataAccess.Entities;
+using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models;
+using System.Data.Entity;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -22,7 +24,7 @@ namespace OnlineLibrary.Web.Controllers
                 InitializeUserNameSessionVariable();
             }
 
-            var book = DbContext.Books.First(b => b.Id == id);
+            var book = DbContext.Books.Include(b => b.BookCopies).First(b => b.Id == id);
             var bookcopies = new List<BookCopy>();
             int[] condition =
             {
@@ -45,6 +47,13 @@ namespace OnlineLibrary.Web.Controllers
             { if (s.Length != 0) { conditionStr = conditionStr + s + ", "; } };
            if (conditionStr.Length > 3) { conditionStr = conditionStr.Substring(0, conditionStr.Length - 2); };
 
+            // Obtain list of not available book copies.
+            IEnumerable<BookCopy> notAvailableBookCopies = from bc in book.BookCopies
+                                                           join l in DbContext.Loans
+                                                           on bc.Id equals l.BookCopyId
+                                                           where l.Status == LoanStatus.Approved || l.Status == LoanStatus.Loaned
+                                                           select bc;
+
             var book_view = new BookDetailsViewModel
             {
                 Id = book.Id,
@@ -61,7 +70,8 @@ namespace OnlineLibrary.Web.Controllers
                 {
                     Category = sc.Category.Name,
                     SubCategory = sc.Name
-                })
+                }),
+                AvailableCopies = book.BookCopies.Count() - notAvailableBookCopies.Count()
             };
             return View(book_view);
         }

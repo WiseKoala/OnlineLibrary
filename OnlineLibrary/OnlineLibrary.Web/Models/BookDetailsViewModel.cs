@@ -18,5 +18,6 @@ namespace OnlineLibrary.Web.Models
         public int NrOfBooks { get; set; }
         public string HowManyInThisCondition { get; set; }
         public IEnumerable<CategoryViewModel> Categories { get; set; }
+        public int AvailableCopies { get; set; }
     }
 }
