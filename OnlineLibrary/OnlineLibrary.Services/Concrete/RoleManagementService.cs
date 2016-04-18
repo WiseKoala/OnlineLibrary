@@ -5,6 +5,8 @@ using Microsoft.Owin;
 using OnlineLibrary.DataAccess;
 using OnlineLibrary.DataAccess.Entities;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -17,6 +19,15 @@ namespace OnlineLibrary.Services.Concrete
         public static RoleManagementService Create(IdentityFactoryOptions<RoleManagementService> options, IOwinContext context)
         {
             return new RoleManagementService(new RoleStore<Role>(context.Get<ApplicationDbContext>()));
+        }
+
+        public static List<IdentityRole> GetRoleList(IOwinContext context)
+        {
+            var dbContext = context.Get<ApplicationDbContext>();
+
+            var roles = dbContext.Roles.Where(r => r.Name != UserRoles.SuperAdmin).ToList();
+
+            return roles;
         }
     }
 }
