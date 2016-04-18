@@ -11,7 +11,6 @@ namespace OnlineLibrary.Web.Controllers
 {
     public class AdministratorController : BaseController
     {
-
         [HttpGet]
         public ActionResult Authorize()
         {
