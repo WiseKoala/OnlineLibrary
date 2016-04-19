@@ -9,6 +9,8 @@ using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models;
 using System.Data.Entity;
+using OnlineLibrary.Services.Abstract;
+using OnlineLibrary.Services.Concrete;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -16,6 +18,8 @@ namespace OnlineLibrary.Web.Controllers
     {
         private string[] conditionStrArray = { "", "", "", "", "", "" };
         private string conditionStr = "";
+
+        private IBookService _bookService;
 
         public ActionResult Index(int id)
         {
@@ -47,12 +51,8 @@ namespace OnlineLibrary.Web.Controllers
             { if (s.Length != 0) { conditionStr = conditionStr + s + ", "; } };
            if (conditionStr.Length > 3) { conditionStr = conditionStr.Substring(0, conditionStr.Length - 2); };
 
-            // Obtain list of not available book copies.
-            IEnumerable<BookCopy> notAvailableBookCopies = from bc in book.BookCopies
-                                                           join l in DbContext.Loans
-                                                           on bc.Id equals l.BookCopyId
-                                                           where l.Status == LoanStatus.Approved || l.Status == LoanStatus.Loaned
-                                                           select bc;
+            // Manually instantiate the service.
+            _bookService = new BookService(DbContext);
 
             var book_view = new BookDetailsViewModel
             {
@@ -71,7 +71,8 @@ namespace OnlineLibrary.Web.Controllers
                     Category = sc.Category.Name,
                     SubCategory = sc.Name
                 }),
-                AvailableCopies = book.BookCopies.Count() - notAvailableBookCopies.Count()
+                AvailableCopies = _bookService.GetAmountOfAvailableCopies(id),
+                EarliestDateAvailable = _bookService.GetEarliestAvailableDate(id)
             };
             return View(book_view);
         }

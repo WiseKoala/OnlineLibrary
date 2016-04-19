@@ -53,7 +53,19 @@
                                 </ul>
                             </p>
 
-                            <p><strong>Available copies: </strong> @Model.AvailableCopies</p>
+                            @if (Model.AvailableCopies != 0)
+                            {
+                                <p><strong>Available copies: </strong> @Model.AvailableCopies</p>
+                            }
+                            else
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    <strong>Sorry!</strong> The book is currently not available for loan.
+                                </div>
+                                <div class="alert alert-info" role="alert">
+                                    The book is expected to be available for loan on <strong>@Model.EarliestDateAvailable.Value.ToShortDateString()</strong>
+                                </div>
+                            }
                  </div>
 
              </div>
