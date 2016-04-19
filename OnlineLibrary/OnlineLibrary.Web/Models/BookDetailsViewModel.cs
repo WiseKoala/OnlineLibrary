@@ -19,5 +19,6 @@ namespace OnlineLibrary.Web.Models
         public string HowManyInThisCondition { get; set; }
         public IEnumerable<CategoryViewModel> Categories { get; set; }
         public int AvailableCopies { get; set; }
+        public DateTime? EarliestDateAvailable { get; set; }
     }
 }

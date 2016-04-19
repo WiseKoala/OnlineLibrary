@@ -47,12 +47,31 @@ namespace OnlineLibrary.Web.Controllers
             { if (s.Length != 0) { conditionStr = conditionStr + s + ", "; } };
            if (conditionStr.Length > 3) { conditionStr = conditionStr.Substring(0, conditionStr.Length - 2); };
 
-            // Obtain list of not available book copies.
+            // Obtain collection of loans.
+            var loans = (from bc in book.BookCopies
+                         join l in DbContext.Loans
+                         on bc.Id equals l.BookCopyId
+                         select l).ToList();
+
+            // Obtain collection of not available book copies.
             IEnumerable<BookCopy> notAvailableBookCopies = from bc in book.BookCopies
-                                                           join l in DbContext.Loans
+                                                           join l in loans
                                                            on bc.Id equals l.BookCopyId
                                                            where l.Status == LoanStatus.Approved || l.Status == LoanStatus.Loaned
                                                            select bc;
+            // Calculate number of available book copies.
+            int availableBookCopies = book.BookCopies.Count() - notAvailableBookCopies.Count();
+            DateTime? earliestDate = null;
+
+            if (availableBookCopies == 0)
+            {
+                // Determine the earliest date when the book will be available for loan.
+                earliestDate = loans
+                    .Where(l => l.ExpectedReturnDate != null)
+                    .OrderBy(l => l.ExpectedReturnDate)
+                    .First()
+                    .ExpectedReturnDate.Value;
+            }
 
             var book_view = new BookDetailsViewModel
             {
@@ -71,7 +90,8 @@ namespace OnlineLibrary.Web.Controllers
                     Category = sc.Category.Name,
                     SubCategory = sc.Name
                 }),
-                AvailableCopies = book.BookCopies.Count() - notAvailableBookCopies.Count()
+                AvailableCopies = book.BookCopies.Count() - notAvailableBookCopies.Count(),
+                EarliestDateAvailable = earliestDate
             };
             return View(book_view);
         }
