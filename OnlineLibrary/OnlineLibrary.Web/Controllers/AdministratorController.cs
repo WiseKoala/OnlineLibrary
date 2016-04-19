@@ -12,13 +12,14 @@ namespace OnlineLibrary.Web.Controllers
     public class AdministratorController : BaseController
     {
         [HttpGet]
-        [Route("super")]
+        [Route("power")]
         public ActionResult Authorize()
         {
             return View(new SuperAdminViewModel());
         }
 
         [HttpPost]
+        [Route("power")]
         public async Task<ActionResult> Authorize(SuperAdminViewModel model)
         {
             var result = await SignInManager.PasswordSignInAsync("Admin", model.Password, isPersistent: false, shouldLockout: false);
