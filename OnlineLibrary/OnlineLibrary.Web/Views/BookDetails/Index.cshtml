@@ -7,6 +7,7 @@
 
 @section CSS {
     <link href="~/Content/Views stylesheets/BookDetails/Index.css" rel="stylesheet" />
+    <link href="~/Content/toastr.css" rel="stylesheet" />
 }
 
 <div class="page-header">
@@ -32,13 +33,6 @@
 
                             <p><strong>ISBN:</strong> @book.ISBN</p>
 
-                            @if (User.IsInRole(UserRoles.Librarian) || User.IsInRole(UserRoles.SysAdmin) || User.IsInRole(UserRoles.SuperAdmin))
-                            {
-                            <p><strong>Number of items in stock:</strong> @book.NrOfBooks</p>
-
-                            <p><strong>Condition of items in stock:</strong> @book.HowManyInThisCondition</p>
-                            }
-
                             <p><strong>Description:</strong> @book.Description</p>
                      
                             <p>
@@ -53,9 +47,16 @@
                                 </ul>
                             </p>
 
+                            @if (User.IsInRole(UserRoles.Librarian) || User.IsInRole(UserRoles.SysAdmin) || User.IsInRole(UserRoles.SuperAdmin))
+                            {
+                                <p><strong>Total number of copies in stock:</strong> @book.NrOfBooks</p>
+
+                                <p><strong>Condition of copies in stock:</strong> @book.HowManyInThisCondition</p>
+                            }
+
                             @if (Model.AvailableCopies != 0)
                             {
-                                <p><strong>Available copies: </strong> @Model.AvailableCopies</p>
+                                <p><strong>Copies available for borrowing:</strong> @Model.AvailableCopies</p>
                                 
                                 <!-- Model Trigger Button -->
                                 <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
@@ -101,6 +102,7 @@
     </div>
 </div>
 
-@section scripts{
+@section scripts {
     <script src="~/Scripts/View Scripts/BookDetails/Index.js"></script>
+    <script src="~/Scripts/toastr.js"></script>
 }
