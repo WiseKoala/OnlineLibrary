@@ -56,6 +56,30 @@
                             @if (Model.AvailableCopies != 0)
                             {
                                 <p><strong>Available copies: </strong> @Model.AvailableCopies</p>
+                                
+                                <!-- Model Trigger Button -->
+                                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                                    Loan
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                <h4 class="modal-title" id="myModalLabel">Send new loan request?</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to loan this book? A new loan request will be sent.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                                                <button type="button" class="btn btn-primary" id="loan" data-book-id="@Model.Id" data-dismiss="modal">Yes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             }
                             else
                             {
@@ -77,3 +101,6 @@
     </div>
 </div>
 
+@section scripts{
+    <script src="~/Scripts/View Scripts/BookDetails/Index.js"></script>
+}

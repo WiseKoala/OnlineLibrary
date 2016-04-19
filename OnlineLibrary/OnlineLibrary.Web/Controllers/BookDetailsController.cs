@@ -11,6 +11,7 @@ using OnlineLibrary.Web.Models;
 using System.Data.Entity;
 using OnlineLibrary.Services.Abstract;
 using OnlineLibrary.Services.Concrete;
+using Microsoft.AspNet.Identity;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -75,6 +76,20 @@ namespace OnlineLibrary.Web.Controllers
                 EarliestDateAvailable = _bookService.GetEarliestAvailableDate(id)
             };
             return View(book_view);
+        }
+
+        public JsonResult CreateLoanRequest(int id)
+        {
+            var book = DbContext.Books.Where(b => b.Id == id).Single();
+
+            var loanRequest = new LoanRequest();
+
+            loanRequest.BookId = book.Id;
+            loanRequest.UserId = User.Identity.GetUserId();
+            DbContext.LoanRequests.Add(loanRequest);
+            DbContext.SaveChanges();
+
+            return Json(id, JsonRequestBehavior.AllowGet);
         }
     }
 }
