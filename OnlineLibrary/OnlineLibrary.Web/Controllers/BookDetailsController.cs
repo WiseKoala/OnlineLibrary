@@ -15,8 +15,8 @@ namespace OnlineLibrary.Web.Controllers
     public class BookDetailsController : BaseController
     {
         // CR: the following declarations look weird to me
-        // CR: This should be declared within method scope and rewritten as 
-        // CR: string[] arr = Enumerable.Repeat(string.Empty, Enum.GetValues(typeof(BookCondition)).Length).ToArray();
+        // CR: This should be declared within method scope and can be rewritten as 
+        // CR: string[] arr = Enumerable.Repeat(string.Empty, Enum.GetValues(typeof(BookCondition)).Length).ToArray(); but uninitialized works fine acctually
         private string[] conditionStrArray = { "", "", "", "", "", "" };
         // CR: This should be declared within method scope
         private string conditionStr = "";
