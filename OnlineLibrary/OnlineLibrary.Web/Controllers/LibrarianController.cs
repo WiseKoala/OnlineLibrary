@@ -8,7 +8,6 @@ namespace OnlineLibrary.Web.Controllers
 {
     public class LibrarianController : Controller
     {
-        // GET: Librarian
         [Authorize(Roles = "Librarian, SysAdmin, SuperAdmin")]
         public ActionResult Index()
         {
