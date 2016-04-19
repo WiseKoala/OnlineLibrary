@@ -86,8 +86,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\IBookService.cs" />
+    <Compile Include="Abstract\ILibrarianService.cs" />
     <Compile Include="Abstract\IService.cs" />
     <Compile Include="Concrete\BookService.cs" />
+    <Compile Include="Concrete\LibrarianServices.cs" />
     <Compile Include="Concrete\RoleManagementService.cs" />
     <Compile Include="Concrete\SignInService.cs" />
     <Compile Include="Concrete\UserManagementService.cs" />
