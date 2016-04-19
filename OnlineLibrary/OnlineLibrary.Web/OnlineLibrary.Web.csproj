@@ -191,6 +191,7 @@
     <Compile Include="Controllers\AdministratorController.cs" />
     <Compile Include="Controllers\BookDetailsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LibrarianController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />
     <Compile Include="Global.asax.cs">
@@ -269,6 +270,7 @@
     <Content Include="Views\Role\Edit.cshtml" />
     <Content Include="Views\Administrator\Authorize.cshtml" />
     <Content Include="Views\BookDetails\Index.cshtml" />
+    <Content Include="Views\Librarian\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
