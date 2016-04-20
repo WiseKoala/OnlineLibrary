@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Random;
 
+import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -13,30 +15,37 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 
-public class UI {
+
+
+public class UI  {
 
 	static Properties prop = new Properties();
 	
 	public static WebDriver driver = new FirefoxDriver(); 
+	
+	Logger log = Logger.getLogger("devpinoyLogger");
+
 																//declarations
 	
 	public void openAplication (String link){
 		
 		driver.get(link);
-		System.out.println("The aplication with the address:'"+link+"' has oppened in Firefox...");
+		log.debug("The aplication with the address:'"+link+"' has oppened in Firefox...");
 		
 	}
 
 	public void closeAplication(){
 		
 		driver.close();
-		System.out.println("The aplication is closed...");
+		log.debug("The aplication is closed...");
+		
+		
 		
 	}
 	
-	public  void initializeXpathProp(){
+	public void initializeXpathProp(){
 		
-		File file = new File("xpath.properties");
+		File file = new File("Properties/xpath.properties");
 		  
 		FileInputStream fileInput = null;
 		try {
@@ -55,7 +64,7 @@ public class UI {
 			e.printStackTrace();
 		}
 	
-		System.out.println("The 'xpath.properties' file was initialized with success...");
+		log.debug("The 'xpath.properties' file was initialized with success...");
 		
 	}
 
@@ -63,53 +72,75 @@ public class UI {
 		
 		waitElement(xpathProperty);
 		driver.findElement(By.xpath(prop.getProperty(xpathProperty))).click();
-		System.out.println(xpathProperty + " was clicked");
+		log.debug(xpathProperty + " was clicked");
 		
 		
 		
 	}
 	
-	public void clickItem (String xpathProperty, String externalSourceElement){
-	
-		driver.findElement(By.xpath(prop.getProperty(xpathProperty))).click();
-		System.out.println(xpathProperty + " was clicked");	
-		waitElement(externalSourceElement);
+	public void clickItemByXpath (String xpath){
 		
+		watiElementByXpath(xpath);
+		driver.findElement(By.xpath(xpath)).click();
+		log.debug("element with the xpath: '"+ xpath + "' was clicked");
+		
+	}
+	
+	public void clickRandomBook(int nrOfBooksOnPage){
+		
+		Random generator = new Random(); 
+		
+		int i = generator.nextInt(nrOfBooksOnPage) + 1;
+		
+		clickItemByXpath("/html/body/div[2]/div[2]/div/div["+ i +"]/div/div/div[1]/a/img");
+		
+		log.debug("A random book was chosen from the list");
+	
 	}
 	
 	public void inputInto (String value, String element){
 		
 		waitElement(element);
 		driver.findElement(By.xpath(prop.getProperty(element))).sendKeys(value);
-		System.out.println("The input data '"+value+ "' was successfuly added into '"+element+"' element...");
+		log.debug("The input data '"+value+ "' was successfuly added into '"+element+"' element...");
 		
 		
 		
 		
 	}
 	
-	
-	
-	
-	
-	public void temporar(){
+	public void openLogFile(){
+		ProcessBuilder pb = new ProcessBuilder("Notepad.exe", "logs.log");
 		
 		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
+			pb.start();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	
+		System.out.println("The Created log file has openned...");
 		
-		driver.findElement(By.id("submit_approve_access")).click();
+	
+	}
+	
+	public void changeRole(String role){
+		
+		if (role == "admin")
+		
+		driver.findElement(By.name("System administrator")).findElement(By.name("Edit")).click();
 		
 	}
 	
+	
+	
+	
 	private static void waitElement(String element){
 		
-		WebDriverWait wait = new WebDriverWait(driver, 10000);
+		WebDriverWait wait = new WebDriverWait(driver, 5);
 		
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(prop.getProperty(element)))); 
+		
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath(prop.getProperty(element))));
 		
 		System.out.println(element + " has loaded...");
 		
@@ -117,7 +148,16 @@ public class UI {
 		
 	}
 	
-	
+	private static void watiElementByXpath (String xpath){
+		
+		WebDriverWait wait = new WebDriverWait(driver, 15);
+		
+		
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
+		
+		System.out.println("the element with the following xpath: '"+ xpath + "' has loaded...");
+		
+	}
 	
 	
 }
