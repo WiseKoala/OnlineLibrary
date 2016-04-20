@@ -63,11 +63,7 @@
                                         @if (Model.AvailableCopies == 0 || string.IsNullOrEmpty(User.Identity.Name))
                                         {
                                             @: disabled="disabled"
-                                        }>
-                                    <span data-toggle-tooltip="tooltip" title="Log in to loan a book.">
-                                        Loan
-                                    </span>
-                                </button>
+                                        } >Loan</button>
 
                                 <!-- Modal -->
                                     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
