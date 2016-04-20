@@ -35,7 +35,7 @@ namespace OnlineLibrary.DataAccess
             var superAdminPassword = Membership.GeneratePassword(passwordLenght, numberNonAlphanumeric);
 
             //_Set the destination of password file
-            string passwordPath = @"D:\password.txt";
+            string passwordPath = @"C:\Users\Admin\Desktop\password.txt";
             
             // _If creating Super Admin is succeed save password.
             if (CreateSuperAdmin(userManager, roleManager,superAdminPassword))

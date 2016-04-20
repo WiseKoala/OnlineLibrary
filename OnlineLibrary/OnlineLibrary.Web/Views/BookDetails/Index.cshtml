@@ -49,14 +49,14 @@
 
                             @if (User.IsInRole(UserRoles.Librarian) || User.IsInRole(UserRoles.SysAdmin) || User.IsInRole(UserRoles.SuperAdmin))
                             {
-                                <p><strong>Total number of copies in stock:</strong> @book.NrOfBooks</p>
+                                <p><strong>Number of copies in stock:</strong> @book.NrOfBooks</p>
 
                                 <p><strong>Condition of copies in stock:</strong> @book.HowManyInThisCondition</p>
                             }
 
                             @if (Model.AvailableCopies != 0)
                             {
-                                <p><strong>Copies available for borrowing:</strong> @Model.AvailableCopies</p>
+                                <p><strong>Number of copies available for loaning:</strong> @Model.AvailableCopies</p>
 
                                 <!-- Model Trigger Button -->
                                 <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" 
@@ -79,7 +79,7 @@
                                                     Are you sure you want to loan this book? A new loan request will be sent.
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                                                    <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
                                                     <button type="button" class="btn btn-primary" id="loan" data-book-id="@Model.Id" data-dismiss="modal">Yes</button>
                                                 </div>
                                             </div>
