@@ -13,8 +13,6 @@ namespace OnlineLibrary.Web.Controllers
         {
             // Initializing view model objects.
             var model = new UserLoansViewModel();
-            var currentLoansList = new List<CurrentUserLoansViewModel>();
-            var pendingLoansList = new List<PendingUserLoansViewModel>();
 
             // Storing user id.
             string userId = User.Identity.GetUserId();
@@ -35,21 +33,10 @@ namespace OnlineLibrary.Web.Controllers
                                    join b in DbContext.Books
                                    on lr.BookId equals b.Id
                                    select new PendingUserLoansViewModel() { BookTitle = b.Title };
-
-
-            // Populating view model objects.
-            foreach (var item in userLoans)
-            {
-                currentLoansList.Add(item);
-            }
-
-            foreach (var item in userLoanRequests)
-            {
-                pendingLoansList.Add(item);
-            }
-
-            model.CurrentLoans = userLoans.ToList();
-            model.PendingLoans = userLoanRequests.ToList();
+            
+            // Populating view model object.
+            model.CurrentLoans = userLoans;
+            model.PendingLoans = userLoanRequests;
 
             // Returning the view.
             return View(model);
