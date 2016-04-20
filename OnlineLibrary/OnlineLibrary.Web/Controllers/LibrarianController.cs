@@ -33,9 +33,16 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult ApproveLoanRequest(string bookId,string loadRequestId)
+        public ActionResult ApproveLoanRequest(string bookId,string loanRequestId)
         {
             return null;
         }
+
+        [HttpPost]
+        public ActionResult RejectLoanRequest( string loanRequestId )
+        {
+            return null;
+        }
+            
     }
 }
