@@ -22,8 +22,8 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    @if (User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SysAdmin) 
-                        || User.IsInRole( OnlineLibrary.DataAccess.UserRoles.SuperAdmin ))
+                    @if (User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SysAdmin)
+                         || User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SuperAdmin))
                     {
                         <li>@Html.ActionLink("Roles", "Index", "Role")</li>
                     }
@@ -32,6 +32,11 @@
                         || User.IsInRole(OnlineLibrary.DataAccess.UserRoles.Librarian))
                     {
                         <li>@Html.ActionLink("Loans", "Index", "librarian")</li>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("My Loans", "MyLoans", "UserLoans")</li>
+
                     }
                 </ul>
                 

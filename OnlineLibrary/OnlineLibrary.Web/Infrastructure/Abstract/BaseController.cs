@@ -6,6 +6,9 @@ using System;
 using System.Web;
 using System.Web.Mvc;
 using OnlineLibrary.DataAccess;
+using System.Linq;
+using OnlineLibrary.DataAccess.Entities;
+using System.Data.Entity;
 
 namespace OnlineLibrary.Web.Infrastructure.Abstract
 {
@@ -125,6 +128,25 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
                 return Redirect(returnUrl);
             }
             return RedirectToAction("Index", "Home");
+        }
+
+        protected bool IsFirstLogin()
+        {
+            bool isFirstUserLogin = false;
+
+            if (UserManager.Users.Count() == 2)
+            {
+                // Retrieve users into memory.
+                var users = UserManager.Users.ToList();
+
+                // Check if there're any users in the role users
+                // that don't have the last sign out date set.
+                isFirstUserLogin = users.Any(u => 
+                    UserManager.IsInRole(u.Id, UserRoles.User) 
+                    && u.LastSignOutDate == null);
+            }
+
+            return isFirstUserLogin;
         }
 
         #endregion Helpers

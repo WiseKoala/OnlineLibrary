@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System;
 
 namespace OnlineLibrary.DataAccess.Entities
 {
@@ -10,6 +11,7 @@ namespace OnlineLibrary.DataAccess.Entities
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public DateTime? LastSignOutDate { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager)
         {
