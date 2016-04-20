@@ -1,0 +1,34 @@
+﻿@model OnlineLibrary.Web.Models.UserLoansViewModels.UserLoansViewModel
+
+@{
+    ViewBag.Title = "MyLoans";
+}
+
+<h2>MyLoans</h2>
+
+@foreach (var loan in Model.CurrentLoans)
+{
+    if (loan.Status == OnlineLibrary.DataAccess.Enums.LoanStatus.Loaned)
+    {
+        @: You have loaned "@loan.Title" and you are expected to return the book before @loan.ExpectedReturnDate
+    }
+    else if (loan.Status == OnlineLibrary.DataAccess.Enums.LoanStatus.Approved)
+    {
+        @: You have sent a loan request for the book @loan.Title - it was approved. You are expected to return the book by
+    }
+
+    if ((loan.ExpectedReturnDate - DateTime.Now).Days < 5)
+    {
+        @: You have to return the book soon!
+        }
+    else if ((loan.ExpectedReturnDate - DateTime.Now).Days <= 0)
+    {
+        @: The loan is overdue! You must return the book!!!
+    }
+}
+
+@foreach (var loan in Model.PendingLoans)
+{
+     @: Your loan request for "@loan.BookTitle" is pending confirmation.
+}
+
