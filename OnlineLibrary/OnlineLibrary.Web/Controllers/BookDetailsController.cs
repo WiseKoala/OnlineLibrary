@@ -17,9 +17,6 @@ namespace OnlineLibrary.Web.Controllers
 {
     public class BookDetailsController : BaseController
     {
-        private string[] conditionStrArray = { "", "", "", "", "", "" };
-        private string conditionStr = "";
-
         private IBookService _bookService;
 
         public ActionResult Index(int id)
@@ -30,7 +27,7 @@ namespace OnlineLibrary.Web.Controllers
             }
 
             var book = DbContext.Books.Include(b => b.BookCopies).First(b => b.Id == id);
-            var bookcopies = new List<BookCopy>();
+           // var bookcopies = new List<BookCopy>();
             int[] condition =
             {
                 (DbContext.BookCopies.Where(n => n.BookId == id && n.Condition == DataAccess.Enums.BookCondition.New).Count()),
@@ -41,14 +38,17 @@ namespace OnlineLibrary.Web.Controllers
                 (DbContext.BookCopies.Where(n => n.BookId == id && n.Condition == DataAccess.Enums.BookCondition.Poor).Count())
             };
 
-                if (condition[0] != 0) { conditionStrArray[0] = condition[0] + " New"; };
-                if (condition[1] != 0) { conditionStrArray[1] = condition[1] + " Fine"; };
-                if (condition[2] != 0) { conditionStrArray[2] = condition[2] + " Very Good"; };
-                if (condition[3] != 0) { conditionStrArray[3] = condition[3] + " Good"; };
-                if (condition[4] != 0) { conditionStrArray[4] = condition[4] + " Fair"; };
-                if (condition[5] != 0) { conditionStrArray[5] = condition[5] + " Poor"; };
+            string[] arr = Enumerable.Repeat(string.Empty, Enum.GetValues(typeof(BookCondition)).Length).ToArray();
+            string conditionStr = string.Empty;
 
-            foreach (var s in conditionStrArray)
+            if (condition[0] != 0) { arr[0] = condition[0] + " New"; };
+            if (condition[1] != 0) { arr[1] = condition[1] + " Fine"; };
+            if (condition[2] != 0) { arr[2] = condition[2] + " Very Good"; };
+            if (condition[3] != 0) { arr[3] = condition[3] + " Good"; };
+            if (condition[4] != 0) { arr[4] = condition[4] + " Fair"; };
+            if (condition[5] != 0) { arr[5] = condition[5] + " Poor"; };
+
+            foreach (var s in arr)
             { if (s.Length != 0) { conditionStr = conditionStr + s + ", "; } };
            if (conditionStr.Length > 3) { conditionStr = conditionStr.Substring(0, conditionStr.Length - 2); };
 
