@@ -80,16 +80,22 @@ namespace OnlineLibrary.Web.Controllers
 
         public JsonResult CreateLoanRequest(int id)
         {
-            var book = DbContext.Books.Where(b => b.Id == id).Single();
+            try
+            {
+                var book = DbContext.Books.Where(b => b.Id == id).Single();
 
-            var loanRequest = new LoanRequest();
+                var loanRequest = new LoanRequest();
 
-            loanRequest.BookId = book.Id;
-            loanRequest.UserId = User.Identity.GetUserId();
-            DbContext.LoanRequests.Add(loanRequest);
-            DbContext.SaveChanges();
-
-            return Json(id, JsonRequestBehavior.AllowGet);
+                loanRequest.BookId = book.Id;
+                loanRequest.UserId = User.Identity.GetUserId();
+                DbContext.LoanRequests.Add(loanRequest);
+                DbContext.SaveChanges();
+                return Json(id, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new { error = "error" }, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }
