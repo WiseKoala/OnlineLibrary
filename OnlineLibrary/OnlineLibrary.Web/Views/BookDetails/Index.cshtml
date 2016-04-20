@@ -59,12 +59,14 @@
                                 <p><strong>Copies available for borrowing:</strong> @Model.AvailableCopies</p>
 
                                 <!-- Model Trigger Button -->
-                                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"
+                                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" title="Log in to loan a book."
                                         @if (Model.AvailableCopies == 0 || string.IsNullOrEmpty(User.Identity.Name))
                                         {
                                             @: disabled="disabled"
                                         }>
-                                    <a style="color: white;" data-toggle="tooltip" title="Log in to loan a book.">Loan</a>
+                                    <span data-toggle-tooltip="tooltip" title="Log in to loan a book.">
+                                        Loan
+                                    </span>
                                 </button>
 
                                 <!-- Modal -->
