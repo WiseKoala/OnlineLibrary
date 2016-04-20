@@ -6,6 +6,13 @@
 
 <h2>My Loans</h2>
 
+@if (!Model.CurrentLoans.Any() && !Model.PendingLoans.Any())
+{
+    <div>
+        You have no loans yet.
+    </div>
+}
+
 @foreach (var loan in Model.CurrentLoans)
 {
     if (loan.Status == OnlineLibrary.DataAccess.Enums.LoanStatus.Loaned)
