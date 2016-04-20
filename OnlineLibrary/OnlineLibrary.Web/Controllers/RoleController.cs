@@ -111,7 +111,7 @@ namespace OnlineLibrary.Web.Controllers
 
         private bool HasAdminPrivileges(IPrincipal user)
         {
-            return AccountController.IsFirstLogin || user.IsInRole(UserRoles.SysAdmin) || user.IsInRole(UserRoles.SuperAdmin);
+            return IsFirstLogin() || user.IsInRole(UserRoles.SysAdmin) || user.IsInRole(UserRoles.SuperAdmin);
         }
 
         private async Task<bool> RemoveUserCurrentRoles(string userId)
@@ -167,10 +167,6 @@ namespace OnlineLibrary.Web.Controllers
                 AuthenticationManager.SignOut();
 
                 // Sign the user back.
-                if (AccountController.IsFirstLogin == true)
-                {
-                    AccountController.IsFirstLogin = false;
-                }
                 var currentUser = UserManager.FindByName(currentUserName);
                 var identity = await UserManager.CreateIdentityAsync(
                     currentUser, DefaultAuthenticationTypes.ApplicationCookie);
