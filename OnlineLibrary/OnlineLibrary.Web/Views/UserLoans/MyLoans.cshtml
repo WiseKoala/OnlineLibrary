@@ -1,0 +1,85 @@
+﻿@model OnlineLibrary.Web.Models.UserLoansViewModels.UserLoansViewModel
+
+@{
+    ViewBag.Title = "My Loans";
+}
+
+<h2>My Loans</h2>
+
+@foreach (var loan in Model.CurrentLoans)
+{
+    if (loan.Status == OnlineLibrary.DataAccess.Enums.LoanStatus.Loaned)
+    {
+        if ((loan.ExpectedReturnDate - DateTime.Now).Days <= 0)
+        {
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                        <strong>Warning!</strong> Return time is overdue! Return the book!
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    You have loaned <strong>"@loan.Title"</strong> and you are expected to return the book before @string.Format("{0:dddd, MMM d, yyyy}", loan.ExpectedReturnDate) - the return time is <strong>@((DateTime.Now - loan.ExpectedReturnDate).Days) days overdue</strong>!
+</div>
+            </div>
+        }
+        else if ((loan.ExpectedReturnDate - DateTime.Now).Days <= 5)
+        {
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                        <strong>Warning!</strong> You must return the book soon!
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    You have loaned <strong>"@loan.Title"</strong> and you are expected to return the book before @string.Format("{0:dddd, MMMM dd, yyyy}", loan.ExpectedReturnDate) - you have <strong>@((loan.ExpectedReturnDate - DateTime.Now).Days) days left</strong>!
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Active loan
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    You have loaned <strong>"@loan.Title"</strong> and you are expected to return the book before <strong>@string.Format("{0:dddd, MMMM dd, yyyy}", loan.ExpectedReturnDate)</strong>
+                </div>
+            </div>
+        }
+    }
+    else if (loan.Status == OnlineLibrary.DataAccess.Enums.LoanStatus.Approved)
+    {
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                    Loan approved
+                </h3>
+            </div>
+            <div class="panel-body">
+                You have sent a loan request for the book <strong>"@loan.Title"</strong> - it was approved. You are expected to go to the library and take the book. Be carefull to return the book before <strong>@string.Format("{0:ddd, MMM d, yyyy}", loan.ExpectedReturnDate)</strong>
+            </div>
+        </div>
+    }
+}
+
+@foreach (var loan in Model.PendingLoans)
+            {
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                Pending
+            </h3>
+        </div>
+        <div class="panel-body">
+            Your loan request for <strong>"@loan.BookTitle"</strong> is pending confirmation.
+        </div>
+    </div>
+}
+
