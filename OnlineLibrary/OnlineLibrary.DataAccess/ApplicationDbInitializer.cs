@@ -173,6 +173,7 @@ namespace OnlineLibrary.DataAccess
             };
             books.ForEach(b => context.Books.Add(b));
 
+#if DEBUG
             // Add users.
             var users = new List<User>
             {
@@ -224,6 +225,7 @@ namespace OnlineLibrary.DataAccess
                 },
             };
             loans.ForEach(l => context.Loans.Add(l));
+#endif
 
             context.SaveChanges();
         }
