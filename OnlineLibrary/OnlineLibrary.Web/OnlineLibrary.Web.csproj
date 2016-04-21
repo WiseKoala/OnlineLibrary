@@ -208,6 +208,7 @@
     <Compile Include="Models\LibrarianLoansViewModels\LoanRequestViewModel.cs" />
     <Compile Include="Models\LibrarianLoansViewModels\ApprovedLoanViewModel.cs" />
     <Compile Include="Models\LibrarianLoansViewModels\LoansViewModel.cs" />
+    <Compile Include="Models\LibrarianLoansViewModels\LoanViewModel.cs" />
     <Compile Include="Models\RoleEditModel.cs" />
     <Compile Include="Models\RoleModificationModel.cs" />
     <Compile Include="Models\RoleViewModel.cs" />

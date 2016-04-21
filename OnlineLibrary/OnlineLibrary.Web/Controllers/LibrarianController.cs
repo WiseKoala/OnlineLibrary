@@ -22,42 +22,41 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult Index()
         {
             _librarianService = new LibrarianService(DbContext);
+            var model = new LoansViewModel();
 
-            var result =
-            from r in DbContext.LoanRequests
-            join b in DbContext.Books on r.BookId equals b.Id
-            join u in DbContext.Users on r.UserId equals u.Id
-            select new LoanRequestViewModel
-            {
-                LoanRequestId = r.Id,
-                BookTitle = b.Title,
-                UserName = u.UserName
-            };
+            // Obtain loan requests.
+            var loanRequests = DbContext.LoanRequests
+                 .Include(lr => lr.User)
+                 .Include(lr => lr.Book)
+                 .Select(lr => new LoanViewModel
+                 {
+                     LoanId = lr.Id,
+                     BookTitle = lr.Book.Title,
+                     UserName = lr.User.UserName
+                 })
+                 .ToList();
 
-            var loanRequestsViewModel = result.ToList();
+            // Obtain loans.
+            var loans = DbContext.Loans
+                 .Include(lr => lr.User)
+                 .Include(lr => lr.Book)
+                 .Select(lr => new LoanViewModel
+                 {
+                     LoanId = lr.Id,
+                     BookTitle = lr.Book.Title,
+                     UserName = lr.User.UserName,
+                     Status = lr.Status
+                 })
+                 .ToList();
 
-            var approvedLoans = _librarianService.GetApprovedLoans()
-                .Include(l => l.User)
-                .Include(l => l.Book)
-                .ToList();
-            var approvedLoansViewModel = new List<ApprovedLoanViewModel>();
+            model.PendingLoans = loanRequests;
+            model.ApprovedLoans = loans.Where(l => l.Status == LoanStatus.Approved);
+            model.LoanedBooks = loans.Where(l => l.Status == LoanStatus.Loaned);
+            model.RejectedLoans = loans.Where(l => l.Status == LoanStatus.Rejected);
+            model.ReturnedBooks = loans.Where(l => l.Status == LoanStatus.Returned);
+            model.LostBooks = loans.Where(l => l.Status == LoanStatus.Lost);
 
-            foreach (var approvedLoan in approvedLoans)
-            {
-                approvedLoansViewModel.Add(new ApprovedLoanViewModel
-                {
-                    BookTitle = approvedLoan.Book.Title,
-                    UserName = approvedLoan.User.UserName
-                });
-            }
-
-            var loanViewModel = new LoansViewModel
-            {
-                LoansRequestViewModels = loanRequestsViewModel,
-                ApprovedLoansViewModels = approvedLoansViewModel
-            };
-
-            return View(loanRequestsViewModel);
+            return View(model);
         }
 
         [HttpPost]
