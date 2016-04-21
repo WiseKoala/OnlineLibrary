@@ -13,6 +13,5 @@ namespace OnlineLibrary.Services.Abstract
         void ApproveLoanRequest(int bookCopyId, int loanRequestId);
         void RejectLoanRequest(int loanRequestId);
         void PerformLoan(int loanId);
-        IQueryable<Loan> GetApprovedLoans();
     }
 }
