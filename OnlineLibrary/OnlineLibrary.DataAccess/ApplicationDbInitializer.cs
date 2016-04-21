@@ -237,6 +237,34 @@ namespace OnlineLibrary.DataAccess
                     StartDate = DateTime.Now.AddDays(-12),
                     ExpectedReturnDate = DateTime.Now.AddDays(2)
                 },
+                new Loan
+                {
+                    BookCopyId = 1,
+                    Status = LoanStatus.Returned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = DateTime.Now.AddDays(-51),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-40)
+                },
+                new Loan
+                {
+                    BookCopyId = 2,
+                    Status = LoanStatus.Returned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = DateTime.Now.AddDays(-50),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-40)
+                },
+                new Loan
+                {
+                    BookCopyId = 2,
+                    Status = LoanStatus.Approved,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
+                },
+                new Loan
+                {
+                    BookCopyId = 1,
+                    Status = LoanStatus.Rejected,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
+                },
             };
             loans.ForEach(l => context.Loans.Add(l));
 
