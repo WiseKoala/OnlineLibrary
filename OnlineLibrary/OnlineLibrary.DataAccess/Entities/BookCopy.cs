@@ -1,4 +1,5 @@
-﻿using OnlineLibrary.DataAccess.Enums;
+﻿using System.Collections.Generic;
+using OnlineLibrary.DataAccess.Enums;
 
 namespace OnlineLibrary.DataAccess.Entities
 {
@@ -9,5 +10,6 @@ namespace OnlineLibrary.DataAccess.Entities
         public BookCondition Condition { get; set; }
 
         public virtual Book Book { get; set; }
+        public virtual ICollection<Loan> Loans { get; set; }
     }
 }

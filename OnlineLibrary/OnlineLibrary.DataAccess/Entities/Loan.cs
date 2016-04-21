@@ -10,7 +10,7 @@ namespace OnlineLibrary.DataAccess.Entities
         public int Id { get; set; }
 
         [ForeignKey(nameof(BookCopy))]
-        public int BookCopyId { get; set; }
+        public int? BookCopyId { get; set; }
 
         [ForeignKey(nameof(Book))]
         public int BookId { get; set; }
