@@ -18,7 +18,7 @@ namespace OnlineLibrary.Web.Controllers
     {
         private ILibrarianService _librarianService;
 
-       // [Authorize(Roles = "Librarian")]
+        [Authorize(Roles = "Librarian, System administrator, Super administrator")]
         public ActionResult Index()
         {
             _librarianService = new LibrarianService(DbContext);
