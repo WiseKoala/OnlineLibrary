@@ -1,5 +1,6 @@
 ﻿@using OnlineLibrary.Web.Models
 @using OnlineLibrary.DataAccess.Entities
+@using OnlineLibrary.DataAccess
 @model RoleEditModel
 @{ ViewBag.Title = "Edit Role";}
 @Html.ValidationSummary()
@@ -51,4 +52,7 @@
         <button id="btnSave" type="submit" class="btn btn-primary">Save</button>
         @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-primary" })
 }
-<div class="alert alert-warning" style="margin-top: 15px" role="alert"><strong>Warning!</strong> If you change your own role you will be signed out and signed in back!</div>
+@if (!User.IsInRole(UserRoles.SuperAdmin))
+{
+    <div class="alert alert-warning" style="margin-top: 15px" role="alert"><strong>Warning!</strong> If you change your own role you will be signed out and signed in back!</div>
+}
