@@ -276,21 +276,24 @@ namespace OnlineLibrary.DataAccess
             };
             loans.ForEach(l => context.Loans.Add(l));
 
-
-            var loanRequests = new List<LoanRequest>()
+            var loanRequests = new List<LoanRequest>
             {
                 new LoanRequest
                 {
-                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
-                    BookId = 3
+                   Id = 1,
+                   UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                   BookId = 1
                 },
                 new LoanRequest
                 {
-                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
-                    BookId = 4
+                   Id = 2,
+                   UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                   BookId = 2
                 }
             };
-            loanRequests.ForEach(lr => context.LoanRequests.Add(lr));
+
+            loanRequests.ForEach(r => context.LoanRequests.Add(r));
+
 #endif
 
             context.SaveChanges();
