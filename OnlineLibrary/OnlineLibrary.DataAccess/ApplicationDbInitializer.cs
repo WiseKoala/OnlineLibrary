@@ -208,6 +208,7 @@ namespace OnlineLibrary.DataAccess
                 new Loan
                 {
                     BookCopyId = 1,
+                    BookId = 1,
                     Status = LoanStatus.Loaned,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = new DateTime(2016, 4, 25),
@@ -216,6 +217,7 @@ namespace OnlineLibrary.DataAccess
                 new Loan
                 {
                     BookCopyId = 2,
+                    BookId = 1,
                     Status = LoanStatus.Loaned,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = new DateTime(2016, 4, 18),
@@ -224,6 +226,7 @@ namespace OnlineLibrary.DataAccess
                 new Loan
                 {
                     BookCopyId = 3,
+                    BookId = 2,
                     Status = LoanStatus.Loaned,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = DateTime.Now.AddDays(-20),
@@ -232,10 +235,43 @@ namespace OnlineLibrary.DataAccess
                 new Loan
                 {
                     BookCopyId = 4,
+                    BookId = 2,
                     Status = LoanStatus.Loaned,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = DateTime.Now.AddDays(-12),
                     ExpectedReturnDate = DateTime.Now.AddDays(2)
+                },
+                new Loan
+                {
+                    BookCopyId = 1,
+                    BookId = 1,
+                    Status = LoanStatus.Returned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = DateTime.Now.AddDays(-51),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-40)
+                },
+                new Loan
+                {
+                    BookCopyId = 2,
+                    BookId = 1,
+                    Status = LoanStatus.Returned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = DateTime.Now.AddDays(-50),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-40)
+                },
+                new Loan
+                {
+                    BookCopyId = 2,
+                    BookId = 1,
+                    Status = LoanStatus.Approved,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
+                },
+                new Loan
+                {
+                    BookCopyId = 1,
+                    BookId = 1,
+                    Status = LoanStatus.Rejected,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
                 },
             };
             loans.ForEach(l => context.Loans.Add(l));
