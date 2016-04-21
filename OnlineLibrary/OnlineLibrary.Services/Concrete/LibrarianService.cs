@@ -22,39 +22,34 @@ namespace OnlineLibrary.Services.Concrete
 
         public void ApproveLoanRequest(int bookCopyId, int loanRequestId)
         {
-            var loans = CreateLoans(bookCopyId, loanRequestId);
-            SaveLoans(loans,loanRequestId);
+            var loan = CreateLoan(bookCopyId, loanRequestId);
+            SaveLoan(loan,loanRequestId);
         }
 
         public void RejectLoanRequest(int loanRequestId)
         {
-            //var loans =
-            //(from r in DbContext.LoanRequests
-            // join b in DbContext.Books on r.BookId equals b.Id
-            // join u in DbContext.Users on r.UserId equals u.Id
-            // where r.Id == loanRequestId
-            // select new
-            // {
-            //     bookId = r.BookId,
-            //     UserId = u.Id,
-            //     Status = LoanStatus.Rejected
+           var loan =
+           (from r in _dbContext.LoanRequests
+            join b in _dbContext.Books on r.BookId equals b.Id
+            join u in _dbContext.Users on r.UserId equals u.Id
+            where r.Id == loanRequestId
+            select new
+            {
+                bookId = r.BookId,
+                UserId = u.Id,
+                Status = LoanStatus.Rejected
 
-            // }).ToList().Select(a => new Loan
-            // {
-            //     UserId = a.UserId,
-            //     Status = a.Status,
-            //   //  BookId = a.bookId
-            // });
+            })
+            .ToList()
+            .Select(a => new Loan
+            {
+                UserId = a.UserId,
+                Status = a.Status,
+                BookId = a.bookId
+            })
+            .SingleOrDefault();
 
-            //foreach (var loan in loans)
-            //{
-            //    DbContext.Loans.Add(loan);
-            //}
-
-            var request = _dbContext.LoanRequests.Find(loanRequestId);
-            _dbContext.LoanRequests.Remove(request);
-
-            _dbContext.SaveChanges();
+            SaveLoan(loan, loanRequestId);
         }
 
         public IQueryable<Loan> GetApprovedLoans()
@@ -67,12 +62,9 @@ namespace OnlineLibrary.Services.Concrete
             return result.AsQueryable();
         }
 
-        private void SaveLoans(IEnumerable loans, int loanRequestId)
+        private void SaveLoan(Loan loan, int loanRequestId)
         {
-            foreach (Loan loan in loans)
-            {
-                _dbContext.Loans.Add(loan);
-            }
+            _dbContext.Loans.Add(loan);
 
             var request = _dbContext.LoanRequests.Find(loanRequestId);
             _dbContext.LoanRequests.Remove(request);
@@ -80,9 +72,9 @@ namespace OnlineLibrary.Services.Concrete
             _dbContext.SaveChanges();
         }
 
-        private IEnumerable CreateLoans(int bookCopyId, int loanRequestId)
+        private Loan CreateLoan(int bookCopyId, int loanRequestId)
         {
-            var loans =
+            var loan =
             (from r in _dbContext.LoanRequests
              join b in _dbContext.Books on r.BookId equals b.Id
              join u in _dbContext.Users on r.UserId equals u.Id
@@ -90,15 +82,21 @@ namespace OnlineLibrary.Services.Concrete
              select new
              {
                  BookCopyId = bookCopyId,
+                 bookId = b.Id,
                  UserId = u.Id,
                  Status = LoanStatus.Approved,
-             }).ToList().Select(a => new Loan
+             })
+             .ToList()
+             .Select(a => new Loan
              {
+                 BookId = a.bookId,
                  BookCopyId = a.BookCopyId,
                  UserId = a.UserId,
                  Status = a.Status
-             });
-            return loans;
+             })
+             .SingleOrDefault();
+
+            return loan;
         }
 
     }
