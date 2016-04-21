@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OnlineLibrary.DataAccess.Entities;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace OnlineLibrary.Services.Abstract
 {
     public interface ILibrarianService : IService
     {
-
+        void ApproveLoanRequest(int bookCopyId, int loanRequestId);
+        void RejectLoanRequest(int loanRequestId);
+        IQueryable<Loan> GetApprovedLoans();
     }
 }

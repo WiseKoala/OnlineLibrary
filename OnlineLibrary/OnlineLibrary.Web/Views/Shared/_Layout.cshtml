@@ -34,6 +34,7 @@
                         || User.IsInRole(OnlineLibrary.DataAccess.UserRoles.Librarian))
                     {
                         <li>@Html.ActionLink("Loans", "Index", "librarian")</li>
+                    }
 
                     @if (User.Identity.IsAuthenticated)
                     {
