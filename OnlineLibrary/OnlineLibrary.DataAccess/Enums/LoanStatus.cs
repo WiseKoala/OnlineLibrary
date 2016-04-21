@@ -8,6 +8,6 @@ namespace OnlineLibrary.DataAccess.Enums
 {
     public enum LoanStatus
     {
-        Pending, Approved, Loaned, Rejected, Returned, Lost
+        Rejected, Approved, Loaned, Returned, Lost
     }
 }
