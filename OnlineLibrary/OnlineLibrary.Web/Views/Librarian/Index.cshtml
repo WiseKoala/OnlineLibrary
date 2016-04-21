@@ -1,13 +1,19 @@
 ﻿@model OnlineLibrary.Web.Models.LibrarianLoansViewModels.LoansViewModel
 
 @{
-    ViewBag.Title = "Loan Requests";
+    ViewBag.Title = "User loans manage ";
 }
 
 <h2>@ViewBag.Title</h2><br/>
 
 @* Pending loans *@
+<h3>Pending loans</h3>
 <table class="table">
+        <colgroup>
+            <col width="30%" />
+            <col width="30%" />
+            <col width="30%" />
+        </colgroup>
     <tr>
         <th>
             <label>User Name</label>
@@ -42,7 +48,13 @@
 </table>
 
 @* Approved loans *@
+<h3>Approved loans</h3>
 <table class="table">
+    <colgroup>
+        <col width="30%" />
+        <col width="30%" />
+        <col width="30%" />
+    </colgroup>
     <tr>
         <th>
             <label>User Name</label>
@@ -75,7 +87,13 @@
 </table>
 
 @* Loaned books *@
+<h3>Loaned books</h3>
 <table class="table">
+    <colgroup>
+        <col width="30%" />
+        <col width="30%" />
+        <col width="30%" />
+    </colgroup>
     <tr>
         <th>
             <label>User Name</label>
@@ -114,7 +132,13 @@
 </table>
 
 @* Rejected loans *@
+<h3>Rejected loans</h3>
 <table class="table">
+    <colgroup>
+        <col width="30%" />
+        <col width="30%" />
+        <col width="30%" />
+    </colgroup>
     <tr>
         <th>
             <label>User Name</label>
@@ -138,6 +162,7 @@
 </table>
 
 @* Returned books *@
+<h3>Returned books</h3>
 <table class="table">
     <tr>
         <th>
@@ -162,6 +187,7 @@
 </table>
 
 @* Lost books *@
+<h3>Lost books</h3>
 <table class="table">
     <tr>
         <th>
