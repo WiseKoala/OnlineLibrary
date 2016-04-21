@@ -6,7 +6,7 @@
 @using (Html.BeginForm())
 {
     <input type="hidden" name="roleName" value="@Model.Role.Name" />
-    <div class="panel panel-primary">
+    <div class="panel panel-info">
         <div class="panel-heading">Add to role "@Model.Role.Name"</div>
         <table class="table table-striped">
             @if (!Model.NonMembers.Any())
@@ -27,7 +27,7 @@
             }
         </table>
     </div>
-    <div class="panel panel-primary">
+    <div class="panel panel-info">
         <div class="panel-heading">Remove from role "@Model.Role.Name"</div>
         <table class="table table-striped">
             @if (!Model.Members.Any())
@@ -49,6 +49,6 @@
         </table>
     </div>
         <button id="btnSave" type="submit" class="btn btn-primary">Save</button>
-        @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+        @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-primary" })
 }
 <div class="alert alert-warning" style="margin-top: 15px" role="alert"><strong>Warning!</strong> If you change your own role you will be signed out and signed in back!</div>

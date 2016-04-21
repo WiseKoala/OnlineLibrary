@@ -5,14 +5,16 @@
     ViewBag.Title = "Super Administrator";
 }
 
-<h2>@ViewBag.Title.</h2>
+<h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm("Authorize","Administrator",FormMethod.Post))
+@using (Html.BeginForm("Authorize", "Administrator", FormMethod.Post))
 {
-    @Html.Label("Enter the password: ")
-    @Html.PasswordFor(m => m.Password)
+    <p>
+        @Html.Label("Enter the password: ")
+        @Html.PasswordFor(m => m.Password)
+        <input type="submit" value="OK" class="btn btn-primary btn-sm" />
+    </p>
     
-    <input type="submit" value="Ok"/>
 }
 
 
