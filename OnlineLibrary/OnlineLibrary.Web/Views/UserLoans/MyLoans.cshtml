@@ -8,6 +8,7 @@
 
 <ul class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" href="#status">Current Status</a></li>
+    <li><a data-toggle="tab" href="#active">Active</a></li>
     <li><a data-toggle="tab" href="#overdue">Overdue</a></li>
     <li><a data-toggle="tab" href="#expire_soon">Soon Expiring</a></li>
     <li><a data-toggle="tab" href="#non_urgent">Non-urgent</a></li>
@@ -27,7 +28,7 @@
                     <div class="panel panel-info">
                         <div class="panel-heading">
                             <h3 class="panel-title">
-                                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
                                 <strong>Current Status</strong>
                             </h3>
                         </div>
@@ -53,6 +54,34 @@
                 <div class="col-sm-2"></div>
                 <br />
             </div>
+    </div>
+
+    <div id="active" class="tab-pane fade">
+        <p></p>
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <strong>Active loans</strong>
+                        </h3>
+                    </div>
+
+                    @*List loans that are currently active.*@
+
+                    @foreach (var loan in Model.CurrentLoans)
+                    {
+                            <div class="panel-body">
+                                You have loaned <strong>"@loan.Title"</strong> and you are expected to return the book before @string.Format("{0:dddd, MMM d, yyyy}", loan.ExpectedReturnDate)
+                            </div>
+                    }
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+            <br />
+        </div>
     </div>
 
     <div id="overdue" class="tab-pane fade">
@@ -123,10 +152,10 @@
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
-                <div class="panel panel-default">
+                <div class="panel panel-success">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                             <strong>Non-urgent active loans</strong>
                         </h3>
                     </div>
@@ -154,10 +183,10 @@
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
-                <div class="panel panel-warning">
+                <div class="panel panel-danger">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                             <strong>Rejected loan requests</strong>
                         </h3>
                     </div>
@@ -228,7 +257,7 @@
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
-                <div class="panel panel-success">
+                <div class="panel panel-warning">
                     <div class="panel-heading">
                         <h3 class="panel-title">
                             <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
@@ -265,10 +294,10 @@
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
-                <div class="panel panel-default">
+                <div class="panel panel-success">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                             Returned books
                         </h3>
                     </div>
@@ -305,7 +334,7 @@
                 <div class="panel panel-danger">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                             Lost books
                         </h3>
                     </div>
