@@ -1,4 +1,4 @@
-﻿@model IEnumerable<OnlineLibrary.Web.Models.LibrarianLoansViewModels.LoanRequestViewModel>
+﻿@model OnlineLibrary.Web.Models.LibrarianLoansViewModels.LoansViewModel
 
 @{
     ViewBag.Title = "Loan Requests";
@@ -6,23 +6,19 @@
 
 <h2>@ViewBag.Title</h2><br/>
 
+@* Pending loans *@
 <table class="table">
-    <colgroup>
-        <col width="20%"/>
-        <col width="60%"/>
-        <col width="20%"/>
-    </colgroup>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.UserName)
+            <label>User Name</label>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.BookTitle)
+            <label>Book Title</label>
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
+    @foreach (var item in Model.PendingLoans) {
     <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.UserName)
@@ -32,17 +28,161 @@
             </td>
             <td>
                 <!-- Trigger Button for ApproveModal -->
-                <button type="button"  class="btn btn-primary btn-sm approve" data-toggle="modal" data-target="#approveModal" data-loan-request-id="@item.LoanRequestId">
+                <button type="button"  class="btn btn-primary btn-sm approve" data-toggle="modal" data-target="#approveModal" data-loan-request-id="@item.LoanId">
                     Approve
                 </button>
 
                 <!-- Trigger Button for RejectModal -->
-                <button type="button" class="btn btn-danger btn-sm reject" data-toggle="modal" data-target="#rejectModal" data-loan-request-id="@item.LoanRequestId">
+                <button type="button" class="btn btn-danger btn-sm reject" data-toggle="modal" data-target="#rejectModal" data-loan-request-id="@item.LoanId">
                     Reject
                 </button>
             </td>
-</tr>
-}
+    </tr>
+    }
+</table>
+
+@* Approved loans *@
+<table class="table">
+    <tr>
+        <th>
+            <label>User Name</label>
+        </th>
+        <th>
+            <label>Book Title</label>
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var loan in Model.ApprovedLoans)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => loan.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => loan.BookTitle)
+            </td>
+            <td>
+                <form action="@Url.Action("LibrarianController", "PerformLoan")">
+                    <input type="hidden" name="loadId" value="@loan.LoanId" />
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        Loan
+                    </button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>
+
+@* Loaned books *@
+<table class="table">
+    <tr>
+        <th>
+            <label>User Name</label>
+        </th>
+        <th>
+            <label>Book Title</label>
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var loan in Model.LoanedBooks)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => loan.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => loan.BookTitle)
+            </td>
+            <td>
+                <form action="@Url.Action("LibrarianController", "ReturnBook")">
+                    <input type="hidden" name="loadId" value="@loan.LoanId" />
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        Return
+                    </button>
+                </form>
+                <form action="@Url.Action("LibrarianController", "LostBook")">
+                    <input type="hidden" name="loadId" value="@loan.LoanId" />
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        Lost
+                    </button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>
+
+@* Rejected loans *@
+<table class="table">
+    <tr>
+        <th>
+            <label>User Name</label>
+        </th>
+        <th>
+            <label>Book Title</label>
+        </th>
+    </tr>
+
+    @foreach (var loan in Model.RejectedLoans)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => loan.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => loan.BookTitle)
+            </td>
+        </tr>
+    }
+</table>
+
+@* Returned books *@
+<table class="table">
+    <tr>
+        <th>
+            <label>User Name</label>
+        </th>
+        <th>
+            <label>Book Title</label>
+        </th>
+    </tr>
+
+    @foreach (var loan in Model.ReturnedBooks)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => loan.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => loan.BookTitle)
+            </td>
+        </tr>
+    }
+</table>
+
+@* Lost books *@
+<table class="table">
+    <tr>
+        <th>
+            <label>User Name</label>
+        </th>
+        <th>
+            <label>Book Title</label>
+        </th>
+    </tr>
+
+    @foreach (var loan in Model.LostBooks)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => loan.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => loan.BookTitle)
+            </td>
+        </tr>
+    }
 </table>
 
 <!-- Approve Modal  -->
