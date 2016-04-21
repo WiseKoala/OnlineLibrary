@@ -110,7 +110,8 @@ public class UI  {
 	}
 	
 	public void openLogFile(){
-		ProcessBuilder pb = new ProcessBuilder("Notepad.exe", "logs.log");
+		
+		ProcessBuilder pb = new ProcessBuilder("Notepad.exe", "log.logs");
 		
 		try {
 			pb.start();
@@ -124,20 +125,13 @@ public class UI  {
 	
 	}
 	
-	public void changeRole(String role){
-		
-		if (role == "admin")
-		
-		driver.findElement(By.name("System administrator")).findElement(By.name("Edit")).click();
-		
-	}
 	
 	
 	
 	
 	private static void waitElement(String element){
 		
-		WebDriverWait wait = new WebDriverWait(driver, 5);
+		WebDriverWait wait = new WebDriverWait(driver, 10);
 		
 		
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath(prop.getProperty(element))));
@@ -150,7 +144,7 @@ public class UI  {
 	
 	private static void watiElementByXpath (String xpath){
 		
-		WebDriverWait wait = new WebDriverWait(driver, 15);
+		WebDriverWait wait = new WebDriverWait(driver, 10);
 		
 		
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
