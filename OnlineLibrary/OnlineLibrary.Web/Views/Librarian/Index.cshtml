@@ -63,8 +63,8 @@
                 @Html.DisplayFor(modelItem => loan.BookTitle)
             </td>
             <td>
-                <form action="@Url.Action("LibrarianController", "PerformLoan")" method="post">
-                    <input type="hidden" name="loadId" value="@loan.LoanId" />
+                <form action="@Url.Action("PerformLoan", "Librarian")" method="post">
+                    <input type="hidden" name="loanId" value="@loan.LoanId" />
                     <button type="submit" class="btn btn-primary btn-sm">
                         Loan
                     </button>
@@ -96,14 +96,14 @@
                 @Html.DisplayFor(modelItem => loan.BookTitle)
             </td>
             <td>
-                <form action="@Url.Action("LibrarianController", "ReturnBook")" method="post">
-                    <input type="hidden" name="loadId" value="@loan.LoanId" />
+                <form action="@Url.Action("ReturnBook", "Librarian")" method="post">
+                    <input type="hidden" name="loanId" value="@loan.LoanId" />
                     <button type="submit" class="btn btn-primary btn-sm">
                         Return
                     </button>
                 </form>
-                <form action="@Url.Action("LibrarianController", "LostBook")" method="post">
-                    <input type="hidden" name="loadId" value="@loan.LoanId" />
+                <form action="@Url.Action("LostBook", "Librarian")" method="post">
+                    <input type="hidden" name="loanId" value="@loan.LoanId" />
                     <button type="submit" class="btn btn-primary btn-sm">
                         Lost
                     </button>

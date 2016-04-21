@@ -99,5 +99,13 @@ namespace OnlineLibrary.Services.Concrete
             return loan;
         }
 
+        public void PerformLoan(int loanId)
+        {
+            Loan loan = _dbContext.Loans.Find(loanId);
+            loan.Status = LoanStatus.Loaned;
+            loan.StartDate = DateTime.Today;
+            loan.ExpectedReturnDate = DateTime.Today.AddDays(14);
+            _dbContext.SaveChanges();
+        }
     }
 }

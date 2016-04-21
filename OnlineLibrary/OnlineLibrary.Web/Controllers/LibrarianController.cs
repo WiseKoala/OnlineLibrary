@@ -75,6 +75,33 @@ namespace OnlineLibrary.Web.Controllers
             _librarianService.RejectLoanRequest(loanRequestId);
             return RedirectToActionPermanent("Index");
         }
-            
+        
+        [HttpPost]
+        public ActionResult PerformLoan(int loanId)
+        {
+            _librarianService = new LibrarianService(DbContext);
+            _librarianService.PerformLoan(loanId);
+            return RedirectToActionPermanent("Index");
+        }
+
+        [HttpPost]
+        public ActionResult ReturnBook(int loanId)
+        {
+            Loan loan = DbContext.Loans.Find(loanId);
+            loan.Status = LoanStatus.Returned;
+            DbContext.SaveChanges();
+
+            return RedirectToActionPermanent("Index");
+        }
+
+        [HttpPost]
+        public ActionResult LostBook(int loanId)
+        {
+            Loan loan = DbContext.Loans.Find(loanId);
+            loan.Status = LoanStatus.Lost;
+            DbContext.SaveChanges();
+
+            return RedirectToActionPermanent("Index");
+        }
     }
 }
