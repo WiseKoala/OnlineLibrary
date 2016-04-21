@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using OnlineLibrary.DataAccess.Enums;
 using System.Linq;
+using System.Web.Security;
+using System.Configuration;
+using System.IO;
 
 namespace OnlineLibrary.DataAccess
 {
@@ -17,10 +20,28 @@ namespace OnlineLibrary.DataAccess
             {
                 new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.User },
                 new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.SysAdmin },
-                new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.Librarian }
+                new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.Librarian },
+                new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.SuperAdmin }
             };
+
             var roleManager = new RoleManager<Role>(new RoleStore<Role>(context));
             roles.ForEach(r => roleManager.Create(r));
+
+            var userManager = new UserManager<User>(new UserStore<User>(context));
+
+            // _Set password rules.
+            int passwordLenght = 8;
+            int numberNonAlphanumeric = 1;
+            var superAdminPassword = Membership.GeneratePassword(passwordLenght, numberNonAlphanumeric);
+
+            //_Set the destination of password file
+            string passwordPath = @"D:\password.txt";
+            
+            // _If creating Super Admin is succeed save password.
+            if (CreateSuperAdmin(userManager, roleManager,superAdminPassword))
+            {
+                File.WriteAllText(passwordPath, superAdminPassword);
+            }
 
             // Authors
             var authors = new List<Author>
@@ -152,7 +173,104 @@ namespace OnlineLibrary.DataAccess
             };
             books.ForEach(b => context.Books.Add(b));
 
+#if DEBUG
+            // Add users.
+            var users = new List<User>
+            {
+                new User
+                {
+                    Id = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    FirstName = "Library",
+                    LastName = "User",
+                    Email = "libraryuser9@gmail.com",
+                    SecurityStamp = "0c2030d4-00be-410b-88f2-a4fdd640bf9b",
+                    UserName = "libraryuser9@gmail.com",
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0
+                }
+            };
+            users.ForEach(u => context.Users.Add(u));
+
+            // Add user logins.
+            var userLogins = new List<IdentityUserLogin>()
+            {
+                new IdentityUserLogin { LoginProvider = "Google", ProviderKey = "107735122632514671058", UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328" }
+            };
+            userLogins.ForEach(ul => context.IdentityUserLogins.Add(ul));
+
+            // Add roles.
             context.SaveChanges();
+            userManager.AddToRole("7937c4fb-1bbd-4ca8-af79-331c21d74328", UserRoles.User);
+
+            // Add loans.
+            var loans = new List<Loan>()
+            {
+                new Loan
+                {
+                    BookCopyId = 1,
+                    Status = LoanStatus.Loaned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = new DateTime(2016, 4, 25),
+                    ExpectedReturnDate = new DateTime(2016, 5, 9)
+                },
+                new Loan
+                {
+                    BookCopyId = 2,
+                    Status = LoanStatus.Loaned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = new DateTime(2016, 4, 18),
+                    ExpectedReturnDate = new DateTime(2016, 5, 2)
+                },
+                new Loan
+                {
+                    BookCopyId = 3,
+                    Status = LoanStatus.Loaned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = DateTime.Now.AddDays(-20),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-6)
+                },
+                new Loan
+                {
+                    BookCopyId = 4,
+                    Status = LoanStatus.Loaned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = DateTime.Now.AddDays(-12),
+                    ExpectedReturnDate = DateTime.Now.AddDays(2)
+                },
+            };
+            loans.ForEach(l => context.Loans.Add(l));
+
+
+            var loanRequests = new List<LoanRequest>()
+            {
+                new LoanRequest
+                {
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    BookId = 3
+                },
+                new LoanRequest
+                {
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    BookId = 4
+                }
+            };
+            loanRequests.ForEach(lr => context.LoanRequests.Add(lr));
+#endif
+
+            context.SaveChanges();
+        }
+
+        public bool CreateSuperAdmin(UserManager<User> userManager, RoleManager<Role> roleManager, string password)
+        {
+            var superAdmin = new User { UserName = "Admin", FirstName = "Super", LastName = "Admin" };
+            var result = userManager.Create(superAdmin, password);
+
+            if (result.Succeeded)
+            {
+                userManager.AddToRole(superAdmin.Id, UserRoles.SuperAdmin);
+                return true;
+            }
+            return false;
         }
     }
 }

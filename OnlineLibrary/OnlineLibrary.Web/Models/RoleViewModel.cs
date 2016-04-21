@@ -1,14 +1,16 @@
-﻿using OnlineLibrary.DataAccess.Entities;
-using System;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using OnlineLibrary.DataAccess;
+using OnlineLibrary.DataAccess.Entities;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace OnlineLibrary.Web.Models
 {
     public class RoleViewModel
     {
-        public List<User> Users { get; set; }
-        public List<Role> Roles { get; set; }
+        // The user names for roles (in the same order as in the Roles list below)
+        public List<string> UserNames { get; set; }
+
+        // The list of roles
+        public List<IdentityRole> Roles { get; set; }
     }
 }

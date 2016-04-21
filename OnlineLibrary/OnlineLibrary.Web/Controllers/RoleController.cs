@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using OnlineLibrary.DataAccess;
 using Microsoft.Owin.Security;
+using OnlineLibrary.Services.Concrete;
+using System.Web;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -19,20 +22,50 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult Index()
         {
             if (HasAdminPrivileges(User))
-            {
+            {              
                 if (!IsUserNameSessionVariableSet())
                 {
                     InitializeUserNameSessionVariable();
                 }
 
-                List<Role> roles = RoleManager.Roles.Include( r => r.Users).ToList();                
-                List<User> users = UserManager.Users.ToList();
+                // Initializing the model to be passed to the view.
+                var model = new RoleViewModel();
 
-                return View(new RoleViewModel
+                // Initializing model components.
+                List<IdentityRole> roles = RoleManagementService.GetRoleList(Request.GetOwinContext());
+                model.Roles = roles;
+
+                List<User> users = UserManagementService.GetUserList(Request.GetOwinContext());
+                model.UserNames = new List<string>();
+
+                // Creating a temporary variable to store the information for the model.
+                string userNames;
+
+                // Iterating through the roles to get the usernames for each role.
+                foreach (var role in roles)
                 {
-                    Users = users,
-                    Roles = roles
-                });
+                    if (role.Users == null || !role.Users.Any())
+                    {
+                        // Show a message if there are no users in a role.
+                        userNames = "No users have this role.";
+                    }
+                    else
+                    {
+                        // Get all users in this role.
+                        var allUsersInRole = role.Users.Select(userInRole => userInRole.UserId);
+
+                        // Get the usernames list for the users in this role.
+                        var userNamesList = users.Where(user => allUsersInRole.Contains(user.Id)).Select(user => user.UserName);
+
+                        // Join the usernames list as a string.
+                        userNames = string.Join(", ", userNamesList);
+                    }
+                    
+                    // Add the information about usernames to the model.
+                    model.UserNames.Add(userNames);
+                }
+
+                return View(model);
             }
 
             return RedirectToAction("Index", "Home");
@@ -45,7 +78,7 @@ namespace OnlineLibrary.Web.Controllers
                 Role role = await RoleManager.FindByIdAsync(id);
                 string[] memberIDs = role.Users.Select(x => x.UserId).ToArray();
                 IEnumerable<User> members = UserManager.Users.Where(x => memberIDs.Any(y => y == x.Id));
-                IEnumerable<User> nonMembers = UserManager.Users.Except(members);
+                IEnumerable<User> nonMembers = UserManager.Users.Where( u => u.UserName != "Admin").Except(members);
 
                 return View(new RoleEditModel
                 {
@@ -78,7 +111,7 @@ namespace OnlineLibrary.Web.Controllers
 
         private bool HasAdminPrivileges(IPrincipal user)
         {
-            return AccountController.IsFirstLogin || user.IsInRole(UserRoles.SysAdmin);
+            return IsFirstLogin() || user.IsInRole(UserRoles.SysAdmin) || user.IsInRole(UserRoles.SuperAdmin);
         }
 
         private async Task<bool> RemoveUserCurrentRoles(string userId)
@@ -107,17 +140,6 @@ namespace OnlineLibrary.Web.Controllers
 
         private async Task<bool> EditUsersRoles(RoleModificationModel model)
         {
-            // Save current user name.
-            var currentUserName = User.Identity.Name;
-
-            // If current user has changed his/her role.
-            if (model.IdsToAdd.Contains(User.Identity.GetUserId()) ||
-                model.IdsToDelete.Contains(User.Identity.GetUserId()))
-            {
-                // Sign the user out.
-                AuthenticationManager.SignOut();
-            }
-
             // Change roles.
             foreach (string userId in model.IdsToAdd ?? new List<string>())
             {
@@ -134,11 +156,23 @@ namespace OnlineLibrary.Web.Controllers
                 }
             }
 
-            // Sign the user back.
-            var currentUser = UserManager.FindByName(currentUserName);
-            var identity = await UserManager.CreateIdentityAsync(
-                currentUser, DefaultAuthenticationTypes.ApplicationCookie);
-            AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = true }, identity);
+            // If current user has changed his/her role.
+            if (model.IdsToAdd.Contains(User.Identity.GetUserId()) ||
+                model.IdsToDelete.Contains(User.Identity.GetUserId()))
+            {
+                // Save current user name.
+                var currentUserName = User.Identity.Name;
+
+                // Sign the user out.
+                AuthenticationManager.SignOut();
+
+                // Sign the user back.
+                var currentUser = UserManager.FindByName(currentUserName);
+                var identity = await UserManager.CreateIdentityAsync(
+                    currentUser, DefaultAuthenticationTypes.ApplicationCookie);
+                AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = true }, identity);
+            }
+
             return true;
         }
 

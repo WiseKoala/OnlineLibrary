@@ -10,14 +10,13 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System;
 
 namespace OnlineLibrary.Web.Controllers
 {
     [Authorize]
     public class AccountController : BaseController
     {
-        public static bool IsFirstLogin { get; private set; }
-
         //
         // GET: /Account/Login
         [AllowAnonymous]
@@ -46,11 +45,6 @@ namespace OnlineLibrary.Web.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
-            if (IsFirstLogin == true)
-            {
-                IsFirstLogin = false;
-            }
-
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
@@ -91,11 +85,6 @@ namespace OnlineLibrary.Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if (!UserManager.Users.ToList().Any())
-            {
-                IsFirstLogin = true;
-            }
-
             if (ModelState.IsValid)
             {
                 // Get the information about the user from the external login provider
@@ -119,7 +108,7 @@ namespace OnlineLibrary.Web.Controllers
                     if (result.Succeeded)
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                        if(IsFirstLogin)
+                        if(IsFirstLogin())
                         {
                             return RedirectToAction("Index", "Role");
                         }
@@ -138,10 +127,18 @@ namespace OnlineLibrary.Web.Controllers
         // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult LogOff()
+        public async Task<ActionResult> LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             Session.Abandon();
+
+            // Save sign out date.
+            var userToUpdate = UserManager.FindById(User.Identity?.GetUserId());
+            if (userToUpdate != null)
+            {
+                userToUpdate.LastSignOutDate = DateTime.Now;
+                await UserManager.UpdateAsync(userToUpdate);
+            }
 
             return RedirectToAction("Index", "Home");
         }

@@ -11,5 +11,6 @@ namespace OnlineLibrary.DataAccess
         public const string User = "User";
         public const string SysAdmin = "System administrator";
         public const string Librarian = "Librarian";
+        public const string SuperAdmin = "Super administrator";
     }
 }
