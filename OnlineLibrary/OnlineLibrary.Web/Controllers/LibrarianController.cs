@@ -18,7 +18,7 @@ namespace OnlineLibrary.Web.Controllers
     {
         private ILibrarianService _librarianService;
 
-        //[Authorize(Roles = "Librarian, SysAdmin, SuperAdmin")]
+       // [Authorize(Roles = "Librarian")]
         public ActionResult Index()
         {
             _librarianService = new LibrarianService(DbContext);
@@ -72,6 +72,7 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public ActionResult RejectLoanRequest( int loanRequestId )
         {
+            _librarianService = new LibrarianService(DbContext);
             _librarianService.RejectLoanRequest(loanRequestId);
             return RedirectToActionPermanent("Index");
         }
