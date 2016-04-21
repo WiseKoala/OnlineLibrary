@@ -33,10 +33,20 @@ namespace OnlineLibrary.Web.Controllers
                                    join b in DbContext.Books
                                    on lr.BookId equals b.Id
                                    select new PendingUserLoansViewModel() { BookTitle = b.Title };
+
+            var rejectedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Rejected);
+            var returnedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Returned);
+            var lostUserBooks = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Lost);
+            var approvedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Approved);
+            var currentUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Loaned);
             
             // Populating view model object.
-            model.CurrentLoans = userLoans;
             model.PendingLoans = userLoanRequests;
+            model.RejectedLoans = rejectedUserLoans;
+            model.ReturnedLoans = returnedUserLoans;
+            model.LostBooks = lostUserBooks;
+            model.ApprovedLoans = approvedUserLoans;
+            model.CurrentLoans = currentUserLoans;
 
             // Returning the view.
             return View(model);
