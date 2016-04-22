@@ -267,6 +267,11 @@
                         {
                             <div class="panel-body">
                                 You have sent a loan request for the book <strong>"@loan.Title"</strong> - it was approved. You are expected to go to the library and take the book.
+                                <br /><br />
+                                @using (Html.BeginForm("CancelApprovedLoan", "UserLoans", new { id = loan.BookId }))
+                                {
+                                    <input type="submit" class="btn btn-danger" value="Cancel Loan" />
+                                }
                             </div>
                         }
                     }
@@ -304,6 +309,11 @@
                         {
                             <div class="panel-body">
                                 Your loan request for <strong> "@loan.BookTitle" </strong> is pending confirmation.
+                                <br /><br/>
+                                @using (Html.BeginForm("CancelPendingLoan", "UserLoans", new { id = loan.BookId }))
+                                {
+                                    <input type="submit" class="btn btn-danger" value="Cancel Loan" />
+                                }
                             </div>
                         }
                     }

@@ -275,9 +275,25 @@ namespace OnlineLibrary.DataAccess
                     Status = LoanStatus.Rejected,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
                 },
+                new Loan
+                {
+                    BookCopyId = 11,
+                    BookId = 5,
+                    Status = LoanStatus.Approved,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
+                },
             };
             loans.ForEach(l => context.Loans.Add(l));
 
+            var loanRequests = new List<LoanRequest>()
+            {
+                new LoanRequest
+                {
+                    BookId = 4,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
+                }
+            };
+            loanRequests.ForEach(lr => context.LoanRequests.Add(lr));
 #endif
 
             context.SaveChanges();

@@ -25,14 +25,14 @@ namespace OnlineLibrary.Web.Controllers
                             join b in DbContext.Books
                             on bc.BookId equals b.Id
                             orderby l.Status, l.ExpectedReturnDate
-                            select new CurrentUserLoansViewModel() { Title = b.Title, ExpectedReturnDate = l.ExpectedReturnDate, Status = l.Status };
+                            select new CurrentUserLoansViewModel() { Title = b.Title, ExpectedReturnDate = l.ExpectedReturnDate, Status = l.Status, BookId = b.Id };
 
             
             var userLoanRequests = from lr in DbContext.LoanRequests
                                    where lr.UserId == userId
                                    join b in DbContext.Books
                                    on lr.BookId equals b.Id
-                                   select new PendingUserLoansViewModel() { BookTitle = b.Title };
+                                   select new PendingUserLoansViewModel() { BookTitle = b.Title, BookId = b.Id };
 
             var rejectedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Rejected);
             var returnedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Returned);
@@ -50,6 +50,42 @@ namespace OnlineLibrary.Web.Controllers
 
             // Returning the view.
             return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult CancelApprovedLoan(int id)
+        {
+            var userId = User.Identity.GetUserId();
+
+            var loan = DbContext.Loans.Where(l => l.UserId == userId && l.BookId == id && l.Status == DataAccess.Enums.LoanStatus.Approved).FirstOrDefault();
+
+            if (loan != null)
+            {
+                DbContext.Loans.Remove(loan);
+                DbContext.SaveChanges();
+
+                return RedirectToAction("MyLoans");
+            }
+            else
+                return View("Error");
+        }
+
+        [HttpPost]
+        public ActionResult CancelPendingLoan(int id)
+        {
+            var userId = User.Identity.GetUserId();
+
+            var loan = DbContext.LoanRequests.Where(l => l.UserId == userId && l.BookId == id).FirstOrDefault();
+
+            if (loan != null)
+            {
+                DbContext.LoanRequests.Remove(loan);
+                DbContext.SaveChanges();
+
+                return RedirectToAction("MyLoans");
+            }
+            else
+                return View("Error");
         }
     }
 }
