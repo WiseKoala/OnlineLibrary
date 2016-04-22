@@ -21,6 +21,7 @@ namespace OnlineLibrary.Web.Controllers
     {
         public ActionResult Index()
         {
+            //CR: implement this as a filter
             if (HasAdminPrivileges(User))
             {              
                 if (!IsUserNameSessionVariableSet())
@@ -29,6 +30,7 @@ namespace OnlineLibrary.Web.Controllers
                 }
 
                 // Initializing the model to be passed to the view.
+                // CR: I would declare and fill it in at the end of the all service calls.
                 var model = new RoleViewModel();
 
                 // Initializing model components.
@@ -42,11 +44,13 @@ namespace OnlineLibrary.Web.Controllers
                 string userNames;
 
                 // Iterating through the roles to get the usernames for each role.
+                //CR: I could do this with LINQ. It might not work.
                 foreach (var role in roles)
                 {
                     if (role.Users == null || !role.Users.Any())
                     {
                         // Show a message if there are no users in a role.
+                        //CR: I would have this message in the view.
                         userNames = "No users have this role.";
                     }
                     else
@@ -78,6 +82,7 @@ namespace OnlineLibrary.Web.Controllers
                 Role role = await RoleManager.FindByIdAsync(id);
                 string[] memberIDs = role.Users.Select(x => x.UserId).ToArray();
                 IEnumerable<User> members = UserManager.Users.Where(x => memberIDs.Any(y => y == x.Id));
+                //CR: put Admin it into a constant
                 IEnumerable<User> nonMembers = UserManager.Users.Where( u => u.UserName != "Admin").Except(members);
 
                 return View(new RoleEditModel
@@ -111,6 +116,7 @@ namespace OnlineLibrary.Web.Controllers
 
         private bool HasAdminPrivileges(IPrincipal user)
         {
+            //CR: Again IsFirstLogin?
             return IsFirstLogin() || user.IsInRole(UserRoles.SysAdmin) || user.IsInRole(UserRoles.SuperAdmin);
         }
 
@@ -126,7 +132,7 @@ namespace OnlineLibrary.Web.Controllers
         {
             bool removeResult = await RemoveUserCurrentRoles(userId);
             IdentityResult addResult = await UserManager.AddToRoleAsync(userId, model.RoleName);
-
+            //CR: this is strange
             return removeResult && addResult.Succeeded;
         }
 
@@ -141,6 +147,7 @@ namespace OnlineLibrary.Web.Controllers
         private async Task<bool> EditUsersRoles(RoleModificationModel model)
         {
             // Change roles.
+            //CR: new List<string>() this is not ok
             foreach (string userId in model.IdsToAdd ?? new List<string>())
             {
                 if (!await AddUserToRole(userId, model))

@@ -21,6 +21,7 @@ namespace OnlineLibrary.Web.Controllers
         [Authorize(Roles = "Librarian, System administrator, Super administrator")]
         public ActionResult Index()
         {
+            // CR: should be injected
             _librarianService = new LibrarianService(DbContext);
             var model = new LoansViewModel();
 
@@ -87,6 +88,7 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public ActionResult ReturnBook(int loanId)
         {
+            //CR: any change in the domain should go through Service layer
             Loan loan = DbContext.Loans.Find(loanId);
             loan.Status = LoanStatus.Returned;
             DbContext.SaveChanges();
@@ -97,6 +99,7 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public ActionResult LostBook(int loanId)
         {
+            //CR: same as above
             Loan loan = DbContext.Loans.Find(loanId);
             loan.Status = LoanStatus.Lost;
             DbContext.SaveChanges();

@@ -24,6 +24,7 @@ namespace OnlineLibrary.Web.Controllers
                 .Include("SubCategories.Category")
                 .ToList();
             // Create list of view model objects.
+            //CR: you can do this in the above call.
             var booksList = new List<BookViewModel>();
             foreach (var book in books)
             {
@@ -33,6 +34,7 @@ namespace OnlineLibrary.Web.Controllers
                     Title = book.Title,
                     PublishDate = book.PublishDate,
                     FrontCover = book.FrontCover,
+                    //CR: always use string.Empty instead of ""
                     Authors = book.Authors.Select(a =>
                         string.Join(" ", a.FirstName, (a.MiddleName ?? ""), a.LastName)),
                     Categories = book.SubCategories.Select(sc => new CategoryViewModel

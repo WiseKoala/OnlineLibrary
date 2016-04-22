@@ -23,6 +23,7 @@ namespace OnlineLibrary.Services.Concrete
         public int GetAmountOfAvailableCopies(int bookId)
         {
             // Obtain book.
+            //CR: Do you really need all book details?
             Book book = _dbContext.Books
                 .Include(b => b.BookCopies)
                 .Single(b => b.Id == bookId);
@@ -36,12 +37,14 @@ namespace OnlineLibrary.Services.Concrete
 
             // Return difference between the total number of book copies
             // and not available ones.
+            //CR: you can get this number in a single database call.
             return book.BookCopies.Count() - notAvailableBookCopies;
         }
 
         public DateTime? GetEarliestAvailableDate(int bookId)
         {
             // Obtain book with book copies.
+            //CR: this time is different than the above one.
             Book book = _dbContext.Books
                                   .Include(b => b.BookCopies)
                                   .Single(b => b.Id == bookId);

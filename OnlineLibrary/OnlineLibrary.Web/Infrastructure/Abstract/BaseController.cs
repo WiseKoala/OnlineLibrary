@@ -134,6 +134,7 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
         {
             bool isFirstUserLogin = false;
 
+            //CR: why 2?
             if (UserManager.Users.Count() == 2)
             {
                 // Retrieve users into memory.

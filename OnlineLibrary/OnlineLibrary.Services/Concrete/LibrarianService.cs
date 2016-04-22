@@ -39,6 +39,7 @@ namespace OnlineLibrary.Services.Concrete
              join b in _dbContext.Books on r.BookId equals b.Id
              join u in _dbContext.Users on r.UserId equals u.Id
              where r.Id == loanRequestId
+             //CR: something is not right here. I guess in a single select new all can be achieved.
              select new
              {
                  BookCopyId = bookCopyId,
