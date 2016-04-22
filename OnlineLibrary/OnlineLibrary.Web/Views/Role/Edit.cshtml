@@ -1,12 +1,13 @@
 ﻿@using OnlineLibrary.Web.Models
 @using OnlineLibrary.DataAccess.Entities
+@using OnlineLibrary.DataAccess
 @model RoleEditModel
 @{ ViewBag.Title = "Edit Role";}
 @Html.ValidationSummary()
 @using (Html.BeginForm())
 {
     <input type="hidden" name="roleName" value="@Model.Role.Name" />
-    <div class="panel panel-primary">
+    <div class="panel panel-info">
         <div class="panel-heading">Add to role "@Model.Role.Name"</div>
         <table class="table table-striped">
             @if (!Model.NonMembers.Any())
@@ -14,12 +15,12 @@
                 <tr><td colspan="2">All users have this role.</td></tr>
             }
             else {
-                <tr><td>User</td><td>Add to role</td></tr>
+                <tr><td>User</td><td class="col-sm-4">Add to role</td></tr>
                 foreach (var user in Model.NonMembers)
                 {
                     <tr>
                         <td>@user.UserName</td>
-                        <td>
+                        <td class="col-sm-4">
                             <input type="checkbox" name="IdsToAdd" value="@user.Id">
                         </td>
                     </tr>
@@ -27,7 +28,7 @@
             }
         </table>
     </div>
-    <div class="panel panel-primary">
+    <div class="panel panel-info">
         <div class="panel-heading">Remove from role "@Model.Role.Name"</div>
         <table class="table table-striped">
             @if (!Model.Members.Any())
@@ -35,12 +36,12 @@
                 <tr><td colspan="2">No users have this role.</td></tr>
             }
             else {
-                <tr><td>User</td><td>Remove from role</td></tr>
+                <tr><td>User</td><td class="col-sm-4">Remove from role</td></tr>
                 foreach (var user in Model.Members)
                 {
                     <tr>
                         <td>@user.UserName</td>
-                        <td>
+                        <td class="col-sm-4">
                             <input type="checkbox" name="IdsToDelete" value="@user.Id">
                         </td>
                     </tr>
@@ -49,6 +50,9 @@
         </table>
     </div>
         <button id="btnSave" type="submit" class="btn btn-primary">Save</button>
-        @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+        @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-primary" })
 }
-<div class="alert alert-warning" style="margin-top: 15px" role="alert"><strong>Warning!</strong> If you change your own role you will be signed out and signed in back!</div>
+@if (!User.IsInRole(UserRoles.SuperAdmin))
+{
+    <div class="alert alert-warning" style="margin-top: 15px" role="alert"><strong>Warning!</strong> If you change your own role you will be signed out and signed in back!</div>
+}

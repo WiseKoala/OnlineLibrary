@@ -10,7 +10,11 @@ namespace OnlineLibrary.DataAccess.Entities
         public int Id { get; set; }
 
         [ForeignKey(nameof(BookCopy))]
-        public int BookCopyId { get; set; }
+        public int? BookCopyId { get; set; }
+
+        [ForeignKey(nameof(Book))]
+        public int BookId { get; set; }
+
         public LoanStatus Status { get; set; }
 
         [ForeignKey(nameof(User))]
@@ -21,9 +25,9 @@ namespace OnlineLibrary.DataAccess.Entities
 
         [DataType(DataType.Date)]
         public DateTime? ExpectedReturnDate { get; set; }
-        public BookCondition? BookConditionAtReturn { get; set; }
 
         public User User { get; set; }
         public BookCopy BookCopy { get; set; }
+        public Book Book { get; set; }
     }
 }

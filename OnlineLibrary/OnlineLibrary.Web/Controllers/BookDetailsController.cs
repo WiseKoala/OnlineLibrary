@@ -9,6 +9,9 @@ using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models;
 using System.Data.Entity;
+using OnlineLibrary.Services.Abstract;
+using OnlineLibrary.Services.Concrete;
+using Microsoft.AspNet.Identity;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -20,6 +23,7 @@ namespace OnlineLibrary.Web.Controllers
         private string[] conditionStrArray = { "", "", "", "", "", "" };
         // CR: This should be declared within method scope
         private string conditionStr = "";
+        private IBookService _bookService;
 
         public ActionResult Index(int id)
         {
@@ -31,7 +35,7 @@ namespace OnlineLibrary.Web.Controllers
 
             var book = DbContext.Books.Include(b => b.BookCopies).First(b => b.Id == id);
             // CR: this is not used
-            var bookcopies = new List<BookCopy>();
+           // var bookcopies = new List<BookCopy>();
             int[] condition =
             {
                 (DbContext.BookCopies.Where(n => n.BookId == id && n.Condition == DataAccess.Enums.BookCondition.New).Count()),
@@ -42,16 +46,18 @@ namespace OnlineLibrary.Web.Controllers
                 (DbContext.BookCopies.Where(n => n.BookId == id && n.Condition == DataAccess.Enums.BookCondition.Poor).Count())
             };
 
-            // CR: bad ident
-                if (condition[0] != 0) { conditionStrArray[0] = condition[0] + " New"; };
-                if (condition[1] != 0) { conditionStrArray[1] = condition[1] + " Fine"; };
-                if (condition[2] != 0) { conditionStrArray[2] = condition[2] + " Very Good"; };
-                if (condition[3] != 0) { conditionStrArray[3] = condition[3] + " Good"; };
-                if (condition[4] != 0) { conditionStrArray[4] = condition[4] + " Fair"; };
-                if (condition[5] != 0) { conditionStrArray[5] = condition[5] + " Poor"; };
 
-            //CR: bad formating
-            foreach (var s in conditionStrArray)
+            string[] arr = Enumerable.Repeat(string.Empty, Enum.GetValues(typeof(BookCondition)).Length).ToArray();
+            string conditionStr = string.Empty;
+
+            if (condition[0] != 0) { arr[0] = condition[0] + " New"; };
+            if (condition[1] != 0) { arr[1] = condition[1] + " Fine"; };
+            if (condition[2] != 0) { arr[2] = condition[2] + " Very Good"; };
+            if (condition[3] != 0) { arr[3] = condition[3] + " Good"; };
+            if (condition[4] != 0) { arr[4] = condition[4] + " Fair"; };
+            if (condition[5] != 0) { arr[5] = condition[5] + " Poor"; };
+
+            foreach (var s in arr)
             { if (s.Length != 0) { conditionStr = conditionStr + s + ", "; } };
            if (conditionStr.Length > 3) { conditionStr = conditionStr.Substring(0, conditionStr.Length - 2); };
             
@@ -66,12 +72,8 @@ namespace OnlineLibrary.Web.Controllers
                 .Aggregate((current, next) => string.Concat(current, ", ", next));
             */
 
-            // Obtain list of not available book copies.
-            IEnumerable<BookCopy> notAvailableBookCopies = from bc in book.BookCopies
-                                                           join l in DbContext.Loans
-                                                           on bc.Id equals l.BookCopyId
-                                                           where l.Status == LoanStatus.Approved || l.Status == LoanStatus.Loaned
-                                                           select bc;
+            // Manually instantiate the service.
+            _bookService = new BookService(DbContext);
 
             var book_view = new BookDetailsViewModel
             {
@@ -90,9 +92,40 @@ namespace OnlineLibrary.Web.Controllers
                     Category = sc.Category.Name,
                     SubCategory = sc.Name
                 }),
-                AvailableCopies = book.BookCopies.Count() - notAvailableBookCopies.Count()
+                AvailableCopies = _bookService.GetAmountOfAvailableCopies(id),
+                EarliestDateAvailable = _bookService.GetEarliestAvailableDate(id)
             };
             return View(book_view);
+        }
+
+        public JsonResult CreateLoanRequest(int id)
+        {
+            try
+            {
+                var _bookService = new BookService(DbContext);
+                var userId = User.Identity.GetUserId();
+                var AvailableCopies = _bookService.GetAmountOfAvailableCopies(id);
+                var userLoanRequestsNumber = DbContext.LoanRequests.Where(lr => lr.UserId == userId && lr.BookId == id).Count();
+
+                if (userLoanRequestsNumber > AvailableCopies)
+                {
+                    return Json(new { error = "error" }, JsonRequestBehavior.AllowGet);
+                }
+
+                var book = DbContext.Books.Where(b => b.Id == id).Single();
+
+                var loanRequest = new LoanRequest();
+
+                loanRequest.BookId = book.Id;
+                loanRequest.UserId = User.Identity.GetUserId();
+                DbContext.LoanRequests.Add(loanRequest);
+                DbContext.SaveChanges();
+                return Json(id, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new { error = "error" }, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }

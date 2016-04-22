@@ -18,5 +18,6 @@ namespace OnlineLibrary.DataAccess.Entities
         public virtual ICollection<Author> Authors { get; set; }
         public virtual ICollection<SubCategory> SubCategories { get; set; }
         public virtual ICollection<BookCopy> BookCopies { get; set; }
+        public virtual ICollection<Loan> Loans { get; set; }
     }
 }
