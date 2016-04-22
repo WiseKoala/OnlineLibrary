@@ -263,8 +263,10 @@ namespace OnlineLibrary.DataAccess
                 {
                     BookCopyId = 2,
                     BookId = 1,
-                    Status = LoanStatus.Approved,
-                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
+                    Status = LoanStatus.Returned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = DateTime.Now.AddDays(-60),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-50)
                 },
                 new Loan
                 {
