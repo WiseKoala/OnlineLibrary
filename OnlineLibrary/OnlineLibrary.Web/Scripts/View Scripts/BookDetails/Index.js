@@ -9,10 +9,10 @@
 
             success: function (response) {
 
-                if (response.error != null)
+                if (response.error == "no more copies")
                 {
-                    // There was an error in the controller.
 
+                    // There was an error in the controller.
                     toastr.options =
                         {
                             "closeButton": true,
@@ -21,10 +21,10 @@
                             "timeOut": 30000,           // 30 seconds
                             "extendedTimeOut": 60000    // another 30 seconds, if user hovers mouse over notification
                         }
-                    toastr.error('Please try one more time or contact our library\'s system administrator if the error persists.', 'Error Sending Loan Request')
+                    toastr.error('There are no more available copies that you can request loans for.', 'No more copies available');
 
                 }
-                else
+                else if(response.success != null)
                 {
                     // The controller returned with success.
 
@@ -36,7 +36,21 @@
                             "timeOut": 30000,           // 30 seconds
                             "extendedTimeOut": 30000    // another 30 seconds, if user hovers mouse over notification
                         }
-                    toastr.info('Please wait for a confirmation from our librarian before coming to the library to pick up the book.', 'Loan Request Sent')
+                    toastr.info('Please wait for a confirmation from our librarian before coming to the library to pick up the book.', 'Loan Request Sent');
+
+                }
+                else if (response.error != null) {
+
+                    // There is an error because no more available copies can be loaned
+                    toastr.options =
+                        {
+                            "closeButton": true,
+                            "onclick": null,
+                            "positionClass": "toast-bottom-right",
+                            "timeOut": 30000,           // 30 seconds
+                            "extendedTimeOut": 60000    // another 30 seconds, if user hovers mouse over notification
+                        }
+                    toastr.error('Please try one more time or contact our library\'s system administrator if the error persists.', 'Error Sending Loan Request');
 
                 }
             },
