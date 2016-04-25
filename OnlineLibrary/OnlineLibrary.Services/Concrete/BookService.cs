@@ -8,14 +8,15 @@ using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Services.Abstract;
 using System.Data.Entity;
 using OnlineLibrary.DataAccess.Enums;
+using OnlineLibrary.DataAccess.Abstract;
 
 namespace OnlineLibrary.Services.Concrete
 {
     public class BookService : IBookService
     {
-        private ApplicationDbContext _dbContext;
+        private ILibraryDbContext _dbContext;
 
-        public BookService(ApplicationDbContext dbContext)
+        public BookService(ILibraryDbContext dbContext)
         {
             _dbContext = dbContext;
         }

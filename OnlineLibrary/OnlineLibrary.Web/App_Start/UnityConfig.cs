@@ -40,7 +40,7 @@ namespace OnlineLibrary.Web.App_Start
 
             // TODO: Register your types here
             // container.RegisterType<IProductRepository, ProductRepository>();
-            container.RegisterType<IApplicationDbContext, LibraryDbContext>();
+            container.RegisterType<ILibraryDbContext, LibraryDbContext>();
         }
     }
 }
