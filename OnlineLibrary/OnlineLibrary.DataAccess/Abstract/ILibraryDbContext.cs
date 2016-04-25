@@ -21,6 +21,8 @@ namespace OnlineLibrary.DataAccess.Abstract
         DbSet<SubCategory> SubCategories { get; set; }
         DbSet<Loan> Loans { get; set; }
         DbSet<LoanRequest> LoanRequests { get; set; }
+        IDbSet<IdentityRole> Roles { get; set; }
+        IDbSet<User> Users { get; set; }
 
         int SaveChanges();
         Task<int> SaveChangesAsync();

@@ -5,11 +5,18 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using OnlineLibrary.Web.Models;
 using System.Collections.Generic;
+using OnlineLibrary.DataAccess.Abstract;
 
 namespace OnlineLibrary.Web.Controllers
 {
     public class HomeController : BaseController
     {
+        public HomeController(ILibraryDbContext dbContext)
+            : base(dbContext)
+        {
+
+        }
+
         public ActionResult Index()
         {
             if (!IsUserNameSessionVariableSet())

@@ -11,12 +11,24 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using System;
+using OnlineLibrary.DataAccess.Abstract;
+using OnlineLibrary.Services.Concrete;
 
 namespace OnlineLibrary.Web.Controllers
 {
     [Authorize]
     public class AccountController : BaseController
     {
+        private UserManagementService _userService;
+        private SignInService _signInService;
+
+        public AccountController(ILibraryDbContext dbContext, UserManagementService userService, SignInService signInService)
+            : base (dbContext)
+        {
+            _userService = userService;
+            _signInService = signInService;
+        }
+
         //
         // GET: /Account/Login
         [AllowAnonymous]
@@ -52,7 +64,7 @@ namespace OnlineLibrary.Web.Controllers
             }
 
             // Sign in the user with this external login provider if the user already has a login
-            var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
+            var result = await _signInService.ExternalSignInAsync(loginInfo, isPersistent: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -98,16 +110,16 @@ namespace OnlineLibrary.Web.Controllers
                 string lastName = info.ExternalIdentity.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Surname).Value;
                 var user = new User { UserName = info.Email, Email = info.Email, FirstName = firstName, LastName = lastName };
 
-                var result = await UserManager.CreateAsync(user);
+                var result = await _userService.CreateAsync(user);
                 if (result.Succeeded)
                 {
                     // Add login.
-                    result = await UserManager.AddLoginAsync(user.Id, info.Login);
+                    result = await _userService.AddLoginAsync(user.Id, info.Login);
                     // Add user to the 'User' role.
-                    UserManager.AddToRole(user.Id, UserRoles.User);
+                    _userService.AddToRole(user.Id, UserRoles.User);
                     if (result.Succeeded)
                     {
-                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        await _signInService.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                         if(IsFirstLogin())
                         {
                             return RedirectToAction("Index", "Role");
@@ -133,11 +145,11 @@ namespace OnlineLibrary.Web.Controllers
             Session.Abandon();
 
             // Save sign out date.
-            var userToUpdate = UserManager.FindById(User.Identity?.GetUserId());
+            var userToUpdate = _userService.FindById(User.Identity?.GetUserId());
             if (userToUpdate != null)
             {
                 userToUpdate.LastSignOutDate = DateTime.Now;
-                await UserManager.UpdateAsync(userToUpdate);
+                await _userService.UpdateAsync(userToUpdate);
             }
 
             return RedirectToAction("Index", "Home");
@@ -149,6 +161,25 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult ExternalLoginFailure()
         {
             return View();
+        }
+
+        public bool IsFirstLogin()
+        {
+            bool isFirstUserLogin = false;
+
+            if (DbContext.Users.Count() == 2)
+            {
+                // Retrieve users into memory.
+                var users = DbContext.Users.ToList();
+
+                // Check if there're any users in the role users
+                // that don't have the last sign out date set.
+                isFirstUserLogin = users.Any(u =>
+                    _userService.IsInRole(u.Id, UserRoles.User)
+                    && u.LastSignOutDate == null);
+            }
+
+            return isFirstUserLogin;
         }
     }
 }

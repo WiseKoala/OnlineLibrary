@@ -11,6 +11,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
 using OnlineLibrary.Web.Models.LibrarianLoansViewModels;
+using OnlineLibrary.DataAccess.Abstract;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -18,10 +19,15 @@ namespace OnlineLibrary.Web.Controllers
     {
         private ILibrarianService _librarianService;
 
+        public LibrarianController(ILibraryDbContext dbContext, ILibrarianService librarianService)
+            : base(dbContext)
+        {
+            _librarianService = librarianService;
+        }
+
         [Authorize(Roles = "Librarian, System administrator, Super administrator")]
         public ActionResult Index()
         {
-            _librarianService = new LibrarianService(DbContext);
             var model = new LoansViewModel();
 
             // Obtain loan requests.
@@ -62,7 +68,6 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public ActionResult ApproveLoanRequest(int bookCopyId,int loanRequestId)
         {
-            _librarianService = new LibrarianService(DbContext);
             _librarianService.ApproveLoanRequest(bookCopyId, loanRequestId);
 
             return RedirectToActionPermanent("Index");
@@ -71,7 +76,6 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public ActionResult RejectLoanRequest( int loanRequestId )
         {
-            _librarianService = new LibrarianService(DbContext);
             _librarianService.RejectLoanRequest(loanRequestId);
             return RedirectToActionPermanent("Index");
         }
@@ -79,7 +83,6 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public ActionResult PerformLoan(int loanId)
         {
-            _librarianService = new LibrarianService(DbContext);
             _librarianService.PerformLoan(loanId);
             return RedirectToActionPermanent("Index");
         }

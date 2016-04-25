@@ -13,12 +13,24 @@ using Microsoft.Owin.Security;
 using OnlineLibrary.Services.Concrete;
 using System.Web;
 using Microsoft.AspNet.Identity.EntityFramework;
+using OnlineLibrary.DataAccess.Abstract;
+using OnlineLibrary.DataAccess.Concrete;
 
 namespace OnlineLibrary.Web.Controllers
 {
     [Authorize]
     public class RoleController : BaseController
     {
+        private UserManagementService _userService;
+        private RoleManagementService _roleService;
+
+        public RoleController(ILibraryDbContext dbContext, UserManagementService userService, RoleManagementService roleService)
+            : base(dbContext)
+        {
+            _userService = userService;
+            _roleService = roleService;
+        }
+
         public ActionResult Index()
         {
             if (HasAdminPrivileges(User))
@@ -35,7 +47,7 @@ namespace OnlineLibrary.Web.Controllers
                 List<IdentityRole> roles = RoleManagementService.GetRoleList(Request.GetOwinContext());
                 model.Roles = roles;
 
-                List<User> users = UserManagementService.GetUserList(Request.GetOwinContext());
+                List<User> users = _userService.GetUserList();
                 model.UserNames = new List<string>();
 
                 // Creating a temporary variable to store the information for the model.
@@ -75,10 +87,10 @@ namespace OnlineLibrary.Web.Controllers
         {
             if (HasAdminPrivileges(User))
             {
-                Role role = await RoleManager.FindByIdAsync(id);
+                Role role = await _roleService.FindByIdAsync(id);
                 string[] memberIDs = role.Users.Select(x => x.UserId).ToArray();
-                IEnumerable<User> members = UserManager.Users.Where(x => memberIDs.Any(y => y == x.Id));
-                IEnumerable<User> nonMembers = UserManager.Users.Where( u => u.UserName != "Admin").Except(members);
+                IEnumerable<User> members = _userService.Users.Where(x => memberIDs.Any(y => y == x.Id));
+                IEnumerable<User> nonMembers = _userService.Users.Where( u => u.UserName != "Admin").Except(members);
 
                 return View(new RoleEditModel
                 {
@@ -116,8 +128,8 @@ namespace OnlineLibrary.Web.Controllers
 
         private async Task<bool> RemoveUserCurrentRoles(string userId)
         {
-            var currentUserRoles = await UserManager.GetRolesAsync(userId);
-            IdentityResult result = await UserManager.RemoveFromRoleAsync(userId, currentUserRoles.Single());
+            var currentUserRoles = await _userService.GetRolesAsync(userId);
+            IdentityResult result = await _userService.RemoveFromRoleAsync(userId, currentUserRoles.Single());
 
             return result.Succeeded;
         }
@@ -125,15 +137,15 @@ namespace OnlineLibrary.Web.Controllers
         private async Task<bool> AddUserToRole(string userId, RoleModificationModel model)
         {
             bool removeResult = await RemoveUserCurrentRoles(userId);
-            IdentityResult addResult = await UserManager.AddToRoleAsync(userId, model.RoleName);
+            IdentityResult addResult = await _userService.AddToRoleAsync(userId, model.RoleName);
 
             return removeResult && addResult.Succeeded;
         }
 
         private async Task<bool> RemoveUserFromRole(string userId, RoleModificationModel model)
         {
-            IdentityResult removeResult = await UserManager.RemoveFromRoleAsync(userId, model.RoleName);
-            IdentityResult addResult = await UserManager.AddToRoleAsync(userId, UserRoles.User);
+            IdentityResult removeResult = await _userService.RemoveFromRoleAsync(userId, model.RoleName);
+            IdentityResult addResult = await _userService.AddToRoleAsync(userId, UserRoles.User);
 
             return removeResult.Succeeded && addResult.Succeeded;
         }
@@ -167,13 +179,32 @@ namespace OnlineLibrary.Web.Controllers
                 AuthenticationManager.SignOut();
 
                 // Sign the user back.
-                var currentUser = UserManager.FindByName(currentUserName);
-                var identity = await UserManager.CreateIdentityAsync(
+                var currentUser = _userService.FindByName(currentUserName);
+                var identity = await _userService.CreateIdentityAsync(
                     currentUser, DefaultAuthenticationTypes.ApplicationCookie);
                 AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = true }, identity);
             }
 
             return true;
+        }
+
+        public bool IsFirstLogin()
+        {
+            bool isFirstUserLogin = false;
+
+            if (DbContext.Users.Count() == 2)
+            {
+                // Retrieve users into memory.
+                var users = DbContext.Users.ToList();
+
+                // Check if there're any users in the role users
+                // that don't have the last sign out date set.
+                isFirstUserLogin = users.Any(u =>
+                    _userService.IsInRole(u.Id, UserRoles.User)
+                    && u.LastSignOutDate == null);
+            }
+
+            return isFirstUserLogin;
         }
 
         #endregion Helper Methods

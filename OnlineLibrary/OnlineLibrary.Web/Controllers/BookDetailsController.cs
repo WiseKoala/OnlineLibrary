@@ -12,12 +12,19 @@ using System.Data.Entity;
 using OnlineLibrary.Services.Abstract;
 using OnlineLibrary.Services.Concrete;
 using Microsoft.AspNet.Identity;
+using OnlineLibrary.DataAccess.Abstract;
 
 namespace OnlineLibrary.Web.Controllers
 {
     public class BookDetailsController : BaseController
     {
         private IBookService _bookService;
+
+        public BookDetailsController(ILibraryDbContext dbContext, IBookService bookService)
+            : base(dbContext)
+        {
+            _bookService = bookService;
+        }
 
         public ActionResult Index(int id)
         {
@@ -52,9 +59,6 @@ namespace OnlineLibrary.Web.Controllers
             { if (s.Length != 0) { conditionStr = conditionStr + s + ", "; } };
            if (conditionStr.Length > 3) { conditionStr = conditionStr.Substring(0, conditionStr.Length - 2); };
 
-            // Manually instantiate the service.
-            _bookService = new BookService(DbContext);
-
             var book_view = new BookDetailsViewModel
             {
                 Id = book.Id,
@@ -82,7 +86,6 @@ namespace OnlineLibrary.Web.Controllers
         {
             try
             {
-                var _bookService = new BookService(DbContext);
                 var userId = User.Identity.GetUserId();
                 var AvailableCopies = _bookService.GetAmountOfAvailableCopies(id);
                 var userLoanRequestsNumber = DbContext.LoanRequests.Where(lr => lr.UserId == userId && lr.BookId == id).Count();

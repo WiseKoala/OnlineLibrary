@@ -16,52 +16,15 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
     public abstract class BaseController : Controller
     {
         private ILibraryDbContext _dbContext;
-        private SignInService _signInService;
-        private UserManagementService _userManagementService;
-        private RoleManagementService _roleManagementService;
 
-        protected BaseController(ILibraryDbContext dbContext, 
-            SignInService signInService, 
-            UserManagementService userManagementService,
-            RoleManagementService roleManagementService)
+        protected BaseController(ILibraryDbContext dbContext)
         {
             _dbContext = dbContext;
-            _signInService = signInService;
-            _userManagementService = userManagementService;
-            _roleManagementService = roleManagementService;
         }
 
         protected ILibraryDbContext DbContext
         {
             get { return _dbContext; }
-        }
-
-        protected SignInService SignInManager
-        {
-            get
-            {
-                return _signInService ?? HttpContext.GetOwinContext().Get<SignInService>();
-            }
-            private set
-            {
-                _signInService = value;
-            }
-        }
-
-        protected UserManagementService UserManager
-        {
-            get
-            {
-                return _userManagementService;
-            }
-        }
-
-        protected RoleManagementService RoleManager
-        {
-            get
-            {
-                return _roleManagementService;
-            }
         }
 
         protected bool IsUserNameSessionVariableSet()
@@ -89,26 +52,6 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
             Session["UserName"] = UserName;
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (_userManagementService != null)
-                {
-                    _userManagementService.Dispose();
-                    _userManagementService = null;
-                }
-
-                if (_signInService != null)
-                {
-                    _signInService.Dispose();
-                    _signInService = null;
-                }
-            }
-
-            base.Dispose(disposing);
-        }
-
         #region Helpers
 
         protected IAuthenticationManager AuthenticationManager
@@ -134,25 +77,6 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
                 return Redirect(returnUrl);
             }
             return RedirectToAction("Index", "Home");
-        }
-
-        protected bool IsFirstLogin()
-        {
-            bool isFirstUserLogin = false;
-
-            if (UserManager.Users.Count() == 2)
-            {
-                // Retrieve users into memory.
-                var users = UserManager.Users.ToList();
-
-                // Check if there're any users in the role users
-                // that don't have the last sign out date set.
-                isFirstUserLogin = users.Any(u => 
-                    UserManager.IsInRole(u.Id, UserRoles.User) 
-                    && u.LastSignOutDate == null);
-            }
-
-            return isFirstUserLogin;
         }
 
         #endregion Helpers
