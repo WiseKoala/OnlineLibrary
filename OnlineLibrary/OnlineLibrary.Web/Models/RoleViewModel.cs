@@ -1,4 +1,5 @@
-﻿using OnlineLibrary.DataAccess;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using OnlineLibrary.DataAccess;
 using OnlineLibrary.DataAccess.Entities;
 using System.Collections.Generic;
 
@@ -10,6 +11,6 @@ namespace OnlineLibrary.Web.Models
         public List<string> UserNames { get; set; }
 
         // The list of roles
-        public List<Role> Roles { get; set; }
+        public List<IdentityRole> Roles { get; set; }
     }
 }

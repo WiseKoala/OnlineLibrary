@@ -1,0 +1,112 @@
+﻿@using OnlineLibrary.Web.Models
+@using OnlineLibrary.DataAccess
+@model OnlineLibrary.Web.Models.BookDetailsViewModel
+@{
+    ViewBag.Title = "Book Details Page";
+}
+
+@section CSS {
+    <link href="~/Content/Views stylesheets/BookDetails/Index.css" rel="stylesheet" />
+    <link href="~/Content/toastr.css" rel="stylesheet" />
+}
+
+<div class="page-header">
+    <h1>Book Details</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @{var book = Model;
+            <div class="panel panel-default book-item">
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left">
+                            <a href="#">
+                                <img class="media-object book-cover" src="@Url.Content(book.FrontCover)" alt="@book.Title">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h3 class="media-heading">@book.Title</h3>
+                            <p><strong>@((book.Authors.Count() > 1) ? "Authors:" : "Author:")</strong> @String.Join(", ", book.Authors)</p>
+
+                            <p><strong>Publish Date:</strong> @book.PublishDate.ToShortDateString()</p>
+
+                            <p><strong>ISBN:</strong> @book.ISBN</p>
+
+                            <p><strong>Description:</strong> @book.Description</p>
+
+                            <p>
+                                <strong>Categories:</strong>
+                                <ul class="book-categories">
+                                    @foreach (CategoryViewModel category in book.Categories)
+                                    {
+                                        <li>
+                                            <span class="label label-default">@category.Category</span> > <span class="label label-info">@category.SubCategory</span>
+                                        </li>
+                                    }
+                                </ul>
+                            </p>
+
+                            @if (User.IsInRole(UserRoles.Librarian) || User.IsInRole(UserRoles.SysAdmin) || User.IsInRole(UserRoles.SuperAdmin))
+                            {
+                                <p><strong>Number of copies in stock:</strong> @book.NrOfBooks</p>
+
+                                <p><strong>Condition of copies in stock:</strong> @book.HowManyInThisCondition</p>
+                            }
+
+                            @if (Model.AvailableCopies != 0)
+                            {
+                                <p><strong>Number of copies available for loaning:</strong> @Model.AvailableCopies</p>
+
+                                <!-- Model Trigger Button -->
+                                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" 
+                                        @if (!((User.IsInRole(UserRoles.User)) || (User.IsInRole(UserRoles.Librarian)) || (User.IsInRole(UserRoles.SysAdmin)) || (User.IsInRole(UserRoles.SuperAdmin))))
+                                        { <text> title = "Log in to loan a book." </text> }
+                                        @if (Model.AvailableCopies == 0 || string.IsNullOrEmpty(User.Identity.Name))
+                                        {
+                                            @: disabled="disabled"
+                                        } >Loan</button>
+
+                                <!-- Modal -->
+                                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title" id="myModalLabel">Send new loan request?</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to loan this book? A new loan request will be sent.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                                                    <button type="button" class="btn btn-primary" id="loan" data-book-id="@Model.Id" data-dismiss="modal">Yes</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    <strong>Sorry!</strong> The book is currently not available for loan.
+                                </div>
+                                <div class="alert alert-info" role="alert">
+                                    The book is expected to be available for loan on <strong>@Model.EarliestDateAvailable.Value.ToShortDateString()</strong>
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/View Scripts/BookDetails/Index.js"></script>
+    <script src="~/Scripts/toastr.js"></script>
+}

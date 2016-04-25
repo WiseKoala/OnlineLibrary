@@ -173,6 +173,129 @@ namespace OnlineLibrary.DataAccess
             };
             books.ForEach(b => context.Books.Add(b));
 
+#if DEBUG
+            // Add users.
+            var users = new List<User>
+            {
+                new User
+                {
+                    Id = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    FirstName = "Library",
+                    LastName = "User",
+                    Email = "libraryuser9@gmail.com",
+                    SecurityStamp = "0c2030d4-00be-410b-88f2-a4fdd640bf9b",
+                    UserName = "libraryuser9@gmail.com",
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0
+                }
+            };
+            users.ForEach(u => context.Users.Add(u));
+
+            // Add user logins.
+            var userLogins = new List<IdentityUserLogin>()
+            {
+                new IdentityUserLogin { LoginProvider = "Google", ProviderKey = "107735122632514671058", UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328" }
+            };
+            userLogins.ForEach(ul => context.IdentityUserLogins.Add(ul));
+
+            // Add roles.
+            context.SaveChanges();
+            userManager.AddToRole("7937c4fb-1bbd-4ca8-af79-331c21d74328", UserRoles.User);
+
+            // Add loans.
+            var loans = new List<Loan>()
+            {
+                new Loan
+                {
+                    BookCopyId = 1,
+                    BookId = 1,
+                    Status = LoanStatus.Loaned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = new DateTime(2016, 4, 25),
+                    ExpectedReturnDate = new DateTime(2016, 5, 9)
+                },
+                new Loan
+                {
+                    BookCopyId = 2,
+                    BookId = 1,
+                    Status = LoanStatus.Loaned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = new DateTime(2016, 4, 18),
+                    ExpectedReturnDate = new DateTime(2016, 5, 2)
+                },
+                new Loan
+                {
+                    BookCopyId = 3,
+                    BookId = 2,
+                    Status = LoanStatus.Loaned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = DateTime.Now.AddDays(-20),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-6)
+                },
+                new Loan
+                {
+                    BookCopyId = 4,
+                    BookId = 2,
+                    Status = LoanStatus.Loaned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = DateTime.Now.AddDays(-12),
+                    ExpectedReturnDate = DateTime.Now.AddDays(2)
+                },
+                new Loan
+                {
+                    BookCopyId = 1,
+                    BookId = 1,
+                    Status = LoanStatus.Returned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = DateTime.Now.AddDays(-51),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-40)
+                },
+                new Loan
+                {
+                    BookCopyId = 2,
+                    BookId = 1,
+                    Status = LoanStatus.Returned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = DateTime.Now.AddDays(-50),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-40)
+                },
+                new Loan
+                {
+                    BookCopyId = 2,
+                    BookId = 1,
+                    Status = LoanStatus.Returned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = DateTime.Now.AddDays(-60),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-50)
+                },
+                new Loan
+                {
+                    BookCopyId = 1,
+                    BookId = 1,
+                    Status = LoanStatus.Rejected,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
+                },
+                new Loan
+                {
+                    BookCopyId = 11,
+                    BookId = 5,
+                    Status = LoanStatus.Approved,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
+                },
+            };
+            loans.ForEach(l => context.Loans.Add(l));
+
+            var loanRequests = new List<LoanRequest>()
+            {
+                new LoanRequest
+                {
+                    BookId = 4,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
+                }
+            };
+            loanRequests.ForEach(lr => context.LoanRequests.Add(lr));
+#endif
+
             context.SaveChanges();
         }
 

@@ -5,6 +5,7 @@ using Microsoft.Owin;
 using OnlineLibrary.DataAccess;
 using OnlineLibrary.DataAccess.Entities;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -55,6 +56,7 @@ namespace OnlineLibrary.Services.Concrete
             });
 
             var dataProtectionProvider = options.DataProtectionProvider;
+
             if (dataProtectionProvider != null)
             {
                 manager.UserTokenProvider =
@@ -65,26 +67,34 @@ namespace OnlineLibrary.Services.Concrete
 
         public static string GetUsernameById(IOwinContext context, string id)
         {
-            var manager = new UserManagementService(new UserStore<User>(context.Get<ApplicationDbContext>()));
             var dbContext = context.Get<ApplicationDbContext>();
-            var UserName = dbContext.Users.Where(u => u.Id == id).Select(u => String.Concat(u.FirstName, u.LastName));
+
+            var UserName = dbContext.Users
+                .Where(u => u.Id == id)
+                .Select(u => String.Concat(u.FirstName, u.LastName));
+
             return UserName.ToString();
         }
 
         public static User GetUserByName(IOwinContext context, string name)
         {
-            var manager = new UserManagementService(new UserStore<User>(context.Get<ApplicationDbContext>()));
             var dbContext = context.Get<ApplicationDbContext>();
-            User user = dbContext.Users.Where(u => u.UserName == name).FirstOrDefault();
+
+            var user = dbContext.Users
+                .Where(u => u.UserName == name)
+                .FirstOrDefault();
+
             return user;
         }
 
         public static string GetTheUsernameByUsersName(IOwinContext context, string UsersName)
         {
-            var manager = new UserManagementService(new UserStore<User>(context.Get<ApplicationDbContext>()));
             var dbContext = context.Get<ApplicationDbContext>();
-            User user = GetUserByName(context, UsersName);
+
+            var user = GetUserByName(context, UsersName);
+
             string Username = String.Empty;
+
             if (user != null)
             {
                 Username = UsersName;
@@ -92,7 +102,17 @@ namespace OnlineLibrary.Services.Concrete
                 string lastName = Regex.Replace(user.LastName, ".*?: ", String.Empty);
                 Username = firstName + " " + lastName;
             }
+
             return Username;
+        }
+
+        public static List<User> GetUserList(IOwinContext context)
+        {
+            var dbContext = context.Get<ApplicationDbContext>();
+
+            var users = dbContext.Users.Where(u => u.UserName != "Admin").ToList();
+
+            return users;
         }
     }
 }

@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using OnlineLibrary.DataAccess;
 using Microsoft.Owin.Security;
+using OnlineLibrary.Services.Concrete;
+using System.Web;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -29,10 +32,10 @@ namespace OnlineLibrary.Web.Controllers
                 var model = new RoleViewModel();
 
                 // Initializing model components.
-                List<Role> roles = RoleManager.Roles.Include(r => r.Users).Where(r => r.Name != UserRoles.SuperAdmin).OrderBy(r => r.Name).ToList();
+                List<IdentityRole> roles = RoleManagementService.GetRoleList(Request.GetOwinContext());
                 model.Roles = roles;
 
-                List<User> users = UserManager.Users.Where( u => u.UserName != "Admin" ).OrderBy(u => u.UserName).ToList();
+                List<User> users = UserManagementService.GetUserList(Request.GetOwinContext());
                 model.UserNames = new List<string>();
 
                 // Creating a temporary variable to store the information for the model.
@@ -50,7 +53,7 @@ namespace OnlineLibrary.Web.Controllers
                     {
                         // Get all users in this role.
                         var allUsersInRole = role.Users.Select(userInRole => userInRole.UserId);
-                        
+
                         // Get the usernames list for the users in this role.
                         var userNamesList = users.Where(user => allUsersInRole.Contains(user.Id)).Select(user => user.UserName);
 
@@ -108,7 +111,7 @@ namespace OnlineLibrary.Web.Controllers
 
         private bool HasAdminPrivileges(IPrincipal user)
         {
-            return AccountController.IsFirstLogin || user.IsInRole(UserRoles.SysAdmin) || user.IsInRole(UserRoles.SuperAdmin);
+            return IsFirstLogin() || user.IsInRole(UserRoles.SysAdmin) || user.IsInRole(UserRoles.SuperAdmin);
         }
 
         private async Task<bool> RemoveUserCurrentRoles(string userId)
@@ -164,10 +167,6 @@ namespace OnlineLibrary.Web.Controllers
                 AuthenticationManager.SignOut();
 
                 // Sign the user back.
-                if (AccountController.IsFirstLogin == true)
-                {
-                    AccountController.IsFirstLogin = false;
-                }
                 var currentUser = UserManager.FindByName(currentUserName);
                 var identity = await UserManager.CreateIdentityAsync(
                     currentUser, DefaultAuthenticationTypes.ApplicationCookie);

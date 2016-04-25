@@ -20,14 +20,15 @@
                 <div class="panel-body">
                     <div class="media">
                         <div class="media-left">
-                            <a href="#">
+                            <a href="@Url.RouteUrl("Default", new { controller = "BookDetails", action = "Index", id = book.Id })">
                                 <img class="media-object book-cover" src="@Url.Content(book.FrontCover)" alt="@book.Title">
                             </a>
                         </div>
                         <div class="media-body">
-                            <h4 class="media-heading">@book.Title</h4>
-                            <p><strong>Author(s):</strong> @String.Join(", ", book.Authors)</p>
+                            <h4 class="media-heading">@Html.RouteLink(book.Title, new { controller = "BookDetails", action = "Index", id = book.Id })</h4>
+                            <p><strong>@((book.Authors.Count() > 1) ? "Authors:" : "Author:")</strong> @String.Join(", ", book.Authors)</p>
                             <p><strong>Publish Date:</strong> @book.PublishDate.ToShortDateString()</p>
+                            <p><strong>Description:</strong> @((book.Description.Length > 265) ? book.Description.Substring(0, 265) + "..." : book.Description) </p>
                             <p>
                                 <strong>Categories:</strong>
                                 <ul class="book-categories">
