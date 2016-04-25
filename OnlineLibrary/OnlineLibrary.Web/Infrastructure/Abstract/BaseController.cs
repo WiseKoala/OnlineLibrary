@@ -9,32 +9,42 @@ using OnlineLibrary.DataAccess;
 using System.Linq;
 using OnlineLibrary.DataAccess.Entities;
 using System.Data.Entity;
+using OnlineLibrary.DataAccess.Abstract;
 
 namespace OnlineLibrary.Web.Infrastructure.Abstract
 {
     public abstract class BaseController : Controller
     {
-        private SignInService _signInManager;
-        private UserManagementService _userManager;
+        private ILibraryDbContext _dbContext;
+        private SignInService _signInService;
+        private UserManagementService _userManagementService;
+        private RoleManagementService _roleManagementService;
 
-        protected BaseController()
+        protected BaseController(ILibraryDbContext dbContext, 
+            SignInService signInService, 
+            UserManagementService userManagementService,
+            RoleManagementService roleManagementService)
         {
+            _dbContext = dbContext;
+            _signInService = signInService;
+            _userManagementService = userManagementService;
+            _roleManagementService = roleManagementService;
         }
 
-        protected ApplicationDbContext DbContext
+        protected ILibraryDbContext DbContext
         {
-            get { return HttpContext.GetOwinContext().Get<ApplicationDbContext>(); }
+            get { return _dbContext; }
         }
 
         protected SignInService SignInManager
         {
             get
             {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<SignInService>();
+                return _signInService ?? HttpContext.GetOwinContext().Get<SignInService>();
             }
             private set
             {
-                _signInManager = value;
+                _signInService = value;
             }
         }
 
@@ -42,11 +52,7 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
         {
             get
             {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<UserManagementService>();
-            }
-            private set
-            {
-                _userManager = value;
+                return _userManagementService;
             }
         }
 
@@ -54,7 +60,7 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
         {
             get
             {
-                return HttpContext.GetOwinContext().GetUserManager<RoleManagementService>();
+                return _roleManagementService;
             }
         }
 
@@ -87,16 +93,16 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
         {
             if (disposing)
             {
-                if (_userManager != null)
+                if (_userManagementService != null)
                 {
-                    _userManager.Dispose();
-                    _userManager = null;
+                    _userManagementService.Dispose();
+                    _userManagementService = null;
                 }
 
-                if (_signInManager != null)
+                if (_signInService != null)
                 {
-                    _signInManager.Dispose();
-                    _signInManager = null;
+                    _signInService.Dispose();
+                    _signInService = null;
                 }
             }
 
