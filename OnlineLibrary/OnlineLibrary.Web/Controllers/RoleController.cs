@@ -44,7 +44,7 @@ namespace OnlineLibrary.Web.Controllers
                 var model = new RoleViewModel();
 
                 // Initializing model components.
-                List<IdentityRole> roles = RoleManagementService.GetRoleList(Request.GetOwinContext());
+                List<IdentityRole> roles = _roleService.GetRoleList();
                 model.Roles = roles;
 
                 List<User> users = _userService.GetUserList();

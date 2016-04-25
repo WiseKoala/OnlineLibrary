@@ -1,9 +1,16 @@
 using System;
+using System.Web;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.Owin.Security;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Configuration;
 using OnlineLibrary.DataAccess;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Concrete;
+using OnlineLibrary.DataAccess.Entities;
+using OnlineLibrary.Services.Abstract;
+using OnlineLibrary.Services.Concrete;
 
 namespace OnlineLibrary.Web.App_Start
 {
@@ -38,9 +45,61 @@ namespace OnlineLibrary.Web.App_Start
             // NOTE: To load from web.config uncomment the line below. Make sure to add a Microsoft.Practices.Unity.Configuration to the using statements.
             // container.LoadConfiguration();
 
-            // TODO: Register your types here
-            // container.RegisterType<IProductRepository, ProductRepository>();
-            container.RegisterType<ILibraryDbContext, LibraryDbContext>();
+            // Register types.
+            container.RegisterType<ILibraryDbContext, LibraryDbContext>(new ContainerControlledLifetimeManager());
+
+            // Services infrastructure.
+            container.RegisterType<RoleStore<Role>>(new InjectionConstructor(container.Resolve<ILibraryDbContext>()));
+            container.RegisterType<UserStore<User>>(new InjectionConstructor(container.Resolve<ILibraryDbContext>()));
+            container.RegisterType<IAuthenticationManager>(new InjectionFactory(o => HttpContext.Current.GetOwinContext().Authentication));
+
+            // Services.
+            container.RegisterType<IBookService, BookService>();
+            container.RegisterType<ILibrarianService, LibrarianService>();
+            container.RegisterType<RoleManagementService>();
+            container.RegisterType<SignInService>();
+            var userManagementService = GetUserManagementServiceInstance(container);
+            container.RegisterInstance<UserManagementService>(userManagementService);
+        }
+
+        private static UserManagementService GetUserManagementServiceInstance(IUnityContainer container)
+        {
+            var manager = new UserManagementService(container.Resolve<ILibraryDbContext>(), container.Resolve<UserStore<User>>());
+            // Configure validation logic for usernames
+            manager.UserValidator = new UserValidator<User>(manager)
+            {
+                AllowOnlyAlphanumericUserNames = false,
+                RequireUniqueEmail = true
+            };
+
+            // Configure validation logic for passwords
+            manager.PasswordValidator = new PasswordValidator
+            {
+                RequiredLength = 6,
+                RequireNonLetterOrDigit = true,
+                RequireDigit = true,
+                RequireLowercase = true,
+                RequireUppercase = true,
+            };
+
+            // Configure user lockout defaults
+            manager.UserLockoutEnabledByDefault = true;
+            manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            manager.MaxFailedAccessAttemptsBeforeLockout = 5;
+
+            // Register two factor authentication providers. This application uses Phone and Emails as a step of receiving a code for verifying the user
+            // You can write your own provider and plug it in here.
+            manager.RegisterTwoFactorProvider("Phone Code", new PhoneNumberTokenProvider<User>
+            {
+                MessageFormat = "Your security code is {0}"
+            });
+            manager.RegisterTwoFactorProvider("Email Code", new EmailTokenProvider<User>
+            {
+                Subject = "Security Code",
+                BodyFormat = "Your security code is {0}"
+            });
+
+            return manager;
         }
     }
 }

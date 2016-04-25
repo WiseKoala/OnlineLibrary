@@ -39,17 +39,9 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
 
         protected void InitializeUserNameSessionVariable(string firstName, string lastName)
         {
-            string UserName = string.Empty;
-            if(!string.IsNullOrEmpty(User.Identity.Name))
-            {
-                UserName = UserManagementService.GetTheUsernameByUsersName(HttpContext.GetOwinContext(), User.Identity.Name);
-            }
-            else if(!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
-            {
-                UserName = firstName + lastName;
-            }
+            string userName = firstName + lastName;
 
-            Session["UserName"] = UserName;
+            Session["UserName"] = userName;
         }
 
         #region Helpers
