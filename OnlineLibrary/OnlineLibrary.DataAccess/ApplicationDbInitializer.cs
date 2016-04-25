@@ -9,12 +9,13 @@ using System.Linq;
 using System.Web.Security;
 using System.Configuration;
 using System.IO;
+using OnlineLibrary.DataAccess.Concrete;
 
 namespace OnlineLibrary.DataAccess
 {
-    internal class ApplicationDbInitializer : CreateDatabaseIfNotExists<ApplicationDbContext>
+    internal class ApplicationDbInitializer : CreateDatabaseIfNotExists<LibraryDbContext>
     {
-        protected override void Seed(ApplicationDbContext context)
+        protected override void Seed(LibraryDbContext context)
         {
             var roles = new List<Role>
             {

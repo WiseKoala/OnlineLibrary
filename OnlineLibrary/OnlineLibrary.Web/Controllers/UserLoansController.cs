@@ -4,11 +4,18 @@ using OnlineLibrary.Web.Models.UserLoansViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using OnlineLibrary.DataAccess.Abstract;
 
 namespace OnlineLibrary.Web.Controllers
 {
     public class UserLoansController : BaseController
     {
+        public UserLoansController(ILibraryDbContext dbContext)
+            : base (dbContext)
+        {
+
+        }
+
         public ActionResult MyLoans()
         {
             // Initializing view model objects.

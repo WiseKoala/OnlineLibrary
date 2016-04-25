@@ -1,20 +1,21 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
 using OnlineLibrary.DataAccess.Entities;
 using System.Data.Entity;
+using OnlineLibrary.DataAccess.Abstract;
 
-namespace OnlineLibrary.DataAccess
+namespace OnlineLibrary.DataAccess.Concrete
 {
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class LibraryDbContext : IdentityDbContext<User>, ILibraryDbContext
     {
-        public ApplicationDbContext()
+        public LibraryDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
             Database.SetInitializer(new ApplicationDbInitializer());
         }
 
-        public static ApplicationDbContext Create()
+        public static LibraryDbContext Create()
         {
-            return new ApplicationDbContext();
+            return new LibraryDbContext();
         }
 
         public DbSet<Role> IdentityRoles { get; set; }
