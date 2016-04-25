@@ -191,6 +191,7 @@
     <Compile Include="Controllers\AdministratorController.cs" />
     <Compile Include="Controllers\BookDetailsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LibrarianController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\UserLoansController.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />
@@ -204,6 +205,10 @@
     <Compile Include="Models\BookViewModel.cs" />
     <Compile Include="Models\CategoryViewModel.cs" />
     <Compile Include="Models\ExternalLoginListViewModel.cs" />
+    <Compile Include="Models\LibrarianLoansViewModels\LoanRequestViewModel.cs" />
+    <Compile Include="Models\LibrarianLoansViewModels\ApprovedLoanViewModel.cs" />
+    <Compile Include="Models\LibrarianLoansViewModels\LoansViewModel.cs" />
+    <Compile Include="Models\LibrarianLoansViewModels\LoanViewModel.cs" />
     <Compile Include="Models\RoleEditModel.cs" />
     <Compile Include="Models\RoleModificationModel.cs" />
     <Compile Include="Models\RoleViewModel.cs" />
@@ -259,6 +264,7 @@
     <Content Include="Scripts\toastr.js" />
     <Content Include="Scripts\toastr.min.js" />
     <Content Include="Scripts\View Scripts\BookDetails\Index.js" />
+    <Content Include="Scripts\View Scripts\Librarian\index.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -282,6 +288,7 @@
     <Content Include="Views\Role\Edit.cshtml" />
     <Content Include="Views\Administrator\Authorize.cshtml" />
     <Content Include="Views\BookDetails\Index.cshtml" />
+    <Content Include="Views\Librarian\Index.cshtml" />
     <Content Include="Views\UserLoans\MyLoans.cshtml" />
   </ItemGroup>
   <ItemGroup>

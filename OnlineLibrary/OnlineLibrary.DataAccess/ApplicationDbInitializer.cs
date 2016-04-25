@@ -263,8 +263,10 @@ namespace OnlineLibrary.DataAccess
                 {
                     BookCopyId = 2,
                     BookId = 1,
-                    Status = LoanStatus.Approved,
-                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
+                    Status = LoanStatus.Returned,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
+                    StartDate = DateTime.Now.AddDays(-60),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-50)
                 },
                 new Loan
                 {
@@ -273,21 +275,22 @@ namespace OnlineLibrary.DataAccess
                     Status = LoanStatus.Rejected,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
                 },
+                new Loan
+                {
+                    BookCopyId = 11,
+                    BookId = 5,
+                    Status = LoanStatus.Approved,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
+                },
             };
             loans.ForEach(l => context.Loans.Add(l));
-
 
             var loanRequests = new List<LoanRequest>()
             {
                 new LoanRequest
                 {
-                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
-                    BookId = 3
-                },
-                new LoanRequest
-                {
-                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
-                    BookId = 4
+                    BookId = 4,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
                 }
             };
             loanRequests.ForEach(lr => context.LoanRequests.Add(lr));

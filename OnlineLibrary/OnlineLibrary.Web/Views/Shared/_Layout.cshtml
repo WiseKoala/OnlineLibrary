@@ -29,11 +29,20 @@
                     {
                         <li>@Html.ActionLink("Roles", "Index", "Role")</li>
                     }
+                    @if (User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SuperAdmin)
+                        || User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SysAdmin)
+                        || User.IsInRole(OnlineLibrary.DataAccess.UserRoles.Librarian))
+                    {
+                        <li>@Html.ActionLink("Loans", "Index", "librarian")</li>
+                    }
+
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li>@Html.ActionLink("My Loans", "MyLoans", "UserLoans")</li>
+
                     }
                 </ul>
+                
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
