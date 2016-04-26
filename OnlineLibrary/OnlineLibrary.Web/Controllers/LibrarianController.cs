@@ -56,9 +56,17 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public ActionResult ApproveLoanRequest(int bookCopyId, int loanId)
         {
-            _librarianService.ApproveLoanRequest(bookCopyId, loanId);
+            bool result = _librarianService.TryApproveLoanRequest(bookCopyId, loanId);
 
-            return RedirectToActionPermanent("Index");
+            if (result)
+            {
+                return RedirectToActionPermanent("Index");
+            }
+            else
+            {
+                return Json(new { error = "BookCopyId doesn't correspond to the BookId" }, 
+                    JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]
