@@ -88,7 +88,7 @@ namespace OnlineLibrary.Web.Controllers
             {
                 var userId = User.Identity.GetUserId();
                 var AvailableCopies = _bookService.GetAmountOfAvailableCopies(id);
-                var userLoanRequestsNumber = DbContext.LoanRequests.Where(lr => lr.UserId == userId && lr.BookId == id).Count();
+                var userLoanRequestsNumber = DbContext.Loans.Where(lr => lr.UserId == userId && lr.BookId == id).Count();
 
                 if (userLoanRequestsNumber >= AvailableCopies)
                 {
@@ -97,11 +97,11 @@ namespace OnlineLibrary.Web.Controllers
 
                 var book = DbContext.Books.Where(b => b.Id == id).Single();
 
-                var loanRequest = new LoanRequest();
+                var loan = new Loan();
 
-                loanRequest.BookId = book.Id;
-                loanRequest.UserId = User.Identity.GetUserId();
-                DbContext.LoanRequests.Add(loanRequest);
+                loan.BookId = book.Id;
+                loan.UserId = User.Identity.GetUserId();
+                DbContext.Loans.Add(loan);
                 DbContext.SaveChanges();
                 return Json(new { id = id, success = "success" }, JsonRequestBehavior.AllowGet);
             }

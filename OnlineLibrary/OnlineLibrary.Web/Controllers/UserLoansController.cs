@@ -35,7 +35,7 @@ namespace OnlineLibrary.Web.Controllers
                             select new CurrentUserLoansViewModel() { Title = b.Title, ExpectedReturnDate = l.ExpectedReturnDate, Status = l.Status, BookId = b.Id };
 
             
-            var userLoanRequests = from lr in DbContext.LoanRequests
+            var userLoanRequests = from lr in DbContext.Loans
                                    where lr.UserId == userId
                                    join b in DbContext.Books
                                    on lr.BookId equals b.Id
@@ -82,11 +82,11 @@ namespace OnlineLibrary.Web.Controllers
         {
             var userId = User.Identity.GetUserId();
 
-            var loan = DbContext.LoanRequests.Where(l => l.UserId == userId && l.BookId == id).FirstOrDefault();
+            var loan = DbContext.Loans.Where(l => l.UserId == userId && l.BookId == id).FirstOrDefault();
 
             if (loan != null)
             {
-                DbContext.LoanRequests.Remove(loan);
+                DbContext.Loans.Remove(loan);
                 DbContext.SaveChanges();
 
                 return RedirectToAction("MyLoans");

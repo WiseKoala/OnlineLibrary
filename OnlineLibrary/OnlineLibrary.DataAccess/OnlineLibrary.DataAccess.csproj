@@ -94,7 +94,6 @@
     <Compile Include="Entities\BookCopy.cs" />
     <Compile Include="Entities\Category.cs" />
     <Compile Include="Entities\Loan.cs" />
-    <Compile Include="Entities\LoanRequest.cs" />
     <Compile Include="Entities\Role.cs" />
     <Compile Include="Entities\SubCategory.cs" />
     <Compile Include="Entities\User.cs" />

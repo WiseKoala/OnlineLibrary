@@ -1,14 +1,10 @@
-﻿using OnlineLibrary.Services.Abstract;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
-using OnlineLibrary.DataAccess;
+using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess.Enums;
-using OnlineLibrary.DataAccess.Abstract;
+using OnlineLibrary.Services.Abstract;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -21,61 +17,38 @@ namespace OnlineLibrary.Services.Concrete
             _dbContext = dbContext;
         }
 
-        public void ApproveLoanRequest(int bookCopyId, int loanRequestId)
+        public void ApproveLoanRequest(int bookCopyId, int loanId)
         {
-            var approvedLoan = CreateLoan(bookCopyId, loanRequestId,LoanStatus.Approved);
-            SaveLoan(approvedLoan,loanRequestId);
+            // Find loan by ID.
+            Loan loanToApprove = _dbContext.Loans.Find(loanId);
+
+            // Set status to Approved.
+            loanToApprove.Status = LoanStatus.Approved;
+
+            _dbContext.SaveChanges();
         }
 
-        public void RejectLoanRequest(int loanRequestId)
+        public void RejectLoanRequest(int loanId)
         {
-            var rejectLoan = CreateLoan(null, loanRequestId, LoanStatus.Rejected);
-            SaveLoan(rejectLoan, loanRequestId);
-        }
+            // Find loan by ID.
+            Loan loanToReject = _dbContext.Loans.Find(loanId);
 
-        private Loan CreateLoan(int? bookCopyId, int loanRequestId, LoanStatus loanStatus)
-        {
-            var loan =
-            (from r in _dbContext.LoanRequests
-             join b in _dbContext.Books on r.BookId equals b.Id
-             join u in _dbContext.Users on r.UserId equals u.Id
-             where r.Id == loanRequestId
-             select new
-             {
-                 BookCopyId = bookCopyId,
-                 bookId = b.Id,
-                 UserId = u.Id,
-                 Status = loanStatus,
-             })
-             .ToList()
-             .Select(a => new Loan
-             {
-                 BookId = a.bookId,
-                 BookCopyId = a.BookCopyId,
-                 UserId = a.UserId,
-                 Status = a.Status
-             })
-             .SingleOrDefault();
-
-            return loan;
-        }
-
-        private void SaveLoan(Loan loan, int loanRequestId)
-        {
-            _dbContext.Loans.Add(loan);
-
-            var request = _dbContext.LoanRequests.Find(loanRequestId);
-            _dbContext.LoanRequests.Remove(request);
+            // Set status to Rejected.
+            loanToReject.Status = LoanStatus.Rejected;
 
             _dbContext.SaveChanges();
         }
 
         public void PerformLoan(int loanId)
         {
+            // Find loan by ID.
             Loan loan = _dbContext.Loans.Find(loanId);
+
+            // Set status, start date and expected return date.
             loan.Status = LoanStatus.InProgress;
             loan.StartDate = DateTime.Today;
             loan.ExpectedReturnDate = DateTime.Today.AddDays(14);
+
             _dbContext.SaveChanges();
         }
     }

@@ -30,18 +30,6 @@ namespace OnlineLibrary.Web.Controllers
         {
             var model = new LoansViewModel();
 
-            // Obtain loan requests.
-            var loanRequests = DbContext.LoanRequests
-                 .Include(lr => lr.User)
-                 .Include(lr => lr.Book)
-                 .Select(lr => new LoanViewModel
-                 {
-                     LoanId = lr.Id,
-                     BookTitle = lr.Book.Title,
-                     UserName = lr.User.UserName
-                 })
-                 .ToList();
-
             // Obtain loans.
             var loans = DbContext.Loans
                  .Include(lr => lr.User)
@@ -55,7 +43,7 @@ namespace OnlineLibrary.Web.Controllers
                  })
                  .ToList();
 
-            model.PendingLoans = loanRequests;
+            model.PendingLoans = loans.Where(l => l.Status == LoanStatus.Pending);
             model.ApprovedLoans = loans.Where(l => l.Status == LoanStatus.Approved);
             model.LoanedBooks = loans.Where(l => l.Status == LoanStatus.InProgress);
             model.RejectedLoans = loans.Where(l => l.Status == LoanStatus.Rejected);
@@ -66,17 +54,17 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult ApproveLoanRequest(int bookCopyId,int loanRequestId)
+        public ActionResult ApproveLoanRequest(int bookCopyId, int loanId)
         {
-            _librarianService.ApproveLoanRequest(bookCopyId, loanRequestId);
+            _librarianService.ApproveLoanRequest(bookCopyId, loanId);
 
             return RedirectToActionPermanent("Index");
         }
 
         [HttpPost]
-        public ActionResult RejectLoanRequest( int loanRequestId )
+        public ActionResult RejectLoanRequest(int loanId)
         {
-            _librarianService.RejectLoanRequest(loanRequestId);
+            _librarianService.RejectLoanRequest(loanId);
             return RedirectToActionPermanent("Index");
         }
         
