@@ -260,7 +260,7 @@
                     <label> Please Enter the book identifier </label>
                     <form id="approve" action="@Url.Action("ApproveLoanRequest", "Librarian")" method="post">
                         <input id="bookCopyId" name="bookCopyId" type="text" class="form-control" />
-                        <input id="loanRequestId" name="loanRequestId" hidden="hidden" />
+                        <input id="loanRequestId" name="loanId" hidden="hidden" />
                         <button type="submit" class="btn btn-default">ok</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     </form>
@@ -283,7 +283,7 @@
                 </div>
                 <div class="modal-footer">
                     <form id="reject" action="@Url.Action("RejectLoanRequest", "Librarian")" method="post">
-                        <input id="loanRequestId" name="loanRequestId" hidden="hidden" />
+                        <input id="loanRequestId" name="loanId" hidden="hidden" />
                         <button type="submit" class="btn btn-default">ok</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     </form>

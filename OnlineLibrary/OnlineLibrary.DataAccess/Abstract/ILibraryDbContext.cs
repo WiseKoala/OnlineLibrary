@@ -20,7 +20,6 @@ namespace OnlineLibrary.DataAccess.Abstract
         DbSet<Category> Categories { get; set; }
         DbSet<SubCategory> SubCategories { get; set; }
         DbSet<Loan> Loans { get; set; }
-        DbSet<LoanRequest> LoanRequests { get; set; }
         IDbSet<IdentityRole> Roles { get; set; }
         IDbSet<User> Users { get; set; }
 
