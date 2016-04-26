@@ -15,7 +15,7 @@ namespace OnlineLibrary.Services.Concrete
     {
         private ILibraryDbContext _dbContext;
 
-        public RoleManagementService(ILibraryDbContext dbContext, IRoleStore<Role> store)
+        public RoleManagementService(ILibraryDbContext dbContext, IRoleStore<Role, string> store)
             : base(store)
         {
             _dbContext = dbContext;
