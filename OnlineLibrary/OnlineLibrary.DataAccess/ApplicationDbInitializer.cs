@@ -210,7 +210,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     BookCopyId = 1,
                     BookId = 1,
-                    Status = LoanStatus.Loaned,
+                    Status = LoanStatus.InProgress,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = new DateTime(2016, 4, 25),
                     ExpectedReturnDate = new DateTime(2016, 5, 9)
@@ -219,7 +219,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     BookCopyId = 2,
                     BookId = 1,
-                    Status = LoanStatus.Loaned,
+                    Status = LoanStatus.InProgress,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = new DateTime(2016, 4, 18),
                     ExpectedReturnDate = new DateTime(2016, 5, 2)
@@ -228,7 +228,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     BookCopyId = 3,
                     BookId = 2,
-                    Status = LoanStatus.Loaned,
+                    Status = LoanStatus.InProgress,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = DateTime.Now.AddDays(-20),
                     ExpectedReturnDate = DateTime.Now.AddDays(-6)
@@ -237,7 +237,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     BookCopyId = 4,
                     BookId = 2,
-                    Status = LoanStatus.Loaned,
+                    Status = LoanStatus.InProgress,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = DateTime.Now.AddDays(-12),
                     ExpectedReturnDate = DateTime.Now.AddDays(2)
@@ -246,7 +246,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     BookCopyId = 1,
                     BookId = 1,
-                    Status = LoanStatus.Returned,
+                    Status = LoanStatus.Completed,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = DateTime.Now.AddDays(-51),
                     ExpectedReturnDate = DateTime.Now.AddDays(-40)
@@ -255,7 +255,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     BookCopyId = 2,
                     BookId = 1,
-                    Status = LoanStatus.Returned,
+                    Status = LoanStatus.Completed,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = DateTime.Now.AddDays(-50),
                     ExpectedReturnDate = DateTime.Now.AddDays(-40)
@@ -264,7 +264,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     BookCopyId = 2,
                     BookId = 1,
-                    Status = LoanStatus.Returned,
+                    Status = LoanStatus.Completed,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = DateTime.Now.AddDays(-60),
                     ExpectedReturnDate = DateTime.Now.AddDays(-50)

@@ -42,10 +42,10 @@ namespace OnlineLibrary.Web.Controllers
                                    select new PendingUserLoansViewModel() { BookTitle = b.Title, BookId = b.Id };
 
             var rejectedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Rejected);
-            var returnedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Returned);
-            var lostUserBooks = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Lost);
+            var returnedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Completed);
+            var lostUserBooks = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.LostBook);
             var approvedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Approved);
-            var currentUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Loaned);
+            var currentUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.InProgress);
             
             // Populating view model object.
             model.PendingLoans = userLoanRequests;

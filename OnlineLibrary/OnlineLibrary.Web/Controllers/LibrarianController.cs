@@ -57,10 +57,10 @@ namespace OnlineLibrary.Web.Controllers
 
             model.PendingLoans = loanRequests;
             model.ApprovedLoans = loans.Where(l => l.Status == LoanStatus.Approved);
-            model.LoanedBooks = loans.Where(l => l.Status == LoanStatus.Loaned);
+            model.LoanedBooks = loans.Where(l => l.Status == LoanStatus.InProgress);
             model.RejectedLoans = loans.Where(l => l.Status == LoanStatus.Rejected);
-            model.ReturnedBooks = loans.Where(l => l.Status == LoanStatus.Returned);
-            model.LostBooks = loans.Where(l => l.Status == LoanStatus.Lost);
+            model.ReturnedBooks = loans.Where(l => l.Status == LoanStatus.Completed);
+            model.LostBooks = loans.Where(l => l.Status == LoanStatus.LostBook);
 
             return View(model);
         }
@@ -91,7 +91,7 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult ReturnBook(int loanId)
         {
             Loan loan = DbContext.Loans.Find(loanId);
-            loan.Status = LoanStatus.Returned;
+            loan.Status = LoanStatus.Completed;
             DbContext.SaveChanges();
 
             return RedirectToActionPermanent("Index");
@@ -101,7 +101,7 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult LostBook(int loanId)
         {
             Loan loan = DbContext.Loans.Find(loanId);
-            loan.Status = LoanStatus.Lost;
+            loan.Status = LoanStatus.LostBook;
             DbContext.SaveChanges();
 
             return RedirectToActionPermanent("Index");

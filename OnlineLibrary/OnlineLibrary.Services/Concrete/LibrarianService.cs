@@ -73,7 +73,7 @@ namespace OnlineLibrary.Services.Concrete
         public void PerformLoan(int loanId)
         {
             Loan loan = _dbContext.Loans.Find(loanId);
-            loan.Status = LoanStatus.Loaned;
+            loan.Status = LoanStatus.InProgress;
             loan.StartDate = DateTime.Today;
             loan.ExpectedReturnDate = DateTime.Today.AddDays(14);
             _dbContext.SaveChanges();

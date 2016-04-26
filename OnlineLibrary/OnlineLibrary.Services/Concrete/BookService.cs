@@ -32,7 +32,7 @@ namespace OnlineLibrary.Services.Concrete
             int notAvailableBookCopies = (from bc in book.BookCopies
                                           join l in _dbContext.Loans
                                           on bc.Id equals l.BookCopyId
-                                          where l.Status == LoanStatus.Approved || l.Status == LoanStatus.Loaned
+                                          where l.Status == LoanStatus.Approved || l.Status == LoanStatus.InProgress
                                           select bc).Count();
 
             // Return difference between the total number of book copies
