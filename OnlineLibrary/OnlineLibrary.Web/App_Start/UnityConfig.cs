@@ -49,8 +49,8 @@ namespace OnlineLibrary.Web.App_Start
             container.RegisterType<ILibraryDbContext, LibraryDbContext>(new ContainerControlledLifetimeManager());
 
             // Services infrastructure.
-            container.RegisterType<RoleStore<Role>>(new InjectionConstructor(container.Resolve<ILibraryDbContext>()));
-            container.RegisterType<UserStore<User>>(new InjectionConstructor(container.Resolve<ILibraryDbContext>()));
+            container.RegisterType<IRoleStore<Role, string>, RoleStore<Role>>(new InjectionConstructor(container.Resolve<ILibraryDbContext>()));
+            container.RegisterType<IUserStore<User>, UserStore<User>>(new InjectionConstructor(container.Resolve<ILibraryDbContext>()));
             container.RegisterType<IAuthenticationManager>(new InjectionFactory(o => HttpContext.Current.GetOwinContext().Authentication));
 
             // Services.

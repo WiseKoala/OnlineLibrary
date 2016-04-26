@@ -17,7 +17,7 @@ namespace OnlineLibrary.Services.Concrete
     {
         private ILibraryDbContext _dbContext;
 
-        public UserManagementService(ILibraryDbContext dbContext, UserStore<User> store)
+        public UserManagementService(ILibraryDbContext dbContext, IUserStore<User> store)
             : base(store)
         {
             _dbContext = dbContext;
