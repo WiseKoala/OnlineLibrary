@@ -24,6 +24,7 @@ namespace OnlineLibrary.Services.Concrete
 
             // Set status to Approved.
             loanToApprove.Status = LoanStatus.Approved;
+            loanToApprove.BookPickUpLimitDate = DateTime.Now.AddDays(3);
 
             _dbContext.SaveChanges();
         }
