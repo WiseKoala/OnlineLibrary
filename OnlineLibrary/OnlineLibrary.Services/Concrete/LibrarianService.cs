@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Linq;
+using OnlineLibrary.Common.Exceptions;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess.Enums;
@@ -17,7 +18,7 @@ namespace OnlineLibrary.Services.Concrete
             _dbContext = dbContext;
         }
 
-        public bool TryApproveLoanRequest(int bookCopyId, int loanId)
+        public void ApproveLoanRequest(int bookCopyId, int loanId)
         {
             // Find loan by ID.
             Loan loanToApprove = _dbContext.Loans.Find(loanId);
@@ -37,8 +38,10 @@ namespace OnlineLibrary.Services.Concrete
 
                 _dbContext.SaveChanges();
             }
-
-            return bookCopyIdCorresponds;
+            else
+            {
+                throw new InvalidBookCopyIdException();
+            }
         }
 
         public void RejectLoanRequest(int loanId)
