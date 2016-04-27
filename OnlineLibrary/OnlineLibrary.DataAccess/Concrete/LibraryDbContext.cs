@@ -26,5 +26,6 @@ namespace OnlineLibrary.DataAccess.Concrete
         public DbSet<Category> Categories { get; set; }
         public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<Loan> Loans { get; set; }
+        public DbSet<History> History { get; set; }
     }
 }

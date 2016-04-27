@@ -239,8 +239,8 @@
     <Compile Include="Models\RoleModificationModel.cs" />
     <Compile Include="Models\RoleViewModel.cs" />
     <Compile Include="Models\SuperAdminViewModel.cs" />
-    <Compile Include="Models\UserLoansViewModels\CurrentUserLoansViewModel.cs" />
-    <Compile Include="Models\UserLoansViewModels\PendingUserLoansViewModel.cs" />
+    <Compile Include="Models\UserLoansViewModels\CurrentUserLoanViewModel.cs" />
+    <Compile Include="Models\UserLoansViewModels\HistoryUserLoanViewModel.cs" />
     <Compile Include="Models\UserLoansViewModels\UserLoansViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
