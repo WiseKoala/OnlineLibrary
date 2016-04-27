@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Linq;
+using OnlineLibrary.Common.Exceptions;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess.Enums;
@@ -22,11 +23,25 @@ namespace OnlineLibrary.Services.Concrete
             // Find loan by ID.
             Loan loanToApprove = _dbContext.Loans.Find(loanId);
 
-            // Set status to Approved.
-            loanToApprove.Status = LoanStatus.Approved;
-            loanToApprove.BookPickUpLimitDate = DateTime.Now.AddDays(3);
+            // Check if ID of BookCopy corresponds to the ID of book.
+            bool bookCopyIdCorresponds = _dbContext.Books
+                .Include(b => b.BookCopies)
+                .Single(b => b.Id == loanToApprove.BookId)
+                .BookCopies
+                .Any(bc => bc.Id == bookCopyId);
 
-            _dbContext.SaveChanges();
+            if (bookCopyIdCorresponds)
+            {
+                // Set status to Approved.
+                loanToApprove.Status = LoanStatus.Approved;
+                loanToApprove.BookPickUpLimitDate = DateTime.Now.AddDays(3);
+
+                _dbContext.SaveChanges();
+            }
+            else
+            {
+                throw new InvalidBookCopyIdException();
+            }
         }
 
         public void RejectLoanRequest(int loanId)

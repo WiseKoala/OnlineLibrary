@@ -12,6 +12,7 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using OnlineLibrary.Web.Models.LibrarianLoansViewModels;
 using OnlineLibrary.DataAccess.Abstract;
+using OnlineLibrary.Common.Exceptions;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -56,9 +57,18 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public ActionResult ApproveLoanRequest(int bookCopyId, int loanId)
         {
-            _librarianService.ApproveLoanRequest(bookCopyId, loanId);
+            try
+            {
+                _librarianService.ApproveLoanRequest(bookCopyId, loanId);
 
-            return RedirectToActionPermanent("Index");
+                return Json(new { success = "Loan approved!" },
+                    JsonRequestBehavior.AllowGet);
+            }
+            catch (InvalidBookCopyIdException)
+            {
+                return Json(new { error = "BookCopyId doesn't correspond to the BookId" },
+                    JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]
