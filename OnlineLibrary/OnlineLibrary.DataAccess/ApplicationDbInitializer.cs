@@ -253,8 +253,8 @@ namespace OnlineLibrary.DataAccess
                 },
                 new Loan
                 {
-                    BookCopyId = 2,
-                    BookId = 1,
+                    BookCopyId = 6,
+                    BookId = 3,
                     Status = LoanStatus.Completed,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = DateTime.Now.AddDays(-50),
@@ -262,8 +262,8 @@ namespace OnlineLibrary.DataAccess
                 },
                 new Loan
                 {
-                    BookCopyId = 2,
-                    BookId = 1,
+                    BookCopyId = 7,
+                    BookId = 4,
                     Status = LoanStatus.Completed,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = DateTime.Now.AddDays(-60),
@@ -284,6 +284,13 @@ namespace OnlineLibrary.DataAccess
                     BookPickUpLimitDate = DateTime.Now.AddDays(2),
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
                 },
+                new Loan
+                {
+                    BookCopyId = 11,
+                    BookId = 6,
+                    Status = LoanStatus.Pending,
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
+                }
             };
             loans.ForEach(l => context.Loans.Add(l));
 #endif
