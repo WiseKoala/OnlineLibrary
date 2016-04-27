@@ -56,11 +56,12 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public ActionResult ApproveLoanRequest(int bookCopyId, int loanId)
         {
-            bool result = _librarianService.TryApproveLoanRequest(bookCopyId, loanId);
+            bool loanApproved = _librarianService.TryApproveLoanRequest(bookCopyId, loanId);
 
-            if (result)
+            if (loanApproved)
             {
-                return RedirectToActionPermanent("Index");
+                return Json(new { success = "Loan approved!" },
+                    JsonRequestBehavior.AllowGet);
             }
             else
             {

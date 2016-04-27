@@ -1,13 +1,13 @@
 ﻿$( document ).ready(function() {
     $(".approve").click(function () {
-        var requestId = $(this).data('loanRequestId');
-        $("#approve").find('input[id="loanRequestId"]').val(requestId);
+        var loanId = $(this).data('loanId');
+        $("#approve").find('input[id="loanId"]').val(loanId);
     });
 });
 
 $(document).ready(function () {
     $(".reject").click(function () {
-        var requestId = $(this).data('loanRequestId');
-        $("#reject").find('input[id="loanRequestId"]').val(requestId);
+        var loanId = $(this).data('loanId');
+        $("#reject").find('input[id="loanId"]').val(loanId);
     });
 });
