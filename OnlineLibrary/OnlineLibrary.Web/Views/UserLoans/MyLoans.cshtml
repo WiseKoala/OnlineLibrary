@@ -7,178 +7,261 @@
 <h2>My Loans</h2>
 
 <ul class="nav nav-tabs">
-    <li><a data-toggle="tab" href="#active">Active Loans</a></li>
+    <li class ="active"><a data-toggle="tab" href="#active">Active Loans</a></li>
     <li><a data-toggle="tab" href="#requests">Requests</a></li>
     <li><a data-toggle="tab" href="#history">History</a></li>
 </ul>
 
 <div class="tab-content">
-    @* Active Loans Tabs. *@
-    <div id="active" class="tab-pane fade">
+    @* Active Loans Tab *@
+    <div id="active" class="tab-pane fade in active">
         <p></p>
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
-                @* approved laons panel *@
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
-                            <strong>Active loans</strong>
-                        </h3>
-                    </div>
+                
+                <table class="table table-bordered">
 
-                    @foreach (var loan in Model.CurrentLoans)
+                    @* Approved loans *@
+
+                    <tr class="active">
+                        <th colspan="8">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            Approved loans
+                        </th>
+                    </tr>
+                    
+                    @{ 
+                        int counter = 0;
+                     }
+
+                    @if (!(Model.CurrentLoans.Select(loan => ((loan.ExpectedReturnDate.Value - DateTime.Now).Days > 5)).Any()))
                     {
+                        <tr>
+                            <td colspan="8">
+                                There are no approved loans.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                      foreach (var loan in Model.CurrentLoans)
+                      {
                         if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days > 5)
                         {
-                            <div class="panel-body">
-                                You have loaned <strong>"@loan.Title"</strong> and you are expected to return the book before <strong>@string.Format("{0:dddd, MMMM dd, yyyy}", loan.ExpectedReturnDate)</strong>
-                            </div>
+                            <tr class="success" title="Approved loans">
+                                <td>#@(++counter)</td>
+                                <td colspan="7">
+                                    You have loaned
+                                    <strong>"@loan.Title"</strong> and you are expected to return the book before
+                                    <strong>@string.Format("{0:dddd, MMMM dd, yyyy}", loan.ExpectedReturnDate)</strong>
+                                </td>
+                            </tr>
                         }
+                      }
                     }
-                </div>
 
-                @* Soon expiring panel. *@
-                <div class="panel panel-warning">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                            <strong>Loans that expire soon</strong>
-                        </h3>
-                    </div>
+                    @* Soon expiring *@
 
-                    @foreach (var loan in Model.CurrentLoans)
+                    <tr class="active">
+                        <th colspan="8">
+                            <span class="glyphicon glyphicon-bell" aria-hidden="true"></span>
+                            Soon expiring loans
+                        </th>
+                    </tr>
+                    
+                    @{ 
+                        counter = 0;
+                     }
+
+                    @if (!(Model.CurrentLoans.Select(loan => ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 5 && (loan.ExpectedReturnDate.Value - DateTime.Now).Days > 0)).Any()))
                     {
-                        if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 5 && (loan.ExpectedReturnDate.Value - DateTime.Now).Days > 0)
-                        {
-                            <div class="panel-body">
-                                You have loaned <strong>"@loan.Title"</strong> and you are expected to return the book before @string.Format("{0:dddd, MMMM dd, yyyy}", loan.ExpectedReturnDate)  - you have <strong>@((loan.ExpectedReturnDate.Value - DateTime.Now).Days) days left</strong>!
-                            </div>
-                        }
+                        <tr>
+                            <td colspan="8">
+                                There are no soon expiring loans.
+                            </td>
+                        </tr>
                     }
-                </div>
-
-                @* Overdue laons panel. *@
-                <div class="panel panel-danger">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                            <strong>Loans overdue</strong>
-                        </h3>
-                    </div>
-
-                    @foreach (var loan in Model.CurrentLoans)
+                    else
                     {
-                        if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 0)
-                        {
-                            <div class="panel-body">
-                                You have loaned <strong>"@loan.Title"</strong> and you are expected to return the book before @string.Format("{0:dddd, MMM d, yyyy}", loan.ExpectedReturnDate) - the return time is <strong>@((DateTime.Now - loan.ExpectedReturnDate.Value).Days) days overdue</strong>!
-                            </div>
-                        }
+                      foreach (var loan in Model.CurrentLoans)
+                      {
+                          if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 5 && (loan.ExpectedReturnDate.Value - DateTime.Now).Days > 0)
+                          {
+                            <tr class="warning" title="Soon expiring loans">
+                                <td>#@(++counter)</td>
+                                <td colspan="7">
+                                    You have loaned <strong>"@loan.Title"</strong> and you are expected to return the book before @string.Format("{0:dddd, MMMM dd, yyyy}", loan.ExpectedReturnDate)  - you have <strong>@((loan.ExpectedReturnDate.Value - DateTime.Now).Days) days left</strong>!
+                                </td>
+                            </tr>
+                          }
+                      }
                     }
-                </div>
 
+                    @* Overdue loans *@
+
+                    <tr class="active">
+                        <th colspan="8">
+                            <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+                            Overdue loans
+                        </th>
+                    </tr>
+                                        
+                   @{ 
+                       counter = 0;
+                    }
+                    
+                   @if (!(Model.CurrentLoans.Select(loan => ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 0)).Any()))
+                   {
+                        <tr>
+                            <td colspan="8">
+                                There are no overdue loans.
+                            </td>
+                        </tr>
+                   }
+                   else
+                   {
+                       foreach (var loan in Model.CurrentLoans)
+                       {
+                           if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 0)
+                           {
+                              <tr class="danger" title="Overdue loans">
+                                  <td>#@(++counter)</td>
+                                  <td colspan="7">
+                                      You have loaned <strong>"@loan.Title"</strong> and you are expected to return the book before @string.Format("{0:dddd, MMM d, yyyy}", loan.ExpectedReturnDate) - the return time is <strong>@((DateTime.Now - loan.ExpectedReturnDate.Value).Days) days overdue</strong>!
+                                  </td>
+                              </tr>
+                           }
+                       }
+                   }
+                </table>
             </div>
             <div class="col-sm-2"></div>
             <br />
         </div>
     </div>    
     
-    @* Requests Tab. *@
+    @* Requests Tab *@
     <div id="requests" class="tab-pane fade">
         <p></p>
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
+                <table class="table table-bordered">
 
-                @* Rejected requests Label *@
-                <div class="panel panel-danger">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-                            <strong>Rejected requests</strong>
-                        </h3>
-                    </div>
+                    @* Approved loan requests label *@
 
-                    @if (!Model.RejectedLoans.Any())
-                    {
-                        <div class="panel-body">
-                            There are no rejected loan requests.
-                        </div>
+                    <tr class="active">
+                        <th colspan="8">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            Approved loan requests
+                        </th>
+                    </tr>
+
+                    @{
+                        counter = 0;
                     }
-                    else
-                    {
-                        foreach (var loan in Model.RejectedLoans)
-                        {
-                            <div class="panel-body">
-                                Your request for <strong> "@loan.Title" </strong> was rejected.
-                            </div>
-                        }
-                    }
-                </div>
-
-                @* Approved requests panel. *@
-                <div class="panel panel-success">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                            <strong>Approved loan requests</strong>
-                        </h3>
-                    </div>
                     @if (!Model.ApprovedLoans.Any())
                     {
-                        <div class="panel-body">
-                            There are no approved loan requests.
-                        </div>
+                        <tr>
+                            <td colspan="8">
+                                There are no approved loan requests.
+                            </td>
+                        </tr>
                     }
                     else
                     {
                         foreach (var loan in Model.ApprovedLoans)
                         {
-                            <div class="panel-body">
-                                You have sent a loan request for the book <strong>"@loan.Title"</strong> - it was approved. You are expected to go to the library and take the book. You have to perform the loan before <strong>@loan.BookPickUpLimitDate.Value.ToLongDateString()</strong>.
-                                <br /><br />
-                                @using (Html.BeginForm("CancelApprovedLoan", "UserLoans", new { id = loan.BookId }))
-                                {
-                                    <input type="submit" class="btn btn-danger" value="Cancel Loan" />
-                                }
-                            </div>
+                            <tr class="success" title="Approved loan requests">
+                                <td>#@(++counter)</td>
+                                <td colspan="6">
+                                    You have sent a loan request for the book <strong>"@loan.Title"</strong> - it was approved. You are expected to go to the library and take the book. You have to perform the loan before <strong>@loan.BookPickUpLimitDate.Value.ToLongDateString()</strong>.
+                                </td>
+                                <td>
+                                    @using (Html.BeginForm("CancelApprovedLoan", "UserLoans", new { id = loan.BookId }))
+                                    {
+                                        <input type="submit" class="btn btn-danger" value="Cancel Loan" />
+                                    }
+                                </td>
+                            </tr>
                         }
                     }
-                </div>
 
-                @* Pending loans label *@
-                <div class="panel panel-warning">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
+                    @* Pending loan requests label *@
+
+                    <tr class="active">
+                        <th colspan="8">
                             <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
                             Pending loan requests
-                        </h3>
-                    </div>
+                        </th>
+                    </tr>
+                    
+                    @{
+                        counter = 0;
+                    }
                     @if (!Model.PendingLoans.Any())
                     {
-                        <div class="panel-body">
-                            You have no pending loans.
-                        </div>
+                        <tr>
+                            <td colspan="8">
+                                You have no pending loans.
+                            </td>
+                        </tr>
                     }
                     else
                     {
                         foreach (var loan in Model.PendingLoans)
                         {
-                            <div class="panel-body">
-                                Your loan request for <strong> "@loan.BookTitle" </strong> is pending confirmation.
-                                <br /><br />
-                                @using (Html.BeginForm("CancelPendingLoan", "UserLoans", new { id = loan.BookId }))
-                                {
-                                    <input type="submit" class="btn btn-danger" value="Cancel Loan" />
-                                }
-                            </div>
+                            <tr class="warning" title="Pending loan requests">
+                                <td>#@(++counter)</td>
+                                <td colspan="6">
+                                    Your loan request for <strong> "@loan.BookTitle" </strong> is pending confirmation.
+                                </td>
+                                <td>
+                                    @using (Html.BeginForm("CancelPendingLoan", "UserLoans", new { id = loan.BookId }))
+                                    {
+                                        <input type="submit" class="btn btn-danger" value="Cancel Loan" />
+                                    }
+                                </td>
+                            </tr>
                         }
                     }
-                </div>
+                
+                    @* Rejected loan requests label *@
 
-            </div>
+                    <tr class="active">
+                        <th colspan="8">
+                            <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+                            Rejected loan requests
+                        </th>
+                    </tr>
+                    
+                    @{
+                        counter = 0;
+                    }
+                    @if (!Model.RejectedLoans.Any())
+                    {
+                        <tr>
+                            <td colspan="8">
+                                There are no rejected loan requests.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var loan in Model.RejectedLoans)
+                        {
+                            <tr class="danger" title="Rejected loan requests">
+                                <td>#@(++counter)</td>
+                                <td colspan="7">
+                                    Your request for <strong> "@loan.Title" </strong> was rejected.
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                </table>
+              </div>
             <div class="col-sm-2"></div>
             <br />
         </div>
@@ -191,57 +274,75 @@
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
 
-                @* Returned books label*@
-                <div class="panel panel-success">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                            Returned books
-                        </h3>
-                    </div>
+                <table class="table table-bordered">
 
+                    @* Returned books label*@
+
+                    <tr class="active">
+                        <th colspan="8">
+                            <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                            Returned books
+                        </th>
+                    </tr>
+                    @{
+                        counter = 0;
+                    }
                     @if (!Model.ReturnedLoans.Any())
                     {
-                        <div class="panel-body">
-                            You have no returned books.
-                        </div>
+                        <tr>
+                            <td colspan="8">
+                                You have no returned books.
+                            </td>
+                        </tr>
                     }
                     else
                     {
                         foreach (var loan in Model.ReturnedLoans)
                         {
-                            <div class="panel-body">
-                                You have loaned and returned the book <strong> "@loan.Title" </strong>.
-                            </div>
+                            <tr class="success" title="Returned books">
+                                <td>#@(++counter)</td>
+                                <td colspan="7">
+                                    You have loaned and returned the book <strong> "@loan.Title" </strong>.
+                                </td>
+                            </tr>
                         }
                     }
-                </div>
 
-                @* Lost books label *@
-                <div class="panel panel-danger">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
+                    @* Lost books label *@
+
+                    <tr class="active">
+                        <th colspan="8">
                             <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                             Lost books
-                        </h3>
-                    </div>
+                        </th>
+                    </tr>
+
+                    @{
+                        counter = 0;
+                    }
 
                     @if (!Model.LostBooks.Any())
                     {
-                        <div class="panel-body">
-                            You have no lost books.
-                        </div>
+                        <tr>
+                            <td colspan="8">
+                                You have no lost books.
+                            </td>
+                        </tr>
                     }
                     else
                     {
                         foreach (var loan in Model.LostBooks)
                         {
-                            <div class="panel-body">
-                                You have loaned and lost the book <strong> "@loan.Title" </strong>.
-                            </div>
+                            <tr class="success" title="Returned books">
+                                <td>#@(++counter)</td>
+                                <td colspan="7">
+                                    You have loaned and lost the book <strong> "@loan.Title" </strong>.
+                                </td>
+                            </tr>
                         }
                     }
-                </div>
+                    
+                </table>
             </div>
             <div class="col-sm-2"></div>
             <br />
