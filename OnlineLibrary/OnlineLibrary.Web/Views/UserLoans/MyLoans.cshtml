@@ -7,8 +7,17 @@
 <h2>My Loans</h2>
 
 <ul class="nav nav-tabs">
-    <li><a data-toggle="tab" href="#active">Active Loans</a></li>
-    <li><a data-toggle="tab" href="#requests">Requests</a></li>
+    <li>
+        <a data-toggle="tab" href="#active">
+            Active Loans
+            <span id="ActiveLoansBadge" class="badge"></span>
+        </a>
+    </li>
+    <li>
+        <a data-toggle="tab" href="#requests">Requests
+            <span id="RequestsBage" class="badge"></span>
+        </a>
+    </li>
     <li><a data-toggle="tab" href="#history">History</a></li>
 </ul>
 
@@ -248,3 +257,9 @@
         </div>
     </div>
 </div>
+
+<script>
+
+    var activeLoansBageNumber = @Model.ApprovedLoans.Count() + @Model.RejectedLoans.Count()
+
+</script>
