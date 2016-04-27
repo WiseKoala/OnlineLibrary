@@ -10,6 +10,7 @@ namespace OnlineLibrary.Web.Models.UserLoansViewModels
         public string Title { get; set; }
         public DateTime? ExpectedReturnDate { get; set; }
         public LoanStatus Status { get; set; }
+        public DateTime? BookPickUpLimitDate { get; set; }
 
         [ForeignKey(nameof(Book))]
         public int BookId { get; set; }
