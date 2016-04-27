@@ -22,6 +22,7 @@ namespace OnlineLibrary.DataAccess.Abstract
         DbSet<Loan> Loans { get; set; }
         IDbSet<IdentityRole> Roles { get; set; }
         IDbSet<User> Users { get; set; }
+        DbSet<History> History { get; set; }
 
         int SaveChanges();
         Task<int> SaveChangesAsync();
