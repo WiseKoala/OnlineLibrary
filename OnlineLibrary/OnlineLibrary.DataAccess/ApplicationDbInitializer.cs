@@ -244,40 +244,6 @@ namespace OnlineLibrary.DataAccess
                 },
                 new Loan
                 {
-                    BookCopyId = 1,
-                    BookId = 1,
-                    Status = LoanStatus.Completed,
-                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
-                    StartDate = DateTime.Now.AddDays(-51),
-                    ExpectedReturnDate = DateTime.Now.AddDays(-40)
-                },
-                new Loan
-                {
-                    BookCopyId = 6,
-                    BookId = 3,
-                    Status = LoanStatus.Completed,
-                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
-                    StartDate = DateTime.Now.AddDays(-50),
-                    ExpectedReturnDate = DateTime.Now.AddDays(-40)
-                },
-                new Loan
-                {
-                    BookCopyId = 7,
-                    BookId = 4,
-                    Status = LoanStatus.Completed,
-                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
-                    StartDate = DateTime.Now.AddDays(-60),
-                    ExpectedReturnDate = DateTime.Now.AddDays(-50)
-                },
-                new Loan
-                {
-                    BookCopyId = 1,
-                    BookId = 1,
-                    Status = LoanStatus.Rejected,
-                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
-                },
-                new Loan
-                {
                     BookCopyId = 11,
                     BookId = 5,
                     Status = LoanStatus.Approved,
@@ -293,6 +259,61 @@ namespace OnlineLibrary.DataAccess
                 }
             };
             loans.ForEach(l => context.Loans.Add(l));
+
+
+
+            var history = new List<History>()
+            {
+                new History
+                {
+                    ISBN = "1518800270",
+                    BookCopyId = 1,
+                    Status = LoanStatus.Completed,
+                    StartDate = DateTime.Now.AddDays(-51),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-40),
+                    ActualReturnDate = DateTime.Now.AddDays(-44),
+                    UserName = "libraryuser9@gmail.com",
+                    LibrarianUserName = "Admin",
+                    InitialBookCondition = BookCondition.New,
+                    FinalBookCondition = BookCondition.VeryGood
+                },
+                new History
+                {
+                    ISBN = "7678678676",
+                    BookCopyId = 6,
+                    Status = LoanStatus.Completed,
+                    StartDate = DateTime.Now.AddDays(-50),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-40),
+                    ActualReturnDate = DateTime.Now.AddDays(-44),
+                    UserName = "libraryuser9@gmail.com",
+                    LibrarianUserName = "Admin",
+                    InitialBookCondition = BookCondition.Good,
+                    FinalBookCondition = BookCondition.Good
+                },
+                new History
+                {
+                    ISBN = "778587687",
+                    BookCopyId = 7,
+                    Status = LoanStatus.Completed,
+                    StartDate = DateTime.Now.AddDays(-60),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-50),
+                    ActualReturnDate = DateTime.Now.AddDays(-44),
+                    UserName = "libraryuser9@gmail.com",
+                    LibrarianUserName = "Admin",
+                    InitialBookCondition = BookCondition.Poor,
+                    FinalBookCondition = BookCondition.Poor
+                },
+                new History
+                {
+                    ISBN = "1518800270",
+                    BookCopyId = 1,
+                    Status = LoanStatus.Rejected,
+                    UserName = "libraryuser9@gmail.com",
+                    LibrarianUserName = "Admin"
+                },
+            };
+            history.ForEach(h => context.History.Add(h));
+
 #endif
 
             context.SaveChanges();

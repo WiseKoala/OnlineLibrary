@@ -32,15 +32,20 @@ namespace OnlineLibrary.Web.Controllers
                             join b in DbContext.Books
                             on bc.BookId equals b.Id
                             orderby l.Status, l.ExpectedReturnDate
-                            select new CurrentUserLoansViewModel() { Title = b.Title, ExpectedReturnDate = l.ExpectedReturnDate, Status = l.Status, BookId = b.Id, BookPickUpLimitDate = l.BookPickUpLimitDate };
+                            select new CurrentUserLoanViewModel() { Title = b.Title, ExpectedReturnDate = l.ExpectedReturnDate, Status = l.Status, BookPickUpLimitDate = l.BookPickUpLimitDate, BookId = b.Id };
 
-            
-            var userLoanRequests = from lr in DbContext.Loans
-                                   where lr.UserId == userId
+            var historyUserLoans = from h in DbContext.History
+                                   where h.UserName == DbContext.Users.Where(u => u.Id == userId).FirstOrDefault().UserName
+                                   join bc in DbContext.BookCopies
+                                   on h.BookCopyId equals bc.Id
                                    join b in DbContext.Books
-                                   on lr.BookId equals b.Id
-                                   select new PendingUserLoansViewModel() { BookTitle = b.Title, BookId = b.Id };
+                                   on bc.BookId equals b.Id
+                                   join l in DbContext.Users
+                                   on h.LibrarianUserName equals l.UserName
+                                   orderby h.Status, h.ExpectedReturnDate
+                                   select new HistoryUserLoanViewModel() { BookTitle = b.Title, Status = h.Status, StartDate = h.StartDate, ExpectedReturnDate = h.ExpectedReturnDate, ActualReturnDate = h.ActualReturnDate, InitialBookCondition = h.InitialBookCondition, FinalBookCondition = h.FinalBookCondition, LibrarianName = l.UserName };
 
+            var pendingUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Pending);
             var rejectedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Rejected);
             var returnedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Completed);
             var lostUserBooks = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.LostBook);
@@ -48,12 +53,13 @@ namespace OnlineLibrary.Web.Controllers
             var currentUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.InProgress);
             
             // Populating view model object.
-            model.PendingLoans = userLoanRequests;
+            model.PendingLoans = pendingUserLoans;
             model.RejectedLoans = rejectedUserLoans;
             model.ReturnedLoans = returnedUserLoans;
             model.LostBooks = lostUserBooks;
             model.ApprovedLoans = approvedUserLoans;
             model.CurrentLoans = currentUserLoans;
+            model.HistoryLoans = historyUserLoans;
 
             // Returning the view.
             return View(model);
