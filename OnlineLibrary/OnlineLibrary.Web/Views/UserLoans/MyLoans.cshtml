@@ -137,7 +137,7 @@
                         foreach (var loan in Model.ApprovedLoans)
                         {
                             <div class="panel-body">
-                                You have sent a loan request for the book <strong>"@loan.Title"</strong> - it was approved. You are expected to go to the library and take the book.
+                                You have sent a loan request for the book <strong>"@loan.Title"</strong> - it was approved. You are expected to go to the library and take the book. You have to perform the loan before <strong>@loan.BookPickUpLimitDate.Value.ToLongDateString()</strong>.
                                 <br /><br />
                                 @using (Html.BeginForm("CancelApprovedLoan", "UserLoans", new { id = loan.BookId }))
                                 {
