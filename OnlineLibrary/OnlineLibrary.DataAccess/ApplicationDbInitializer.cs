@@ -281,6 +281,7 @@ namespace OnlineLibrary.DataAccess
                     BookCopyId = 11,
                     BookId = 5,
                     Status = LoanStatus.Approved,
+                    BookPickUpLimitDate = DateTime.Now.AddDays(2),
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
                 },
             };

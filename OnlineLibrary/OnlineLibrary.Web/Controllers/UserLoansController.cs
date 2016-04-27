@@ -32,7 +32,7 @@ namespace OnlineLibrary.Web.Controllers
                             join b in DbContext.Books
                             on bc.BookId equals b.Id
                             orderby l.Status, l.ExpectedReturnDate
-                            select new CurrentUserLoansViewModel() { Title = b.Title, ExpectedReturnDate = l.ExpectedReturnDate, Status = l.Status, BookId = b.Id };
+                            select new CurrentUserLoansViewModel() { Title = b.Title, ExpectedReturnDate = l.ExpectedReturnDate, Status = l.Status, BookId = b.Id, BookPickUpLimitDate = l.BookPickUpLimitDate };
 
             
             var userLoanRequests = from lr in DbContext.Loans

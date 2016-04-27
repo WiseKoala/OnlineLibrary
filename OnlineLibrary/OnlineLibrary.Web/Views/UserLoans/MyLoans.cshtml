@@ -7,60 +7,19 @@
 <h2>My Loans</h2>
 
 <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#status">Current Status</a></li>
-    <li><a data-toggle="tab" href="#active">Active</a></li>
-    <li><a data-toggle="tab" href="#overdue">Overdue</a></li>
-    <li><a data-toggle="tab" href="#expire_soon">Soon Expiring</a></li>
-    <li><a data-toggle="tab" href="#non_urgent">Non-urgent</a></li>
-    <li><a data-toggle="tab" href="#approved">Approved Requests</a></li>
-    <li><a data-toggle="tab" href="#rejected">Rejected Requests</a></li>
-    <li><a data-toggle="tab" href="#pending">Pending Requests</a></li>
-    <li><a data-toggle="tab" href="#returned">Returned</a></li>
-    <li><a data-toggle="tab" href="#lost">Lost</a></li>
+    <li><a data-toggle="tab" href="#active">Active Loans</a></li>
+    <li><a data-toggle="tab" href="#requests">Requests</a></li>
+    <li><a data-toggle="tab" href="#history">History</a></li>
 </ul>
 
 <div class="tab-content">
-        <div id="status" class="tab-pane fade in active">
-            <p></p>
-            <div class="row">
-                <div class="col-sm-2"></div>
-                <div class="col-sm-8">
-                    <div class="panel panel-info">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">
-                                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-                                <strong>Current Status</strong>
-                            </h3>
-                        </div>
-
-                        @*Displays current loan statuses*@
-
-                        <div class="panel-body">
-                            You currently have:
-                            <ul>
-                                <li>@Model.CurrentLoans.Count() active @((Model.CurrentLoans.Count()==1) ? "loan" : "loans") </li>
-                                <li>@Model.CurrentLoans.Where(l => (l.ExpectedReturnDate.Value - DateTime.Now).Days <= 0).Count() @((@Model.CurrentLoans.Where(l => (l.ExpectedReturnDate.Value - DateTime.Now).Days <= 0).Count() == 1) ? "loan" : "loans") overdue</li>
-                                <li>@Model.CurrentLoans.Where(l => (l.ExpectedReturnDate.Value - DateTime.Now).Days <= 5 && (l.ExpectedReturnDate.Value - DateTime.Now).Days > 0).Count() soon expiring @((@Model.CurrentLoans.Where(l => (l.ExpectedReturnDate.Value - DateTime.Now).Days <= 5 && (l.ExpectedReturnDate.Value - DateTime.Now).Days > 0).Count()==1) ? "loan" : "loans")</li>
-                                <li>@Model.CurrentLoans.Where(l => (l.ExpectedReturnDate.Value - DateTime.Now).Days > 5).Count() non-urgent active @((@Model.CurrentLoans.Where(l => (l.ExpectedReturnDate.Value - DateTime.Now).Days > 5).Count()==1) ? "loan" : "loans")</li>
-                                <li>@Model.ApprovedLoans.Count() approved loan @((@Model.ApprovedLoans.Count()==1) ? "request" : "requests")</li>
-                                <li>@Model.RejectedLoans.Count() rejected loan @((@Model.RejectedLoans.Count()==1) ? "request" : "requests")</li>
-                                <li>@Model.PendingLoans.Count() pending loan @((@Model.PendingLoans.Count()==1) ? "request" : "requests")</li>
-                                <li>@Model.ReturnedLoans.Count() returned @((@Model.ReturnedLoans.Count()==1) ? "book" : "books")</li>
-                                <li>@Model.LostBooks.Count() lost @((@Model.LostBooks.Count()==1) ? "book" : "books")</li>
-                            </ul>
-                        </div>
-                        </div>
-                </div>
-                <div class="col-sm-2"></div>
-                <br />
-            </div>
-    </div>
-
+    @* Active Loans Tabs. *@
     <div id="active" class="tab-pane fade">
         <p></p>
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
+                @* approved laons panel *@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
@@ -69,30 +28,6 @@
                         </h3>
                     </div>
 
-                    @*List loans that are currently active, in the following order:*@
-                    @*1) overdue 2) soon expiring 3) non-urgent *@
-
-
-                    @foreach (var loan in Model.CurrentLoans)
-                    {
-                    if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 0)
-                        {
-                            <div class="panel-body">
-                                You have loaned <strong>"@loan.Title"</strong> and you are expected to return the book before @string.Format("{0:dddd, MMM d, yyyy}", loan.ExpectedReturnDate) - the return time is <strong>@((DateTime.Now - loan.ExpectedReturnDate.Value).Days) days overdue</strong>!
-                            </div>
-                        }
-                    }
-
-                    @foreach (var loan in Model.CurrentLoans)
-                    {
-                        if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 5 && (loan.ExpectedReturnDate.Value - DateTime.Now).Days > 0)
-                        {
-                            <div class="panel-body">
-                                You have loaned <strong>"@loan.Title"</strong> and you are expected to return the book before @string.Format("{0:dddd, MMMM dd, yyyy}", loan.ExpectedReturnDate)  - you have <strong>@((loan.ExpectedReturnDate.Value - DateTime.Now).Days) days left</strong>!
-                            </div>
-                        }
-                    }
-
                     @foreach (var loan in Model.CurrentLoans)
                     {
                         if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days > 5)
@@ -103,49 +38,8 @@
                         }
                     }
                 </div>
-            </div>
-            <div class="col-sm-2"></div>
-            <br />
-        </div>
-    </div>
 
-    <div id="overdue" class="tab-pane fade">
-        <p></p>
-        <div class="row">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-8">
-                <div class="panel panel-danger">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                            <strong>Loans overdue</strong>
-                        </h3>
-                    </div>
-
-                    @*List loans that are overdue.*@
-
-                    @foreach (var loan in Model.CurrentLoans)
-                    {
-                    if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 0)
-                        {
-                            <div class="panel-body">
-                                You have loaned <strong>"@loan.Title"</strong> and you are expected to return the book before @string.Format("{0:dddd, MMM d, yyyy}", loan.ExpectedReturnDate) - the return time is <strong>@((DateTime.Now - loan.ExpectedReturnDate.Value).Days) days overdue</strong>!
-                            </div>
-                        }
-                    }
-                </div>
-            </div>
-            <div class="col-sm-2"></div>
-            <br />
-        </div>
-    </div>
-
-
-    <div id="expire_soon" class="tab-pane fade">
-        <p></p>
-        <div class="row">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-8">
+                @* Soon expiring panel. *@
                 <div class="panel panel-warning">
                     <div class="panel-heading">
                         <h3 class="panel-title">
@@ -154,8 +48,6 @@
                         </h3>
                     </div>
 
-                    @*List loans that will be soon overdue.*@
-
                     @foreach (var loan in Model.CurrentLoans)
                     {
                         if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 5 && (loan.ExpectedReturnDate.Value - DateTime.Now).Days > 0)
@@ -166,57 +58,48 @@
                         }
                     }
                 </div>
-            </div>
-                <div class="col-sm-2"></div>
-                <br />
-        </div>
-    </div>
 
-    <div id="non_urgent" class="tab-pane fade">
-        <p></p>
-        <div class="row">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-8">
-                <div class="panel panel-success">
+                @* Overdue laons panel. *@
+                <div class="panel panel-danger">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                            <strong>Non-urgent active loans</strong>
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            <strong>Loans overdue</strong>
                         </h3>
                     </div>
 
-                    @*List all current loans that are not overdue and not soon overdue.*@
-
                     @foreach (var loan in Model.CurrentLoans)
                     {
-                        if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days > 5)
+                        if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 0)
                         {
                             <div class="panel-body">
-                                You have loaned <strong>"@loan.Title"</strong> and you are expected to return the book before <strong>@string.Format("{0:dddd, MMMM dd, yyyy}", loan.ExpectedReturnDate)</strong>
+                                You have loaned <strong>"@loan.Title"</strong> and you are expected to return the book before @string.Format("{0:dddd, MMM d, yyyy}", loan.ExpectedReturnDate) - the return time is <strong>@((DateTime.Now - loan.ExpectedReturnDate.Value).Days) days overdue</strong>!
                             </div>
                         }
                     }
                 </div>
+
             </div>
             <div class="col-sm-2"></div>
             <br />
         </div>
-    </div>
-
-    <div id="rejected" class="tab-pane fade">
+    </div>    
+    
+    @* Requests Tab. *@
+    <div id="requests" class="tab-pane fade">
         <p></p>
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
+
+                @* Rejected requests Label *@
                 <div class="panel panel-danger">
                     <div class="panel-heading">
                         <h3 class="panel-title">
                             <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-                            <strong>Rejected loan requests</strong>
+                            <strong>Rejected requests</strong>
                         </h3>
                     </div>
-
-                    @* Rejected loan requests.*@
 
                     @if (!Model.RejectedLoans.Any())
                     {
@@ -234,17 +117,8 @@
                         }
                     }
                 </div>
-            </div>
-            <div class="col-sm-2"></div>
-            <br />
-        </div>
-    </div>
 
-    <div id="approved" class="tab-pane fade">
-        <p></p>
-        <div class="row">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-8">
+                @* Approved requests panel. *@
                 <div class="panel panel-success">
                     <div class="panel-heading">
                         <h3 class="panel-title">
@@ -252,9 +126,6 @@
                             <strong>Approved loan requests</strong>
                         </h3>
                     </div>
-
-                    @* Approved loan requests.*@
-
                     @if (!Model.ApprovedLoans.Any())
                     {
                         <div class="panel-body">
@@ -266,7 +137,7 @@
                         foreach (var loan in Model.ApprovedLoans)
                         {
                             <div class="panel-body">
-                                You have sent a loan request for the book <strong>"@loan.Title"</strong> - it was approved. You are expected to go to the library and take the book.
+                                You have sent a loan request for the book <strong>"@loan.Title"</strong> - it was approved. You are expected to go to the library and take the book. You have to perform the loan before <strong>@loan.BookPickUpLimitDate.Value.ToLongDateString()</strong>.
                                 <br /><br />
                                 @using (Html.BeginForm("CancelApprovedLoan", "UserLoans", new { id = loan.BookId }))
                                 {
@@ -276,17 +147,8 @@
                         }
                     }
                 </div>
-            </div>
-            <div class="col-sm-2"></div>
-            <br />
-        </div>
-    </div>
 
-    <div id="pending" class="tab-pane fade">
-        <p></p>
-        <div class="row">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-8">
+                @* Pending loans label *@
                 <div class="panel panel-warning">
                     <div class="panel-heading">
                         <h3 class="panel-title">
@@ -294,9 +156,6 @@
                             Pending loan requests
                         </h3>
                     </div>
-
-                    @* Pending loan requests.*@
-
                     @if (!Model.PendingLoans.Any())
                     {
                         <div class="panel-body">
@@ -309,7 +168,7 @@
                         {
                             <div class="panel-body">
                                 Your loan request for <strong> "@loan.BookTitle" </strong> is pending confirmation.
-                                <br /><br/>
+                                <br /><br />
                                 @using (Html.BeginForm("CancelPendingLoan", "UserLoans", new { id = loan.BookId }))
                                 {
                                     <input type="submit" class="btn btn-danger" value="Cancel Loan" />
@@ -318,17 +177,21 @@
                         }
                     }
                 </div>
+
             </div>
             <div class="col-sm-2"></div>
             <br />
         </div>
     </div>
 
-    <div id="returned" class="tab-pane fade">
+    @* History Tab *@
+    <div id="history" class="tab-pane fade">
         <p></p>
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
+
+                @* Returned books label*@
                 <div class="panel panel-success">
                     <div class="panel-heading">
                         <h3 class="panel-title">
@@ -336,8 +199,6 @@
                             Returned books
                         </h3>
                     </div>
-
-                    @* Returned books.*@
 
                     @if (!Model.ReturnedLoans.Any())
                     {
@@ -355,17 +216,8 @@
                         }
                     }
                 </div>
-            </div>
-            <div class="col-sm-2"></div>
-            <br />
-        </div>
-    </div>
 
-    <div id="lost" class="tab-pane fade">
-        <p></p>
-        <div class="row">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-8">
+                @* Lost books label *@
                 <div class="panel panel-danger">
                     <div class="panel-heading">
                         <h3 class="panel-title">
@@ -373,8 +225,6 @@
                             Lost books
                         </h3>
                     </div>
-
-                    @* Lost books.*@
 
                     @if (!Model.LostBooks.Any())
                     {
