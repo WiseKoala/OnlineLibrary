@@ -244,7 +244,7 @@ namespace OnlineLibrary.DataAccess
                 },
                 new Loan
                 {
-                    BookCopyId = 11,
+                    BookCopyId = null,
                     BookId = 5,
                     Status = LoanStatus.Approved,
                     BookPickUpLimitDate = DateTime.Now.AddDays(2),
@@ -252,7 +252,7 @@ namespace OnlineLibrary.DataAccess
                 },
                 new Loan
                 {
-                    BookCopyId = 11,
+                    BookCopyId = null,
                     BookId = 6,
                     Status = LoanStatus.Pending,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
@@ -306,7 +306,7 @@ namespace OnlineLibrary.DataAccess
                 new History
                 {
                     ISBN = "1518800270",
-                    BookCopyId = 1,
+                    BookCopyId = null,
                     Status = LoanStatus.Rejected,
                     UserName = "libraryuser9@gmail.com",
                     LibrarianUserName = "Admin"

@@ -45,14 +45,14 @@ namespace OnlineLibrary.Web.Controllers
                                    orderby h.Status, h.ExpectedReturnDate
                                    select new HistoryUserLoanViewModel() { BookTitle = b.Title, Status = h.Status, StartDate = h.StartDate, ExpectedReturnDate = h.ExpectedReturnDate, ActualReturnDate = h.ActualReturnDate, InitialBookCondition = h.InitialBookCondition, FinalBookCondition = h.FinalBookCondition, LibrarianName = l.UserName };
 
-            var userPendingLoans = from l in DbContext.Loans
-                                   where l.UserId == userId && l.Status == DataAccess.Enums.LoanStatus.Pending
-                                   join b in DbContext.Books
-                                   on l.BookId equals b.Id
-                                   select new CurrentUserLoanViewModel() { BookId = b.Id, Status = l.Status, Title = b.Title };
+            var userLoansWithNoBookCopy = from l in DbContext.Loans
+                                          where l.UserId == userId && l.BookCopyId == null
+                                          join b in DbContext.Books
+                                          on l.BookId equals b.Id
+                                          select new CurrentUserLoanViewModel() { BookId = b.Id, Status = l.Status, Title = b.Title };
 
-            var pendingUserLoans = userPendingLoans;
-            var rejectedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Rejected);
+            var pendingUserLoans = userLoansWithNoBookCopy.Where(l => l.Status == DataAccess.Enums.LoanStatus.Pending);
+            var rejectedUserLoans = userLoansWithNoBookCopy.Where(l => l.Status == DataAccess.Enums.LoanStatus.Rejected);
             var returnedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Completed);
             var lostUserBooks = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.LostBook);
             var approvedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Approved);
@@ -91,6 +91,24 @@ namespace OnlineLibrary.Web.Controllers
 
         [HttpPost]
         public ActionResult CancelPendingLoan(int id)
+        {
+            var userId = User.Identity.GetUserId();
+
+            var loan = DbContext.Loans.Where(l => l.UserId == userId && l.BookId == id).FirstOrDefault();
+
+            if (loan != null)
+            {
+                DbContext.Loans.Remove(loan);
+                DbContext.SaveChanges();
+
+                return RedirectToAction("MyLoans");
+            }
+            else
+                return View("Error");
+        }
+
+        [HttpPost]
+        public ActionResult HideRejectedLoanNotification(int id)
         {
             var userId = User.Identity.GetUserId();
 

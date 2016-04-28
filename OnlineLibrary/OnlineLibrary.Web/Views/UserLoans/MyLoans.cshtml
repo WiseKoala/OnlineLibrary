@@ -31,12 +31,12 @@
                 
                 <table class="table table-bordered">
 
-                    @* Approved loans *@
+                    @* Active loans *@
 
                     <tr class="active">
                         <th colspan="8">
                             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                            Approved loans
+                            Active loans
                         </th>
                     </tr>
                     
@@ -58,7 +58,7 @@
                       {
                         if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days > 5)
                         {
-                            <tr class="success" title="Approved loans">
+                            <tr class="success" title="Active loans">
                                 <td>#@(++counter)</td>
                                 <td colspan="7">
                                     You have loaned
@@ -262,8 +262,14 @@
                         {
                             <tr class="danger" title="Rejected loan requests">
                                 <td>#@(++counter)</td>
-                                <td colspan="7">
+                                <td colspan="6">
                                     Your request for <strong> "@loan.Title" </strong> was rejected.
+                                </td>
+                                <td>
+                                    @using (Html.BeginForm("HideRejectedLoanNotification", "UserLoans", new { id = loan.BookId }))
+                                    {
+                                        <input type="submit" class="btn btn-primary" value="Hide notification" />
+                                    }
                                 </td>
                             </tr>
                         }
