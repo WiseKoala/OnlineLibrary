@@ -69,6 +69,11 @@ namespace OnlineLibrary.Web.Controllers
                 return Json(new { error = "BookCopyId doesn't correspond to the BookId" },
                     JsonRequestBehavior.AllowGet);
             }
+            catch (BookCopyNotAvailableException)
+            {
+                return Json(new { error = "This book copy is not available for loan" },
+                    JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]

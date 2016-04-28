@@ -30,6 +30,18 @@ namespace OnlineLibrary.Services.Concrete
                 .BookCopies
                 .Any(bc => bc.Id == bookCopyId);
 
+            // Check if the book copy is available for loan.
+            bool isNotAvaialble = 
+                _dbContext.Loans
+                .Where(l => l.BookCopyId == bookCopyId
+                    && (l.Status == LoanStatus.Approved || l.Status == LoanStatus.InProgress))
+                .Any();
+
+            if (isNotAvaialble)
+            {
+                throw new BookCopyNotAvailableException();
+            }
+
             if (bookCopyIdCorresponds)
             {
                 // Set status to Approved.
