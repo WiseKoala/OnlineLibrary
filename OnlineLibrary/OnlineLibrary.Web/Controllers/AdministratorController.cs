@@ -32,12 +32,25 @@ namespace OnlineLibrary.Web.Controllers
         [Route("power")]
         public async Task<ActionResult> Authorize(SuperAdminViewModel model)
         {
-            var result = await _signInService.PasswordSignInAsync("Admin", model.Password, isPersistent: false, shouldLockout: false);
+            if (string.IsNullOrEmpty(model.Password))
+            {
+                ModelState.AddModelError("", "Password can not be empty.");
 
-            if (result == SignInStatus.Success)
-                return RedirectToAction("Index", "Role");
+                return View(model);
+            }
+            else
+            {
+                var result = await _signInService.PasswordSignInAsync("Admin", model.Password, isPersistent: false, shouldLockout: false);
 
-            return RedirectToAction("Authorize", "Administrator");
+                if (result == SignInStatus.Success)
+                {
+                    return RedirectToAction("Index", "Role");
+                }
+
+                ModelState.AddModelError("", "The provided password was incorrect.");
+
+                return View(model);
+            }
         }
     }
 }
