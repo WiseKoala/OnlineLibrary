@@ -33,6 +33,7 @@ namespace OnlineLibrary.Services.Concrete
             if (bookCopyIdCorresponds)
             {
                 // Set status to Approved.
+                loanToApprove.BookCopyId = bookCopyId;
                 loanToApprove.Status = LoanStatus.Approved;
                 loanToApprove.BookPickUpLimitDate = DateTime.Now.AddDays(3);
 
