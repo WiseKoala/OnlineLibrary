@@ -39,10 +39,20 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
 
         protected void InitializeUserNameSessionVariable(string firstName, string lastName)
         {
-            string userName = firstName + lastName;
-
+            string userName = string.Empty;
+            if (!string.IsNullOrEmpty(User.Identity.Name))
+            {
+                var user =  _dbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
+                userName = user.FirstName + " " + user.LastName;
+            }
+            else if (!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
+            {
+                userName = firstName + " " + lastName;
+            }
+            
             Session["UserName"] = userName;
         }
+
 
         #region Helpers
 
