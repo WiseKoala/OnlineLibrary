@@ -45,7 +45,13 @@ namespace OnlineLibrary.Web.Controllers
                                    orderby h.Status, h.ExpectedReturnDate
                                    select new HistoryUserLoanViewModel() { BookTitle = b.Title, Status = h.Status, StartDate = h.StartDate, ExpectedReturnDate = h.ExpectedReturnDate, ActualReturnDate = h.ActualReturnDate, InitialBookCondition = h.InitialBookCondition, FinalBookCondition = h.FinalBookCondition, LibrarianName = l.UserName };
 
-            var pendingUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Pending);
+            var userPendingLoans = from l in DbContext.Loans
+                                   where l.UserId == userId && l.Status == DataAccess.Enums.LoanStatus.Pending
+                                   join b in DbContext.Books
+                                   on l.BookId equals b.Id
+                                   select new CurrentUserLoanViewModel() { BookId = b.Id, Status = l.Status, Title = b.Title };
+
+            var pendingUserLoans = userPendingLoans;
             var rejectedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Rejected);
             var returnedUserLoans = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.Completed);
             var lostUserBooks = userLoans.Where(ul => ul.Status == DataAccess.Enums.LoanStatus.LostBook);
