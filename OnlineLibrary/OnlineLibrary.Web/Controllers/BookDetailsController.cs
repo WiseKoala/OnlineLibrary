@@ -88,7 +88,7 @@ namespace OnlineLibrary.Web.Controllers
             {
                 var userId = User.Identity.GetUserId();
                 var AvailableCopies = _bookService.GetAmountOfAvailableCopies(id);
-                var userLoanRequestsNumber = DbContext.Loans.Where(lr => lr.UserId == userId && lr.BookId == id).Count();
+                var userLoanRequestsNumber = DbContext.Loans.Where(lr => lr.UserId == userId && lr.BookId == id && lr.Status == LoanStatus.Pending).Count();
 
                 if (userLoanRequestsNumber >= AvailableCopies)
                 {
