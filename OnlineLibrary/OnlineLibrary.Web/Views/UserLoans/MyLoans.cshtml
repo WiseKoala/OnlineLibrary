@@ -393,14 +393,9 @@
 </div>
 @section scripts{
 <script>
-
     $(document).ready(function ()
     {
-        var overdueLoans = @Model.CurrentLoans.Where(al => (al.ExpectedReturnDate.Value - DateTime.Now).Days > 0).Count();
-        var soonExpiringLoans = @Model.CurrentLoans.Where(al => (al.ExpectedReturnDate.Value - DateTime.Now).Days < 5
-                                                             && (al.ExpectedReturnDate.Value - DateTime.Now).Days > 0).Count();
-
-        var activeLoansBageNumber = soonExpiringLoans + overdueLoans
+        var activeLoansBageNumber = @Model.CurrentLoans.Where(al => (al.ExpectedReturnDate.Value - DateTime.Now).Days <= 5).Count();
         if (activeLoansBageNumber != 0)
         {
             $("#activeLoansBadge").text(activeLoansBageNumber);
@@ -423,9 +418,7 @@
         {
             $("#requestsBage").text("");
         }
-
     });
-
 
 </script>
 }
