@@ -46,18 +46,16 @@ namespace OnlineLibrary.Services.Concrete
 
         public DateTime? GetEarliestAvailableDate(int bookId)
         {
-            // Obtain book with book copies.
-            Book book = _dbContext.Books
-                                  .Include(b => b.BookCopies)
-                                  .Single(b => b.Id == bookId);
-
             // Determine the loan with earliest return date.
-            Loan earliestLoan = (from bc in book.BookCopies
+            Loan earliestLoan = (from b in _dbContext.Books
+                                 join bc in _dbContext.BookCopies
+                                 on b.Id equals bc.BookId
                                  join l in _dbContext.Loans
                                  on bc.Id equals l.BookCopyId
-                                 where l.ExpectedReturnDate != null
+                                 where b.Id == bookId && l.ExpectedReturnDate != null
                                  orderby l.ExpectedReturnDate
-                                 select l).FirstOrDefault();
+                                 select l)
+                                 .FirstOrDefault();
 
             return earliestLoan?.ExpectedReturnDate;
         }
