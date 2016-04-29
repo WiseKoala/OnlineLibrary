@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -23,7 +25,7 @@ public class UI  {
 	
 	public static WebDriver driver = new FirefoxDriver(); 
 	
-	Logger log = Logger.getLogger("devpinoyLogger");
+	public Logger log = Logger.getLogger("devpinoyLogger");
 
 																//declarations
 	
@@ -102,7 +104,7 @@ public class UI  {
 		
 		waitElement(element);
 		driver.findElement(By.xpath(prop.getProperty(element))).sendKeys(value);
-		log.debug("The input data '"+value+ "' was successfuly added into '"+element+"' element...");
+		log.debug("Inser '"+value+ "' into '"+element);
 		
 		
 		
@@ -141,6 +143,11 @@ public class UI  {
 		
 		
 	}
+	public static WebElement getElementByPropertiesKey(String xpath){
+		return driver.findElement(By.xpath(prop.getProperty(xpath)));
+	}
+	
+	
 	
 	private static void watiElementByXpath (String xpath){
 		
