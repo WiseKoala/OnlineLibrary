@@ -21,7 +21,7 @@ namespace OnlineLibrary.Services.Concrete
             _dbContext = dbContext;
         }
 
-        public int GetAmountOfAvailableCopies(int bookId)
+        public int GetNumberOfAvailableCopies(int bookId)
         {
             // Count the number of not available book copies.
             int notAvailableBookCopies = (from b in _dbContext.Books
