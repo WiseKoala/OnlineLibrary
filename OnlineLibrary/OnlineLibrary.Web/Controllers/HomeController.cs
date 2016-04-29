@@ -25,31 +25,28 @@ namespace OnlineLibrary.Web.Controllers
             }
 
             // Obtain list of books from the database.
-            var books = DbContext.Books
+            var booksList = DbContext.Books
                 .Include(b => b.Authors)
                 .Include(b => b.SubCategories)
                 .Include("SubCategories.Category")
-                .ToList();
-            // Create list of view model objects.
-            var booksList = new List<BookViewModel>();
-            foreach (var book in books)
-            {
-                booksList.Add(new BookViewModel
+                .ToList()
+                .Select(b => new BookViewModel
                 {
-                    Id = book.Id,
-                    Title = book.Title,
-                    PublishDate = book.PublishDate,
-                    FrontCover = book.FrontCover,
-                    Authors = book.Authors.Select(a =>
+                    Id = b.Id,
+                    Title = b.Title,
+                    PublishDate = b.PublishDate,
+                    FrontCover = b.FrontCover,
+                    Authors = b.Authors.Select(a =>
                         string.Join(" ", a.FirstName, (a.MiddleName ?? ""), a.LastName)),
-                    Categories = book.SubCategories.Select(sc => new CategoryViewModel
+                    Categories = b.SubCategories.Select(sc => new CategoryViewModel
                     {
                         Category = sc.Category.Name,
                         SubCategory = sc.Name
                     }),
-                    Description = book.Description
-                });
-            }
+                    Description = b.Description
+                })
+                .ToList();
+
             return View(booksList);
         }
     }
