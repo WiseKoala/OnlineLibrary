@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using OnlineLibrary.DataAccess;
-using OnlineLibrary.DataAccess.Entities;
-using OnlineLibrary.Web.Infrastructure.Abstract;
-using OnlineLibrary.Web.Models;
-using System.Threading.Tasks;
-using System.Web.Mvc;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.Services.Concrete;
+using OnlineLibrary.Web.Infrastructure.Abstract;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using OnlineLibrary.Common.Infrastructure;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -25,22 +23,23 @@ namespace OnlineLibrary.Web.Controllers
         [Route("power")]
         public ActionResult Authorize()
         {
-            return View(new SuperAdminViewModel());
+            return View();
         }
 
         [HttpPost]
         [Route("power")]
-        public async Task<ActionResult> Authorize(SuperAdminViewModel model)
+        public async Task<ActionResult> Authorize(string SuperAdminPassword)
         {
-            if (string.IsNullOrEmpty(model.Password))
+
+            if (string.IsNullOrEmpty(SuperAdminPassword))
             {
                 ModelState.AddModelError("", "Password can not be empty.");
 
-                return View(model);
+                return View();
             }
             else
             {
-                var result = await _signInService.PasswordSignInAsync("Admin", model.Password, isPersistent: false, shouldLockout: false);
+                var result = await _signInService.PasswordSignInAsync(LibraryConstants.SuperAdminUserName, SuperAdminPassword, isPersistent: false, shouldLockout: false);
 
                 if (result == SignInStatus.Success)
                 {
@@ -49,7 +48,7 @@ namespace OnlineLibrary.Web.Controllers
 
                 ModelState.AddModelError("", "The provided password was incorrect.");
 
-                return View(model);
+                return View();
             }
         }
     }
