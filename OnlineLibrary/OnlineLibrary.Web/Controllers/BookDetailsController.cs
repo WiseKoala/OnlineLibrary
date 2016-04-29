@@ -76,7 +76,7 @@ namespace OnlineLibrary.Web.Controllers
                     Category = sc.Category.Name,
                     SubCategory = sc.Name
                 }),
-                AvailableCopies = _bookService.GetAmountOfAvailableCopies(id),
+                AvailableCopies = _bookService.GetNumberOfAvailableCopies(id),
                 EarliestDateAvailable = _bookService.GetEarliestAvailableDate(id)
             };
             return View(book_view);
@@ -87,7 +87,7 @@ namespace OnlineLibrary.Web.Controllers
             try
             {
                 var userId = User.Identity.GetUserId();
-                var AvailableCopies = _bookService.GetAmountOfAvailableCopies(id);
+                var AvailableCopies = _bookService.GetNumberOfAvailableCopies(id);
                 var userLoanRequestsNumber = DbContext.Loans.Where(lr => lr.UserId == userId && lr.BookId == id && lr.Status == LoanStatus.Pending).Count();
 
                 if (userLoanRequestsNumber >= AvailableCopies)

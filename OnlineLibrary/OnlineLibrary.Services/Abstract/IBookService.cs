@@ -8,7 +8,7 @@ namespace OnlineLibrary.Services.Abstract
 {
     public interface IBookService : IService
     {
-        int GetAmountOfAvailableCopies(int bookId);
+        int GetNumberOfAvailableCopies(int bookId);
         DateTime? GetEarliestAvailableDate(int bookId);
     }
 }

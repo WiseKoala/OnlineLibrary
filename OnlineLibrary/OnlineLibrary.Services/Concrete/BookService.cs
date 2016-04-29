@@ -21,39 +21,46 @@ namespace OnlineLibrary.Services.Concrete
             _dbContext = dbContext;
         }
 
-        public int GetAmountOfAvailableCopies(int bookId)
+        public int GetNumberOfAvailableCopies(int bookId)
         {
-            // Obtain book.
-            Book book = _dbContext.Books
-                .Include(b => b.BookCopies)
-                .Single(b => b.Id == bookId);
+            // Determine not available book copies.
+            var notAvailableBookCopies = from b in _dbContext.Books
+                                         join bc in _dbContext.BookCopies
+                                         on b.Id equals bc.BookId
+                                         join l in _dbContext.Loans
+                                         on bc.Id equals l.BookCopyId
+                                         where b.Id == bookId 
+                                            && (l.Status == LoanStatus.Approved || l.Status == LoanStatus.InProgress)
+                                         select bc;
 
-            // Count the number of not available book copies.
-            int notAvailableBookCopies = (from bc in book.BookCopies
-                                          join l in _dbContext.Loans
-                                          on bc.Id equals l.BookCopyId
-                                          where l.Status == LoanStatus.Approved || l.Status == LoanStatus.InProgress
-                                          select bc).Count();
+            // Obtain all book copies for the specified book.
+            var allBookCopies = from b in _dbContext.Books
+                                join bc in _dbContext.BookCopies
+                                on b.Id equals bc.BookId
+                                where b.Id == bookId
+                                select bc;
 
-            // Return difference between the total number of book copies
+            // Calculate the difference between the total number of book copies
             // and not available ones.
-            return book.BookCopies.Count() - notAvailableBookCopies;
+            int numberOfAvailableBookCopies = allBookCopies
+                .Except(notAvailableBookCopies)
+                .Count();
+
+            return numberOfAvailableBookCopies;
         }
 
         public DateTime? GetEarliestAvailableDate(int bookId)
         {
-            // Obtain book with book copies.
-            Book book = _dbContext.Books
-                                  .Include(b => b.BookCopies)
-                                  .Single(b => b.Id == bookId);
-
             // Determine the loan with earliest return date.
-            Loan earliestLoan = (from bc in book.BookCopies
+            Loan earliestLoan = (from b in _dbContext.Books
+                                 join bc in _dbContext.BookCopies
+                                 on b.Id equals bc.BookId
                                  join l in _dbContext.Loans
                                  on bc.Id equals l.BookCopyId
-                                 where l.ExpectedReturnDate != null
+                                 where b.Id == bookId && l.ExpectedReturnDate != null
                                  orderby l.ExpectedReturnDate
-                                 select l).FirstOrDefault();
+                                 select l)
+                                 .FirstOrDefault();
 
             return earliestLoan?.ExpectedReturnDate;
         }
