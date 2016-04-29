@@ -6,11 +6,21 @@ using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using OnlineLibrary.DataAccess.Abstract;
+using OnlineLibrary.Services.Concrete;
 
 namespace OnlineLibrary.Web.Controllers
 {
     public class AdministratorController : BaseController
     {
+        private SignInService _signInService;
+
+        public AdministratorController(ILibraryDbContext dbContext, SignInService signInService)
+            : base(dbContext)
+        {
+            _signInService = signInService;
+        }
+
         [HttpGet]
         [Route("power")]
         public ActionResult Authorize()
@@ -22,12 +32,25 @@ namespace OnlineLibrary.Web.Controllers
         [Route("power")]
         public async Task<ActionResult> Authorize(SuperAdminViewModel model)
         {
-            var result = await SignInManager.PasswordSignInAsync("Admin", model.Password, isPersistent: false, shouldLockout: false);
+            if (string.IsNullOrEmpty(model.Password))
+            {
+                ModelState.AddModelError("", "Password can not be empty.");
 
-            if (result == SignInStatus.Success)
-                return RedirectToAction("Index", "Role");
+                return View(model);
+            }
+            else
+            {
+                var result = await _signInService.PasswordSignInAsync("Admin", model.Password, isPersistent: false, shouldLockout: false);
 
-            return RedirectToAction("Authorize", "Administrator");
+                if (result == SignInStatus.Success)
+                {
+                    return RedirectToAction("Index", "Role");
+                }
+
+                ModelState.AddModelError("", "The provided password was incorrect.");
+
+                return View(model);
+            }
         }
     }
 }

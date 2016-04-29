@@ -7,25 +7,23 @@ using OnlineLibrary.DataAccess.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OnlineLibrary.DataAccess.Abstract;
 
 namespace OnlineLibrary.Services.Concrete
 {
     public class RoleManagementService : RoleManager<Role>, IDisposable
     {
-        public RoleManagementService(RoleStore<Role> store) : base(store)
+        private ILibraryDbContext _dbContext;
+
+        public RoleManagementService(ILibraryDbContext dbContext, IRoleStore<Role, string> store)
+            : base(store)
         {
+            _dbContext = dbContext;
         }
 
-        public static RoleManagementService Create(IdentityFactoryOptions<RoleManagementService> options, IOwinContext context)
+        public List<IdentityRole> GetRoleList()
         {
-            return new RoleManagementService(new RoleStore<Role>(context.Get<ApplicationDbContext>()));
-        }
-
-        public static List<IdentityRole> GetRoleList(IOwinContext context)
-        {
-            var dbContext = context.Get<ApplicationDbContext>();
-
-            var roles = dbContext.Roles.Where(r => r.Name != UserRoles.SuperAdmin).ToList();
+            var roles = _dbContext.Roles.Where(r => r.Name != UserRoles.SuperAdmin).ToList();
 
             return roles;
         }

@@ -1,24 +1,28 @@
 ﻿using System;
+using OnlineLibrary.DataAccess.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using OnlineLibrary.DataAccess.Enums;
 
 namespace OnlineLibrary.DataAccess.Entities
 {
-    public class Loan
+    public class History
     {
         public int Id { get; set; }
+
+        public string ISBN { get; set; }
 
         [ForeignKey(nameof(BookCopy))]
         public int? BookCopyId { get; set; }
 
-        [ForeignKey(nameof(Book))]
-        public int BookId { get; set; }
-
         public LoanStatus Status { get; set; }
 
-        [ForeignKey(nameof(User))]
-        public string UserId { get; set; }
+        public string UserName { get; set; }
+
+        public string LibrarianUserName { get; set; }
+
+        public BookCondition? InitialBookCondition { get; set; }
+
+        public BookCondition? FinalBookCondition { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? StartDate { get; set; }
@@ -27,10 +31,10 @@ namespace OnlineLibrary.DataAccess.Entities
         public DateTime? ExpectedReturnDate { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime? BookPickUpLimitDate { get; set; }
+        public DateTime? ActualReturnDate { get; set; }
 
-        public User User { get; set; }
-        public BookCopy BookCopy { get; set; }
-        public Book Book { get; set; }
+        public virtual User User { get; set; }
+        public virtual User Librarian { get; set; }
+        public virtual BookCopy BookCopy { get; set; }
     }
 }

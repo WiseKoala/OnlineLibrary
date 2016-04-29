@@ -10,8 +10,8 @@ namespace OnlineLibrary.Services.Abstract
 {
     public interface ILibrarianService : IService
     {
-        void ApproveLoanRequest(int bookCopyId, int loanRequestId);
-        void RejectLoanRequest(int loanRequestId);
+        void ApproveLoanRequest(int bookCopyId, int loanId);
+        void RejectLoanRequest(int loanId);
         void PerformLoan(int loanId);
     }
 }

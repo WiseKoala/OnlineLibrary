@@ -5,15 +5,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnlineLibrary.Web.Models.UserLoansViewModels
 {
-    public class CurrentUserLoansViewModel
+    public class CurrentUserLoanViewModel
     {
         public string Title { get; set; }
         public DateTime? ExpectedReturnDate { get; set; }
         public LoanStatus Status { get; set; }
-
-        [ForeignKey(nameof(Book))]
+        public DateTime? BookPickUpLimitDate { get; set; }
         public int BookId { get; set; }
-
-        public Book Book { get; set; }
     }
 }

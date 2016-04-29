@@ -9,12 +9,13 @@ using System.Linq;
 using System.Web.Security;
 using System.Configuration;
 using System.IO;
+using OnlineLibrary.DataAccess.Concrete;
 
 namespace OnlineLibrary.DataAccess
 {
-    internal class ApplicationDbInitializer : CreateDatabaseIfNotExists<ApplicationDbContext>
+    internal class ApplicationDbInitializer : CreateDatabaseIfNotExists<LibraryDbContext>
     {
-        protected override void Seed(ApplicationDbContext context)
+        protected override void Seed(LibraryDbContext context)
         {
             var roles = new List<Role>
             {
@@ -209,7 +210,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     BookCopyId = 1,
                     BookId = 1,
-                    Status = LoanStatus.Loaned,
+                    Status = LoanStatus.InProgress,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = new DateTime(2016, 4, 25),
                     ExpectedReturnDate = new DateTime(2016, 5, 9)
@@ -218,7 +219,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     BookCopyId = 2,
                     BookId = 1,
-                    Status = LoanStatus.Loaned,
+                    Status = LoanStatus.InProgress,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = new DateTime(2016, 4, 18),
                     ExpectedReturnDate = new DateTime(2016, 5, 2)
@@ -227,7 +228,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     BookCopyId = 3,
                     BookId = 2,
-                    Status = LoanStatus.Loaned,
+                    Status = LoanStatus.InProgress,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = DateTime.Now.AddDays(-20),
                     ExpectedReturnDate = DateTime.Now.AddDays(-6)
@@ -236,64 +237,83 @@ namespace OnlineLibrary.DataAccess
                 {
                     BookCopyId = 4,
                     BookId = 2,
-                    Status = LoanStatus.Loaned,
+                    Status = LoanStatus.InProgress,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
                     StartDate = DateTime.Now.AddDays(-12),
                     ExpectedReturnDate = DateTime.Now.AddDays(2)
                 },
                 new Loan
                 {
-                    BookCopyId = 1,
-                    BookId = 1,
-                    Status = LoanStatus.Returned,
-                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
-                    StartDate = DateTime.Now.AddDays(-51),
-                    ExpectedReturnDate = DateTime.Now.AddDays(-40)
-                },
-                new Loan
-                {
-                    BookCopyId = 2,
-                    BookId = 1,
-                    Status = LoanStatus.Returned,
-                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
-                    StartDate = DateTime.Now.AddDays(-50),
-                    ExpectedReturnDate = DateTime.Now.AddDays(-40)
-                },
-                new Loan
-                {
-                    BookCopyId = 2,
-                    BookId = 1,
-                    Status = LoanStatus.Returned,
-                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
-                    StartDate = DateTime.Now.AddDays(-60),
-                    ExpectedReturnDate = DateTime.Now.AddDays(-50)
-                },
-                new Loan
-                {
-                    BookCopyId = 1,
-                    BookId = 1,
-                    Status = LoanStatus.Rejected,
-                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
-                },
-                new Loan
-                {
-                    BookCopyId = 11,
+                    BookCopyId = null,
                     BookId = 5,
                     Status = LoanStatus.Approved,
+                    BookPickUpLimitDate = DateTime.Now.AddDays(2),
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
                 },
-            };
-            loans.ForEach(l => context.Loans.Add(l));
-
-            var loanRequests = new List<LoanRequest>()
-            {
-                new LoanRequest
+                new Loan
                 {
-                    BookId = 4,
+                    BookCopyId = null,
+                    BookId = 6,
+                    Status = LoanStatus.Pending,
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
                 }
             };
-            loanRequests.ForEach(lr => context.LoanRequests.Add(lr));
+            loans.ForEach(l => context.Loans.Add(l));
+
+
+
+            var history = new List<History>()
+            {
+                new History
+                {
+                    ISBN = "1518800270",
+                    BookCopyId = 1,
+                    Status = LoanStatus.Completed,
+                    StartDate = DateTime.Now.AddDays(-51),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-40),
+                    ActualReturnDate = DateTime.Now.AddDays(-44),
+                    UserName = "libraryuser9@gmail.com",
+                    LibrarianUserName = "Admin",
+                    InitialBookCondition = BookCondition.New,
+                    FinalBookCondition = BookCondition.VeryGood
+                },
+                new History
+                {
+                    ISBN = "7678678676",
+                    BookCopyId = 6,
+                    Status = LoanStatus.Completed,
+                    StartDate = DateTime.Now.AddDays(-50),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-40),
+                    ActualReturnDate = DateTime.Now.AddDays(-44),
+                    UserName = "libraryuser9@gmail.com",
+                    LibrarianUserName = "Admin",
+                    InitialBookCondition = BookCondition.Good,
+                    FinalBookCondition = BookCondition.Good
+                },
+                new History
+                {
+                    ISBN = "778587687",
+                    BookCopyId = 7,
+                    Status = LoanStatus.Completed,
+                    StartDate = DateTime.Now.AddDays(-60),
+                    ExpectedReturnDate = DateTime.Now.AddDays(-50),
+                    ActualReturnDate = DateTime.Now.AddDays(-44),
+                    UserName = "libraryuser9@gmail.com",
+                    LibrarianUserName = "Admin",
+                    InitialBookCondition = BookCondition.Poor,
+                    FinalBookCondition = BookCondition.Poor
+                },
+                new History
+                {
+                    ISBN = "1518800270",
+                    BookCopyId = null,
+                    Status = LoanStatus.Rejected,
+                    UserName = "libraryuser9@gmail.com",
+                    LibrarianUserName = "Admin"
+                },
+            };
+            history.ForEach(h => context.History.Add(h));
+
 #endif
 
             context.SaveChanges();

@@ -11,6 +11,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
 using OnlineLibrary.Web.Models.LibrarianLoansViewModels;
+using OnlineLibrary.DataAccess.Abstract;
+using OnlineLibrary.Common.Exceptions;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -18,23 +20,16 @@ namespace OnlineLibrary.Web.Controllers
     {
         private ILibrarianService _librarianService;
 
+        public LibrarianController(ILibraryDbContext dbContext, ILibrarianService librarianService)
+            : base(dbContext)
+        {
+            _librarianService = librarianService;
+        }
+
         [Authorize(Roles = "Librarian, System administrator, Super administrator")]
         public ActionResult Index()
         {
-            _librarianService = new LibrarianService(DbContext);
             var model = new LoansViewModel();
-
-            // Obtain loan requests.
-            var loanRequests = DbContext.LoanRequests
-                 .Include(lr => lr.User)
-                 .Include(lr => lr.Book)
-                 .Select(lr => new LoanViewModel
-                 {
-                     LoanId = lr.Id,
-                     BookTitle = lr.Book.Title,
-                     UserName = lr.User.UserName
-                 })
-                 .ToList();
 
             // Obtain loans.
             var loans = DbContext.Loans
@@ -49,37 +44,48 @@ namespace OnlineLibrary.Web.Controllers
                  })
                  .ToList();
 
-            model.PendingLoans = loanRequests;
+            model.PendingLoans = loans.Where(l => l.Status == LoanStatus.Pending);
             model.ApprovedLoans = loans.Where(l => l.Status == LoanStatus.Approved);
-            model.LoanedBooks = loans.Where(l => l.Status == LoanStatus.Loaned);
+            model.LoanedBooks = loans.Where(l => l.Status == LoanStatus.InProgress);
             model.RejectedLoans = loans.Where(l => l.Status == LoanStatus.Rejected);
-            model.ReturnedBooks = loans.Where(l => l.Status == LoanStatus.Returned);
-            model.LostBooks = loans.Where(l => l.Status == LoanStatus.Lost);
+            model.ReturnedBooks = loans.Where(l => l.Status == LoanStatus.Completed);
+            model.LostBooks = loans.Where(l => l.Status == LoanStatus.LostBook);
 
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult ApproveLoanRequest(int bookCopyId,int loanRequestId)
+        public ActionResult ApproveLoanRequest(int bookCopyId, int loanId)
         {
-            _librarianService = new LibrarianService(DbContext);
-            _librarianService.ApproveLoanRequest(bookCopyId, loanRequestId);
+            try
+            {
+                _librarianService.ApproveLoanRequest(bookCopyId, loanId);
 
-            return RedirectToActionPermanent("Index");
+                return Json(new { success = "Loan approved!" },
+                    JsonRequestBehavior.AllowGet);
+            }
+            catch (InvalidBookCopyIdException)
+            {
+                return Json(new { error = "BookCopyId doesn't correspond to the BookId" },
+                    JsonRequestBehavior.AllowGet);
+            }
+            catch (BookCopyNotAvailableException)
+            {
+                return Json(new { error = "This book copy is not available for loan" },
+                    JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]
-        public ActionResult RejectLoanRequest( int loanRequestId )
+        public ActionResult RejectLoanRequest(int loanId)
         {
-            _librarianService = new LibrarianService(DbContext);
-            _librarianService.RejectLoanRequest(loanRequestId);
+            _librarianService.RejectLoanRequest(loanId);
             return RedirectToActionPermanent("Index");
         }
         
         [HttpPost]
         public ActionResult PerformLoan(int loanId)
         {
-            _librarianService = new LibrarianService(DbContext);
             _librarianService.PerformLoan(loanId);
             return RedirectToActionPermanent("Index");
         }
@@ -88,7 +94,7 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult ReturnBook(int loanId)
         {
             Loan loan = DbContext.Loans.Find(loanId);
-            loan.Status = LoanStatus.Returned;
+            loan.Status = LoanStatus.Completed;
             DbContext.SaveChanges();
 
             return RedirectToActionPermanent("Index");
@@ -98,7 +104,7 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult LostBook(int loanId)
         {
             Loan loan = DbContext.Loans.Find(loanId);
-            loan.Status = LoanStatus.Lost;
+            loan.Status = LoanStatus.LostBook;
             DbContext.SaveChanges();
 
             return RedirectToActionPermanent("Index");
