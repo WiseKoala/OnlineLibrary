@@ -92,7 +92,14 @@
                                     <strong>Sorry!</strong> The book is currently not available for loan.
                                 </div>
                                 <div class="alert alert-info" role="alert">
-                                    The book is expected to be available for loan on <strong>@Model.EarliestDateAvailable.Value.ToShortDateString()</strong>
+                                    @if (Model.EarliestDateAvailable == null)
+                                    {
+                                        @:It is unknown when the book will be available for loan.
+                                    }
+                                    else
+                                    {
+                                        @:The book is expected to be available for loan on <strong>@Model.EarliestDateAvailable.Value.ToShortDateString()</strong>
+                                    }
                                 </div>
                             }
                         </div>

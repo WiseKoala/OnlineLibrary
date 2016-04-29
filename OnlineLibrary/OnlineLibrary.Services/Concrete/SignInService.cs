@@ -18,10 +18,5 @@ namespace OnlineLibrary.Services.Concrete
         {
             return user.GenerateUserIdentityAsync((UserManagementService)UserManager);
         }
-
-        public static SignInService Create(IdentityFactoryOptions<SignInService> options, IOwinContext context)
-        {
-            return new SignInService(context.GetUserManager<UserManagementService>(), context.Authentication);
-        }
     }
 }

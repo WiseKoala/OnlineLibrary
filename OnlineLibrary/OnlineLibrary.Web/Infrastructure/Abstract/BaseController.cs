@@ -9,53 +9,22 @@ using OnlineLibrary.DataAccess;
 using System.Linq;
 using OnlineLibrary.DataAccess.Entities;
 using System.Data.Entity;
+using OnlineLibrary.DataAccess.Abstract;
 
 namespace OnlineLibrary.Web.Infrastructure.Abstract
 {
     public abstract class BaseController : Controller
     {
-        private SignInService _signInManager;
-        private UserManagementService _userManager;
+        private ILibraryDbContext _dbContext;
 
-        protected BaseController()
+        protected BaseController(ILibraryDbContext dbContext)
         {
+            _dbContext = dbContext;
         }
 
-        protected ApplicationDbContext DbContext
+        protected ILibraryDbContext DbContext
         {
-            get { return HttpContext.GetOwinContext().Get<ApplicationDbContext>(); }
-        }
-
-        protected SignInService SignInManager
-        {
-            get
-            {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<SignInService>();
-            }
-            private set
-            {
-                _signInManager = value;
-            }
-        }
-
-        protected UserManagementService UserManager
-        {
-            get
-            {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<UserManagementService>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
-        }
-
-        protected RoleManagementService RoleManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().GetUserManager<RoleManagementService>();
-            }
+            get { return _dbContext; }
         }
 
         protected bool IsUserNameSessionVariableSet()
@@ -70,38 +39,20 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
 
         protected void InitializeUserNameSessionVariable(string firstName, string lastName)
         {
-            string UserName = string.Empty;
-            if(!string.IsNullOrEmpty(User.Identity.Name))
+            string userName = string.Empty;
+            if (!string.IsNullOrEmpty(User.Identity.Name))
             {
-                UserName = UserManagementService.GetTheUsernameByUsersName(HttpContext.GetOwinContext(), User.Identity.Name);
+                var user =  _dbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
+                userName = user.FirstName + " " + user.LastName;
             }
-            else if(!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
+            else if (!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
             {
-                UserName = firstName + lastName;
+                userName = firstName + " " + lastName;
             }
-
-            Session["UserName"] = UserName;
+            
+            Session["UserName"] = userName;
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (_userManager != null)
-                {
-                    _userManager.Dispose();
-                    _userManager = null;
-                }
-
-                if (_signInManager != null)
-                {
-                    _signInManager.Dispose();
-                    _signInManager = null;
-                }
-            }
-
-            base.Dispose(disposing);
-        }
 
         #region Helpers
 
@@ -128,25 +79,6 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
                 return Redirect(returnUrl);
             }
             return RedirectToAction("Index", "Home");
-        }
-
-        protected bool IsFirstLogin()
-        {
-            bool isFirstUserLogin = false;
-
-            if (UserManager.Users.Count() == 2)
-            {
-                // Retrieve users into memory.
-                var users = UserManager.Users.ToList();
-
-                // Check if there're any users in the role users
-                // that don't have the last sign out date set.
-                isFirstUserLogin = users.Any(u => 
-                    UserManager.IsInRole(u.Id, UserRoles.User) 
-                    && u.LastSignOutDate == null);
-            }
-
-            return isFirstUserLogin;
         }
 
         #endregion Helpers

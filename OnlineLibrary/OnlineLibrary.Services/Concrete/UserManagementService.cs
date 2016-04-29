@@ -8,90 +8,42 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using OnlineLibrary.DataAccess.Abstract;
+using OnlineLibrary.Services.Abstract;
 
 namespace OnlineLibrary.Services.Concrete
 {
     public class UserManagementService : UserManager<User>
     {
-        public UserManagementService(IUserStore<User> store)
+        private ILibraryDbContext _dbContext;
+
+        public UserManagementService(ILibraryDbContext dbContext, IUserStore<User> store)
             : base(store)
         {
+            _dbContext = dbContext;
         }
 
-        public static UserManagementService Create(IdentityFactoryOptions<UserManagementService> options, IOwinContext context)
+        public string GetUsernameById(string id)
         {
-            var manager = new UserManagementService(new UserStore<User>(context.Get<ApplicationDbContext>()));
-            // Configure validation logic for usernames
-            manager.UserValidator = new UserValidator<User>(manager)
-            {
-                AllowOnlyAlphanumericUserNames = false,
-                RequireUniqueEmail = true
-            };
-
-            // Configure validation logic for passwords
-            manager.PasswordValidator = new PasswordValidator
-            {
-                RequiredLength = 6,
-                RequireNonLetterOrDigit = true,
-                RequireDigit = true,
-                RequireLowercase = true,
-                RequireUppercase = true,
-            };
-
-            // Configure user lockout defaults
-            manager.UserLockoutEnabledByDefault = true;
-            manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5);
-            manager.MaxFailedAccessAttemptsBeforeLockout = 5;
-
-            // Register two factor authentication providers. This application uses Phone and Emails as a step of receiving a code for verifying the user
-            // You can write your own provider and plug it in here.
-            manager.RegisterTwoFactorProvider("Phone Code", new PhoneNumberTokenProvider<User>
-            {
-                MessageFormat = "Your security code is {0}"
-            });
-            manager.RegisterTwoFactorProvider("Email Code", new EmailTokenProvider<User>
-            {
-                Subject = "Security Code",
-                BodyFormat = "Your security code is {0}"
-            });
-
-            var dataProtectionProvider = options.DataProtectionProvider;
-
-            if (dataProtectionProvider != null)
-            {
-                manager.UserTokenProvider =
-                    new DataProtectorTokenProvider<User>(dataProtectionProvider.Create("ASP.NET Identity"));
-            }
-            return manager;
-        }
-
-        public static string GetUsernameById(IOwinContext context, string id)
-        {
-            var dbContext = context.Get<ApplicationDbContext>();
-
-            var UserName = dbContext.Users
+            var UserName = _dbContext.Users
                 .Where(u => u.Id == id)
                 .Select(u => String.Concat(u.FirstName, u.LastName));
 
             return UserName.ToString();
         }
 
-        public static User GetUserByName(IOwinContext context, string name)
+        public User GetUserByName(string name)
         {
-            var dbContext = context.Get<ApplicationDbContext>();
-
-            var user = dbContext.Users
+            var user = _dbContext.Users
                 .Where(u => u.UserName == name)
                 .FirstOrDefault();
 
             return user;
         }
 
-        public static string GetTheUsernameByUsersName(IOwinContext context, string UsersName)
+        public string GetTheUsernameByUsersName(string UsersName)
         {
-            var dbContext = context.Get<ApplicationDbContext>();
-
-            var user = GetUserByName(context, UsersName);
+            var user = GetUserByName(UsersName);
 
             string Username = String.Empty;
 
@@ -106,11 +58,9 @@ namespace OnlineLibrary.Services.Concrete
             return Username;
         }
 
-        public static List<User> GetUserList(IOwinContext context)
+        public List<User> GetUserList()
         {
-            var dbContext = context.Get<ApplicationDbContext>();
-
-            var users = dbContext.Users.Where(u => u.UserName != "Admin").ToList();
+            var users = _dbContext.Users.Where(u => u.UserName != "Admin").ToList();
 
             return users;
         }

@@ -8,14 +8,15 @@ using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Services.Abstract;
 using System.Data.Entity;
 using OnlineLibrary.DataAccess.Enums;
+using OnlineLibrary.DataAccess.Abstract;
 
 namespace OnlineLibrary.Services.Concrete
 {
     public class BookService : IBookService
     {
-        private ApplicationDbContext _dbContext;
+        private ILibraryDbContext _dbContext;
 
-        public BookService(ApplicationDbContext dbContext)
+        public BookService(ILibraryDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -31,7 +32,7 @@ namespace OnlineLibrary.Services.Concrete
             int notAvailableBookCopies = (from bc in book.BookCopies
                                           join l in _dbContext.Loans
                                           on bc.Id equals l.BookCopyId
-                                          where l.Status == LoanStatus.Approved || l.Status == LoanStatus.Loaned
+                                          where l.Status == LoanStatus.Approved || l.Status == LoanStatus.InProgress
                                           select bc).Count();
 
             // Return difference between the total number of book copies
