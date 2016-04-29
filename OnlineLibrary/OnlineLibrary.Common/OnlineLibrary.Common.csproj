@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="Exceptions\BookCopyNotAvailableException.cs" />
     <Compile Include="Exceptions\InvalidBookCopyIdException.cs" />
-    <Compile Include="LibraryConstants.cs" />
+    <Compile Include="Infrastructure\LibraryConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
