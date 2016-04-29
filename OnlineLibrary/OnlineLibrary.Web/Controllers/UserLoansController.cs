@@ -8,6 +8,7 @@ using OnlineLibrary.DataAccess.Abstract;
 
 namespace OnlineLibrary.Web.Controllers
 {
+    [Authorize]
     public class UserLoansController : BaseController
     {
         public UserLoansController(ILibraryDbContext dbContext)
