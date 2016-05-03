@@ -1,9 +1,43 @@
 ﻿.btn {
-  background-color: #2dafce !important;
-  border-color: #2794ae !important;
+    background-color: #2dafce;
+    border-color: #2794ae;
 }
-.btn:hover {
+
+.btn:hover, .btn:active {
+    border-color: #2dafce;
+}
+
+.btn-primary {
+    background-color: #2dafce !important;
+}
+
+.btn-primary:hover, .btn-primary:active {
     background-color: #2fa2bf !important;
+}
+
+
+.btn-default {
+    background-color: #2dafce !important;
+}
+
+.btn-default:hover, .btn-default:active {
+    background-color: #2fa2bf !important;
+}
+
+.btn-danger {
+    background-color: #ff5050;
+}
+
+.btn-danger:hover {
+    background-color: #ff6666;
+}
+
+.btn-danger:active {
+    background-color: #ff6666;
+}
+
+.btn-danger:active:focus {
+    background-color: #ff6666;
 }
 
 .navbar-default {
