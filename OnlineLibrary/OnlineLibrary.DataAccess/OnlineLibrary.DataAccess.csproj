@@ -99,6 +99,7 @@
     <Compile Include="Entities\SubCategory.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Enums\BookCondition.cs" />
+    <Compile Include="Enums\HistoryStatus.cs" />
     <Compile Include="Enums\LoanStatus.cs" />
     <Compile Include="Abstract\ILibraryDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
