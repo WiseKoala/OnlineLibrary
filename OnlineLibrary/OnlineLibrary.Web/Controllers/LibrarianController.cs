@@ -32,6 +32,22 @@ namespace OnlineLibrary.Web.Controllers
             return View();
         }
 
+        public JsonResult ListActive(LoanStatus status)
+        {
+            var model = DbContext.Loans
+                                 .Include(l => l.Book)
+                                 .Include(u => u.User)
+                                 .Where(l => l.Status == status)
+                                 .Select(l => new LoanViewModel
+                                 {
+                                     LoanId = l.Id,
+                                     BookTitle = l.Book.Title,
+                                     UserName = l.User.UserName
+                                 })
+                                 .ToList();
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost]
         public ActionResult ApproveLoanRequest(int bookCopyId, int loanId)
         {

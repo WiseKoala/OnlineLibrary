@@ -11,6 +11,5 @@ namespace OnlineLibrary.Web.Models.LibrarianLoansViewModels
         public int LoanId { get; set; }
         public string UserName { get; set; }
         public string BookTitle { get; set; }
-        public LoanStatus? Status { get; set; }
     }
 }
