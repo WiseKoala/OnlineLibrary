@@ -48,6 +48,32 @@ namespace OnlineLibrary.Web.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult ListHistory()
+        {
+            var allHistory = DbContext.History
+                                      .Select(h => new HistoryLoanViewModel
+                                      {
+                                          ISBN = h.ISBN,
+                                          BookCopyId = h.BookCopyId,
+                                          UserName = h.UserName,
+                                          Status = h.Status,
+                                          StartDate = h.StartDate,
+                                          ExpectedReturnDate = h.ExpectedReturnDate,
+                                          ActualReturnDate = h.ActualReturnDate
+                                      })
+                                      .ToList();
+
+            var model = new HistoryLoansViewModel
+            {
+                Rejected = allHistory.Where(h => h.Status == HistoryStatus.Rejected),
+                Completed = allHistory.Where(h => h.Status == HistoryStatus.Completed),
+                LostBook = allHistory.Where(h => h.Status == HistoryStatus.LostBook),
+                Cancelled = allHistory.Where(h => h.Status == HistoryStatus.Cancelled),
+            };
+
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost]
         public ActionResult ApproveLoanRequest(int bookCopyId, int loanId)
         {
