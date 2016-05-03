@@ -29,29 +29,7 @@ namespace OnlineLibrary.Web.Controllers
         [Authorize(Roles = "Librarian, System administrator, Super administrator")]
         public ActionResult Index()
         {
-            var model = new LoansViewModel();
-
-            // Obtain loans.
-            var loans = DbContext.Loans
-                 .Include(lr => lr.User)
-                 .Include(lr => lr.Book)
-                 .Select(lr => new LoanViewModel
-                 {
-                     LoanId = lr.Id,
-                     BookTitle = lr.Book.Title,
-                     UserName = lr.User.UserName,
-                     Status = lr.Status
-                 })
-                 .ToList();
-
-            model.PendingLoans = loans.Where(l => l.Status == LoanStatus.Pending);
-            model.ApprovedLoans = loans.Where(l => l.Status == LoanStatus.Approved);
-            model.LoanedBooks = loans.Where(l => l.Status == LoanStatus.InProgress);
-            model.RejectedLoans = loans.Where(l => l.Status == LoanStatus.Rejected);
-            model.ReturnedBooks = loans.Where(l => l.Status == LoanStatus.Completed);
-            model.LostBooks = loans.Where(l => l.Status == LoanStatus.LostBook);
-
-            return View(model);
+            return View();
         }
 
         [HttpPost]
