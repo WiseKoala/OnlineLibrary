@@ -8,6 +8,6 @@ namespace OnlineLibrary.DataAccess.Enums
 {
     public enum HistoryStatus
     {
-        Rejected, Completed, LostBook
+        Rejected, Completed, LostBook, Cancelled
     }
 }
