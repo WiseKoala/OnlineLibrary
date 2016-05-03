@@ -268,7 +268,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     ISBN = "1518800270",
                     BookCopyId = 1,
-                    Status = LoanStatus.Completed,
+                    Status = HistoryStatus.Completed,
                     StartDate = DateTime.Now.AddDays(-51),
                     ExpectedReturnDate = DateTime.Now.AddDays(-40),
                     ActualReturnDate = DateTime.Now.AddDays(-44),
@@ -281,7 +281,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     ISBN = "7678678676",
                     BookCopyId = 6,
-                    Status = LoanStatus.Completed,
+                    Status = HistoryStatus.Completed,
                     StartDate = DateTime.Now.AddDays(-50),
                     ExpectedReturnDate = DateTime.Now.AddDays(-40),
                     ActualReturnDate = DateTime.Now.AddDays(-44),
@@ -294,7 +294,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     ISBN = "778587687",
                     BookCopyId = 7,
-                    Status = LoanStatus.Completed,
+                    Status = HistoryStatus.Completed,
                     StartDate = DateTime.Now.AddDays(-60),
                     ExpectedReturnDate = DateTime.Now.AddDays(-50),
                     ActualReturnDate = DateTime.Now.AddDays(-44),
@@ -307,7 +307,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     ISBN = "1518800270",
                     BookCopyId = null,
-                    Status = LoanStatus.Rejected,
+                    Status = HistoryStatus.Rejected,
                     UserName = "libraryuser9@gmail.com",
                     LibrarianUserName = "Admin"
                 },

@@ -10,7 +10,7 @@ namespace OnlineLibrary.Web.Models.UserLoansViewModels
         public string LibrarianName { get; set; }
         public BookCondition? InitialBookCondition { get; set; }
         public BookCondition? FinalBookCondition { get; set; }
-        public LoanStatus Status { get; set; }
+        public HistoryStatus Status { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? StartDate { get; set; }
