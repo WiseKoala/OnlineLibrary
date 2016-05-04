@@ -190,10 +190,6 @@
                 </h3>
             </div>
             <table class="table">
-                <colgroup>
-                    <col width="20%" />
-                    <col width="80%" />
-                </colgroup>
                 <thead>
                     <tr>
                         <th>ISBN</th>
@@ -206,12 +202,12 @@
                 </thead>
                 <tbody data-bind="foreach: history().Completed">
                     <tr>
-                        <td data-bind="text: ISBN"></td>
-                        <td data-bind="text: BookCopyId"></td>
-                        <td data-bind="text: UserName"></td>
-                        <td data-bind="text: StartDate"></td>
-                        <td data-bind="text: ExpectedReturnDate"></td>
-                        <td data-bind="text: ActualReturnDate"></td>
+                        <td style="width: 15%" data-bind="text: ISBN"></td>
+                        <td style="width: 5%" data-bind="text: BookCopyId"></td>
+                        <td style="width: 20%" data-bind="text: UserName"></td>
+                        <td style="width: 20%" data-bind="text: StartDate"></td>
+                        <td style="width: 20%" data-bind="text: ExpectedReturnDate"></td>
+                        <td style="width: 20%" data-bind="text: ActualReturnDate"></td>
                     </tr>
                 </tbody>
             </table>
