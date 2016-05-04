@@ -248,6 +248,16 @@ namespace OnlineLibrary.DataAccess
                     BookId = 5,
                     Status = LoanStatus.Approved,
                     BookPickUpLimitDate = DateTime.Now.AddDays(2),
+                    ApprovingDate = DateTime.Now.AddDays(-1),
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
+                },
+                new Loan
+                {
+                    BookCopyId = null,
+                    BookId = 5,
+                    Status = LoanStatus.Approved,
+                    BookPickUpLimitDate = DateTime.Now.AddDays(-5),
+                    ApprovingDate = DateTime.Now.AddDays(-8),
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
                 },
                 new Loan
