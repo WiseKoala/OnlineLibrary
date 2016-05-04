@@ -1,0 +1,13 @@
+﻿
+/* Histroy tables */
+.history-table col:nth-child(1) { width: 15%; }
+.history-table col:nth-child(2) { width: 5%; }
+.history-table col:nth-child(3) { width: 20%; }
+.history-table col:nth-child(4) { width: 20%; }
+.history-table col:nth-child(5) { width: 20%; }
+.history-table col:nth-child(6) { width: 20%; }
+
+/* Loans tables */
+.loans-table col:nth-child(1) { width: 20%; }
+.loans-table col:nth-child(2) { width: 60%; }
+.loans-table col:nth-child(3) { width: 20%; }

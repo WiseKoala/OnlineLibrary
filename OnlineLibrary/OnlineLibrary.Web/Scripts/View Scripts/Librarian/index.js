@@ -28,10 +28,28 @@
 
     // ===== Tabs functionality.
     function LoansViewModel() {
-        this.pending = ko.observableArray([]);
-        this.approved = ko.observableArray([]);
-        this.inProgress = ko.observableArray([]);
-        this.history = ko.observableArray([]);
+
+        var self = this;
+        self.pending = ko.observableArray([]);
+        self.approved = ko.observableArray([]);
+        self.inProgress = ko.observableArray([]);
+        self.history = ko.observable({});
+
+        self.rejectedVisible = ko.computed(function () {
+            return self.history().Rejected && self.history().Rejected.length > 0;
+        });
+
+        self.completedVisible = ko.computed(function () {
+            return self.history().Completed && self.history().Completed.length > 0;
+        });
+
+        self.lostBookVisible = ko.computed(function () {
+            return self.history().LostBook && self.history().LostBook.length > 0;
+        });
+
+        self.cancelledVisible = ko.computed(function () {
+            return self.history().Cancelled && self.history().Cancelled.length > 0;
+        });
     }
 
     // Activate knockout.js

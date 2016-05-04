@@ -4,6 +4,10 @@
 
 <h2>@ViewBag.Title</h2><br/>
 
+@section CSS {
+    <link href="~/Content/Views stylesheets/Librarian/Index.css" rel="stylesheet" />
+}
+
 <div>
 
     <!-- Nav tabs -->
@@ -31,24 +35,20 @@
                     <strong>Pending loans</strong>
                 </h3>
             </div>
-            <table class="table">
+            <p data-bind="visible: pending().length == 0">No records...</p>
+            <table class="table loans-table" data-bind="visible: pending().length > 0">
                 <colgroup>
-                    <col width="20%" />
-                    <col width="60%" />
-                    <col width="20%" />
+                    <col>
+                    <col>
+                    <col>
                 </colgroup>
                 <thead>
                     <tr>
-                        <th>
-                            <label>User Name</label>
-                        </th>
-                        <th>
-                            <label>Book Title</label>
-                        </th>
+                        <th>User Name</th>
+                        <th>Book Title</th>
                         <th></th>
                     </tr>
                 </thead>
-
                 <tbody data-bind="foreach: pending">
                     <tr>
                         <td data-bind="text: UserName"></td>
@@ -77,24 +77,20 @@
                     <strong>Approved loans</strong>
                 </h3>
             </div>
-            <table class="table">
+            <p data-bind="visible: approved().length == 0">No records...</p>
+            <table class="table loans-table" data-bind="visible: approved().length > 0">
                 <colgroup>
-                    <col width="20%" />
-                    <col width="60%" />
-                    <col width="20%" />
+                    <col>
+                    <col>
+                    <col>
                 </colgroup>
                 <thead>
                     <tr>
-                        <th>
-                            <label>User Name</label>
-                        </th>
-                        <th>
-                            <label>Book Title</label>
-                        </th>
+                        <th>User Name</th>
+                        <th>Book Title</th>
                         <th></th>
                     </tr>
                 </thead>
-
                 <tbody data-bind="foreach: approved">
                     <tr>
                         <td data-bind="text: UserName"></td>
@@ -118,24 +114,20 @@
                     Loaned books
                 </h3>
             </div>
-            <table class="table">
+            <p data-bind="visible: inProgress().length == 0">No records...</p>
+            <table class="table loans-table" data-bind="visible: inProgress().length > 0">
                 <colgroup>
-                    <col width="20%" />
-                    <col width="60%" />
-                    <col width="20%" />
+                    <col>
+                    <col>
+                    <col>
                 </colgroup>
                 <thead>
                     <tr>
-                        <th>
-                            <label>User Name</label>
-                        </th>
-                        <th>
-                            <label>Book Title</label>
-                        </th>
+                        <th>User Name</th>
+                        <th>Book Title</th>
                         <th></th>
                     </tr>
                 </thead>
-
                 <tbody data-bind="foreach: inProgress">
                     <tr>
                         <td data-bind="text: UserName"></td>
@@ -168,7 +160,16 @@
                     <strong>Rejected loans</strong>
                 </h3>
             </div>
-            <table class="table">
+            <p data-bind="visible: rejectedVisible() == false">No records...</p>
+            <table class="table history-table" data-bind="visible: rejectedVisible">
+                <colgroup>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
                 <thead>
                     <tr>
                         <th>ISBN</th>
@@ -197,7 +198,16 @@
                     <strong>Completed loans</strong>
                 </h3>
             </div>
-            <table class="table">
+            <p data-bind="visible: completedVisible() == false">No records...</p>
+            <table class="table history-table" data-bind="visible: completedVisible">
+                <colgroup>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
                 <thead>
                     <tr>
                         <th>ISBN</th>
@@ -211,11 +221,11 @@
                 <tbody data-bind="foreach: history().Completed">
                     <tr>
                         <td style="width: 15%" data-bind="text: ISBN"></td>
-                        <td style="width: 5%" data-bind="text: BookCopyId"></td>
+                        <td style="width: 15%" data-bind="text: BookCopyId"></td>
                         <td style="width: 20%" data-bind="text: UserName"></td>
-                        <td style="width: 20%" data-bind="text: StartDate"></td>
-                        <td style="width: 20%" data-bind="text: ExpectedReturnDate"></td>
-                        <td style="width: 20%" data-bind="text: ActualReturnDate"></td>
+                        <td style="width: 15%" data-bind="text: StartDate"></td>
+                        <td style="width: 15%" data-bind="text: ExpectedReturnDate"></td>
+                        <td style="width: 15%" data-bind="text: ActualReturnDate"></td>
                     </tr>
                 </tbody>
             </table>
@@ -225,7 +235,16 @@
                     <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
                     <strong>Lost books</strong>
                 </h3>
-                <table class="table">
+                <p data-bind="visible: lostBookVisible() == false">No records...</p>
+                <table class="table history-table" data-bind="visible: lostBookVisible">
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
                     <thead>
                         <tr>
                             <th>ISBN</th>
@@ -254,7 +273,16 @@
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     <strong>Cancelled loans</strong>
                 </h3>
-                <table class="table">
+                <p data-bind="visible: cancelledVisible() == false">No records...</p>
+                <table class="table history-table" data-bind="visible: cancelledVisible">
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
                     <thead>
                         <tr>
                             <th>ISBN</th>
@@ -278,7 +306,6 @@
                 </table>
             </div>
     </div>
-
 </div>
 
 <!-- Approve Modal  -->
