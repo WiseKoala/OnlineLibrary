@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using OnlineLibrary.Common.Infrastructure;
 using OnlineLibrary.DataAccess.Concrete;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess.Enums;
@@ -35,8 +36,10 @@ namespace OnlineLibrary.DataAccess
             int numberNonAlphanumeric = 1;
             var superAdminPassword = Membership.GeneratePassword(passwordLenght, numberNonAlphanumeric);
 
-            SaveInConfiguration("SuperAdminPassword", superAdminPassword);
-
+            if ( CreateSuperAdmin(userManager,roleManager, superAdminPassword) )
+            {
+                SaveInConfiguration("SuperAdminPassword", superAdminPassword);
+            }
             // Authors
             var authors = new List<Author>
             {
@@ -314,7 +317,13 @@ namespace OnlineLibrary.DataAccess
 
         public bool CreateSuperAdmin(UserManager<User> userManager, RoleManager<Role> roleManager, string password)
         {
-            var superAdmin = new User { UserName = "Admin", FirstName = "Super", LastName = "Admin" };
+            var superAdmin = new User
+            {
+                UserName = LibraryConstants.SuperAdminUserName,
+                FirstName = LibraryConstants.SuperAdminFirstName,
+                LastName = LibraryConstants.SuperAdminLastName
+            };
+
             var result = userManager.Create(superAdmin, password);
 
             if (result.Succeeded)
