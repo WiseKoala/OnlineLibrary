@@ -23,14 +23,14 @@ public class UI  {
 
 	static Properties prop = new Properties();
 	
-	public static WebDriver driver = new FirefoxDriver(); 
+	public static WebDriver driver; 
 	
-	public Logger log = Logger.getLogger("devpinoyLogger");
+	public static Logger log = Logger.getLogger(UI.class.toString());
 
 																//declarations
 	
 	public void openAplication (String link){
-		
+		driver = new FirefoxDriver();
 		driver.get(link);
 		log.debug("The aplication with the address:'"+link+"' has oppened in Firefox...");
 		
@@ -45,7 +45,7 @@ public class UI  {
 		
 	}
 	
-	public void initializeXpathProp(){
+	public static void initializeXpathProp(){
 		
 		File file = new File("Properties/xpath.properties");
 		  
@@ -111,7 +111,7 @@ public class UI  {
 		
 	}
 	
-	public void openLogFile(){
+	public static void openLogFile(){
 		
 		ProcessBuilder pb = new ProcessBuilder("Notepad.exe", "log.logs");
 		
