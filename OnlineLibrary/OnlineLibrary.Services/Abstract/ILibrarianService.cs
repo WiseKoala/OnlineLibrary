@@ -13,5 +13,6 @@ namespace OnlineLibrary.Services.Abstract
         void ApproveLoanRequest(int bookCopyId, int loanId, int daysNumberForLateApprovedLoans);
         void RejectLoanRequest(int loanId);
         void PerformLoan(int loanId);
+        void CancelApprovedLoan(int loanId, User librarian);
     }
 }

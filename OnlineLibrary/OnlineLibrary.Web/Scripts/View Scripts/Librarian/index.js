@@ -12,7 +12,6 @@
     $(".passLoanIdForLoan").click(function () {
         var loanId = $(this).data('loanId');
         $("#performLoan").find('input[id="loanId"]').val(loanId);
-        alert();
     });
 
     $(".passLoanIdForCancel").click(function () {

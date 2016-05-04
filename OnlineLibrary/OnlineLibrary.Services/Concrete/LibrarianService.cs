@@ -82,5 +82,40 @@ namespace OnlineLibrary.Services.Concrete
 
             _dbContext.SaveChanges();
         }
+
+
+        public void CancelApprovedLoan(int loanId, User librarian)
+        {
+            // Find the needed loan.
+            var loan = _dbContext.Loans
+                                .Include(l => l.Book)
+                                .Include(l => l.User)
+                                .Where(l => l.Id == loanId).SingleOrDefault();
+
+            if (loan != null)
+            {
+                // Create History Loan.
+                var historyLoan = new History
+                {
+                    ISBN = loan.Book.ISBN,
+                    BookCopy = loan.BookCopy,
+                    BookCopyId = loan.BookCopyId,
+                    Librarian = librarian,
+                    LibrarianUserName = librarian.UserName,
+                    User = loan.User,
+                    UserName = loan.User.UserName,
+                    Status = HistoryStatus.Cancelled
+                };
+
+                // Add history loan to History.
+                _dbContext.History.Add(historyLoan);
+
+                // Delete the loan from Loans.
+                var loanToRemove = _dbContext.Loans.Where(l => l.Id == loanId).Single();
+                _dbContext.Loans.Remove(loanToRemove);
+                
+                _dbContext.SaveChanges();
+            }
+        }
     }
 }

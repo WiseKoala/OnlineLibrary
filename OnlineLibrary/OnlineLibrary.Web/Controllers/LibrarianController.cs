@@ -118,5 +118,14 @@ namespace OnlineLibrary.Web.Controllers
 
             return RedirectToActionPermanent("Index");
         }
+
+        [HttpPost]
+        public ActionResult CancelApprovedLoan(int loanId)
+        {
+            var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
+            _librarianService.CancelApprovedLoan(loanId, librarian);
+
+            return RedirectToAction("Index");
+        }
     }
 }
