@@ -307,7 +307,7 @@
                 <h4 class="modal-title" id="approveModalLabel">Approve the current loan request</h4>
             </div>
             <div class="modal-body">
-                <form id="approveForm">
+                <form id="approveForm" class="form-inline">
                     <div class="form-group">
                         <label>Book Copy ID</label>
                         <input id="bookCopyId" name="bookCopyId" type="text" class="form-control" />
@@ -317,10 +317,11 @@
                     <input id="approveUrl" hidden="hidden" value="@Url.Action("ApproveLoanRequest", "Librarian")" />
                     <input id="redirectUrl" hidden="hidden" value="@Url.Action("Index", "Librarian")" />
 
-                    <button id="approveLoanButton" type="submit" class="btn btn-default">OK</button>
+                    <button id="approveLoanButton" type="submit" class="btn btn-primary">OK</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 </form>
-                <div id="approveLoanErrorAlert" class="alert alert-danger hidden fade in" style="margin-top: 5px;" role="alert">
+                <div id="approveLoanErrorAlert" class="alert alert-danger hidden fade in" style="margin-top: 10px;" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                     <strong>Oh snap!</strong> <span id="approveLoanError"></span>
                 </div>
             </div>
