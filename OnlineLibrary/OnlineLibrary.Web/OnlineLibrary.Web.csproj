@@ -260,6 +260,7 @@
     <Content Include="Content\Views stylesheets\BlueTheme.css" />
     <Content Include="Content\Views stylesheets\BookDetails\Index.css" />
     <Content Include="Content\Views stylesheets\Home\Index.css" />
+    <Content Include="Content\Views stylesheets\Librarian\Index.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

@@ -2,39 +2,40 @@
     ViewBag.Title = "User loans manage ";
 }
 
-<h2>@ViewBag.Title</h2><br/>
-
 @section CSS {
     <link href="~/Content/Views stylesheets/Librarian/Index.css" rel="stylesheet" />
 }
 
-<div>
+<h2>Manage Loans</h2>
 
+<div>
     <!-- Nav tabs -->
     <ul id="loans-tabs" class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active">
-            <a href="#pending" data-status="0" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="home" role="tab" data-toggle="tab">Pending</a>
+            <a href="#pending" data-status="0" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="home" role="tab" data-toggle="tab">
+                <span class="glyphicon glyphicon-time" aria-hidden="true"></span> Pending
+            </a>
         </li>
         <li role="presentation">
-            <a href="#approved" data-status="2" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="profile" role="tab" data-toggle="tab">Approved</a>
+            <a href="#approved" data-status="2" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="profile" role="tab" data-toggle="tab">
+                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> Approved
+            </a>
         </li>
         <li role="presentation">
-            <a href="#inProgress" data-status="3" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="messages" role="tab" data-toggle="tab">Loaned Books</a>
+            <a href="#inProgress" data-status="3" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="messages" role="tab" data-toggle="tab">
+                <span class="glyphicon glyphicon-book" aria-hidden="true"></span> Loaned Books
+            </a>
         </li>
         <li role="presentation">
-            <a href="#history" data-request-url="@Url.Action("ListHistory", "Librarian")" aria-controls="settings" role="tab" data-toggle="tab">History</a>
+            <a href="#history" data-request-url="@Url.Action("ListHistory", "Librarian")" aria-controls="settings" role="tab" data-toggle="tab">
+                <span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span> History
+            </a>
         </li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane fade in active" id="pending">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
-                    <strong>Pending loans</strong>
-                </h3>
-            </div>
             <p data-bind="visible: pending().length == 0">No records...</p>
             <table class="table loans-table" data-bind="visible: pending().length > 0">
                 <colgroup>
@@ -55,13 +56,13 @@
                         <td data-bind="text: BookTitle"></td>
                         <td>
                             <!-- Trigger Button for ApproveModal -->
-                            <button type="button" class="btn btn-primary btn-sm approve" data-toggle="modal" 
+                            <button type="button" class="btn btn-primary btn-sm approve" data-toggle="modal"
                                     data-target="#approveModal" data-bind="attr: { 'data-loan-id': LoanId }">
                                 Approve
                             </button>
 
                             <!-- Trigger Button for RejectModal -->
-                            <button type="button" class="btn btn-danger btn-sm reject" data-toggle="modal" 
+                            <button type="button" class="btn btn-danger btn-sm reject" data-toggle="modal"
                                     data-target="#rejectModal" data-bind="attr: { 'data-loan-id': LoanId }">
                                 Reject
                             </button>
@@ -71,12 +72,6 @@
             </table>
         </div>
         <div role="tabpanel" class="tab-pane fade" id="approved">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                    <strong>Approved loans</strong>
-                </h3>
-            </div>
             <p data-bind="visible: approved().length == 0">No records...</p>
             <table class="table loans-table" data-bind="visible: approved().length > 0">
                 <colgroup>
@@ -108,12 +103,6 @@
             </table>
         </div>
         <div role="tabpanel" class="tab-pane fade" id="inProgress">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
-                    Loaned books
-                </h3>
-            </div>
             <p data-bind="visible: inProgress().length == 0">No records...</p>
             <table class="table loans-table" data-bind="visible: inProgress().length > 0">
                 <colgroup>
@@ -235,76 +224,77 @@
                     <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
                     <strong>Lost books</strong>
                 </h3>
-                <p data-bind="visible: lostBookVisible() == false">No records...</p>
-                <table class="table history-table" data-bind="visible: lostBookVisible">
-                    <colgroup>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th>ISBN</th>
-                            <th>Book Copy Id</th>
-                            <th>User Name</th>
-                            <th>Start Date</th>
-                            <th>Expected Return Date</th>
-                            <th>Actual Return Date</th>
-                        </tr>
-                    </thead>
-                    <tbody data-bind="foreach: history().LostBook">
-                        <tr>
-                            <td style="width: 15%" data-bind="text: ISBN"></td>
-                            <td style="width: 5%" data-bind="text: BookCopyId"></td>
-                            <td style="width: 20%" data-bind="text: UserName"></td>
-                            <td style="width: 20%" data-bind="text: StartDate"></td>
-                            <td style="width: 20%" data-bind="text: ExpectedReturnDate"></td>
-                            <td style="width: 20%" data-bind="text: ActualReturnDate"></td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
+            <p data-bind="visible: lostBookVisible() == false">No records...</p>
+            <table class="table history-table" data-bind="visible: lostBookVisible">
+                <colgroup>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>ISBN</th>
+                        <th>Book Copy Id</th>
+                        <th>User Name</th>
+                        <th>Start Date</th>
+                        <th>Expected Return Date</th>
+                        <th>Actual Return Date</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: history().LostBook">
+                    <tr>
+                        <td style="width: 15%" data-bind="text: ISBN"></td>
+                        <td style="width: 5%" data-bind="text: BookCopyId"></td>
+                        <td style="width: 20%" data-bind="text: UserName"></td>
+                        <td style="width: 20%" data-bind="text: StartDate"></td>
+                        <td style="width: 20%" data-bind="text: ExpectedReturnDate"></td>
+                        <td style="width: 20%" data-bind="text: ActualReturnDate"></td>
+                    </tr>
+                </tbody>
+            </table>
             @* Cancelled books *@
             <div class="panel-heading">
                 <h3 class="panel-title">
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     <strong>Cancelled loans</strong>
                 </h3>
-                <p data-bind="visible: cancelledVisible() == false">No records...</p>
-                <table class="table history-table" data-bind="visible: cancelledVisible">
-                    <colgroup>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th>ISBN</th>
-                            <th>Book Copy Id</th>
-                            <th>User Name</th>
-                            <th>Start Date</th>
-                            <th>Expected Return Date</th>
-                            <th>Actual Return Date</th>
-                        </tr>
-                    </thead>
-                    <tbody data-bind="foreach: history().Cancelled">
-                        <tr>
-                            <td style="width: 15%" data-bind="text: ISBN"></td>
-                            <td style="width: 5%" data-bind="text: BookCopyId"></td>
-                            <td style="width: 20%" data-bind="text: UserName"></td>
-                            <td style="width: 20%" data-bind="text: StartDate"></td>
-                            <td style="width: 20%" data-bind="text: ExpectedReturnDate"></td>
-                            <td style="width: 20%" data-bind="text: ActualReturnDate"></td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
+            <p data-bind="visible: cancelledVisible() == false">No records...</p>
+            <table class="table history-table" data-bind="visible: cancelledVisible">
+                <colgroup>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>ISBN</th>
+                        <th>Book Copy Id</th>
+                        <th>User Name</th>
+                        <th>Start Date</th>
+                        <th>Expected Return Date</th>
+                        <th>Actual Return Date</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: history().Cancelled">
+                    <tr>
+                        <td style="width: 15%" data-bind="text: ISBN"></td>
+                        <td style="width: 5%" data-bind="text: BookCopyId"></td>
+                        <td style="width: 20%" data-bind="text: UserName"></td>
+                        <td style="width: 20%" data-bind="text: StartDate"></td>
+                        <td style="width: 20%" data-bind="text: ExpectedReturnDate"></td>
+                        <td style="width: 20%" data-bind="text: ActualReturnDate"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
