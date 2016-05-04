@@ -1,18 +1,13 @@
-﻿using OnlineLibrary.DataAccess.Entities;
+﻿using System.Data.Entity;
+using System.Linq;
+using System.Web.Mvc;
+using OnlineLibrary.Common.Exceptions;
+using OnlineLibrary.DataAccess.Abstract;
+using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.Services.Abstract;
-using OnlineLibrary.Services.Concrete;
 using OnlineLibrary.Web.Infrastructure.Abstract;
-using OnlineLibrary.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Data.Entity;
 using OnlineLibrary.Web.Models.LibrarianLoansViewModels;
-using OnlineLibrary.DataAccess.Abstract;
-using OnlineLibrary.Common.Exceptions;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -48,21 +43,24 @@ namespace OnlineLibrary.Web.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult ListHistory()
+        public ActionResult ListHistory()
         {
             var allHistory = DbContext.History
+                                      .ToList()
+                                      // Perform projection here, because of the use of DateTime methods
+                                      // which cannot be translated to SQL.
                                       .Select(h => new HistoryLoanViewModel
                                       {
                                           ISBN = h.ISBN,
                                           BookCopyId = h.BookCopyId,
                                           UserName = h.UserName,
                                           Status = h.Status,
-                                          StartDate = h.StartDate,
-                                          ExpectedReturnDate = h.ExpectedReturnDate,
-                                          ActualReturnDate = h.ActualReturnDate
-                                      })
-                                      .ToList();
+                                          StartDate = h.StartDate.HasValue ? h.StartDate.Value.ToShortDateString() : "unknown",
+                                          ExpectedReturnDate = h.ExpectedReturnDate.HasValue ? h.ExpectedReturnDate.Value.ToShortDateString() : "unknown",
+                                          ActualReturnDate = h.ActualReturnDate.HasValue ? h.ActualReturnDate.Value.ToShortDateString() : "unknown"
+                                      });
 
+            // Fill the model object.
             var model = new HistoryLoansViewModel
             {
                 Rejected = allHistory.Where(h => h.Status == HistoryStatus.Rejected),
@@ -102,7 +100,7 @@ namespace OnlineLibrary.Web.Controllers
             _librarianService.RejectLoanRequest(loanId);
             return RedirectToActionPermanent("Index");
         }
-        
+
         [HttpPost]
         public ActionResult PerformLoan(int loanId)
         {
