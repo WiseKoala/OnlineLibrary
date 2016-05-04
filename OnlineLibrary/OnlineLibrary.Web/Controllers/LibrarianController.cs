@@ -13,6 +13,7 @@ using System.Data.Entity;
 using OnlineLibrary.Web.Models.LibrarianLoansViewModels;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.Common.Exceptions;
+using System.Configuration;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -40,8 +41,11 @@ namespace OnlineLibrary.Web.Controllers
                      LoanId = lr.Id,
                      BookTitle = lr.Book.Title,
                      UserName = lr.User.UserName,
-                     Status = lr.Status
+                     Status = lr.Status,
+                     ApprovingDate = lr.ApprovingDate,
+                     BookPickUpLimitDate = lr.BookPickUpLimitDate
                  })
+                 .OrderBy(lr => lr.ApprovingDate)
                  .ToList();
 
             model.PendingLoans = loans.Where(l => l.Status == LoanStatus.Pending);
@@ -59,7 +63,9 @@ namespace OnlineLibrary.Web.Controllers
         {
             try
             {
-                _librarianService.ApproveLoanRequest(bookCopyId, loanId);
+                int daysNumberForLateApprovedLoans;
+                int.TryParse(ConfigurationManager.AppSettings["DaysNumberForLateApprovedLoans"], out daysNumberForLateApprovedLoans);
+                _librarianService.ApproveLoanRequest(bookCopyId, loanId, daysNumberForLateApprovedLoans);
 
                 return Json(new { success = "Loan approved!" },
                     JsonRequestBehavior.AllowGet);
@@ -87,6 +93,9 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult PerformLoan(int loanId)
         {
             _librarianService.PerformLoan(loanId);
+            int daysNumberForLateApprovedLoans;
+            int.TryParse(ConfigurationManager.AppSettings["DaysNumberForLateApprovedLoans"], out daysNumberForLateApprovedLoans);
+
             return RedirectToActionPermanent("Index");
         }
 
@@ -108,6 +117,15 @@ namespace OnlineLibrary.Web.Controllers
             DbContext.SaveChanges();
 
             return RedirectToActionPermanent("Index");
+        }
+
+        [HttpPost]
+        public ActionResult CancelApprovedLoan(int loanId)
+        {
+            var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
+            _librarianService.CancelApprovedLoan(loanId, librarian);
+
+            return RedirectToAction("Index");
         }
     }
 }

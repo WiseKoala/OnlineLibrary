@@ -14,7 +14,7 @@ namespace OnlineLibrary.DataAccess.Entities
         [ForeignKey(nameof(BookCopy))]
         public int? BookCopyId { get; set; }
 
-        public LoanStatus Status { get; set; }
+        public HistoryStatus Status { get; set; }
 
         public string UserName { get; set; }
 

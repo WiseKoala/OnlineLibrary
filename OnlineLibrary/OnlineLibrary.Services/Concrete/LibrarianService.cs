@@ -6,6 +6,7 @@ using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.Services.Abstract;
+using System.Web;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -18,7 +19,7 @@ namespace OnlineLibrary.Services.Concrete
             _dbContext = dbContext;
         }
 
-        public void ApproveLoanRequest(int bookCopyId, int loanId)
+        public void ApproveLoanRequest(int bookCopyId, int loanId, int daysNumberForLateApprovedLoans)
         {
             // Find loan by ID.
             Loan loanToApprove = _dbContext.Loans.Find(loanId);
@@ -47,7 +48,8 @@ namespace OnlineLibrary.Services.Concrete
                 // Set status to Approved.
                 loanToApprove.BookCopyId = bookCopyId;
                 loanToApprove.Status = LoanStatus.Approved;
-                loanToApprove.BookPickUpLimitDate = DateTime.Now.AddDays(3);
+                loanToApprove.BookPickUpLimitDate = DateTime.Now.AddDays(daysNumberForLateApprovedLoans);
+                loanToApprove.ApprovingDate = DateTime.Now;
 
                 _dbContext.SaveChanges();
             }
@@ -79,6 +81,41 @@ namespace OnlineLibrary.Services.Concrete
             loan.ExpectedReturnDate = DateTime.Today.AddDays(14);
 
             _dbContext.SaveChanges();
+        }
+
+
+        public void CancelApprovedLoan(int loanId, User librarian)
+        {
+            // Find the needed loan.
+            var loan = _dbContext.Loans
+                                .Include(l => l.Book)
+                                .Include(l => l.User)
+                                .Where(l => l.Id == loanId).SingleOrDefault();
+
+            if (loan != null)
+            {
+                // Create History Loan.
+                var historyLoan = new History
+                {
+                    ISBN = loan.Book.ISBN,
+                    BookCopy = loan.BookCopy,
+                    BookCopyId = loan.BookCopyId,
+                    Librarian = librarian,
+                    LibrarianUserName = librarian.UserName,
+                    User = loan.User,
+                    UserName = loan.User.UserName,
+                    Status = HistoryStatus.Cancelled
+                };
+
+                // Add history loan to History.
+                _dbContext.History.Add(historyLoan);
+
+                // Delete the loan from Loans.
+                var loanToRemove = _dbContext.Loans.Where(l => l.Id == loanId).Single();
+                _dbContext.Loans.Remove(loanToRemove);
+                
+                _dbContext.SaveChanges();
+            }
         }
     }
 }

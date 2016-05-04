@@ -9,6 +9,16 @@
         $("#reject").find('input[id="loanId"]').val(loanId);
     });
 
+    $(".passLoanIdForLoan").click(function () {
+        var loanId = $(this).data('loanId');
+        $("#performLoan").find('input[id="loanId"]').val(loanId);
+    });
+
+    $(".passLoanIdForCancel").click(function () {
+        var loanId = $(this).data('loanId');
+        $("#cancelApprovedLoan").find('input[id="loanId"]').val(loanId);
+    });
+
     $("#approveLoanButton").click(function () {
         var approveForm = $("#approveForm");
         var settings = {

@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using OnlineLibrary.Common.Infrastructure;
+using OnlineLibrary.DataAccess.Concrete;
 using OnlineLibrary.DataAccess.Entities;
+using OnlineLibrary.DataAccess.Enums;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using OnlineLibrary.DataAccess.Enums;
-using System.Linq;
-using System.Web.Security;
 using System.Configuration;
-using System.IO;
-using OnlineLibrary.DataAccess.Concrete;
+using System.Data.Entity;
+using System.Linq;
+using System.Web.Configuration;
+using System.Web.Security;
 
 namespace OnlineLibrary.DataAccess
 {
@@ -35,15 +36,10 @@ namespace OnlineLibrary.DataAccess
             int numberNonAlphanumeric = 1;
             var superAdminPassword = Membership.GeneratePassword(passwordLenght, numberNonAlphanumeric);
 
-            //_Set the destination of password file
-            string passwordPath = @"D:\password.txt";
-            
-            // _If creating Super Admin is succeed save password.
-            if (CreateSuperAdmin(userManager, roleManager,superAdminPassword))
+            if ( CreateSuperAdmin(userManager,roleManager, superAdminPassword) )
             {
-                File.WriteAllText(passwordPath, superAdminPassword);
+                SaveInConfiguration("SuperAdminPassword", superAdminPassword);
             }
-
             // Authors
             var authors = new List<Author>
             {
@@ -248,6 +244,16 @@ namespace OnlineLibrary.DataAccess
                     BookId = 5,
                     Status = LoanStatus.Approved,
                     BookPickUpLimitDate = DateTime.Now.AddDays(2),
+                    ApprovingDate = DateTime.Now.AddDays(-1),
+                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
+                },
+                new Loan
+                {
+                    BookCopyId = null,
+                    BookId = 5,
+                    Status = LoanStatus.Approved,
+                    BookPickUpLimitDate = DateTime.Now.AddDays(-5),
+                    ApprovingDate = DateTime.Now.AddDays(-8),
                     UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328"
                 },
                 new Loan
@@ -268,7 +274,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     ISBN = "1518800270",
                     BookCopyId = 1,
-                    Status = LoanStatus.Completed,
+                    Status = HistoryStatus.Completed,
                     StartDate = DateTime.Now.AddDays(-51),
                     ExpectedReturnDate = DateTime.Now.AddDays(-40),
                     ActualReturnDate = DateTime.Now.AddDays(-44),
@@ -281,7 +287,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     ISBN = "7678678676",
                     BookCopyId = 6,
-                    Status = LoanStatus.Completed,
+                    Status = HistoryStatus.Completed,
                     StartDate = DateTime.Now.AddDays(-50),
                     ExpectedReturnDate = DateTime.Now.AddDays(-40),
                     ActualReturnDate = DateTime.Now.AddDays(-44),
@@ -294,7 +300,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     ISBN = "778587687",
                     BookCopyId = 7,
-                    Status = LoanStatus.Completed,
+                    Status = HistoryStatus.Completed,
                     StartDate = DateTime.Now.AddDays(-60),
                     ExpectedReturnDate = DateTime.Now.AddDays(-50),
                     ActualReturnDate = DateTime.Now.AddDays(-44),
@@ -307,7 +313,7 @@ namespace OnlineLibrary.DataAccess
                 {
                     ISBN = "1518800270",
                     BookCopyId = null,
-                    Status = LoanStatus.Rejected,
+                    Status = HistoryStatus.Rejected,
                     UserName = "libraryuser9@gmail.com",
                     LibrarianUserName = "Admin"
                 },
@@ -321,7 +327,13 @@ namespace OnlineLibrary.DataAccess
 
         public bool CreateSuperAdmin(UserManager<User> userManager, RoleManager<Role> roleManager, string password)
         {
-            var superAdmin = new User { UserName = "Admin", FirstName = "Super", LastName = "Admin" };
+            var superAdmin = new User
+            {
+                UserName = LibraryConstants.SuperAdminUserName,
+                FirstName = LibraryConstants.SuperAdminFirstName,
+                LastName = LibraryConstants.SuperAdminLastName
+            };
+
             var result = userManager.Create(superAdmin, password);
 
             if (result.Succeeded)
@@ -330,6 +342,18 @@ namespace OnlineLibrary.DataAccess
                 return true;
             }
             return false;
+        }
+        
+        private void SaveInConfiguration(string key, string value)
+        {
+            Configuration configuration = WebConfigurationManager.OpenWebConfiguration("~");
+            AppSettingsSection appSettings = (AppSettingsSection)configuration.GetSection("appSettings");
+            
+            if (appSettings != null)
+            {
+                appSettings.Settings[key].Value = value;
+                configuration.Save();
+            }
         }
     }
 }
