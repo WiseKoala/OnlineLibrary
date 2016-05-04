@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using OnlineLibrary.DataAccess.Concrete;
 using OnlineLibrary.DataAccess.Entities;
+using OnlineLibrary.DataAccess.Enums;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using OnlineLibrary.DataAccess.Enums;
-using System.Linq;
-using System.Web.Security;
 using System.Configuration;
-using System.IO;
-using OnlineLibrary.DataAccess.Concrete;
+using System.Data.Entity;
+using System.Linq;
+using System.Web.Configuration;
+using System.Web.Security;
 
 namespace OnlineLibrary.DataAccess
 {
@@ -35,14 +35,7 @@ namespace OnlineLibrary.DataAccess
             int numberNonAlphanumeric = 1;
             var superAdminPassword = Membership.GeneratePassword(passwordLenght, numberNonAlphanumeric);
 
-            //_Set the destination of password file
-            string passwordPath = @"D:\password.txt";
-            
-            // _If creating Super Admin is succeed save password.
-            if (CreateSuperAdmin(userManager, roleManager,superAdminPassword))
-            {
-                File.WriteAllText(passwordPath, superAdminPassword);
-            }
+            SaveInConfiguration("SuperAdminPassword", superAdminPassword);
 
             // Authors
             var authors = new List<Author>
@@ -330,6 +323,18 @@ namespace OnlineLibrary.DataAccess
                 return true;
             }
             return false;
+        }
+        
+        private void SaveInConfiguration(string key, string value)
+        {
+            Configuration configuration = WebConfigurationManager.OpenWebConfiguration("~");
+            AppSettingsSection appSettings = (AppSettingsSection)configuration.GetSection("appSettings");
+            
+            if (appSettings != null)
+            {
+                appSettings.Settings[key].Value = value;
+                configuration.Save();
+            }
         }
     }
 }
