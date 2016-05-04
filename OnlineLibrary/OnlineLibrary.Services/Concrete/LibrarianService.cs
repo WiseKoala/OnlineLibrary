@@ -6,6 +6,7 @@ using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.Services.Abstract;
+using System.Web;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -18,7 +19,7 @@ namespace OnlineLibrary.Services.Concrete
             _dbContext = dbContext;
         }
 
-        public void ApproveLoanRequest(int bookCopyId, int loanId)
+        public void ApproveLoanRequest(int bookCopyId, int loanId, int daysNumberForLateApprovedLoans)
         {
             // Find loan by ID.
             Loan loanToApprove = _dbContext.Loans.Find(loanId);
@@ -47,7 +48,8 @@ namespace OnlineLibrary.Services.Concrete
                 // Set status to Approved.
                 loanToApprove.BookCopyId = bookCopyId;
                 loanToApprove.Status = LoanStatus.Approved;
-                loanToApprove.BookPickUpLimitDate = DateTime.Now.AddDays(3);
+                loanToApprove.BookPickUpLimitDate = DateTime.Now.AddDays(daysNumberForLateApprovedLoans);
+                loanToApprove.ApprovingDate = DateTime.Now;
 
                 _dbContext.SaveChanges();
             }

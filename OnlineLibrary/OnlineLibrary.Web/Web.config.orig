@@ -16,7 +16,11 @@
     <add key="webpages:Enabled" value="false" />
     <add key="ClientValidationEnabled" value="true" />
     <add key="UnobtrusiveJavaScriptEnabled" value="true" />
+<<<<<<< HEAD
+    <add key="SuperAdminPassword" value="^^QZiBn=" />
+=======
     <add key="DaysNumberForLateApprovedLoans" value="3" />
+>>>>>>> feature/issue_89
   </appSettings>
   <system.web>
     <authentication mode="None" />
