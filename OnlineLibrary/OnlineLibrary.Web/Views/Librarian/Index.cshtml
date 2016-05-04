@@ -161,24 +161,24 @@
                 </h3>
             </div>
             <table class="table">
-                <colgroup>
-                    <col width="20%" />
-                    <col width="80%" />
-                </colgroup>
                 <thead>
                     <tr>
-                        <th>
-                            <label>User Name</label>
-                        </th>
-                        <th>
-                            <label>ISBN</label>
-                        </th>
+                        <th>ISBN</th>
+                        <th>Book Copy Id</th>
+                        <th>User Name</th>
+                        <th>Start Date</th>
+                        <th>Expected Return Date</th>
+                        <th>Actual Return Date</th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: history().Rejected">
                     <tr>
-                        <td data-bind="text: UserName"></td>
-                        <td data-bind="text: ISBN"></td>
+                        <td style="width: 15%" data-bind="text: ISBN"></td>
+                        <td style="width: 5%" data-bind="text: BookCopyId"></td>
+                        <td style="width: 20%" data-bind="text: UserName"></td>
+                        <td style="width: 20%" data-bind="text: StartDate"></td>
+                        <td style="width: 20%" data-bind="text: ExpectedReturnDate"></td>
+                        <td style="width: 20%" data-bind="text: ActualReturnDate"></td>
                     </tr>
                 </tbody>
             </table>
@@ -218,24 +218,24 @@
                     <strong>Lost books</strong>
                 </h3>
                 <table class="table">
-                    <colgroup>
-                        <col width="20%" />
-                        <col width="80%" />
-                    </colgroup>
                     <thead>
                         <tr>
-                            <th>
-                                <label>User Name</label>
-                            </th>
-                            <th>
-                                <label>ISBN</label>
-                            </th>
+                            <th>ISBN</th>
+                            <th>Book Copy Id</th>
+                            <th>User Name</th>
+                            <th>Start Date</th>
+                            <th>Expected Return Date</th>
+                            <th>Actual Return Date</th>
                         </tr>
                     </thead>
                     <tbody data-bind="foreach: history().LostBook">
                         <tr>
-                            <td data-bind="text: UserName"></td>
-                            <td data-bind="text: ISBN"></td>
+                            <td style="width: 15%" data-bind="text: ISBN"></td>
+                            <td style="width: 5%" data-bind="text: BookCopyId"></td>
+                            <td style="width: 20%" data-bind="text: UserName"></td>
+                            <td style="width: 20%" data-bind="text: StartDate"></td>
+                            <td style="width: 20%" data-bind="text: ExpectedReturnDate"></td>
+                            <td style="width: 20%" data-bind="text: ActualReturnDate"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -247,24 +247,24 @@
                     <strong>Cancelled loans</strong>
                 </h3>
                 <table class="table">
-                    <colgroup>
-                        <col width="20%" />
-                        <col width="80%" />
-                    </colgroup>
                     <thead>
                         <tr>
-                            <th>
-                                <label>User Name</label>
-                            </th>
-                            <th>
-                                <label>ISBN</label>
-                            </th>
+                            <th>ISBN</th>
+                            <th>Book Copy Id</th>
+                            <th>User Name</th>
+                            <th>Start Date</th>
+                            <th>Expected Return Date</th>
+                            <th>Actual Return Date</th>
                         </tr>
                     </thead>
                     <tbody data-bind="foreach: history().Cancelled">
                         <tr>
-                            <td data-bind="text: UserName"></td>
-                            <td data-bind="text: ISBN"></td>
+                            <td style="width: 15%" data-bind="text: ISBN"></td>
+                            <td style="width: 5%" data-bind="text: BookCopyId"></td>
+                            <td style="width: 20%" data-bind="text: UserName"></td>
+                            <td style="width: 20%" data-bind="text: StartDate"></td>
+                            <td style="width: 20%" data-bind="text: ExpectedReturnDate"></td>
+                            <td style="width: 20%" data-bind="text: ActualReturnDate"></td>
                         </tr>
                     </tbody>
                 </table>
