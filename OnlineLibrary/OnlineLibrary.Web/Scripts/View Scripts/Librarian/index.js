@@ -1,15 +1,4 @@
 ﻿$(document).ready(function () {
-
-    $(".approve").click(function () {
-        var loanId = $(this).data('loanId');
-        $("#approveForm").find('input[id="loanId"]').val(loanId);
-    });
-
-    $(".reject").click(function () {
-        var loanId = $(this).data('loanId');
-        $("#reject").find('input[id="loanId"]').val(loanId);
-    });
-
     $("#approveLoanButton").click(function () {
         var approveForm = $("#approveForm");
         var settings = {
@@ -77,6 +66,8 @@
                     console("Error");
                     break;
             }
+
+            performBinding();
         };
 
         // Determine the URL to make request to.
@@ -96,3 +87,15 @@
     // Trigger the event manually in order to load the tab content.
     $('a[data-toggle="tab"]:first').trigger("show.bs.tab");
 });
+
+function performBinding() {
+    $(".approve").click(function () {
+        var loanId = $(this).data('loanId');
+        $("#approveForm").find('input[id="loanId"]').val(loanId);
+    });
+
+    $(".reject").click(function () {
+        var loanId = $(this).data('loanId');
+        $("#reject").find('input[id="loanId"]').val(loanId);
+    });
+}
