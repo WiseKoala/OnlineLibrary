@@ -85,38 +85,36 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public ActionResult RejectLoanRequest(int loanId)
         {
-            _librarianService.RejectLoanRequest(loanId);
-            return RedirectToActionPermanent("Index");
+            var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
+            _librarianService.RejectLoanRequest(loanId, librarian);
+
+            return RedirectToAction("Index");
         }
         
         [HttpPost]
         public ActionResult PerformLoan(int loanId)
         {
             _librarianService.PerformLoan(loanId);
-            int daysNumberForLateApprovedLoans;
-            int.TryParse(ConfigurationManager.AppSettings["DaysNumberForLateApprovedLoans"], out daysNumberForLateApprovedLoans);
 
-            return RedirectToActionPermanent("Index");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         public ActionResult ReturnBook(int loanId)
-        {
-            Loan loan = DbContext.Loans.Find(loanId);
-            loan.Status = LoanStatus.Completed;
-            DbContext.SaveChanges();
+        {            
+            var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
+            _librarianService.ReturnBook(loanId, librarian);
 
-            return RedirectToActionPermanent("Index");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         public ActionResult LostBook(int loanId)
         {
-            Loan loan = DbContext.Loans.Find(loanId);
-            loan.Status = LoanStatus.LostBook;
-            DbContext.SaveChanges();
+            var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
+            _librarianService.LostBook(loanId, librarian);
 
-            return RedirectToActionPermanent("Index");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
