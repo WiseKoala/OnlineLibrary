@@ -76,6 +76,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -108,6 +109,12 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OnlineLibrary.Common\OnlineLibrary.Common.csproj">
+      <Project>{09039153-55e6-47b8-8b2c-b498b817bf42}</Project>
+      <Name>OnlineLibrary.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
