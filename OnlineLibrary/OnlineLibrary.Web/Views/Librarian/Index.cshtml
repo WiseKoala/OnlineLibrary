@@ -1,4 +1,4 @@
-﻿
+﻿@model OnlineLibrary.Web.Models.LibrarianLoansViewModels.LibrarianIndexViewModel
 @section CSS {
     <link href="~/Content/Views stylesheets/Librarian/Index.css" rel="stylesheet" />
 }
@@ -9,17 +9,17 @@
     <!-- Nav tabs -->
     <ul id="loans-tabs" class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active">
-            <a href="#pending" data-status="0" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="home" role="tab" data-toggle="tab">
+            <a href="#pending" data-status="@Model.PendingStatusValue" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="home" role="tab" data-toggle="tab">
                 <span class="glyphicon glyphicon-time" aria-hidden="true"></span> Pending
             </a>
         </li>
         <li role="presentation">
-            <a href="#approved" data-status="1" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="profile" role="tab" data-toggle="tab">
+            <a href="#approved" data-status="@Model.ApprovedStatusValue" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="profile" role="tab" data-toggle="tab">
                 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> Approved
             </a>
         </li>
         <li role="presentation">
-            <a href="#inProgress" data-status="2" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="messages" role="tab" data-toggle="tab">
+            <a href="#inProgress" data-status="@Model.InProgressStatusValue" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="messages" role="tab" data-toggle="tab">
                 <span class="glyphicon glyphicon-book" aria-hidden="true"></span> Loaned Books
             </a>
         </li>

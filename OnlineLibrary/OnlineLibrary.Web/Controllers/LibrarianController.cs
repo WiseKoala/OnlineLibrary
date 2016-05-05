@@ -26,7 +26,14 @@ namespace OnlineLibrary.Web.Controllers
         [Authorize(Roles = "Librarian, System administrator, Super administrator")]
         public ActionResult Index()
         {
-            return View();
+            var model = new LibrarianIndexViewModel()
+            {
+                PendingStatusValue = (byte)LoanStatus.Pending,
+                ApprovedStatusValue = (byte)LoanStatus.Approved,
+                InProgressStatusValue = (byte)LoanStatus.InProgress
+            };
+
+            return View(model);
         }
 
         public JsonResult ListActive(LoanStatus status)
