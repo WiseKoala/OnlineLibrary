@@ -58,10 +58,8 @@ namespace OnlineLibrary.Web.Controllers
 
             var historyLoans = (from h in DbContext.History
                                 where h.UserName == DbContext.Users.Where(u => u.Id == userId).FirstOrDefault().UserName
-                                join bc in DbContext.BookCopies
-                                on h.BookCopyId equals bc.Id
                                 join b in DbContext.Books
-                                on bc.BookId equals b.Id
+                                on h.ISBN equals b.ISBN
                                 join l in DbContext.Users
                                 on h.LibrarianUserName equals l.UserName
                                 orderby h.Status, h.ExpectedReturnDate
