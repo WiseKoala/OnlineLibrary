@@ -25,21 +25,19 @@ namespace OnlineLibrary.DataAccess
                 new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.Librarian },
                 new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.SuperAdmin }
             };
-
+            
             var roleManager = new RoleManager<Role>(new RoleStore<Role>(context));
             roles.ForEach(r => roleManager.Create(r));
 
             var userManager = new UserManager<User>(new UserStore<User>(context));
 
-            // _Set password rules.
-            int passwordLenght = 8;
-            int numberNonAlphanumeric = 1;
-            var superAdminPassword = Membership.GeneratePassword(passwordLenght, numberNonAlphanumeric);
+            var superAdminPassword = CreatePassword();
 
-            if ( CreateSuperAdmin(userManager,roleManager, superAdminPassword) )
+            if ( CreateSuperAdmin(userManager, roleManager, superAdminPassword) )
             {
                 SaveInConfiguration("SuperAdminPassword", superAdminPassword);
             }
+
             // Authors
             var authors = new List<Author>
             {
@@ -325,7 +323,7 @@ namespace OnlineLibrary.DataAccess
             context.SaveChanges();
         }
 
-        public bool CreateSuperAdmin(UserManager<User> userManager, RoleManager<Role> roleManager, string password)
+        private bool CreateSuperAdmin(UserManager<User> userManager, RoleManager<Role> roleManager, string password)
         {
             var superAdmin = new User
             {
@@ -351,9 +349,17 @@ namespace OnlineLibrary.DataAccess
             
             if (appSettings != null)
             {
-                appSettings.Settings[key].Value = value;
+                appSettings.Settings[key].Value = @value;
                 configuration.Save();
             }
+        }
+
+        private string CreatePassword()
+        {
+            int passwordLenght = Int32.Parse(ConfigurationManager.AppSettings["PasswordLength"]);
+            int numberNonAlphanumeric = Int32.Parse(ConfigurationManager.AppSettings["numberNonAlphanumericChars"]);
+
+            return Membership.GeneratePassword(passwordLenght, numberNonAlphanumeric);
         }
     }
 }
