@@ -19,10 +19,7 @@ namespace OnlineLibrary.Web.Controllers
 
         public ActionResult Index()
         {
-            if (!IsUserNameSessionVariableSet())
-            {
                 InitializeUserNameSessionVariable();
-            }
 
             // Obtain list of books from the database.
             var booksList = DbContext.Books

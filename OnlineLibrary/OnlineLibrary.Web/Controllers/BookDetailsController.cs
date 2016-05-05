@@ -28,11 +28,6 @@ namespace OnlineLibrary.Web.Controllers
 
         public ActionResult Index(int id)
         {
-            if (!IsUserNameSessionVariableSet())
-            {
-                InitializeUserNameSessionVariable();
-            }
-
             var book = DbContext.Books.Include(b => b.BookCopies).First(b => b.Id == id);
            // var bookcopies = new List<BookCopy>();
             int[] condition =
