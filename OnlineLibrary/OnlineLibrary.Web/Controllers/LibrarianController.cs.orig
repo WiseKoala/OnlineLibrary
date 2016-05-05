@@ -8,8 +8,12 @@ using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.Services.Abstract;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models.LibrarianLoansViewModels;
+<<<<<<< HEAD
+=======
+using OnlineLibrary.DataAccess.Abstract;
+using OnlineLibrary.Common.Exceptions;
 using System.Configuration;
-using System;
+>>>>>>> develop
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -29,25 +33,39 @@ namespace OnlineLibrary.Web.Controllers
             return View();
         }
 
+<<<<<<< HEAD
         public JsonResult ListActive(LoanStatus status)
         {
             var model = DbContext.Loans
                                  .Include(l => l.Book)
                                  .Include(u => u.User)
                                  .Where(l => l.Status == status)
-                                 .OrderBy(lr => lr.ApprovingDate)
-                                 .ToList()
                                  .Select(l => new LoanViewModel
                                  {
                                      LoanId = l.Id,
                                      BookTitle = l.Book.Title,
-                                     UserName = l.User.UserName,
-                                     ApprovingDate = l.ApprovingDate.HasValue ? l.ApprovingDate.Value.ToShortDateString() : "unknown",
-                                     IsApprovedLoanLate = l.BookPickUpLimitDate.HasValue && (l.BookPickUpLimitDate < DateTime.Now)
-                                 });
-
+                                     UserName = l.User.UserName
+                                 })
+                                 .ToList();
             return Json(model, JsonRequestBehavior.AllowGet);
         }
+=======
+            // Obtain loans.
+            var loans = DbContext.Loans
+                 .Include(lr => lr.User)
+                 .Include(lr => lr.Book)
+                 .Select(lr => new LoanViewModel
+                 {
+                     LoanId = lr.Id,
+                     BookTitle = lr.Book.Title,
+                     UserName = lr.User.UserName,
+                     Status = lr.Status,
+                     ApprovingDate = lr.ApprovingDate,
+                     BookPickUpLimitDate = lr.BookPickUpLimitDate
+                 })
+                 .OrderBy(lr => lr.ApprovingDate)
+                 .ToList();
+>>>>>>> develop
 
         public ActionResult ListHistory()
         {

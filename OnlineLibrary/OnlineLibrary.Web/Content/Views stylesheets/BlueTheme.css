@@ -17,10 +17,12 @@
 
 
 .btn-default {
+    color: #fff;
     background-color: #2dafce !important;
 }
 
 .btn-default:hover, .btn-default:active {
+    color: #fff;
     background-color: #2fa2bf !important;
 }
 

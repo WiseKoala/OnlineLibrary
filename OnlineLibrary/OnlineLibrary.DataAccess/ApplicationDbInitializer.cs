@@ -238,7 +238,7 @@ namespace OnlineLibrary.DataAccess
                 },
                 new Loan
                 {
-                    BookCopyId = null,
+                    BookCopyId = 9,
                     BookId = 5,
                     Status = LoanStatus.Approved,
                     BookPickUpLimitDate = DateTime.Now.AddDays(2),
@@ -247,7 +247,7 @@ namespace OnlineLibrary.DataAccess
                 },
                 new Loan
                 {
-                    BookCopyId = null,
+                    BookCopyId = 10,
                     BookId = 5,
                     Status = LoanStatus.Approved,
                     BookPickUpLimitDate = DateTime.Now.AddDays(-5),
