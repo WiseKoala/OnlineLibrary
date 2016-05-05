@@ -34,11 +34,8 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult Index()
         {
             if (HasAdminPrivileges(User))
-            {              
-                if (!IsUserNameSessionVariableSet())
-                {
-                    InitializeUserNameSessionVariable();
-                }
+            {
+                InitializeUserNameSessionVariable();
 
                 // Initializing the model to be passed to the view.
                 var model = new RoleViewModel();

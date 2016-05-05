@@ -27,30 +27,36 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
             get { return _dbContext; }
         }
 
-        protected bool IsUserNameSessionVariableSet()
+        private bool IsNeededToSetSessionVariable()
         {
             return User.Identity.IsAuthenticated && SessionHelper.UserNameSessionVariable == null;
         }
 
         protected void InitializeUserNameSessionVariable()
         {
-            InitializeUserNameSessionVariable(string.Empty, string.Empty);
+            if (IsNeededToSetSessionVariable())
+            {
+                InitializeUserNameSessionVariable(string.Empty, string.Empty);
+            }
         }
 
         protected void InitializeUserNameSessionVariable(string firstName, string lastName)
         {
-            string userName = string.Empty;
-            if (!string.IsNullOrEmpty(User.Identity.Name))
+            if (IsNeededToSetSessionVariable())
             {
-                var user =  _dbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
-                userName = user.FirstName + " " + user.LastName;
+                string userName = string.Empty;
+                if (!string.IsNullOrEmpty(User.Identity.Name))
+                {
+                    var user = _dbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
+                    userName = user.FirstName + " " + user.LastName;
+                }
+                else if (!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
+                {
+                    userName = firstName + " " + lastName;
+                }
+
+                Session["UserName"] = userName;
             }
-            else if (!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
-            {
-                userName = firstName + " " + lastName;
-            }
-            
-            Session["UserName"] = userName;
         }
 
 
