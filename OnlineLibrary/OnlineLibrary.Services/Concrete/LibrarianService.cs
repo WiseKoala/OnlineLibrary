@@ -68,9 +68,6 @@ namespace OnlineLibrary.Services.Concrete
                                         .SingleOrDefault();
             if (loanToReject != null)
             {
-                // Set status to Rejected.
-                loanToReject.Status = LoanStatus.Rejected;
-
                 // Add rejeted loan to history.
                 var historyLoan = new History
                 {
@@ -79,8 +76,10 @@ namespace OnlineLibrary.Services.Concrete
                     Status = HistoryStatus.Rejected,
                     UserName = loanToReject.User.UserName
                 };
-
                 _dbContext.History.Add(historyLoan);
+
+                // Remove from the database.
+                _dbContext.Loans.Remove(loanToReject);
 
                 _dbContext.SaveChanges();
             }
