@@ -44,7 +44,7 @@
                         int counter = 0;
                      }
 
-                    @if (!(Model.CurrentLoans.Select(loan => ((loan.ExpectedReturnDate.Value - DateTime.Now).Days > 5)).Any()))
+                    @if (!(Model.InProgressLoans.Select(loan => ((loan.ExpectedReturnDate.Value - DateTime.Now).Days > 5)).Any()))
                     {
                         <tr>
                             <td colspan="8">
@@ -54,10 +54,10 @@
                     }
                     else
                     {
-                      foreach (var loan in Model.CurrentLoans)
-                      {
-                        if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days > 5)
+                        foreach (var loan in Model.InProgressLoans)
                         {
+                            if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days > 5)
+                            {
                             <tr class="success" title="Active loans">
                                 <td>#@(++counter)</td>
                                 <td colspan="7">
@@ -83,7 +83,7 @@
                         counter = 0;
                      }
 
-                    @if (!(Model.CurrentLoans.Select(loan => ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 5 && (loan.ExpectedReturnDate.Value - DateTime.Now).Days > 0)).Any()))
+                    @if (!(Model.InProgressLoans.Select(loan => ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 5 && (loan.ExpectedReturnDate.Value - DateTime.Now).Days > 0)).Any()))
                     {
                         <tr>
                             <td colspan="8">
@@ -93,10 +93,10 @@
                     }
                     else
                     {
-                      foreach (var loan in Model.CurrentLoans)
-                      {
-                          if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 5 && (loan.ExpectedReturnDate.Value - DateTime.Now).Days > 0)
-                          {
+                        foreach (var loan in Model.InProgressLoans)
+                        {
+                            if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 5 && (loan.ExpectedReturnDate.Value - DateTime.Now).Days > 0)
+                            {
                             <tr class="warning" title="Soon expiring loans">
                                 <td>#@(++counter)</td>
                                 <td colspan="7">
@@ -120,7 +120,7 @@
                        counter = 0;
                     }
                     
-                   @if (!(Model.CurrentLoans.Select(loan => ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 0)).Any()))
+                   @if (!(Model.InProgressLoans.Select(loan => ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 0)).Any()))
                    {
                         <tr>
                             <td colspan="8">
@@ -130,7 +130,7 @@
                    }
                    else
                    {
-                       foreach (var loan in Model.CurrentLoans)
+                       foreach (var loan in Model.InProgressLoans)
                        {
                            if ((loan.ExpectedReturnDate.Value - DateTime.Now).Days <= 0)
                            {
@@ -263,10 +263,10 @@
                             <tr class="danger" title="Rejected loan requests">
                                 <td>#@(++counter)</td>
                                 <td colspan="6">
-                                    Your request for <strong> "@loan.Title" </strong> was rejected.
+                                    Your request for <strong> "@loan.BookTitle" </strong> was rejected.
                                 </td>
                                 <td>
-                                    @using (Html.BeginForm("HideRejectedLoanNotification", "UserLoans", new { id = loan.BookId }))
+                                    @using (Html.BeginForm("HideRejectedLoanNotification", "UserLoans", new { loanId = loan.HistoryLoanId }))
                                     {
                                         <input type="submit" class="btn btn-primary" value="Hide notification" />
                                     }
@@ -302,7 +302,7 @@
                     @{
                         counter = 0;
                     }
-                    @if (!Model.HistoryLoans.Where(hl => hl.Status == OnlineLibrary.DataAccess.Enums.LoanStatus.Completed).Any())
+                    @if (!Model.CompletedLoans.Any())
                     {
                         <tr>
                             <td colspan="8">
@@ -312,7 +312,7 @@
                     }
                     else
                     {
-                        foreach (var loan in Model.HistoryLoans.Where(hl => hl.Status == OnlineLibrary.DataAccess.Enums.LoanStatus.Completed))
+                        foreach (var loan in Model.CompletedLoans)
                         {
                             <tr class="success" title="Returned books">
                                 <td>#@(++counter)</td>
@@ -336,7 +336,7 @@
                         counter = 0;
                     }
 
-                    @if (!Model.HistoryLoans.Where(hl => hl.Status == OnlineLibrary.DataAccess.Enums.LoanStatus.LostBook).Any())
+                    @if (!Model.LostBookLoans.Any())
                     {
                         <tr>
                             <td colspan="8">
@@ -346,7 +346,7 @@
                     }
                     else
                     {
-                        foreach (var loan in Model.HistoryLoans.Where(hl => hl.Status == OnlineLibrary.DataAccess.Enums.LoanStatus.LostBook))
+                        foreach (var loan in Model.LostBookLoans)
                         {
                             <tr class="success" title="Returned books">
                                 <td>#@(++counter)</td>
@@ -358,7 +358,6 @@
                     }
 
                     @* Rejected loan requests label *@
-
                     <tr class="active">
                         <th colspan="8">
                             <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
@@ -369,7 +368,7 @@
                     @{
                         counter = 0;
                     }
-                    @if (!Model.HistoryLoans.Where(hl => hl.Status == OnlineLibrary.DataAccess.Enums.LoanStatus.Rejected).Any())
+                    @if (!Model.RejectedLoans.Any())
                     {
                         <tr>
                             <td colspan="8">
@@ -379,7 +378,7 @@
                     }
                     else
                     {
-                        foreach (var loan in Model.HistoryLoans.Where(hl => hl.Status == OnlineLibrary.DataAccess.Enums.LoanStatus.Rejected))
+                        foreach (var loan in Model.RejectedLoans)
                         {
                             <tr class="danger" title="Rejected loan requests">
                                 <td>#@(++counter)</td>
@@ -397,11 +396,12 @@
         </div>
     </div>
 </div>
+
 @section scripts{
 <script>
     $(document).ready(function ()
     {
-        var activeLoansBageNumber = @Model.CurrentLoans.Where(al => (al.ExpectedReturnDate.Value - DateTime.Now).Days <= 5).Count();
+        var activeLoansBageNumber = @Model.InProgressLoans.Where(al => (al.ExpectedReturnDate.Value - DateTime.Now).Days <= 5).Count();
         if (activeLoansBageNumber != 0)
         {
             $("#activeLoansBadge").text(activeLoansBageNumber);
