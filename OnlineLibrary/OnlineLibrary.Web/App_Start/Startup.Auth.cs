@@ -8,6 +8,7 @@ using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Services.Concrete;
 using Owin;
 using System;
+using System.Configuration;
 
 namespace OnlineLibrary.Web
 {
@@ -37,8 +38,8 @@ namespace OnlineLibrary.Web
 
             app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             {
-                ClientId = "1036700319241-rmfb3q2redgt83al2nfbsi3g8fnko1je.apps.googleusercontent.com",
-                ClientSecret = "Ml798kTCJQamBOLkEUiucBhO"
+                ClientId = ConfigurationManager.AppSettings["ClientId"],
+                ClientSecret = ConfigurationManager.AppSettings["ClientSecret"]
             });
         }
     }
