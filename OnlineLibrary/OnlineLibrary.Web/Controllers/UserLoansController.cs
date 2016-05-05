@@ -102,42 +102,6 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult CancelApprovedLoan(int id)
-        {
-            var userId = User.Identity.GetUserId();
-
-            var loan = DbContext.Loans.Where(l => l.UserId == userId && l.BookId == id && l.Status == LoanStatus.Approved).FirstOrDefault();
-
-            if (loan != null)
-            {
-                DbContext.Loans.Remove(loan);
-                DbContext.SaveChanges();
-
-                return RedirectToAction("MyLoans");
-            }
-            else
-                return View("Error");
-        }
-
-        [HttpPost]
-        public ActionResult CancelPendingLoan(int id)
-        {
-            var userId = User.Identity.GetUserId();
-
-            var loan = DbContext.Loans.Where(l => l.UserId == userId && l.BookId == id).FirstOrDefault();
-
-            if (loan != null)
-            {
-                DbContext.Loans.Remove(loan);
-                DbContext.SaveChanges();
-
-                return RedirectToAction("MyLoans");
-            }
-            else
-                return View("Error");
-        }
-
-        [HttpPost]
         public ActionResult HideRejectedLoanNotification(int loanId)
         {
             var userId = User.Identity.GetUserId();

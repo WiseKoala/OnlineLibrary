@@ -187,12 +187,6 @@
                                 <td colspan="6">
                                     You have sent a loan request for the book <strong>"@loan.Title"</strong> - it was approved. You are expected to go to the library and take the book. You have to perform the loan before <strong>@loan.BookPickUpLimitDate.Value.ToLongDateString()</strong>.
                                 </td>
-                                <td>
-                                    @using (Html.BeginForm("CancelApprovedLoan", "UserLoans", new { id = loan.BookId }))
-                                    {
-                                        <input type="submit" class="btn btn-danger" value="Cancel Loan" />
-                                    }
-                                </td>
                             </tr>
                         }
                     }
@@ -225,12 +219,6 @@
                                 <td>#@(++counter)</td>
                                 <td colspan="6">
                                     Your loan request for <strong> "@loan.Title" </strong> is pending confirmation.
-                                </td>
-                                <td>
-                                    @using (Html.BeginForm("CancelPendingLoan", "UserLoans", new { id = loan.BookId }))
-                                    {
-                                        <input type="submit" class="btn btn-danger" value="Cancel Loan" />
-                                    }
                                 </td>
                             </tr>
                         }
