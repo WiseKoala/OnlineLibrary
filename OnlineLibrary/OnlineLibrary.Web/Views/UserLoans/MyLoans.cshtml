@@ -184,7 +184,7 @@
                         {
                             <tr class="success" title="Approved loan requests">
                                 <td>#@(++counter)</td>
-                                <td colspan="6">
+                                <td colspan="8">
                                     You have sent a loan request for the book <strong>"@loan.Title"</strong> - it was approved. You are expected to go to the library and take the book. You have to perform the loan before <strong>@loan.BookPickUpLimitDate.Value.ToLongDateString()</strong>.
                                 </td>
                             </tr>
@@ -217,7 +217,7 @@
                         {
                             <tr class="warning" title="Pending loan requests">
                                 <td>#@(++counter)</td>
-                                <td colspan="6">
+                                <td colspan="8">
                                     Your loan request for <strong> "@loan.Title" </strong> is pending confirmation.
                                 </td>
                             </tr>
@@ -236,27 +236,27 @@
                     @{
                         counter = 0;
                     }
-                    @if (!Model.RejectedLoans.Any())
+                    @if (!Model.NotSeenRejectedLoans.Any())
                     {
                         <tr>
                             <td colspan="8">
-                                There are no rejected loan requests.
+                                There are no unseen rejected loan requests.
                             </td>
                         </tr>
                     }
                     else
                     {
-                        foreach (var loan in Model.RejectedLoans)
+                        foreach (var loan in Model.NotSeenRejectedLoans)
                         {
                             <tr class="danger" title="Rejected loan requests">
                                 <td>#@(++counter)</td>
                                 <td colspan="6">
                                     Your request for <strong> "@loan.BookTitle" </strong> was rejected.
                                 </td>
-                                <td>
+                                <td colspan="2">
                                     @using (Html.BeginForm("HideRejectedLoanNotification", "UserLoans", new { loanId = loan.HistoryLoanId }))
                                     {
-                                        <input type="submit" class="btn btn-primary" value="Hide notification" />
+                                        <input type="submit" class="btn btn-primary" value="Seen" />
                                     }
                                 </td>
                             </tr>
@@ -356,7 +356,7 @@
                     @{
                         counter = 0;
                     }
-                    @if (!Model.RejectedLoans.Any())
+                    @if (!Model.AllRejectedLoans.Any())
                     {
                         <tr>
                             <td colspan="8">
@@ -366,7 +366,7 @@
                     }
                     else
                     {
-                        foreach (var loan in Model.RejectedLoans)
+                        foreach (var loan in Model.AllRejectedLoans)
                         {
                             <tr class="danger" title="Rejected loan requests">
                                 <td>#@(++counter)</td>
@@ -403,7 +403,7 @@
 
     $(document).ready(function ()
     {
-        var RequestsBageNumber = @Model.ApprovedLoans.Count() + @Model.RejectedLoans.Count();
+        var RequestsBageNumber = @Model.ApprovedLoans.Count() + @Model.AllRejectedLoans.Count();
         if (RequestsBageNumber != 0)
         {
             $("#requestsBage").text(RequestsBageNumber);

@@ -21,5 +21,7 @@ namespace OnlineLibrary.Web.Models.UserLoansViewModels
 
         [DataType(DataType.Date)]
         public DateTime? ActualReturnDate { get; set; }
+
+        public bool SeenByUser { get; set; }
     }
 }

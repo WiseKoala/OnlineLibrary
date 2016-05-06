@@ -56,7 +56,8 @@ namespace OnlineLibrary.Web.Controllers
                                     ActualReturnDate = h.ActualReturnDate,
                                     InitialBookCondition = h.InitialBookCondition,
                                     FinalBookCondition = h.FinalBookCondition,
-                                    LibrarianName = l.UserName
+                                    LibrarianName = l.UserName,
+                                    SeenByUser = h.SeenByUser
                                 })
                                 .ToList();
 
@@ -64,13 +65,14 @@ namespace OnlineLibrary.Web.Controllers
             var model = new UserLoansViewModel();
             // Active loans.
             model.PendingLoans = allLoans.Where(l => l.Status == LoanStatus.Pending);
-            model.ApprovedLoans = allLoans.Where(ul => ul.Status == LoanStatus.Approved);
-            model.InProgressLoans = allLoans.Where(ul => ul.Status == LoanStatus.InProgress);
+            model.ApprovedLoans = allLoans.Where(l => l.Status == LoanStatus.Approved);
+            model.InProgressLoans = allLoans.Where(l => l.Status == LoanStatus.InProgress);
             // History loans.
-            model.RejectedLoans = historyLoans.Where(l => l.Status == HistoryStatus.Rejected);
-            model.CompletedLoans = historyLoans.Where(ul => ul.Status == HistoryStatus.Completed);
-            model.LostBookLoans = historyLoans.Where(ul => ul.Status == HistoryStatus.LostBook);
-            model.CancelledLoans = historyLoans.Where(l => l.Status == HistoryStatus.Cancelled);
+            model.NotSeenRejectedLoans = historyLoans.Where(h => h.Status == HistoryStatus.Rejected && h.SeenByUser == false);
+            model.AllRejectedLoans = historyLoans.Where(h => h.Status == HistoryStatus.Rejected);
+            model.CompletedLoans = historyLoans.Where(h => h.Status == HistoryStatus.Completed);
+            model.LostBookLoans = historyLoans.Where(h => h.Status == HistoryStatus.LostBook);
+            model.CancelledLoans = historyLoans.Where(h => h.Status == HistoryStatus.Cancelled);
 
             return View(model);
         }
@@ -78,19 +80,23 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public ActionResult HideRejectedLoanNotification(int loanId)
         {
-            var userId = User.Identity.GetUserId();
+            string userName = User.Identity.GetUserName();
 
-            var loan = DbContext.Loans.Where(l => l.Id == loanId && l.UserId == userId).FirstOrDefault();
+            var historyEntry = DbContext.History
+                .Where(h => h.Id == loanId && h.UserName == userName && h.Status == HistoryStatus.Rejected)
+                .FirstOrDefault();
 
-            if (loan != null)
+            if (historyEntry != null)
             {
-                DbContext.Loans.Remove(loan);
+                historyEntry.SeenByUser = true;
                 DbContext.SaveChanges();
 
                 return RedirectToAction("MyLoans");
             }
             else
+            {
                 return View("Error");
+            }
         }
     }
 }
