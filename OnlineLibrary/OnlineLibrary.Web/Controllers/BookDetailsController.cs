@@ -27,6 +27,7 @@ namespace OnlineLibrary.Web.Controllers
 
             var conditionStr = book.BookCopies
                    .GroupBy(e => e.Condition)
+                   .OrderBy(e => e.Key)
                    .Select(e => string.Concat(e.Count(), " ", _bookService.GetConditionDescription(e.Key))).ToList()
                    .Aggregate((current, next) => current + ", " + next);
 
