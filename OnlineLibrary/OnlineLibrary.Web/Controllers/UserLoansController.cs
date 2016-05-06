@@ -20,48 +20,31 @@ namespace OnlineLibrary.Web.Controllers
 
         public ActionResult MyLoans()
         {
-            // Initializing view model objects.
-            var model = new UserLoansViewModel();
-
-            // Storing user id.
+            // Extract user ID.
             string userId = User.Identity.GetUserId();
 
-            // Create queries to fill view models objects.
-            var loans = (from l in DbContext.Loans
-                         where l.UserId == userId
-                         join bc in DbContext.BookCopies
-                         on l.BookCopyId equals bc.Id
-                         join b in DbContext.Books
-                         on bc.BookId equals b.Id
-                         orderby l.Status, l.ExpectedReturnDate
-                         select new CurrentUserLoanViewModel()
-                         {
-                             Title = b.Title,
-                             ExpectedReturnDate = l.ExpectedReturnDate,
-                             Status = l.Status,
-                             BookPickUpLimitDate = l.BookPickUpLimitDate,
-                             BookId = b.Id
-                         })
-                         .AsEnumerable();
+            // Retreive active loans.
+            var allLoans = (from l in DbContext.Loans
+                            join b in DbContext.Books
+                            on l.BookId equals b.Id
+                            where l.UserId == userId
+                            select new CurrentUserLoanViewModel()
+                            {
+                                Title = b.Title,
+                                ExpectedReturnDate = l.ExpectedReturnDate,
+                                Status = l.Status,
+                                BookPickUpLimitDate = l.BookPickUpLimitDate,
+                                BookId = b.Id,
+                            })
+                            .ToList();
 
-            var loansWithNoBookCopy = (from l in DbContext.Loans
-                                       where l.UserId == userId && l.BookCopyId == null
-                                       join b in DbContext.Books
-                                       on l.BookId equals b.Id
-                                       select new CurrentUserLoanViewModel()
-                                       {
-                                           BookId = b.Id,
-                                           Status = l.Status,
-                                           Title = b.Title
-                                       })
-                                       .AsEnumerable();
-
+            // Retreive history loans.
             var historyLoans = (from h in DbContext.History
-                                where h.UserName == DbContext.Users.Where(u => u.Id == userId).FirstOrDefault().UserName
                                 join b in DbContext.Books
                                 on h.ISBN equals b.ISBN
                                 join l in DbContext.Users
                                 on h.LibrarianUserName equals l.UserName
+                                where h.UserName == DbContext.Users.Where(u => u.Id == userId).FirstOrDefault().UserName
                                 orderby h.Status, h.ExpectedReturnDate
                                 select new HistoryUserLoanViewModel()
                                 {
@@ -75,26 +58,19 @@ namespace OnlineLibrary.Web.Controllers
                                     FinalBookCondition = h.FinalBookCondition,
                                     LibrarianName = l.UserName
                                 })
-                                .AsEnumerable();
+                                .ToList();
 
-            var pendingLoans = loansWithNoBookCopy.Where(l => l.Status == LoanStatus.Pending);
-            var approvedLoans = loans.Where(ul => ul.Status == LoanStatus.Approved);
-            var currentLoans = loans.Where(ul => ul.Status == LoanStatus.InProgress);
-
-            var rejectedLoans = historyLoans.Where(l => l.Status == HistoryStatus.Rejected);
-            var returnedLoans = historyLoans.Where(ul => ul.Status == HistoryStatus.Completed);
-            var lostBookLoans = historyLoans.Where(ul => ul.Status == HistoryStatus.LostBook);
-            var cancelledLoans = historyLoans.Where(l => l.Status == HistoryStatus.Cancelled);
-
-            // Populate view model object.
-            model.PendingLoans = pendingLoans;
-            model.ApprovedLoans = approvedLoans;
-            model.InProgressLoans = currentLoans;
-
-            model.RejectedLoans = rejectedLoans;
-            model.CompletedLoans = returnedLoans;
-            model.LostBookLoans = lostBookLoans;
-            model.CancelledLoans = cancelledLoans;
+            // Populate the view model object.
+            var model = new UserLoansViewModel();
+            // Active loans.
+            model.PendingLoans = allLoans.Where(l => l.Status == LoanStatus.Pending);
+            model.ApprovedLoans = allLoans.Where(ul => ul.Status == LoanStatus.Approved);
+            model.InProgressLoans = allLoans.Where(ul => ul.Status == LoanStatus.InProgress);
+            // History loans.
+            model.RejectedLoans = historyLoans.Where(l => l.Status == HistoryStatus.Rejected);
+            model.CompletedLoans = historyLoans.Where(ul => ul.Status == HistoryStatus.Completed);
+            model.LostBookLoans = historyLoans.Where(ul => ul.Status == HistoryStatus.LostBook);
+            model.CancelledLoans = historyLoans.Where(l => l.Status == HistoryStatus.Cancelled);
 
             return View(model);
         }
