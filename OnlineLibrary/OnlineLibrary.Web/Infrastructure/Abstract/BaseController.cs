@@ -59,6 +59,22 @@ namespace OnlineLibrary.Web.Infrastructure.Abstract
             }
         }
 
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            try
+            {
+                // Get current user.
+                var user = _dbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
+            }
+            catch
+            {
+                // Delete cookies and abandon session if the logged in user is not in the database or doesn't exist.
+                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                Session.Abandon();
+            }
+
+            base.OnActionExecuting(filterContext);
+        }
 
         #region Helpers
 
