@@ -1,4 +1,5 @@
 ﻿using System;
+using OnlineLibrary.DataAccess.Enums;
 
 namespace OnlineLibrary.Web.Models.LibrarianLoansViewModels
 {
@@ -7,8 +8,9 @@ namespace OnlineLibrary.Web.Models.LibrarianLoansViewModels
         public string ISBN { get; set; }
         public int? BookCopyId { get; set; }
         public string UserName { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? ExpectedReturnDate { get; set; }
-        public DateTime? ActualReturnDate { get; set; }
+        public string StartDate { get; set; }
+        public string ExpectedReturnDate { get; set; }
+        public string ActualReturnDate { get; set; }
+        public HistoryStatus Status { get; set; }
     }
 }

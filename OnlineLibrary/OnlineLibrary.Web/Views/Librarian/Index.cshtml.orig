@@ -1,4 +1,8 @@
-﻿@model OnlineLibrary.Web.Models.LibrarianLoansViewModels.LibrarianIndexViewModel
+﻿@{
+    ViewBag.Title = "User loans manage ";
+}
+
+<<<<<<< HEAD
 @section CSS {
     <link href="~/Content/Views stylesheets/Librarian/Index.css" rel="stylesheet" />
 }
@@ -9,17 +13,17 @@
     <!-- Nav tabs -->
     <ul id="loans-tabs" class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active">
-            <a href="#pending" data-status="@Model.PendingStatusValue" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="home" role="tab" data-toggle="tab">
+            <a href="#pending" data-status="0" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="home" role="tab" data-toggle="tab">
                 <span class="glyphicon glyphicon-time" aria-hidden="true"></span> Pending
             </a>
         </li>
         <li role="presentation">
-            <a href="#approved" data-status="@Model.ApprovedStatusValue" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="profile" role="tab" data-toggle="tab">
+            <a href="#approved" data-status="2" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="profile" role="tab" data-toggle="tab">
                 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> Approved
             </a>
         </li>
         <li role="presentation">
-            <a href="#inProgress" data-status="@Model.InProgressStatusValue" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="messages" role="tab" data-toggle="tab">
+            <a href="#inProgress" data-status="3" data-request-url="@Url.Action("ListActive", "Librarian")" aria-controls="messages" role="tab" data-toggle="tab">
                 <span class="glyphicon glyphicon-book" aria-hidden="true"></span> Loaned Books
             </a>
         </li>
@@ -70,7 +74,7 @@
         </div>
         <div role="tabpanel" class="tab-pane fade" id="approved">
             <p data-bind="visible: approved().length == 0">No records...</p>
-            <table class="table loans-table approved-table" data-bind="visible: approved().length > 0">
+            <table class="table loans-table" data-bind="visible: approved().length > 0">
                 <colgroup>
                     <col>
                     <col>
@@ -80,29 +84,20 @@
                     <tr>
                         <th>User Name</th>
                         <th>Book Title</th>
-                        <th>
-                            Approving Date
-                        </th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: approved">
-                    <tr data-bind="css: { warning: IsApprovedLoanLate }">
+                    <tr>
                         <td data-bind="text: UserName"></td>
                         <td data-bind="text: BookTitle"></td>
                         <td>
-                            <span class="glyphicon glyphicon-exclamation-sign late-approved-loan-sign" data-bind="visible: IsApprovedLoanLate"></span> 
-                            <span data-bind="text: ApprovingDate"></span>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-primary btn-sm passLoanIdForLoan" data-toggle="modal" data-target="#doLoan" data-bind="attr: { 'data-loan-id': LoanId }">
-                                Loan
-                            </button>
-
-                            <!-- Trigger Button for CancelModal -->
-                            <button type="button" class="btn btn-danger btn-sm passLoanIdForCancel" data-toggle="modal" data-target="#cancelLoan" data-bind="attr: { 'data-loan-id': LoanId }">
-                                Cancel
-                            </button>
+                            <form action="@Url.Action("PerformLoan", "Librarian")" method="post">
+                                <input type="hidden" name="loanId" data-bind="attr: { value: LoanId }" />
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    Loan
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 </tbody>
@@ -163,10 +158,12 @@
                     <col>
                     <col>
                     <col>
+                    <col>
                 </colgroup>
                 <thead>
                     <tr>
                         <th>ISBN</th>
+                        <th>Book Copy Id</th>
                         <th>User Name</th>
                         <th>Start Date</th>
                         <th>Expected Return Date</th>
@@ -175,11 +172,12 @@
                 </thead>
                 <tbody data-bind="foreach: history().Rejected">
                     <tr>
-                        <td data-bind="text: ISBN"></td>
-                        <td data-bind="text: UserName"></td>
-                        <td data-bind="text: StartDate"></td>
-                        <td data-bind="text: ExpectedReturnDate"></td>
-                        <td data-bind="text: ActualReturnDate"></td>
+                        <td style="width: 15%" data-bind="text: ISBN"></td>
+                        <td style="width: 5%" data-bind="text: BookCopyId"></td>
+                        <td style="width: 20%" data-bind="text: UserName"></td>
+                        <td style="width: 20%" data-bind="text: StartDate"></td>
+                        <td style="width: 20%" data-bind="text: ExpectedReturnDate"></td>
+                        <td style="width: 20%" data-bind="text: ActualReturnDate"></td>
                     </tr>
                 </tbody>
             </table>
@@ -212,12 +210,12 @@
                 </thead>
                 <tbody data-bind="foreach: history().Completed">
                     <tr>
-                        <td data-bind="text: ISBN"></td>
-                        <td data-bind="text: BookCopyId"></td>
-                        <td data-bind="text: UserName"></td>
-                        <td data-bind="text: StartDate"></td>
-                        <td data-bind="text: ExpectedReturnDate"></td>
-                        <td data-bind="text: ActualReturnDate"></td>
+                        <td style="width: 15%" data-bind="text: ISBN"></td>
+                        <td style="width: 15%" data-bind="text: BookCopyId"></td>
+                        <td style="width: 20%" data-bind="text: UserName"></td>
+                        <td style="width: 15%" data-bind="text: StartDate"></td>
+                        <td style="width: 15%" data-bind="text: ExpectedReturnDate"></td>
+                        <td style="width: 15%" data-bind="text: ActualReturnDate"></td>
                     </tr>
                 </tbody>
             </table>
@@ -250,12 +248,12 @@
                 </thead>
                 <tbody data-bind="foreach: history().LostBook">
                     <tr>
-                        <td data-bind="text: ISBN"></td>
-                        <td data-bind="text: BookCopyId"></td>
-                        <td data-bind="text: UserName"></td>
-                        <td data-bind="text: StartDate"></td>
-                        <td data-bind="text: ExpectedReturnDate"></td>
-                        <td data-bind="text: ActualReturnDate"></td>
+                        <td style="width: 15%" data-bind="text: ISBN"></td>
+                        <td style="width: 5%" data-bind="text: BookCopyId"></td>
+                        <td style="width: 20%" data-bind="text: UserName"></td>
+                        <td style="width: 20%" data-bind="text: StartDate"></td>
+                        <td style="width: 20%" data-bind="text: ExpectedReturnDate"></td>
+                        <td style="width: 20%" data-bind="text: ActualReturnDate"></td>
                     </tr>
                 </tbody>
             </table>
@@ -288,18 +286,265 @@
                 </thead>
                 <tbody data-bind="foreach: history().Cancelled">
                     <tr>
-                        <td data-bind="text: ISBN"></td>
-                        <td data-bind="text: BookCopyId"></td>
-                        <td data-bind="text: UserName"></td>
-                        <td data-bind="text: StartDate"></td>
-                        <td data-bind="text: ExpectedReturnDate"></td>
-                        <td data-bind="text: ActualReturnDate"></td>
+                        <td style="width: 15%" data-bind="text: ISBN"></td>
+                        <td style="width: 5%" data-bind="text: BookCopyId"></td>
+                        <td style="width: 20%" data-bind="text: UserName"></td>
+                        <td style="width: 20%" data-bind="text: StartDate"></td>
+                        <td style="width: 20%" data-bind="text: ExpectedReturnDate"></td>
+                        <td style="width: 20%" data-bind="text: ActualReturnDate"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+=======
+<h2>@ViewBag.Title</h2><br />
+
+@* Pending loans *@
+<div class="panel-heading">
+    <h3 class="panel-title">
+        <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+        <strong>Pending loans</strong>
+    </h3>
+</div>
+<table class="table">
+    <colgroup>
+        <col width="20%" />
+        <col width="60%" />
+        <col width="20%" />
+    </colgroup>
+    <tr>
+        <th>
+            <label>User Name</label>
+        </th>
+        <th>
+            <label>Book Title</label>
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.PendingLoans)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BookTitle)
+            </td>
+            <td>
+                <!-- Trigger Button for ApproveModal -->
+                <button type="button" class="btn btn-primary btn-sm approve" data-toggle="modal" data-target="#approveModal" data-loan-id="@item.LoanId">
+                    Approve
+                </button>
+
+                <!-- Trigger Button for RejectModal -->
+                <button type="button" class="btn btn-danger btn-sm reject" data-toggle="modal" data-target="#rejectModal" data-loan-id="@item.LoanId">
+                    Reject
+                </button>
+            </td>
+        </tr>
+    }
+</table>
+
+@* Approved loans *@
+<div class="panel-heading">
+    <h3 class="panel-title">
+        <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+        <strong>Approved loans</strong>
+    </h3>
+</div>
+<table class="table">
+    <colgroup>
+        <col width="20%" />
+        <col width="40%" />
+        <col width="20%" />
+    </colgroup>
+    <tr>
+        <th>
+            <label>User Name</label>
+        </th>
+        <th>
+            <label>Book Title</label>
+        </th>
+        <th>
+            Approving Date
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var loan in Model.ApprovedLoans)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => loan.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => loan.BookTitle)
+            </td>
+            <td>
+                @if (loan.BookPickUpLimitDate < DateTime.Now)
+                {
+                    <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
+                }
+                @loan.ApprovingDate
+            </td>
+            <td>
+                    <input type="hidden" name="loanId" value="@loan.LoanId" />
+                    <!-- Trigger Button for LoanModal -->
+                    <button type="button" class="btn btn-primary btn-sm passLoanIdForLoan" data-toggle="modal" data-target="#doLoan" data-loan-id="@loan.LoanId">
+                        Loan
+                    </button>
+
+                    <!-- Trigger Button for CancelModal -->
+                    <button type="button" class="btn btn-danger btn-sm passLoanIdForCancel" data-toggle="modal" data-target="#cancelLoan" data-loan-id="@loan.LoanId">
+                        Cancel
+                    </button>
+            </td>
+        </tr>
+    }
+</table>
+
+@* Loaned books *@
+<div class="panel-heading">
+    <h3 class="panel-title">
+        <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+        Loaned books
+    </h3>
+</div>
+<table class="table">
+    <colgroup>
+        <col width="20%" />
+        <col width="60%" />
+        <col width="20%" />
+    </colgroup>
+    <tr>
+        <th>
+            <label>User Name</label>
+        </th>
+        <th>
+            <label>Book Title</label>
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var loan in Model.LoanedBooks)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => loan.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => loan.BookTitle)
+            </td>
+            <td>
+                <div class="form-inline">
+                    <form class="form-group" action="@Url.Action("ReturnBook", "Librarian")" method="post">
+                        <input type="hidden" name="loanId" value="@loan.LoanId" />
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            Return
+                        </button>
+                    </form>
+                    <form class="form-group" action="@Url.Action("LostBook", "Librarian")" method="post">
+                        <input type="hidden" name="loanId" value="@loan.LoanId" />
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            Lost
+                        </button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    }
+</table>
+
+@* Rejected loans *@
+<div class="panel-heading">
+    <h3 class="panel-title">
+        <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
+        <strong>Rejected loans</strong>
+    </h3>
+</div>
+<table class="table">
+    <colgroup>
+        <col width="20%" />
+        <col width="80%" />
+    </colgroup>
+    <tr>
+        <th>
+            <label>User Name</label>
+        </th>
+        <th>
+            <label>Book Title</label>
+        </th>
+    </tr>
+
+    @foreach (var loan in Model.RejectedLoans)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => loan.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => loan.BookTitle)
+            </td>
+        </tr>
+    }
+</table>
+
+@* Returned books *@
+<div class="panel-heading">
+    <h3 class="panel-title">
+        <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+        <strong>Returned loans</strong>
+    </h3>
+</div>
+<table class="table">
+    <colgroup>
+        <col width="20%" />
+        <col width="80%" />
+    </colgroup>
+    <tr>
+        <th>
+            <label>User Name</label>
+        </th>
+        <th>
+            <label>Book Title</label>
+        </th>
+    </tr>
+
+    @foreach (var loan in Model.ReturnedBooks)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => loan.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => loan.BookTitle)
+            </td>
+        </tr>
+    }
+</table>
+@* Lost books *@
+<div class="panel-heading">
+    <h3 class="panel-title">
+        <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
+        <strong>Lost loans</strong>
+    </h3>
+    <table class="table">
+        <colgroup>
+            <col width="20%" />
+            <col width="80%" />
+        </colgroup>
+        <tr>
+            <th>
+                <label>User Name</label>
+            </th>
+            <th>
+                <label>Book Title</label>
+            </th>
+        </tr>
+>>>>>>> develop
 
 <!-- Approve Modal  -->
 <div class="modal fade" id="approveModal" tabindex="-1" role="dialog">
@@ -323,7 +568,7 @@
                     <button id="approveLoanButton" type="submit" class="btn btn-primary">OK</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 </form>
-                <div id="approveLoanErrorAlert" class="alert alert-danger hidden fade in" role="alert">
+                <div id="approveLoanErrorAlert" class="alert alert-danger hidden fade in" style="margin-top: 10px;" role="alert">
                     <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                     <strong>Oh snap!</strong> <span id="approveLoanError"></span>
                 </div>
@@ -349,11 +594,11 @@
                     <input id="loanId" name="loanId" hidden="hidden" />
                     <button type="submit" class="btn btn-default">OK</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    </form>
-                </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Loan Modal  -->
     <div class="modal fade" id="doLoan" tabindex="-1" role="dialog">
@@ -395,11 +640,11 @@
                         <input id="loanId" name="loanId" hidden="hidden" />
                         <button type="submit" class="btn btn-default">Yes</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
 @section scripts {

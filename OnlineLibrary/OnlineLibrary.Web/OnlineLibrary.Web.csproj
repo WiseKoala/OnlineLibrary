@@ -230,16 +230,12 @@
     <Compile Include="Models\BookDetailsViewModel.cs" />
     <Compile Include="Models\BookViewModel.cs" />
     <Compile Include="Models\CategoryViewModel.cs" />
-    <Compile Include="Models\ExternalLoginListViewModel.cs" />
     <Compile Include="Models\LibrarianLoansViewModels\HistoryLoansViewModel.cs" />
     <Compile Include="Models\LibrarianLoansViewModels\HistoryLoanViewModel.cs" />
-    <Compile Include="Models\LibrarianLoansViewModels\LoanRequestViewModel.cs" />
-    <Compile Include="Models\LibrarianLoansViewModels\ApprovedLoanViewModel.cs" />
-    <Compile Include="Models\LibrarianLoansViewModels\LoansViewModel.cs" />
+    <Compile Include="Models\LibrarianLoansViewModels\LibrarianIndexViewModel.cs" />
     <Compile Include="Models\LibrarianLoansViewModels\LoanViewModel.cs" />
-    <Compile Include="Models\RoleEditModel.cs" />
-    <Compile Include="Models\RoleModificationModel.cs" />
-    <Compile Include="Models\RoleViewModel.cs" />
+    <Compile Include="Models\RoleViewModels\RoleViewModel.cs" />
+    <Compile Include="Models\RoleViewModels\UserAndRole.cs" />
     <Compile Include="Models\UserLoansViewModels\CurrentUserLoanViewModel.cs" />
     <Compile Include="Models\UserLoansViewModels\HistoryUserLoanViewModel.cs" />
     <Compile Include="Models\UserLoansViewModels\UserLoansViewModel.cs" />
@@ -263,6 +259,7 @@
     <Content Include="Content\Views stylesheets\BlueTheme.css" />
     <Content Include="Content\Views stylesheets\BookDetails\Index.css" />
     <Content Include="Content\Views stylesheets\Home\Index.css" />
+    <Content Include="Content\Views stylesheets\Librarian\Index.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -284,6 +281,8 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\knockout-3.4.0.debug.js" />
+    <Content Include="Scripts\knockout-3.4.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -305,7 +304,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
-    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />

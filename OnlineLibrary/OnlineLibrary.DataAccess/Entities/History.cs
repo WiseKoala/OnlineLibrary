@@ -33,6 +33,8 @@ namespace OnlineLibrary.DataAccess.Entities
         [DataType(DataType.Date)]
         public DateTime? ActualReturnDate { get; set; }
 
+        public bool SeenByUser { get; set; }
+
         public virtual User User { get; set; }
         public virtual User Librarian { get; set; }
         public virtual BookCopy BookCopy { get; set; }

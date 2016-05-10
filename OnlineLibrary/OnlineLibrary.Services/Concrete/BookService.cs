@@ -64,5 +64,19 @@ namespace OnlineLibrary.Services.Concrete
 
             return earliestLoan?.ExpectedReturnDate;
         }
+
+        public string GetConditionDescription(BookCondition cond)
+        {
+            switch (cond)
+            {
+                case BookCondition.New: return "New";
+                case BookCondition.Fine: return "Fine";
+                case BookCondition.VeryGood: return "Very Good";
+                case BookCondition.Good: return "Good";
+                case BookCondition.Fair: return "Fair";
+                case BookCondition.Poor: return "Poor";
+                default: return string.Empty;
+            }
+        }
     }
 }

@@ -1,36 +1,62 @@
-﻿@using OnlineLibrary.Web.Models
+﻿@using OnlineLibrary.Web.Models.RoleViewModels
 @model RoleViewModel
 @{ ViewBag.Title = "Roles"; }
+
+@section CSS {
+    <link href="~/Content/Views stylesheets/Role/Index.css" rel="stylesheet" />
+}
 
 <p></p>
 <div class="panel panel-info">
     <div class="panel-heading">Roles</div>
 
     <table class="table table-striped">
-        <tr><th>Name</th><th>Users</th><th></th></tr>
-        @if (!Model.Roles.Any())
+        <tr>
+            <th>UserName</th>
+            @foreach (var role in Model.AllRoles)
+            {
+                <th class="col-xs-2">
+                    @role.Name
+                </th>
+            }
+            <th class="col-xs-1"></th>
+        </tr>
+        @if (!Model.AllRoles.Any())
         {
-            <tr><td colspan="4" class="text-center">No Roles</td></tr>
+            <tr>
+                <td class="text-center">No Roles</td>
+            </tr>
         }
         else {
-            int i = 0;
-            foreach (var role in Model.Roles)
+            foreach (var item in Model.UsersAndTheirRoles)
             {
-                <tr>
-                    <td>@role.Name</td>
-                    <td>
-                        <p>
-                            @Model.UserNames[i]
-                            @{
-                                i++;
-                            }
-                        </p>
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = role.Id }, new { @class = "btn btn-primary btn-xs" })
-                    </td>
-                </tr>
-             }
-         }
+                using (Html.BeginForm("Index", "Role", FormMethod.Post))
+                {
+                    <tr>
+                        <td>
+                            @item.UserName
+                            <input name="userName" value="@item.UserName" type="hidden" />
+                        </td>
+                        @foreach (var role in Model.AllRoles)
+                        {
+                            <td>
+                                <input type="hidden" name="userName" value="@item.UserName" />
+                                @if (role.Name == item.RoleName)
+                                {
+                                    <input type="radio" name="roleName" value="@role.Name" checked="checked" />
+                                }
+                                else
+                                {
+                                    <input type="radio" name="roleName" value="@role.Name" />
+                                }
+                            </td>
+                        }
+                        <td>
+                            <input type="submit" class="btn btn-primary btn-xs" value="Save" />
+                        </td>
+                    </tr>
+                }
+            }
+        }
     </table>
 </div>

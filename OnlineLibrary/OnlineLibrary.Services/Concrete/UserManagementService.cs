@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.Services.Abstract;
+using System.Threading.Tasks;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -63,6 +64,30 @@ namespace OnlineLibrary.Services.Concrete
             var users = _dbContext.Users.Where(u => u.UserName != "Admin").ToList();
 
             return users;
+        }
+
+        public async Task<bool> AddUserToRole(string userId, string roleName)
+        {
+            var removeResult = await RemoveUserCurrentRoles(userId);
+            IdentityResult addResult = await AddToRoleAsync(userId, roleName);
+
+            return removeResult && addResult.Succeeded;
+        }
+
+        public async Task<bool> RemoveUserCurrentRoles(string userId)
+        {
+            var currentUserRoles = await GetRolesAsync(userId);
+            IdentityResult result = await RemoveFromRoleAsync(userId, currentUserRoles.Single());
+
+            return result.Succeeded;
+        }
+
+        public async Task<bool> RemoveUserFromRole(string userId, string roleName)
+        {
+            IdentityResult removeResult = await RemoveFromRoleAsync(userId, roleName);
+            IdentityResult addResult = await AddToRoleAsync(userId, UserRoles.User);
+
+            return removeResult.Succeeded && addResult.Succeeded;
         }
     }
 }

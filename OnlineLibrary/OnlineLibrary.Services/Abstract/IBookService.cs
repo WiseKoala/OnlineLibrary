@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OnlineLibrary.DataAccess.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,6 @@ namespace OnlineLibrary.Services.Abstract
     {
         int GetNumberOfAvailableCopies(int bookId);
         DateTime? GetEarliestAvailableDate(int bookId);
+        string GetConditionDescription(BookCondition cond);
     }
 }
