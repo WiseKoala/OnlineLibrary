@@ -234,9 +234,8 @@
     <Compile Include="Models\LibrarianLoansViewModels\HistoryLoanViewModel.cs" />
     <Compile Include="Models\LibrarianLoansViewModels\LibrarianIndexViewModel.cs" />
     <Compile Include="Models\LibrarianLoansViewModels\LoanViewModel.cs" />
-    <Compile Include="Models\RoleEditModel.cs" />
-    <Compile Include="Models\RoleModificationModel.cs" />
-    <Compile Include="Models\RoleViewModel.cs" />
+    <Compile Include="Models\RoleViewModels\RoleViewModel.cs" />
+    <Compile Include="Models\RoleViewModels\UserAndRole.cs" />
     <Compile Include="Models\UserLoansViewModels\CurrentUserLoanViewModel.cs" />
     <Compile Include="Models\UserLoansViewModels\HistoryUserLoanViewModel.cs" />
     <Compile Include="Models\UserLoansViewModels\UserLoansViewModel.cs" />
