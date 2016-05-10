@@ -1,17 +1,19 @@
 package JunitTest;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
+import java.io.IOException;
+
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
-import static org.testng.Assert.*;
 
-import java.io.IOException;
-
-import utils.ReadPassword;
+import utils.ReadFile;
 import utils.UI;
 
 public class SuperAdministratorLogin extends UI {
@@ -27,7 +29,7 @@ public class SuperAdministratorLogin extends UI {
 		LOGGER.info("Test started");
 		initializeXpathProp();
 		try {
-			password = ReadPassword.readPassword(ReadPassword.PASS_FILE_PATH);
+			password = ReadFile.readString(ReadFile.PASS_FILE_PATH);
 		} catch (IOException e) {
 			LOGGER.error("Cannot read file with password.");
 		}
@@ -35,7 +37,7 @@ public class SuperAdministratorLogin extends UI {
 
 	@AfterClass
 	public static void afterClass() {
-		openLogFile();
+		//openLogFile();
 	}
 
 	@Test // TC_02_05_01_01_Successful_login
@@ -54,6 +56,7 @@ public class SuperAdministratorLogin extends UI {
 		WebElement usernameResult = getElementByPropertiesKey(xpath);
 		assertEquals(usernameResult.getText(), "Hello,");
 		closeAplication();
+		LOGGER.info("Test passed");
 	}
 
 	@Test // TC_02_05_01_02_Empty password field

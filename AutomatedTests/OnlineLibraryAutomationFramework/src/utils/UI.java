@@ -25,7 +25,7 @@ public class UI  {
 	
 	public static WebDriver driver; 
 	
-	public static Logger log = Logger.getLogger(UI.class.toString());
+	public static Logger log = Logger.getLogger(UI.class);
 
 																//declarations
 	
