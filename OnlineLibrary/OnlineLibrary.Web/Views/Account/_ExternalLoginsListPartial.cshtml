@@ -1,4 +1,4 @@
-﻿@model OnlineLibrary.Web.Models.ExternalLoginListViewModel
+﻿@model string
 @using Microsoft.Owin.Security
 
 <h4>Use one of the following services to log in.</h4>
@@ -14,11 +14,14 @@
         </div>
     }
     else {
-        using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = Model.ReturnUrl })) {
+        using (Html.BeginForm("ExternalLogin", "Account"))
+        {
+            @Html.Hidden("returnUrl", Model)
             @Html.AntiForgeryToken()
             <div id="socialLoginList">
                 <p>
-                    @foreach (AuthenticationDescription p in loginProviders) {
+                    @foreach (AuthenticationDescription p in loginProviders)
+                    {
                         <button type="submit" class="btn btn-primary" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">Log in using @p.AuthenticationType</button>
                     }
                 </p>

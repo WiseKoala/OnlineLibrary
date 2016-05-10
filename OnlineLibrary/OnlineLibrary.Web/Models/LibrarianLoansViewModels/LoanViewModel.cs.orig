@@ -11,7 +11,11 @@ namespace OnlineLibrary.Web.Models.LibrarianLoansViewModels
         public int LoanId { get; set; }
         public string UserName { get; set; }
         public string BookTitle { get; set; }
-        public string ApprovingDate { get; set; }
-        public bool IsApprovedLoanLate { get; set; }
+<<<<<<< HEAD
+=======
+        public LoanStatus? Status { get; set; }
+        public DateTime? ApprovingDate { get; set; }
+        public DateTime? BookPickUpLimitDate { get; set; }
+>>>>>>> develop
     }
 }

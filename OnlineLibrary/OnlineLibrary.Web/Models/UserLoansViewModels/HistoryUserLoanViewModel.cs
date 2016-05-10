@@ -6,11 +6,12 @@ namespace OnlineLibrary.Web.Models.UserLoansViewModels
 {
     public class HistoryUserLoanViewModel
     {
+        public int HistoryLoanId { get; set; }
         public string BookTitle { get; set; }
         public string LibrarianName { get; set; }
         public BookCondition? InitialBookCondition { get; set; }
         public BookCondition? FinalBookCondition { get; set; }
-        public LoanStatus Status { get; set; }
+        public HistoryStatus Status { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? StartDate { get; set; }
@@ -20,5 +21,7 @@ namespace OnlineLibrary.Web.Models.UserLoansViewModels
 
         [DataType(DataType.Date)]
         public DateTime? ActualReturnDate { get; set; }
+
+        public bool SeenByUser { get; set; }
     }
 }

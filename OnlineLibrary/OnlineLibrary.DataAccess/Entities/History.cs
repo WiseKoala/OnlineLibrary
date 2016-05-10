@@ -14,7 +14,7 @@ namespace OnlineLibrary.DataAccess.Entities
         [ForeignKey(nameof(BookCopy))]
         public int? BookCopyId { get; set; }
 
-        public LoanStatus Status { get; set; }
+        public HistoryStatus Status { get; set; }
 
         public string UserName { get; set; }
 
@@ -32,6 +32,8 @@ namespace OnlineLibrary.DataAccess.Entities
 
         [DataType(DataType.Date)]
         public DateTime? ActualReturnDate { get; set; }
+
+        public bool SeenByUser { get; set; }
 
         public virtual User User { get; set; }
         public virtual User Librarian { get; set; }

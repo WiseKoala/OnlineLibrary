@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace OnlineLibrary.DataAccess.Enums
 {
-    public enum LoanStatus
+    public enum HistoryStatus
     {
-        Pending, Approved, InProgress
+        Rejected, Completed, LostBook, Cancelled
     }
 }

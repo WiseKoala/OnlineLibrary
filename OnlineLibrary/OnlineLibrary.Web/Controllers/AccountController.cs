@@ -2,17 +2,16 @@
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using OnlineLibrary.DataAccess;
+using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
+using OnlineLibrary.Services.Concrete;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Infrastructure.ActionResults;
-using OnlineLibrary.Web.Models;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using System;
-using OnlineLibrary.DataAccess.Abstract;
-using OnlineLibrary.Services.Concrete;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -32,10 +31,12 @@ namespace OnlineLibrary.Web.Controllers
         //
         // GET: /Account/Login
         [AllowAnonymous]
-        public ActionResult Login(string returnUrl)
+        public ActionResult Login()
         {
-            ViewBag.ReturnUrl = returnUrl;
-            return View();
+            // Get the current URL
+            string returnUrl = Request.UrlReferrer.AbsoluteUri;
+
+            return View((object)returnUrl);
         }
 
         //
@@ -48,8 +49,7 @@ namespace OnlineLibrary.Web.Controllers
             // Request a redirect to the external login provider
             return new ChallengeResult(
                 provider,
-                Url.Action("ExternalLoginCallback", "Account",
-                new { ReturnUrl = returnUrl }));
+                Url.Action("ExternalLoginCallback", new { returnUrl = returnUrl }));
         }
 
         //
@@ -62,13 +62,12 @@ namespace OnlineLibrary.Web.Controllers
             {
                 return RedirectToAction("Login");
             }
-
             // Sign in the user with this external login provider if the user already has a login
             var result = await _signInService.ExternalSignInAsync(loginInfo, isPersistent: false);
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    return Redirect(returnUrl);
 
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -79,24 +78,13 @@ namespace OnlineLibrary.Web.Controllers
                 case SignInStatus.Failure:
                 default:
                     // If the user does not have an account, then prompt the user to create an account
-                    ViewBag.ReturnUrl = returnUrl;
-                    ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                    return View("ExternalLoginConfirmation");
+                    return RedirectToAction("ExternalLoginConfirmation", new { returnUrl = returnUrl });           
             }
         }
 
-        //
-        // POST: /Account/ExternalLoginConfirmation
-        [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> ExternalLoginConfirmation(string returnUrl)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
             if (ModelState.IsValid)
             {
                 // Get the information about the user from the external login provider
@@ -110,29 +98,26 @@ namespace OnlineLibrary.Web.Controllers
                 string lastName = info.ExternalIdentity.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Surname).Value;
                 var user = new User { UserName = info.Email, Email = info.Email, FirstName = firstName, LastName = lastName };
 
-                var result = await _userService.CreateAsync(user);
-                if (result.Succeeded)
+                var createUserResult = await _userService.CreateAsync(user);
+                if (createUserResult.Succeeded)
                 {
                     // Add login.
-                    result = await _userService.AddLoginAsync(user.Id, info.Login);
+                    var addUserResult = await _userService.AddLoginAsync(user.Id, info.Login);
                     // Add user to the 'User' role.
                     _userService.AddToRole(user.Id, UserRoles.User);
-                    if (result.Succeeded)
+
+                    if (addUserResult.Succeeded)
                     {
                         await _signInService.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                         if(IsFirstLogin())
                         {
                             return RedirectToAction("Index", "Role");
                         }
-
-                        return RedirectToLocal(returnUrl);
+                        return Redirect(returnUrl);
                     }
                 }
-                AddErrors(result);
             }
-
-            ViewBag.ReturnUrl = returnUrl;
-            return View();
+           return Redirect(returnUrl);
         }
 
         //

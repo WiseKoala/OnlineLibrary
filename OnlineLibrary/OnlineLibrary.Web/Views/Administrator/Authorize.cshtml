@@ -1,21 +1,18 @@
-﻿@using OnlineLibrary.Web.Models
-@model SuperAdminViewModel
-
-@{
+﻿@{
     ViewBag.Title = "Super Administrator";
 }
 
 <h2>@ViewBag.Title</h2>
 
 @Html.ValidationSummary()
+
 @using (Html.BeginForm())
 {
     <p>
         @Html.Label("Enter the password: ")
-        @Html.PasswordFor(m => m.Password)
+        @Html.Password("SuperAdminPassword")
         <input type="submit" value="OK" class="btn btn-primary btn-sm" />
     </p>
-    
 }
 
 
