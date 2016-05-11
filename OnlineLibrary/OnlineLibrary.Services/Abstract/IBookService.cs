@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OnlineLibrary.DataAccess.Entities;
 
 namespace OnlineLibrary.Services.Abstract
 {
@@ -12,5 +13,6 @@ namespace OnlineLibrary.Services.Abstract
         int GetNumberOfAvailableCopies(int bookId);
         DateTime? GetEarliestAvailableDate(int bookId);
         string GetConditionDescription(BookCondition cond);
+        BookCopy DeleteBookCopy(int id);
     }
 }

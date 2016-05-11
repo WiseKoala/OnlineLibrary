@@ -9,6 +9,7 @@ using OnlineLibrary.Services.Abstract;
 using System.Data.Entity;
 using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.DataAccess.Abstract;
+using OnlineLibrary.Common.Exceptions;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -76,6 +77,24 @@ namespace OnlineLibrary.Services.Concrete
                 case BookCondition.Fair: return "Fair";
                 case BookCondition.Poor: return "Poor";
                 default: return string.Empty;
+            }
+        }
+
+        public BookCopy DeleteBookCopy(int id)
+        {
+            // Determine if there're any loans for the specified book copy.
+            bool isUnavailable = _dbContext.Loans.Any(l => l.BookCopyId == id);
+
+            if (isUnavailable)
+            {
+                throw new BookCopyNotAvailableException("The specified book copy is unavailable for removal.");
+            }
+            else
+            {
+                var bookCopy = _dbContext.BookCopies.Find(id);
+                _dbContext.BookCopies.Remove(bookCopy);
+
+                return bookCopy;
             }
         }
     }
