@@ -8,6 +8,7 @@
 
 @section CSS{
     <link href="~/Content/Views stylesheets/BooksManagement/Index.css" rel="stylesheet" />
+    <link href="~/Content/toastr.css" rel="stylesheet" />
 }
 
 <table class="table table-hover">
@@ -34,14 +35,14 @@
                     <a href="@Url.Action("CreateEdit", "BooksManagement", new { id = book.Id })" class="btn btn-default btn-sm">
                         Edit
                     </a>
-
-                    @using (Html.BeginForm("DeleteBook", "BooksManagement", FormMethod.Post))
-                    {
-                        <input type="hidden" name="id" value="@book.Id" />
-                        <input type="submit" class="btn btn-danger btn-sm" value="Remove" />
-                    }
+                    <input type="submit" data-book-id="@book.Id" data-url="@Url.Action("DeleteBook", "BooksManagement")" class="btn btn-danger btn-sm remove-book" value="Remove" />
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@section scripts{
+    <script src="~/Scripts/View Scripts/BooksManagement/DeleteBook.js"></script>
+    <script src="~/Scripts/toastr.min.js"></script>
+}
