@@ -216,6 +216,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdministratorController.cs" />
     <Compile Include="Controllers\BookDetailsController.cs" />
+    <Compile Include="Controllers\BooksManagementController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LibrarianController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
@@ -228,6 +229,7 @@
     <Compile Include="Infrastructure\Abstract\SessionHelper.cs" />
     <Compile Include="Infrastructure\ActionResults\ChallengeResult.cs" />
     <Compile Include="Models\BookDetailsViewModel.cs" />
+    <Compile Include="Models\BooksManagement\BookManagementViewModel.cs" />
     <Compile Include="Models\BookViewModel.cs" />
     <Compile Include="Models\CategoryViewModel.cs" />
     <Compile Include="Models\LibrarianLoansViewModels\HistoryLoansViewModel.cs" />
@@ -258,6 +260,7 @@
     <Content Include="Content\toastr.min.css" />
     <Content Include="Content\Views stylesheets\BlueTheme.css" />
     <Content Include="Content\Views stylesheets\BookDetails\Index.css" />
+    <Content Include="Content\Views stylesheets\BooksManagement\Index.css" />
     <Content Include="Content\Views stylesheets\Home\Index.css" />
     <Content Include="Content\Views stylesheets\Librarian\Index.css" />
     <Content Include="favicon.ico" />
@@ -291,7 +294,9 @@
     <Content Include="Scripts\View Scripts\BookDetails\Index.js" />
     <Content Include="Scripts\View Scripts\Librarian\index.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -314,6 +319,7 @@
     <Content Include="Views\BookDetails\Index.cshtml" />
     <Content Include="Views\Librarian\Index.cshtml" />
     <Content Include="Views\UserLoans\MyLoans.cshtml" />
+    <Content Include="Views\BooksManagement\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
