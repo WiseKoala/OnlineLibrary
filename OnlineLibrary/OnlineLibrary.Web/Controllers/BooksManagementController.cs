@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
 using OnlineLibrary.Common.Exceptions;
 using OnlineLibrary.DataAccess.Abstract;
@@ -46,11 +47,13 @@ namespace OnlineLibrary.Web.Controllers
             }
             catch (BookCopyNotAvailableException ex)
             {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(new { error = ex.Message });
             }
-            catch (KeyNotFoundException)
+            catch (KeyNotFoundException ex)
             {
-                return HttpNotFound();
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message });
             }
 
             return Json(removedBookCopy, JsonRequestBehavior.DenyGet);
@@ -67,11 +70,13 @@ namespace OnlineLibrary.Web.Controllers
             }
             catch (BookNotAvailableException ex)
             {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(new { error = ex.Message });
             }
-            catch (KeyNotFoundException)
+            catch (KeyNotFoundException ex)
             {
-                return HttpNotFound();
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message });
             }
 
             return Json(removedBook, JsonRequestBehavior.DenyGet);
