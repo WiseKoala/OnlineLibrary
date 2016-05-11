@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using OnlineLibrary.Common.Exceptions;
 using OnlineLibrary.DataAccess.Abstract;
@@ -36,7 +37,7 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult DeleteBookCopy(int id)
+        public ActionResult DeleteBookCopy(int id)
         {
             BookCopy removedBookCopy = null;
             try
@@ -46,6 +47,10 @@ namespace OnlineLibrary.Web.Controllers
             catch (BookCopyNotAvailableException ex)
             {
                 return Json(new { error = ex.Message });
+            }
+            catch (KeyNotFoundException)
+            {
+                return HttpNotFound();
             }
 
             return Json(removedBookCopy, JsonRequestBehavior.DenyGet);

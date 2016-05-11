@@ -82,6 +82,13 @@ namespace OnlineLibrary.Services.Concrete
 
         public bool IsBookCopyRemovable(int id)
         {
+            var bookCopyExists = _dbContext.BookCopies.Any(bc => bc.Id == id);
+
+            if (!bookCopyExists)
+            {
+                throw new KeyNotFoundException("Book Copy not found.");
+            }
+
             // The book copy is removable if there are no loans with it's ID.
             return !_dbContext.Loans.Any(l => l.BookCopyId == id);
         }
@@ -89,9 +96,9 @@ namespace OnlineLibrary.Services.Concrete
         public BookCopy DeleteBookCopy(int id)
         {
             // Determine if there're any loans for the specified book copy.
-            bool isUnavailable = IsBookCopyRemovable(id);
+            bool isRemovable = IsBookCopyRemovable(id);
 
-            if (isUnavailable)
+            if (!isRemovable)
             {
                 throw new BookCopyNotAvailableException("The specified book copy is unavailable for removal.");
             }
