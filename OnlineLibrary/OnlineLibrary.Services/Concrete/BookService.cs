@@ -106,6 +106,7 @@ namespace OnlineLibrary.Services.Concrete
             {
                 var bookCopy = _dbContext.BookCopies.Find(id);
                 _dbContext.BookCopies.Remove(bookCopy);
+                _dbContext.SaveChanges();
 
                 return bookCopy;
             }
@@ -132,6 +133,7 @@ namespace OnlineLibrary.Services.Concrete
                 }
 
                 _dbContext.Books.Remove(book);
+                _dbContext.SaveChanges();
 
                 return book;
             }
