@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using OnlineLibrary.Web.Models.BooksManagement;
+using System.Web.Mvc;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -6,6 +7,13 @@ namespace OnlineLibrary.Web.Controllers
     {
         public ActionResult Index()
         {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult CreateEdit(int bookId)
+        {
+
             return View();
         }
     }
