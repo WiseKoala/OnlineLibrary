@@ -80,10 +80,16 @@ namespace OnlineLibrary.Services.Concrete
             }
         }
 
+        public bool IsBookCopyRemovable(int id)
+        {
+            // The book copy is removable if there are no loans with it's ID.
+            return !_dbContext.Loans.Any(l => l.BookCopyId == id);
+        }
+
         public BookCopy DeleteBookCopy(int id)
         {
             // Determine if there're any loans for the specified book copy.
-            bool isUnavailable = _dbContext.Loans.Any(l => l.BookCopyId == id);
+            bool isUnavailable = IsBookCopyRemovable(id);
 
             if (isUnavailable)
             {
@@ -97,5 +103,28 @@ namespace OnlineLibrary.Services.Concrete
                 return bookCopy;
             }
         }
+
+        public Book DeleteBook(int id)
+        {
+            var book = _dbContext.Books.Include(b => b.BookCopies).Where(b => b.Id == id).SingleOrDefault();
+
+            if (book != null)
+            {
+                foreach (var bookCopy in book.BookCopies)
+                {
+                    // If one of the book copies is unavailable for removal
+                    // then the book book becomes unavailable for removal.
+                    if (!IsBookCopyRemovable(bookCopy.Id))
+                    {
+                        throw new BookNotAvailableException("The specified book has book copies that are currently involved in loans.");
+                    }
+                }
+
+                _dbContext.Books.Remove(book);
+            }
+
+            return book;
+        }
+
     }
 }

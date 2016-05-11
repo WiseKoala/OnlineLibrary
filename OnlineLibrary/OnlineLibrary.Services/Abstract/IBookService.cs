@@ -14,5 +14,7 @@ namespace OnlineLibrary.Services.Abstract
         DateTime? GetEarliestAvailableDate(int bookId);
         string GetConditionDescription(BookCondition cond);
         BookCopy DeleteBookCopy(int id);
+        bool IsBookCopyRemovable(int id);
+        Book DeleteBook(int id);
     }
 }

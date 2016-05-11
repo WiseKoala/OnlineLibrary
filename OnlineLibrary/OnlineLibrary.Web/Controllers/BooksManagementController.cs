@@ -52,5 +52,29 @@ namespace OnlineLibrary.Web.Controllers
 
             return Json(removedBookCopy, JsonRequestBehavior.DenyGet);
         }
+
+        [HttpPost]
+        public ActionResult DeleteBook(int id)
+        {
+            Book removedBook = null;
+
+            try
+            {
+                removedBook = _bookService.DeleteBook(id);                
+            }
+            catch (BookNotAvailableException ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+
+            if (removedBook != null)
+            {
+                return Json(removedBook, JsonRequestBehavior.DenyGet);
+            }
+            else
+            {
+                return HttpNotFound();
+            }
+        }
     }
 }
