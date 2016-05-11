@@ -115,7 +115,11 @@ namespace OnlineLibrary.Services.Concrete
         {
             var book = _dbContext.Books.Include(b => b.BookCopies).Where(b => b.Id == id).SingleOrDefault();
 
-            if (book != null)
+            if (book == null)
+            {
+                throw new KeyNotFoundException("Book not found.");
+            }
+            else
             {
                 foreach (var bookCopy in book.BookCopies)
                 {
@@ -128,10 +132,9 @@ namespace OnlineLibrary.Services.Concrete
                 }
 
                 _dbContext.Books.Remove(book);
+
+                return book;
             }
-
-            return book;
         }
-
     }
 }

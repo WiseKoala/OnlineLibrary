@@ -63,21 +63,18 @@ namespace OnlineLibrary.Web.Controllers
 
             try
             {
-                removedBook = _bookService.DeleteBook(id);                
+                removedBook = _bookService.DeleteBook(id);
             }
             catch (BookNotAvailableException ex)
             {
                 return Json(new { error = ex.Message });
             }
-
-            if (removedBook != null)
-            {
-                return Json(removedBook, JsonRequestBehavior.DenyGet);
-            }
-            else
+            catch (KeyNotFoundException)
             {
                 return HttpNotFound();
             }
+
+            return Json(removedBook, JsonRequestBehavior.DenyGet);
         }
     }
 }
