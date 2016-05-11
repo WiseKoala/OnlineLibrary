@@ -37,7 +37,7 @@
 
                     @using (Html.BeginForm("DeleteBook", "BooksManagement", FormMethod.Post))
                     {
-                        <input type="hidden" value="@book.Id" />
+                        <input type="hidden" name="id" value="@book.Id" />
                         <input type="submit" class="btn btn-danger btn-sm" value="Remove" />
                     }
                 </td>

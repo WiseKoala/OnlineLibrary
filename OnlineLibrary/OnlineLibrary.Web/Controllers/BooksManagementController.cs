@@ -21,8 +21,6 @@ namespace OnlineLibrary.Web.Controllers
 
         public ActionResult Index()
         {
-
-
             var books = DbContext.Books
                                 .Select(b => new BookManagementViewModel
                                 {
