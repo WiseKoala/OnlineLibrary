@@ -35,7 +35,7 @@ namespace OnlineLibrary.Web.Controllers
 
                 var model = new RoleViewModel();
 
-                model.AllRoles = _roleService.GetRoleList().OrderBy(r => r.Id);
+                model.AllRoles = _roleService.GetRoleList().OrderBy(r => r.Name);
                 model.UsersAndTheirRoles = new List<UserAndRole>();
 
                 foreach (var user in _userService.GetUserList())
