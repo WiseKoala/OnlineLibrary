@@ -11,7 +11,8 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         public CreateEditBookViewModel()
         {
             SubCategories = new List<SubCategoryViewModel>();
-            BookCopies = new List<BookCopyViewModel>();        
+            BookCopies = new List<BookCopyViewModel>();
+            Authors = new List<BookAuthorViewModel>();
         }
         
         public int Id { get; set; }
@@ -24,9 +25,10 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
 
         [DataType(DataType.Date)]
         public DateTime PublishDate { get; set; }
-        
-        public  List<SubCategoryViewModel> SubCategories { get; set; }
-        public  List<BookCopyViewModel> BookCopies { get; set; }
+
+        public List<BookAuthorViewModel> Authors { get; set; }
+        public List<SubCategoryViewModel> SubCategories { get; set; }
+        public List<BookCopyViewModel> BookCopies { get; set; }
 
     }
 }

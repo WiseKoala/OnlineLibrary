@@ -25,10 +25,12 @@ namespace OnlineLibrary.Web.Controllers
 
         [HttpGet]
         public ActionResult CreateEdit(int id = 2)
+
         {
             var model = DbContext.Books.Where(b => b.Id == id)
                                        .Include(b => b.SubCategories)
                                        .Include(b => b.BookCopies)
+                                       .Include(b => b.Authors)
                                        .Select(m => new CreateEditBookViewModel
                                        {
                                            Id = m.Id,
@@ -41,6 +43,12 @@ namespace OnlineLibrary.Web.Controllers
                                           {
                                               Id = bc.Id,
                                               BookCondition = bc.Condition
+                                          }).ToList(),
+                                          Authors = m.Authors.Select(a => new BookAuthorViewModel
+                                          {
+                                              FirstName = a.FirstName,
+                                              MiddleName = a.MiddleName,
+                                              LastName = a.LastName
                                           }).ToList(),
                                           SubCategories = m.SubCategories.Select(sc => new SubCategoryViewModel
                                           {

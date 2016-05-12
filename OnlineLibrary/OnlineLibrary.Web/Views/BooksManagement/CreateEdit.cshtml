@@ -23,6 +23,18 @@
        }
        <p> <input type="file" name="Image"/> </p>
 
+    <div id="bookAuthors">
+        @for (int i = 0; i < Model.Authors.Count(); i++)
+        {
+            <div class="bookAuthor" data-author-id="@i">   
+                <label> Fisrt Name</label>  @Html.EditorFor(m => m.Authors[i].FirstName)
+                <label> Middle Name</label> @Html.EditorFor(m => m.Authors[i].MiddleName)
+                <label> Last Name</label> @Html.EditorFor(m => m.Authors[i].LastName)
+            </div>
+        }
+        <input type="button" id="AddBookAuthor" value="Add Author">
+    </div>
+
        <p> <strong>Book Copies</strong> </p>
     <div id="bookCopies">
         @for (int i = 0; i < Model.BookCopies.Count(); i++)
@@ -32,6 +44,7 @@
             </div>
         }
     </div>
+
         <p> <input type="button" id="AddBookCopy" value="Add Copy"> </p> 
         <input type="submit" value="Save" />
 
@@ -41,8 +54,17 @@
 @section scripts{
 
 <script>
-    $(document).ready(function (){
-        $("#AddBookCopy").click(function () {
+    $(document).ready(function () {
+        $("#AddBookAuthor").click(function () {
+            var authorsDiv = document.getElementById("bookAuthors");
+            var lastBookAuthor = $("#bookAuthors .bookAuthor").last();
+            var id = lastBookAuthor.data("authorId");
+
+        });
+    });
+
+    $(document).ready(function () {
+         $("#AddBookCopy").click(function () {
             // Retreive book conditions.
             var ajaxData = {
                 method: "GET",
@@ -76,6 +98,8 @@
             $.ajax("@Url.Action("ListBookConditions", "BooksManagement")", ajaxData);
         });
     });
+
+    
 </script>
 
 }

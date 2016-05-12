@@ -230,6 +230,7 @@
     <Compile Include="Infrastructure\ActionResults\ChallengeResult.cs" />
     <Compile Include="Models\BookDetailsViewModel.cs" />
     <Compile Include="Models\BooksManagement\BookManagementViewModel.cs" />
+    <Compile Include="Models\BooksManagement\CreateEditBookViewModels\BookAuthorViewModel.cs" />
     <Compile Include="Models\BooksManagement\CreateEditBookViewModels\BookCopyViewModel.cs" />
     <Compile Include="Models\BooksManagement\CreateEditBookViewModels\CategoryViewModel.cs" />
     <Compile Include="Models\BooksManagement\CreateEditBookViewModels\CreateEditBookViewModel.cs" />
