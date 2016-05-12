@@ -230,6 +230,10 @@
     <Compile Include="Infrastructure\ActionResults\ChallengeResult.cs" />
     <Compile Include="Models\BookDetailsViewModel.cs" />
     <Compile Include="Models\BooksManagement\BookManagementViewModel.cs" />
+    <Compile Include="Models\BooksManagement\CreateEditBookViewModels\BookCopyViewModel.cs" />
+    <Compile Include="Models\BooksManagement\CreateEditBookViewModels\CategoryViewModel.cs" />
+    <Compile Include="Models\BooksManagement\CreateEditBookViewModels\CreateEditBookViewModel.cs" />
+    <Compile Include="Models\BooksManagement\CreateEditBookViewModels\SubCategoryViewModel.cs" />
     <Compile Include="Models\BookViewModel.cs" />
     <Compile Include="Models\CategoryViewModel.cs" />
     <Compile Include="Models\LibrarianLoansViewModels\HistoryLoansViewModel.cs" />
@@ -320,6 +324,7 @@
     <Content Include="Views\UserLoans\MyLoans.cshtml" />
     <Content Include="Views\BooksManagement\Index.cshtml" />
     <Content Include="Views\BooksManagement\CreateEdit.cshtml" />
+    <Content Include="Views\BooksManagement\EditorTemplates\BookCopyViewModel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

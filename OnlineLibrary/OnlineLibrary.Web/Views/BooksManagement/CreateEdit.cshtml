@@ -1,8 +1,82 @@
-﻿
+﻿@using OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
+@using System.Linq
+@model CreateEditBookViewModel
 @{
     ViewBag.Title = "CreateEdit";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>CreateEdit</h2>
+
+<div>
+    @using (Html.BeginForm("CreateEdit", "BooksManagement", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+       <p> <strong>ISBN</strong> @Html.TextBoxFor(m => m.ISBN) </p>
+       <p> <strong>Title</strong> @Html.TextBoxFor(m => m.Title) </p>
+       <p> <strong>Description</strong> @Html.TextAreaFor(m => m.Description) </p>
+       <p> <strong>Publish Date</strong> @Html.EditorFor(m => m.PublishDate) </p>
+       <p> <strong>Front Cover</strong> </p>
+
+       if( Model.FrontCover != null )
+       {
+           <img width="100" height="100" src=@Url.Content(Model.FrontCover)/>
+       }
+       <p> <input type="file" name="Image"/> </p>
+
+       <p> <strong>Book Copies</strong> </p>
+    <div id="bookCopies">
+        @for (int i = 0; i < Model.BookCopies.Count(); i++)
+        {
+            <div class="bookCopy">
+                @Html.EnumDropDownListFor(m => m.BookCopies[i].BookCondition, new { dataId = i })
+            </div>
+        }
+    </div>
+        <p> <input type="button" id="AddBookCopy" value="Add Copy"> </p> 
+        <input type="submit" value="Save" />
+
+        }
+
+</div>
+@section scripts{
+
+<script>
+    $(document).ready(function (){
+        $("#AddBookCopy").click(function () {
+            // Retreive book conditions.
+            var ajaxData = {
+                method: "GET",
+                complete: function (jqXHR) {
+                    var bookConditions = jqXHR.responseJSON;
+
+                    var newId = parseInt($("#bookCopies .bookCopy:last-child select").attr("dataid")) + 1;
+
+                    var newDiv = document.createElement("div");
+                    newDiv.className = "bookCopy";
+
+                    var bookCopySelect = document.createElement("select");
+                    bookCopySelect.id = "BookCopies_" + newId + "__BookCondition";
+                    bookCopySelect.name = "BookCopies[" + newId + "].BookCondition";
+                    bookCopySelect.setAttribute("dataid", newId);
+                    bookCopySelect.className = "form-control";
+
+                    // Fill dropdown.
+                    for (var i = 0; i < bookConditions.length; i++) {
+                        var optionElement = document.createElement("option");
+                        optionElement.value = bookConditions[i].Value;
+                        optionElement.innerHTML = bookConditions[i].Name;
+
+                        bookCopySelect.appendChild(optionElement);
+                    }
+
+                    newDiv.appendChild(bookCopySelect);
+                    $("#bookCopies").append(newDiv);
+                }
+            };
+            $.ajax("@Url.Action("ListBookConditions", "BooksManagement")", ajaxData);
+        });
+    });
+</script>
+
+}
 
