@@ -125,18 +125,14 @@ namespace OnlineLibrary.Services.Concrete
             }
             else
             {
+                if (!IsBookAvailable(book.Id))
+                {
+                    throw new BookNotAvailableException("The specified book is currently involved in some loans.");
+                }
+
                 foreach (var bookCopy in book.BookCopies)
                 {
-                    // If one of the book copies is unavailable for removal
-                    // then the book book becomes unavailable for removal.
-                    if (!IsBookCopyRemovable(bookCopy.Id))
-                    {
-                        throw new BookNotAvailableException("The specified book has book copies that are currently involved in loans.");
-                    }
-                    else
-                    {
-                        SetNullOnBookCopyCascade(bookCopy.Id);
-                    }
+                    SetNullOnBookCopyCascade(bookCopy.Id);
                 }
 
                 _dbContext.Books.Remove(book);
@@ -144,6 +140,21 @@ namespace OnlineLibrary.Services.Concrete
 
                 return book;
             }
+        }
+
+        private bool IsBookAvailable(int id)
+        {
+            var bookExists = _dbContext.Books.Any(b => b.Id == id);
+
+            if (!bookExists)
+            {
+                throw new KeyNotFoundException("Book Copy not found.");
+            }
+
+            bool anyLoans = _dbContext.Loans.Where(l => l.BookId == id).Any();
+
+            // Book is available if there're no loans.
+            return !anyLoans;
         }
 
         /// <summary>
