@@ -39,6 +39,11 @@
                     {
                         <li>@Html.ActionLink("My Loans", "MyLoans", "UserLoans")</li>
                     }
+
+                    @if (User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SysAdmin))
+                    {
+                        <li>@Html.ActionLink("Manage Books", "Index", "BooksManagement")</li>
+                    }
                 </ul>
             </div>
 

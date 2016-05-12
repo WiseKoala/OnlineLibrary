@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\BookCopyNotAvailableException.cs" />
+    <Compile Include="Exceptions\BookNotAvailableException.cs" />
     <Compile Include="Exceptions\InvalidBookCopyIdException.cs" />
     <Compile Include="Infrastructure\LibraryConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
