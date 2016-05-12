@@ -104,6 +104,9 @@ namespace OnlineLibrary.Services.Concrete
             }
             else
             {
+                SetNullOnBookCopyCascade(id);
+
+                // Delete book copy.
                 var bookCopy = _dbContext.BookCopies.Find(id);
                 _dbContext.BookCopies.Remove(bookCopy);
                 _dbContext.SaveChanges();
@@ -130,6 +133,10 @@ namespace OnlineLibrary.Services.Concrete
                     {
                         throw new BookNotAvailableException("The specified book has book copies that are currently involved in loans.");
                     }
+                    else
+                    {
+                        SetNullOnBookCopyCascade(bookCopy.Id);
+                    }
                 }
 
                 _dbContext.Books.Remove(book);
@@ -137,6 +144,19 @@ namespace OnlineLibrary.Services.Concrete
 
                 return book;
             }
+        }
+
+        /// <summary>
+        /// Sets NULL for history records for the book copy.
+        /// </summary>
+        /// <param name="bookCopyId">ID of book copy</param>
+        private void SetNullOnBookCopyCascade(int bookCopyId)
+        {
+            var historyRecords = _dbContext.History
+                .Where(h => h.BookCopyId == bookCopyId)
+                .ToList();
+            historyRecords.ForEach(h => h.BookCopyId = null);
+            _dbContext.SaveChanges();
         }
     }
 }
