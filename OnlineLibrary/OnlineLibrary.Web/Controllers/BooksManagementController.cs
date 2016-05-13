@@ -39,21 +39,34 @@ namespace OnlineLibrary.Web.Controllers
                                            Description = m.Description,
                                            PublishDate = m.PublishDate,
                                            FrontCover = m.FrontCover,
+
                                           BookCopies = m.BookCopies.Select(bc => new BookCopyViewModel
                                           {
                                               Id = bc.Id,
                                               BookCondition = bc.Condition
                                           }).ToList(),
+
                                           Authors = m.Authors.Select(a => new BookAuthorViewModel
                                           {
                                               FirstName = a.FirstName,
                                               MiddleName = a.MiddleName,
                                               LastName = a.LastName
                                           }).ToList(),
-                                          SubCategories = m.SubCategories.Select(sc => new SubCategoryViewModel
+
+                                          BookCategories = m.SubCategories.Select( sc => new CategoryViewModel
                                           {
-                                              Id = sc.Id,
-                                              Name = sc.Name
+                                              Id = sc.CategoryId,
+                                              Name = sc.Category.Name,
+
+                                              BookSubCategories = new List<SubCategoryViewModel>
+                                              {
+                                                  new SubCategoryViewModel
+                                                  {
+                                                      Id = sc.Id,
+                                                      Name = sc.Name
+                                                  }
+                                              }
+
                                           }).ToList()
                                       })
                                        .SingleOrDefault();
