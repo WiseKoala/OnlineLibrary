@@ -25,7 +25,6 @@ namespace OnlineLibrary.Web.Controllers
 
         [HttpGet]
         public ActionResult CreateEdit(int id = 2)
-
         {
             var model = DbContext.Books.Where(b => b.Id == id)
                                        .Include(b => b.SubCategories)
@@ -76,8 +75,6 @@ namespace OnlineLibrary.Web.Controllers
            {
                model = new CreateEditBookViewModel();
            }
-
-            
 
             return View(model);
         }
