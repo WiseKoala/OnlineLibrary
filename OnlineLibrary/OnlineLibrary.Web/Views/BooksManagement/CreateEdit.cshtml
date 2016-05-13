@@ -11,23 +11,23 @@
 <div>
     @using (Html.BeginForm("CreateEdit", "BooksManagement", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-       <p> <strong>ISBN</strong> @Html.TextBoxFor(m => m.ISBN) </p>
-       <p> <strong>Title</strong> @Html.TextBoxFor(m => m.Title) </p>
-       <p> <strong>Description</strong> @Html.TextAreaFor(m => m.Description) </p>
-       <p> <strong>Publish Date</strong> @Html.EditorFor(m => m.PublishDate) </p>
-       <p> <strong>Front Cover</strong> </p>
+        <p> <strong>ISBN</strong> @Html.TextBoxFor(m => m.ISBN) </p>
+        <p> <strong>Title</strong> @Html.TextBoxFor(m => m.Title) </p>
+        <p> <strong>Description</strong> @Html.TextAreaFor(m => m.Description) </p>
+        <p> <strong>Publish Date</strong> @Html.EditorFor(m => m.PublishDate) </p>
+        <p> <strong>Front Cover</strong> </p>
 
-       if( Model.FrontCover != null )
-       {
-           <img width="100" height="100" src=@Url.Content(Model.FrontCover)/>
-       }
-       <p> <input type="file" name="Image"/> </p>
+        if (Model.FrontCover != null)
+        {
+            <img width="100" height="100" src=@Url.Content(Model.FrontCover) />
+        }
+        <p> <input type="file" name="Image" /> </p>
 
     <div id="bookAuthors">
         @for (int i = 0; i < Model.Authors.Count(); i++)
         {
             <div class="bookAuthor" data-author-id="@i">   
-                <label> Fisrt Name</label>  @Html.EditorFor(m => m.Authors[i].FirstName)
+                <label> First Name</label>  @Html.EditorFor(m => m.Authors[i].FirstName)
                 <label> Middle Name</label> @Html.EditorFor(m => m.Authors[i].MiddleName)
                 <label> Last Name</label> @Html.EditorFor(m => m.Authors[i].LastName)
             </div>
@@ -36,20 +36,29 @@
     <input type="button" id="AddBookAuthor" value="Add Author">
 
 
-       <p> <strong>Book Copies</strong> </p>
-    <div id="bookCopies">
-        @for (int i = 0; i < Model.BookCopies.Count(); i++)
-        {
-            <div class="bookCopy">
-                @Html.EnumDropDownListFor(m => m.BookCopies[i].BookCondition, new { dataId = i })
+        <p> <strong>Book Copies</strong> </p>
+
+            <div id="bookCopies">
+                <table class="col-sm-12 table-hover">
+                
+                @for (int i = 0; i < Model.BookCopies.Count(); i++)
+                {
+                        <tr>
+                            <td class="col-sm-2">BookCopyId = @Model.BookCopies[i].Id</td>
+                            <td class="col-sm-10">
+                                <div class="bookCopy">
+                                    @Html.EnumDropDownListFor(m => m.BookCopies[i].BookCondition, new { dataId = i, @class = "form-control"})
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </table>
             </div>
-        }
-    </div>
 
         <p> <input type="button" id="AddBookCopy" value="Add Copy"> </p> 
         <input type="submit" value="Save" />
 
-        }
+    }
 
 </div>
 @section scripts{
@@ -68,21 +77,21 @@
 
             // Create inputs for Author Data 
             var newFirstNameLabel = document.createElement("label");
-            newFirstNameLabel.innerHTML = "Fisrt Name";
+            newFirstNameLabel.innerHTML = "First Name";
 
             var newFirstNameInput = document.createElement("input");
             newFirstNameInput.name = "Authors[" + newBookAuthorId + "].FirstName";
             newFirstNameInput.type = "text";
 
             var newMiddleNameLabel = document.createElement("label");
-            newMiddleNameLabel.innerHTML = "Fisrt Name";
+            newMiddleNameLabel.innerHTML = "Middle Name";
 
             var newMiddleNameInput = document.createElement("input");
             newMiddleNameInput.name = "Authors[" + newBookAuthorId + "].MiddleName";
             newMiddleNameInput.type = "text";
 
             var newLastNameLabel = document.createElement("label");
-            newLastNameLabel.innerHTML = "Fisrt Name";
+            newLastNameLabel.innerHTML = "Last Name";
 
             var newLastNameInput = document.createElement("input");
             newLastNameInput.name = "Authors[" + newBookAuthorId + "].LastName";
@@ -112,6 +121,15 @@
                     var bookConditions = jqXHR.responseJSON;
 
                     var newId = parseInt($("#bookCopies .bookCopy:last-child select").attr("dataid")) + 1;
+                    
+                    var newTr = document.createElement("tr");
+
+                    var newTd = document.createElement("td");
+                    newTd.className = "col-sm-2";
+                    newTd.innerHTML = "BookCopyId = newId";
+
+                    var newTd2 = document.createElement("td");
+                    newTd2.className = "col-sm-10";
 
                     var newDiv = document.createElement("div");
                     newDiv.className = "bookCopy";
@@ -132,7 +150,11 @@
                     }
 
                     newDiv.appendChild(bookCopySelect);
-                    $("#bookCopies").append(newDiv);
+                    newTd2.appendChild(newDiv);
+                    newTr.appendChild(newTd);
+                    newTr.appendChild(newTd2);
+                    
+                    $("#bookCopies table").append(newTr);
                 }
             };
             $.ajax("@Url.Action("ListBookConditions", "BooksManagement")", ajaxData);
