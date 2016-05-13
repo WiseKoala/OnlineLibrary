@@ -43,6 +43,7 @@
         @for (int i = 0; i < Model.Authors.Count(); i++)
         {
             <div class="bookAuthor" data-author-id="@i">   
+                @Html.HiddenFor(m => m.Authors[i].Id)
                 <label> First Name</label>  @Html.EditorFor(m => m.Authors[i].FirstName)
                 <label> Middle Name</label> @Html.EditorFor(m => m.Authors[i].MiddleName)
                 <label> Last Name</label> @Html.EditorFor(m => m.Authors[i].LastName)
@@ -88,6 +89,10 @@
         $("#AddBookAuthor").click(function () {
             var authorsDiv = document.getElementById("bookAuthors");
             var newBookAuthorId = parseInt($("#bookAuthors .bookAuthor").last().data("authorId")) + 1;
+
+            if (isNaN(newBookAuthorId)) {
+                newBookAuthorId = 0;
+            }
 
             // Create a div for new Author
 
@@ -141,6 +146,10 @@
                     var bookConditions = jqXHR.responseJSON;
 
                     var newId = parseInt($("#bookCopies .bookCopy:last-child select").attr("dataid")) + 1;
+
+                    if (isNaN(newId)) {
+                        newId = 0;
+                    }
                     
                     var newTr = document.createElement("tr");
 
