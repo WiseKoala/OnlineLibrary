@@ -1,4 +1,5 @@
 ﻿@using OnlineLibrary.Web.Models.RoleViewModels
+@using OnlineLibrary.DataAccess
 @model RoleViewModel
 @{ ViewBag.Title = "Roles"; }
 
@@ -60,3 +61,8 @@
         }
     </table>
 </div>
+
+@if (!User.IsInRole(UserRoles.SuperAdmin))
+{
+    <div class="alert alert-warning" style="margin-top: 15px" role="alert"><strong>Warning!</strong> If you change your own role you will be signed out and signed in back!</div>
+}
