@@ -23,6 +23,19 @@
        }
        <p> <input type="file" name="Image"/> </p>
 
+    <div id="bookAuthors">
+        @for (int i = 0; i < Model.Authors.Count(); i++)
+        {
+            <div class="bookAuthor" data-author-id="@i">   
+                <label> Fisrt Name</label>  @Html.EditorFor(m => m.Authors[i].FirstName)
+                <label> Middle Name</label> @Html.EditorFor(m => m.Authors[i].MiddleName)
+                <label> Last Name</label> @Html.EditorFor(m => m.Authors[i].LastName)
+            </div>
+        }
+    </div>
+    <input type="button" id="AddBookAuthor" value="Add Author">
+
+
        <p> <strong>Book Copies</strong> </p>
     <div id="bookCopies">
         @for (int i = 0; i < Model.BookCopies.Count(); i++)
@@ -32,6 +45,7 @@
             </div>
         }
     </div>
+
         <p> <input type="button" id="AddBookCopy" value="Add Copy"> </p> 
         <input type="submit" value="Save" />
 
@@ -41,7 +55,55 @@
 @section scripts{
 
 <script>
-    $(document).ready(function (){
+    $(document).ready(function () {
+        $("#AddBookAuthor").click(function () {
+            var authorsDiv = document.getElementById("bookAuthors");
+            var newBookAuthorId = parseInt($("#bookAuthors .bookAuthor").last().data("authorId")) + 1;
+
+            // Create a div for new Author
+
+            var newAuthorDiv = document.createElement("div")
+            newAuthorDiv.className = "bookAuthor";
+            newAuthorDiv.setAttribute("data-author-id", newBookAuthorId);
+
+            // Create inputs for Author Data 
+            var newFirstNameLabel = document.createElement("label");
+            newFirstNameLabel.innerHTML = "Fisrt Name";
+
+            var newFirstNameInput = document.createElement("input");
+            newFirstNameInput.name = "Authors[" + newBookAuthorId + "].FirstName";
+            newFirstNameInput.type = "text";
+
+            var newMiddleNameLabel = document.createElement("label");
+            newMiddleNameLabel.innerHTML = "Fisrt Name";
+
+            var newMiddleNameInput = document.createElement("input");
+            newMiddleNameInput.name = "Authors[" + newBookAuthorId + "].MiddleName";
+            newMiddleNameInput.type = "text";
+
+            var newLastNameLabel = document.createElement("label");
+            newLastNameLabel.innerHTML = "Fisrt Name";
+
+            var newLastNameInput = document.createElement("input");
+            newLastNameInput.name = "Authors[" + newBookAuthorId + "].LastName";
+            newLastNameInput.type = "text";
+
+            // Add imputs to created Author div
+            newAuthorDiv.appendChild(newFirstNameLabel)
+            newAuthorDiv.appendChild(newFirstNameInput);
+
+            newAuthorDiv.appendChild(newMiddleNameLabel)
+            newAuthorDiv.appendChild(newMiddleNameInput);
+
+            newAuthorDiv.appendChild(newLastNameLabel)
+            newAuthorDiv.appendChild(newLastNameInput);
+
+            // Add new Author div to all authors
+            $("#bookAuthors").append(newAuthorDiv);
+        })
+    });
+
+    $(document).ready(function () {
         $("#AddBookCopy").click(function () {
             // Retreive book conditions.
             var ajaxData = {
@@ -79,6 +141,7 @@
             };
             $.ajax("@Url.Action("ListBookConditions", "BooksManagement")", ajaxData);
         });
+
     });
 </script>
 
