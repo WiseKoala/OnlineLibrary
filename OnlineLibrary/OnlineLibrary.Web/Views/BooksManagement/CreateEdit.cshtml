@@ -64,15 +64,16 @@
                 
                 @for (int i = 0; i < Model.BookCopies.Count(); i++)
                 {
-                        <tr>
-                            <td class="col-sm-2">BookCopyId = @Model.BookCopies[i].Id</td>
-                            <td class="col-sm-10">
-                                <div class="bookCopy">
-                                    @Html.EnumDropDownListFor(m => m.BookCopies[i].BookCondition, new { dataId = i, @class = "form-control"})
-                                </div>
-                            </td>
-                        </tr>
-                    }
+                    <tr>
+                        <td class="col-sm-2">BookCopyId = @Model.BookCopies[i].Id</td>
+                        <td class="col-sm-10">
+                            <div class="bookCopy" data-book-copy-id="@i">
+                                @Html.HiddenFor(m => m.BookCopies[i].Id)
+                                @Html.EnumDropDownListFor(m => m.BookCopies[i].BookCondition, new { @class = "form-control"})
+                            </div>
+                        </td>
+                    </tr>
+                }
                 </table>
             </div>
 
@@ -145,7 +146,7 @@
                 complete: function (jqXHR) {
                     var bookConditions = jqXHR.responseJSON;
 
-                    var newId = parseInt($("#bookCopies .bookCopy:last-child select").attr("dataid")) + 1;
+                    var newId = parseInt($("#bookCopies .bookCopy").last().data("bookCopyId")) + 1;
 
                     if (isNaN(newId)) {
                         newId = 0;
@@ -162,6 +163,7 @@
 
                     var newDiv = document.createElement("div");
                     newDiv.className = "bookCopy";
+                    $(newDiv).data("book-copy-id", newId);
 
                     var bookCopySelect = document.createElement("select");
                     bookCopySelect.id = "BookCopies_" + newId + "__BookCondition";

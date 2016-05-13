@@ -211,9 +211,11 @@ namespace OnlineLibrary.Web.Controllers
                         // Create and add new book copy.
                         BookCopy newBookCopy = new BookCopy()
                         {
-                            Condition = bookCopyModel.BookCondition
+                            Condition = bookCopyModel.BookCondition,
+                            BookId = book.Id
                         };
-                        book.BookCopies.Add(newBookCopy);
+                        DbContext.BookCopies.Add(newBookCopy);
+                        DbContext.SaveChanges();
                     }
                 }
 
