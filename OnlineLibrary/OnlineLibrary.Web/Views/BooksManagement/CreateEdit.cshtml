@@ -6,39 +6,42 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>CreateEdit</h2>
+<h2>Edit Book Details</h2>
 
 <div>
     @using (Html.BeginForm("CreateEdit", "BooksManagement", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <p> <strong>ISBN</strong> @Html.TextBoxFor(m => m.ISBN) </p>
+        <p></p>
         <p> <strong>Title</strong> @Html.TextBoxFor(m => m.Title) </p>
-        <p> <strong>Description</strong> @Html.TextAreaFor(m => m.Description) </p>
+        <p></p>
+        <p> <strong>Description</strong> </p> @Html.TextAreaFor(m => m.Description)
+        <p></p>
         <p> <strong>Publish Date</strong> @Html.EditorFor(m => m.PublishDate) </p>
+        <p></p>
         <p> <strong>Front Cover</strong> </p>
 
         if (Model.FrontCover != null)
         {
-            <img width="100" height="100" src=@Url.Content(Model.FrontCover) />
+            <img width="15%" height="15%" src=@Url.Content(Model.FrontCover) />
         }
+        <p></p>
         <p> <input type="file" name="Image" /> </p>
 
     <div id="bookAuthors">
         @for (int i = 0; i < Model.Authors.Count(); i++)
         {
             <div class="bookAuthor" data-author-id="@i">   
-                <label> First Name</label>  @Html.EditorFor(m => m.Authors[i].FirstName)
-                <label> Middle Name</label> @Html.EditorFor(m => m.Authors[i].MiddleName)
-                <label> Last Name</label> @Html.EditorFor(m => m.Authors[i].LastName)
+                <label>First Name</label>  @Html.EditorFor(m => m.Authors[i].FirstName)
+                <label>Middle Name</label> @Html.EditorFor(m => m.Authors[i].MiddleName)
+                <label>Last Name</label> @Html.EditorFor(m => m.Authors[i].LastName)
             </div>
         }
     </div>
 
-    <div id="bookCategories">
+    <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-primary">
 
-    </div>
-    <input type="button" id="AddBookAuthor" value="Add Author">
-
+        <p></p>
 
         <p> <strong>Book Copies</strong> </p>
 
@@ -59,8 +62,8 @@
                 </table>
             </div>
 
-        <p> <input type="button" id="AddBookCopy" value="Add Copy"> </p> 
-        <input type="submit" value="Save" />
+        <p> <input type="button" id="AddBookCopy" value="Add Copy" class="btn btn-primary"> </p> 
+        <input type="submit" value="Save Changes" class="btn btn-primary" />
 
     }
 
