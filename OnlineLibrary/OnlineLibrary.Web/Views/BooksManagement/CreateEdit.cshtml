@@ -14,7 +14,7 @@
        <p> <strong>ISBN</strong> @Html.TextBoxFor(m => m.ISBN) </p>
        <p> <strong>Title</strong> @Html.TextBoxFor(m => m.Title) </p>
        <p> <strong>Description</strong> @Html.TextAreaFor(m => m.Description) </p>
-       <p> <strong>Publish Date</strong> @Html.EditorFor(m => m.PublishDate) </p>
+       <p> <strong>Publish Date</strong> @Html.TextBoxFor(m => m.PublishDate) </p>
        <p> <strong>Front Cover</strong> </p>
 
        if( Model.FrontCover != null )
@@ -27,7 +27,8 @@
         @for (int i = 0; i < Model.Authors.Count(); i++)
         {
             <div class="bookAuthor" data-author-id="@i">   
-                <label> Fisrt Name</label>  @Html.EditorFor(m => m.Authors[i].FirstName)
+                @Html.HiddenFor(m => m.Authors[i].Id)
+                <label> First Name</label>  @Html.EditorFor(m => m.Authors[i].FirstName)
                 <label> Middle Name</label> @Html.EditorFor(m => m.Authors[i].MiddleName)
                 <label> Last Name</label> @Html.EditorFor(m => m.Authors[i].LastName)
             </div>
@@ -60,6 +61,10 @@
             var authorsDiv = document.getElementById("bookAuthors");
             var newBookAuthorId = parseInt($("#bookAuthors .bookAuthor").last().data("authorId")) + 1;
 
+            if (isNaN(newBookAuthorId)) {
+                newBookAuthorId = 0;
+            }
+
             // Create a div for new Author
 
             var newAuthorDiv = document.createElement("div")
@@ -68,21 +73,21 @@
 
             // Create inputs for Author Data 
             var newFirstNameLabel = document.createElement("label");
-            newFirstNameLabel.innerHTML = "Fisrt Name";
+            newFirstNameLabel.innerHTML = "First Name";
 
             var newFirstNameInput = document.createElement("input");
             newFirstNameInput.name = "Authors[" + newBookAuthorId + "].FirstName";
             newFirstNameInput.type = "text";
 
             var newMiddleNameLabel = document.createElement("label");
-            newMiddleNameLabel.innerHTML = "Fisrt Name";
+            newMiddleNameLabel.innerHTML = "Middle Name";
 
             var newMiddleNameInput = document.createElement("input");
             newMiddleNameInput.name = "Authors[" + newBookAuthorId + "].MiddleName";
             newMiddleNameInput.type = "text";
 
             var newLastNameLabel = document.createElement("label");
-            newLastNameLabel.innerHTML = "Fisrt Name";
+            newLastNameLabel.innerHTML = "Last Name";
 
             var newLastNameInput = document.createElement("input");
             newLastNameInput.name = "Authors[" + newBookAuthorId + "].LastName";

@@ -88,6 +88,7 @@ namespace OnlineLibrary.Web.Controllers
                                           }).ToList(),
                                           Authors = m.Authors.Select(a => new BookAuthorViewModel
                                           {
+                                              Id = a.Id,
                                               FirstName = a.FirstName,
                                               MiddleName = a.MiddleName,
                                               LastName = a.LastName
@@ -114,7 +115,7 @@ namespace OnlineLibrary.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View();
+                return View(model);
             }
 
             // If book is new.
@@ -140,6 +141,30 @@ namespace OnlineLibrary.Web.Controllers
                     });
                 }
 
+                // Add authors.
+                foreach (var author in model.Authors)
+                {
+                    // Try to find author with the same name.
+                    Author existingAuthor = DbContext.Authors
+                                                     .FirstOrDefault(a => a.FirstName == author.FirstName 
+                                                     && a.MiddleName == author.MiddleName 
+                                                     && a.LastName == author.LastName);
+
+                    if (existingAuthor != null)
+                    {
+                        book.Authors.Add(existingAuthor);
+                    }
+                    else
+                    {
+                        book.Authors.Add(new Author
+                        {
+                            FirstName = author.FirstName,
+                            MiddleName = author.MiddleName,
+                            LastName = author.LastName
+                        });
+                    }
+                }
+
                 // Save book.
                 DbContext.Books.Add(book);
                 DbContext.SaveChanges();
@@ -151,13 +176,18 @@ namespace OnlineLibrary.Web.Controllers
                 book.Title = model.Title;
                 book.Description = model.Description;
                 book.ISBN = model.ISBN;
-                book.FrontCover = SaveImage(model.Image);
                 book.PublishDate = model.PublishDate;
 
+                // Update image only if was uploaded.
+                if (model.Image != null)
+                {
+                    book.FrontCover = SaveImage(model.Image);
+                }
+                
                 // Update book copies.
                 foreach (var bookCopyModel in model.BookCopies)
                 {
-                    BookCopy bookCopy = DbContext.BookCopies.Find(bookCopyModel);
+                    BookCopy bookCopy = DbContext.BookCopies.Find(bookCopyModel.Id);
                     
                     if (bookCopy != null)
                     {
@@ -172,6 +202,31 @@ namespace OnlineLibrary.Web.Controllers
                             Condition = bookCopyModel.BookCondition
                         };
                         book.BookCopies.Add(newBookCopy);
+                    }
+                }
+
+                // Update authors.
+                foreach (var authorModel in model.Authors)
+                {
+                    Author author = DbContext.Authors.Find(authorModel.Id);
+
+                    if (author != null)
+                    {
+                        // Update existing author.
+                        author.FirstName = authorModel.FirstName;
+                        author.MiddleName = authorModel.MiddleName;
+                        author.LastName = authorModel.LastName;
+                    }
+                    else
+                    {
+                        // Create and add new author.
+                        Author newAuthor = new Author()
+                        {
+                            FirstName = authorModel.FirstName,
+                            MiddleName = authorModel.MiddleName,
+                            LastName = authorModel.LastName
+                        };
+                        book.Authors.Add(newAuthor);
                     }
                 }
 
