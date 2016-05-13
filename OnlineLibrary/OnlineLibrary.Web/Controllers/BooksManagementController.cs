@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Web;
-using System.Web.Mvc;
 using OnlineLibrary.Common.Exceptions;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
@@ -14,6 +11,9 @@ using OnlineLibrary.Services.Abstract;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models.BooksManagement;
 using OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels;
+using System.Net;
+using System.Web.Mvc;
+using System.Linq;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -67,7 +67,6 @@ namespace OnlineLibrary.Web.Controllers
 
         [HttpGet]
         public ActionResult CreateEdit(int id = 2)
-
         {
             var model = DbContext.Books.Where(b => b.Id == id)
                                        .Include(b => b.SubCategories)
@@ -81,11 +80,13 @@ namespace OnlineLibrary.Web.Controllers
                                            Description = m.Description,
                                            PublishDate = m.PublishDate,
                                            FrontCover = m.FrontCover,
+
                                            BookCopies = m.BookCopies.Select(bc => new BookCopyViewModel
                                            {
                                                Id = bc.Id,
                                                BookCondition = bc.Condition
                                           }).ToList(),
+
                                           Authors = m.Authors.Select(a => new BookAuthorViewModel
                                           {
                                               Id = a.Id,
@@ -93,10 +94,21 @@ namespace OnlineLibrary.Web.Controllers
                                               MiddleName = a.MiddleName,
                                               LastName = a.LastName
                                            }).ToList(),
-                                           SubCategories = m.SubCategories.Select(sc => new SubCategoryViewModel
-                                           {
-                                               Id = sc.Id,
-                                               Name = sc.Name
+
+                                          BookCategories = m.SubCategories.Select( sc => new CategoryViewModel
+                                          {
+                                              Id = sc.CategoryId,
+                                              Name = sc.Category.Name,
+
+                                              BookSubCategories = new List<SubCategoryViewModel>
+                                              {
+                                                  new SubCategoryViewModel
+                                                  {
+                                                      Id = sc.Id,
+                                                      Name = sc.Name
+                                                  }
+                                              }
+
                                            }).ToList()
                                        })
                                        .SingleOrDefault();

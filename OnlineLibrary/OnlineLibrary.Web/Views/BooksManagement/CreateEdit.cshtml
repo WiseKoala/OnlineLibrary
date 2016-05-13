@@ -6,22 +6,38 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>CreateEdit</h2>
+<h2>Book Management</h2>
 
 <div>
     @using (Html.BeginForm("CreateEdit", "BooksManagement", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-       <p> <strong>ISBN</strong> @Html.TextBoxFor(m => m.ISBN) </p>
-       <p> <strong>Title</strong> @Html.TextBoxFor(m => m.Title) </p>
-       <p> <strong>Description</strong> @Html.TextAreaFor(m => m.Description) </p>
-       <p> <strong>Publish Date</strong> @Html.TextBoxFor(m => m.PublishDate) </p>
-       <p> <strong>Front Cover</strong> </p>
+        <div class="form-group"> 
+            <label>ISBN</label> 
+            @Html.TextBoxFor(m => m.ISBN, new { @class = "form-control"})
+        </div>
+        <div class="form-group"> 
+             <label>Title</label> 
+             @Html.TextBoxFor(m => m.Title, new { @class = "form-control" }) 
+        </div>
+        <div class="form-group">
+             <label>Description</label> 
+             @Html.TextAreaFor(m => m.Description, new { @class = "form-control" }) 
+        </div>
+        <div class="form-group"> 
+             <label>Publish Date</label>
+             @Html.EditorFor(m => m.PublishDate, new { @class = "form-control" }) 
+        </div>
+        <div class="form-group"> 
+            <label>Front Cover</label> 
 
-       if( Model.FrontCover != null )
-       {
-           <img width="100" src=@Url.Content(Model.FrontCover) />
-       }
-       <p> <input type="file" name="Image"/> </p>
+            @if (Model.FrontCover != null)
+            {
+                <img width="100" height="100" src=@Url.Content(Model.FrontCover) />
+            }           
+        </div>
+        <div class="form-group">
+            <input type="file" name="Image" />
+        </div>
 
     <div id="bookAuthors">
         @for (int i = 0; i < Model.Authors.Count(); i++)
@@ -34,23 +50,36 @@
             </div>
         }
     </div>
-    <input type="button" id="AddBookAuthor" value="Add Author">
 
+    <div id="bookCategories">
 
-       <p> <strong>Book Copies</strong> </p>
-    <div id="bookCopies">
-        @for (int i = 0; i < Model.BookCopies.Count(); i++)
-        {
-            <div class="bookCopy">
-                @Html.EnumDropDownListFor(m => m.BookCopies[i].BookCondition, new { dataId = i })
-            </div>
-        }
     </div>
+    <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-default">
 
-        <p> <input type="button" id="AddBookCopy" value="Add Copy"> </p> 
-        <input type="submit" value="Save" />
 
-        }
+        <p> <strong>Book Copies</strong> </p>
+
+            <div id="bookCopies">
+                <table class="col-sm-12 table-hover">
+                
+                @for (int i = 0; i < Model.BookCopies.Count(); i++)
+                {
+                        <tr>
+                            <td class="col-sm-2">BookCopyId = @Model.BookCopies[i].Id</td>
+                            <td class="col-sm-10">
+                                <div class="bookCopy">
+                                    @Html.EnumDropDownListFor(m => m.BookCopies[i].BookCondition, new { dataId = i, @class = "form-control"})
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+
+        <p> <input type="button" id="AddBookCopy" value="Add Copy" class="btn btn-default" /> </p> 
+        <input type="submit" value="Save"  class="btn btn-primary" />
+
+    }
 
 </div>
 @section scripts{
@@ -121,6 +150,15 @@
                     if (isNaN(newId)) {
                         newId = 0;
                     }
+                    
+                    var newTr = document.createElement("tr");
+
+                    var newTd = document.createElement("td");
+                    newTd.className = "col-sm-2";
+                    newTd.innerHTML = "BookCopyId = newId";
+
+                    var newTd2 = document.createElement("td");
+                    newTd2.className = "col-sm-10";
 
                     var newDiv = document.createElement("div");
                     newDiv.className = "bookCopy";
@@ -141,7 +179,11 @@
                     }
 
                     newDiv.appendChild(bookCopySelect);
-                    $("#bookCopies").append(newDiv);
+                    newTd2.appendChild(newDiv);
+                    newTr.appendChild(newTd);
+                    newTr.appendChild(newTd2);
+                    
+                    $("#bookCopies table").append(newTr);
                 }
             };
             $.ajax("@Url.Action("ListBookConditions", "BooksManagement")", ajaxData);

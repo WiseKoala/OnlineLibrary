@@ -1,7 +1,10 @@
 ﻿$(document).ready(function () {
-    $('.remove-book').click(function () {
+    var id = 0;
+    $(".pass-id-to-remove").click(function(){
+        id = $(this).data("bookId");
+    });
 
-        var id = $(this).data("bookId");
+    $('.remove-book').click(function () {
 
         $.ajax({
 
@@ -13,13 +16,12 @@
 
             success: function (response) {
 
-                var thisItem = $("tr").find("[data-book-id='" + id + "']");
+                var trId = "book" + id;
+                var thisTR = $("tr#" + trId);
 
-                thisItem.closest('tr').find('td').fadeOut(1000, function () {
-                    $(this).closest('tr').remove();
+                thisTR.fadeOut(1000, function () {
+                    thisTR.remove();
                 });
-
-                thisItem.parent("tr").remove();
 
                     toastr.options =
                         {
