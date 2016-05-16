@@ -14,9 +14,11 @@ using OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels;
 using System.Net;
 using System.Web.Mvc;
 using System.Linq;
+using OnlineLibrary.DataAccess;
 
 namespace OnlineLibrary.Web.Controllers
 {
+    [Authorize(Roles = UserRoles.SysAdmin)]
     public class BooksManagementController : BaseController
     {
         private IBookService _bookService;
@@ -299,6 +301,7 @@ namespace OnlineLibrary.Web.Controllers
             return Json(removedBook, JsonRequestBehavior.DenyGet);
         }
 
+        [AllowAnonymous]
         public JsonResult ListBookConditions()
         {
             var bookConditionNames = Enum.GetNames(typeof(BookCondition));
