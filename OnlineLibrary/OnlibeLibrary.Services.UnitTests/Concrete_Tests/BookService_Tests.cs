@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using NSubstitute;
@@ -57,30 +58,32 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests
                 _dbContext.Loans.Returns(loansSet);
             }
 
-            [Test]
-            public void ReturnsTrue()
+            [TestCase(2, true)]
+            [TestCase(1, false)]
+            public void Calculates(int bookCopyId, bool expectedResult)
             {
                 // Arrange.
                 var bookService = new BookService(_dbContext);
 
                 // Act.
-                bool result = bookService.IsBookCopyRemovable(2);
+                bool actualResult = bookService.IsBookCopyRemovable(bookCopyId);
 
                 // Assert.
-                Assert.IsTrue(result);
+                Assert.AreEqual(expectedResult, actualResult);
             }
 
             [Test]
-            public void ReturnsFalse()
+            public void ThrowsException()
             {
                 // Arrange.
                 var bookService = new BookService(_dbContext);
+                int bookCopyId = 100; // Non-existing book copy.
 
                 // Act.
-                bool result = bookService.IsBookCopyRemovable(1);
+                var testDelegate = new TestDelegate(() => bookService.IsBookCopyRemovable(bookCopyId));
 
                 // Assert.
-                Assert.IsFalse(result);
+                Assert.Throws<KeyNotFoundException>(testDelegate);
             }
         }
     }
