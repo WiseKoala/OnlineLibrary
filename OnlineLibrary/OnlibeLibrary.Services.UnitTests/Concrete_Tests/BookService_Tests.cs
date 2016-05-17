@@ -22,6 +22,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests
             [OneTimeSetUp]
             public void Init()
             {
+                // Prepare test data.
                 var bookCopies = new List<BookCopy>
                 {
                     new BookCopy { Id = 1, Condition = BookCondition.Fine },
