@@ -286,6 +286,8 @@ namespace OnlineLibrary.Web.Controllers
             try
             {
                 removedBook = _bookService.DeleteBook(id);
+
+                DeleteFileFromServer(removedBook.FrontCover);
             }
             catch (BookNotAvailableException ex)
             {
@@ -317,5 +319,14 @@ namespace OnlineLibrary.Web.Controllers
 
             return Json(bookConditions, JsonRequestBehavior.AllowGet);
         }
+
+        #region Helpers
+
+        private void DeleteFileFromServer(string path)
+        {
+            System.IO.File.Delete(Server.MapPath(path));
+        }
+
+        #endregion
     }
 }
