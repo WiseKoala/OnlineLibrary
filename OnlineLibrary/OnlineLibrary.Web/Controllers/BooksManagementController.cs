@@ -14,9 +14,11 @@ using OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels;
 using System.Net;
 using System.Web.Mvc;
 using System.Linq;
+using OnlineLibrary.DataAccess;
 
 namespace OnlineLibrary.Web.Controllers
 {
+    [Authorize(Roles = UserRoles.SysAdmin)]
     public class BooksManagementController : BaseController
     {
         private IBookService _bookService;
@@ -284,6 +286,8 @@ namespace OnlineLibrary.Web.Controllers
             try
             {
                 removedBook = _bookService.DeleteBook(id);
+
+                DeleteFileFromServer(removedBook.FrontCover);
             }
             catch (BookNotAvailableException ex)
             {
@@ -299,6 +303,7 @@ namespace OnlineLibrary.Web.Controllers
             return Json(removedBook, JsonRequestBehavior.DenyGet);
         }
 
+        [AllowAnonymous]
         public JsonResult ListBookConditions()
         {
             var bookConditionNames = Enum.GetNames(typeof(BookCondition));
@@ -314,5 +319,14 @@ namespace OnlineLibrary.Web.Controllers
 
             return Json(bookConditions, JsonRequestBehavior.AllowGet);
         }
+
+        #region Helpers
+
+        private void DeleteFileFromServer(string path)
+        {
+            System.IO.File.Delete(Server.MapPath(path));
+        }
+
+        #endregion
     }
 }
