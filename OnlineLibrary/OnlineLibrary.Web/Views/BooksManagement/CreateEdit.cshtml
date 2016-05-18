@@ -52,6 +52,7 @@
         {
             <div class="book-author" data-author-id="@i">   
                 @Html.HiddenFor(m => m.Authors[i].Id)
+                @Html.HiddenFor(m => m.Authors[i].IsRemoved, new { @class = "is-removed" })
                 <div class="form-group">
                     @Html.LabelFor(m => m.Authors[i].FirstName)
                     @Html.TextBoxFor(m => m.Authors[i].FirstName, new { @class = "form-control" })
@@ -108,14 +109,17 @@
 <script>
     $(document).ready(function () {
 
-        $(".btn-remove-author").click(function () {
+        function bindBtnRemoveAuthor() {
 
-            // Remove the parent book-author container element.
+            // Hide the parent book-author container element.
             var bookAuthor = $(this).closest(".book-author");
-            bookAuthor.fadeOut(1000, function () {
-                $(this).remove();
+            bookAuthor.slideUp(1000, function () {
+                var isRemovedInput = $(this).children(".is-removed");
+                isRemovedInput.val(true);
             });
-        });
+        }
+
+        $(".btn-remove-author").click(bindBtnRemoveAuthor);
 
         $("#AddBookAuthor").click(function () {
             var authorsDiv = document.getElementById("bookAuthors");
@@ -125,13 +129,21 @@
                 newBookAuthorId = 0;
             }
 
-            // Create a div for new Author
-
+            // Create a div for new Author.
             var newAuthorDiv = document.createElement("div")
-            newAuthorDiv.className = "bookAuthor";
+            newAuthorDiv.className = "book-author";
             newAuthorDiv.setAttribute("data-author-id", newBookAuthorId);
 
             // Create inputs for Author data.
+            // IsRemoved.
+            var isRemovedInput = document.createElement("input");
+            isRemovedInput.className = "is-removed";
+            isRemovedInput.name = "Authors[" + newBookAuthorId + "].IsRemoved";
+            isRemovedInput.type = "hidden";
+            isRemovedInput.value = "false";
+
+            newAuthorDiv.appendChild(isRemovedInput);
+
             // First Name.
             var formGroup = document.createElement("div");
             formGroup.className = "form-group";
@@ -193,6 +205,7 @@
             var removeButton = document.createElement("button");
             removeButton.className = "btn btn-sm btn-danger btn-remove-author";
             removeButton.type = "button";
+            $(removeButton).click(bindBtnRemoveAuthor);
 
             // Button icon.
             var removeButtonIcon = document.createElement("span");

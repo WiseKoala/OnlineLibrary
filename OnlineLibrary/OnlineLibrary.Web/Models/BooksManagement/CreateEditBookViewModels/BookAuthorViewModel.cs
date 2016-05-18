@@ -18,5 +18,7 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
 
         [DisplayName("Last Name")]
         public string LastName { get; set; }
+
+        public bool IsRemoved { get; set; }
     }
 }
