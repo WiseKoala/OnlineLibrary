@@ -9,6 +9,5 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<SubCategoryViewModel> BookSubCategories { get; set; }
     }
 }

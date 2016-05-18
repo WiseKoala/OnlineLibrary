@@ -21,7 +21,7 @@
         </div>
         <div class="form-group">
              <label>Description</label> 
-             @Html.TextAreaFor(m => m.Description, new { @class = "form-control" }) 
+             @Html.TextAreaFor(m => m.Description, new { @class = "form-control", style= " height:200px " }) 
         </div>
         <div class="form-group"> 
              <label>Publish Date</label>
@@ -35,11 +35,13 @@
                 <img width="100" height="100" src=@Url.Content(Model.FrontCover) />
             }           
         </div>
+        //Load Image
         <div class="form-group">
             <input type="file" name="Image" />
         </div>
 
-    <div id="bookAuthors">
+        //Book Auhtors
+    <div id="bookAuthors" class="form-group">
         @for (int i = 0; i < Model.Authors.Count(); i++)
         {
             <div class="bookAuthor" data-author-id="@i">   
@@ -49,15 +51,21 @@
             </div>
         }
     </div>
+    <p class="form-group"> <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-default"> </p>
 
-    <div id="bookCategories">
-
+        //Book Category 
+    <div id="book-categories-subcategories" class="form-group">  
+            <div class="book-category-subcategory form-inline">
+                <div class="form-group">
+                    <label>Category</label>
+                    @Html.DropDownList("Categories", Model.AllCategories, new { @class = "book-category form-control" })
+                </div>
+            </div>
     </div>
-    <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-default">
-
-
-        <p> <strong>Book Copies</strong> </p>
-
+    <p class="form-group">
+        <button type="button" id="add-category" class="btn btn-default"> Add Category </button>
+    </p>
+        <p> <label>Book Copies</label> </p>
             <div id="bookCopies">
                 <table class="col-sm-12 table-hover">
                 
@@ -75,8 +83,8 @@
                 </table>
             </div>
 
-        <p> <input type="button" id="AddBookCopy" value="Add Copy" class="btn btn-default" /> </p> 
-        <input type="submit" value="Save"  class="btn btn-primary" />
+        <p> <input type="button" id="AddBookCopy" value="Add Copy" class="btn btn-default" /> </p>
+        <p> <input type="submit" value="Save" class="btn btn-primary" /> </p>
 
     }
 
@@ -85,17 +93,92 @@
 
 <script>
     $(document).ready(function () {
+        $(".book-category").change(addNewSubcategory);
+    });
+
+    // Add new category select on button click.
+    $(document).ready(function (){
+        $("#add-category").click(function () {
+
+            // Create new book-category-subcategory div.
+        var newCategorySubCDiv = document.createElement("div");
+            newCategorySubCDiv.className = "book-category-subcategory form-inline";
+
+            var categoryDiv = document.createElement("div");
+            categoryDiv.className = "form-group";
+            newCategorySubCDiv.appendChild(categoryDiv);
+
+            var categoryLabel = document.createElement("label");
+            categoryLabel.innerHTML = "Category";
+            categoryDiv.appendChild(categoryLabel);
+
+            // Set select category and set chenge event function
+            var select = $(".book-category").first().clone().appendTo(categoryDiv);
+            select.change(addNewSubcategory)
+            $("#book-categories-subcategories").append(newCategorySubCDiv)
+        });
+    });
+
+    function  addNewSubcategory() {
+
+        var categorySelect = $(this);
+        var selectedId = categorySelect.val()
+            // Retreive book sub categories.
+            var ajaxData = {
+                data: {
+                    categoryId: $(this).val()
+                },
+                method: "GET",
+                complete: function (jqXHR) {
+                    var subCategories = jqXHR.responseJSON;
+
+                    if (categorySelect.parent().siblings().length != 0) {
+
+                        var a = categorySelect.parent().siblings(".book-subcategory").html("")
+                    }
+                     
+                        var selectCategoryNumber = $(".book-category").length - 1;
+
+                        //  Add subcategory dropdow for current choosen category.
+                        var formGroup = document.createElement("div");
+                        formGroup.className = "form-group book-subcategory";                        
+
+                        var label = document.createElement("label");
+                        label.innerHTML = "SubCategory";
+
+                        var select = document.createElement("select");
+                        select.name = "Model.BookSubcategories[" + selectCategoryNumber + "].Id";
+                        select.className = "form-control";
+                 
+                        for (var i = 0; i < subCategories.length; i++) {
+                            var option = document.createElement("option");
+                            option.value = subCategories[i].Value;
+                            option.innerHTML = subCategories[i].Name;
+                            select.appendChild(option);
+                        }
+
+                        formGroup.appendChild(label);
+                        formGroup.appendChild(select);
+
+                        var categoryFormGroup = categorySelect.parent();
+                        var categorySubcategory = categoryFormGroup.parent();
+                        categorySubcategory.append(formGroup);                   
+                }
+            };
+            $.ajax("@Url.Action("ListBookSubCategories", "BooksManagement")", ajaxData);
+        };
+
+    $(document).ready(function () {
         $("#AddBookAuthor").click(function () {
             var authorsDiv = document.getElementById("bookAuthors");
             var newBookAuthorId = parseInt($("#bookAuthors .bookAuthor").last().data("authorId")) + 1;
 
             // Create a div for new Author
-
             var newAuthorDiv = document.createElement("div")
             newAuthorDiv.className = "bookAuthor";
             newAuthorDiv.setAttribute("data-author-id", newBookAuthorId);
 
-            // Create inputs for Author Data 
+            // Create inputs for Author Data
             var newFirstNameLabel = document.createElement("label");
             newFirstNameLabel.innerHTML = "First Name";
 

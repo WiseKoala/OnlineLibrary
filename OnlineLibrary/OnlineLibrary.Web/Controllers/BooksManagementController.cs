@@ -24,10 +24,11 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult CreateEdit(int id = 2)
+        public ActionResult CreateEdit(int id)
         {
-            var model = DbContext.Books.Where(b => b.Id == id)
-                                       .Include(b => b.SubCategories)
+            var model = new CreateEditBookViewModel();
+
+            model = DbContext.Books.Where(b => b.Id == id)
                                        .Include(b => b.BookCopies)
                                        .Include(b => b.Authors)
                                        .Select(m => new CreateEditBookViewModel
@@ -50,31 +51,22 @@ namespace OnlineLibrary.Web.Controllers
                                               FirstName = a.FirstName,
                                               MiddleName = a.MiddleName,
                                               LastName = a.LastName
-                                          }).ToList(),
-
-                                          BookCategories = m.SubCategories.Select( sc => new CategoryViewModel
-                                          {
-                                              Id = sc.CategoryId,
-                                              Name = sc.Category.Name,
-
-                                              BookSubCategories = new List<SubCategoryViewModel>
-                                              {
-                                                  new SubCategoryViewModel
-                                                  {
-                                                      Id = sc.Id,
-                                                      Name = sc.Name
-                                                  }
-                                              }
-
-                                          }).ToList()
+                                          }).ToList()                             
                                       })
                                        .SingleOrDefault();
 
-           // Create the book if doesn't exist.
-           if (model == null)
-           {
-               model = new CreateEditBookViewModel();
-           }
+                // Set data for book-category drop down select.
+                model.AllCategories = DbContext.Categories.Select(sc => new SelectListItem
+                {
+                    Value = sc.Id.ToString(),
+                    Text = sc.Name
+                }).ToList();
+
+            // Create a empty model, if the book doesn't exist.
+            if (model == null)
+            {
+                model = new CreateEditBookViewModel();
+            }
 
             return View(model);
         }
@@ -99,6 +91,25 @@ namespace OnlineLibrary.Web.Controllers
                 .ToList();
 
             return Json(bookConditions, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult ListBookSubCategories(int categoryId)
+        {
+            var allSubCategories = DbContext.SubCategories
+                                         .Where(sc => sc.CategoryId == categoryId)
+                                         .ToList();
+
+            var dict = new Dictionary<string, int>();
+            foreach (var subCategory in allSubCategories)
+            {
+                dict.Add(subCategory.Name, subCategory.Id);
+            }
+
+            var subCategories = dict
+                .Select(kvp => new { Value = kvp.Value, Name = kvp.Key })
+                .ToList();
+
+            return Json(subCategories, JsonRequestBehavior.AllowGet);
         }
     }
 }
