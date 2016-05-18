@@ -8,7 +8,7 @@
 
 @section CSS {
     <style>
-        #bookAuthors .bookAuthor { margin-bottom: 10px; }
+        #bookAuthors .book-author { margin-bottom: 10px; }
     </style>
 }
 
@@ -50,7 +50,7 @@
         <hr />
         @for (int i = 0; i < Model.Authors.Count(); i++)
         {
-            <div class="bookAuthor" data-author-id="@i">   
+            <div class="book-author" data-author-id="@i">   
                 @Html.HiddenFor(m => m.Authors[i].Id)
                 <div class="form-group">
                     @Html.LabelFor(m => m.Authors[i].FirstName)
@@ -107,9 +107,19 @@
 
 <script>
     $(document).ready(function () {
+
+        $(".btn-remove-author").click(function () {
+
+            // Remove the parent book-author container element.
+            var bookAuthor = $(this).closest(".book-author");
+            bookAuthor.fadeOut(1000, function () {
+                $(this).remove();
+            });
+        });
+
         $("#AddBookAuthor").click(function () {
             var authorsDiv = document.getElementById("bookAuthors");
-            var newBookAuthorId = parseInt($("#bookAuthors .bookAuthor").last().data("authorId")) + 1;
+            var newBookAuthorId = parseInt($("#bookAuthors .book-author").last().data("authorId")) + 1;
 
             if (isNaN(newBookAuthorId)) {
                 newBookAuthorId = 0;
