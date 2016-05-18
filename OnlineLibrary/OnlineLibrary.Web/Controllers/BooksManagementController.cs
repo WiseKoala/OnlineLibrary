@@ -24,7 +24,7 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult CreateEdit(int id)
+        public ActionResult CreateEdit(int id = 1)
         {
             var model = new CreateEditBookViewModel();
 

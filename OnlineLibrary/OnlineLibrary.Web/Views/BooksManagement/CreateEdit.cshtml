@@ -6,7 +6,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Book Management</h2>
+<h2>CreateEdit</h2>
 
 <div>
     @using (Html.BeginForm("CreateEdit", "BooksManagement", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -29,12 +29,12 @@
         </div>
         <div class="form-group"> 
             <label>Front Cover</label> 
-
-            @if (Model.FrontCover != null)
-            {
-                <img width="100" height="100" src=@Url.Content(Model.FrontCover) />
-            }           
         </div>
+        if (Model.FrontCover != null)
+        {
+            <img width="100" height="100" src=@Url.Content(Model.FrontCover) />
+        }
+        <p> <input type="file" name="Image" /> </p>
         //Load Image
         <div class="form-group">
             <input type="file" name="Image" />
@@ -51,7 +51,9 @@
             </div>
         }
     </div>
-    <p class="form-group"> <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-default"> </p>
+    <p class="form-group"> 
+        <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-default"> 
+    </p>
 
         //Book Category 
     <div id="book-categories-subcategories" class="form-group">  
@@ -89,6 +91,7 @@
     }
 
 </div>
+
 @section scripts{
 
 <script>
