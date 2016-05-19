@@ -25,9 +25,9 @@
         </div>
         <div class="form-group"> 
              <label>Publish Date</label>
-             @Html.EditorFor(m => m.PublishDate, new { @class = "form-control" }) 
+             @Html.TextBoxFor(m => m.PublishDate, new { @class = "form-control" }) 
         </div>
-        <div class="form-group"> 
+        <div class="form-group">
             <label>Front Cover</label> 
         </div>
         if (Model.FrontCover != null)
@@ -59,7 +59,7 @@
         <div id="bookSubcategories" class="form-group">
             @for (int i = 0; i < Model.SelectedSubcategories.Count; i++)
             {
-                <div class="book-subcategory">
+                <div class="book-subcategory" data-sequence-id="@i">
                     <div class="form-group">
                         <label>Subcategory</label>
                         @Html.DropDownList($"SelectedSubcategories[{i}]", new SelectList(Model.AllBookSubcategories, "Id", "Name", Model.SelectedSubcategories[i]), new {@class = "form-control"})
@@ -99,15 +99,22 @@
 <script>
     $(document).ready(function () {
         $("#addCategory").click(function() {
-            // Retreive book sub categories.
+            // Retreive all sub categories.
             var ajaxData = {
                 method: "GET",
                 complete: function (jqXhr) {
                     var subCategories = jqXhr.responseJSON;
+                    var newIndex = 0;
+                    var lastSubcategorySequenceNumber = parseInt($("#bookSubcategories .book-subcategory").last().data("sequenceId"));
 
-                    //  Add subcategory dropdown for current choosen category.
+                    if (!isNaN(lastSubcategorySequenceNumber)) {
+                        newIndex = lastSubcategorySequenceNumber + 1;
+                    }
+
+                    // Add subcategory dropdown for current choosen category.
                     var subcategoryDiv = $(document.createElement("div"));
                     subcategoryDiv.addClass("book-subcategory");
+                    subcategoryDiv.attr("data-sequence-id", newIndex);
 
                     var formGroup = $(document.createElement("div"));
                     formGroup.addClass("form-group");
@@ -116,7 +123,7 @@
                     label.text("Subcategory");
 
                     var select = $(document.createElement("select"));
-                    //select.name = "BookSubcategories[" + selectCategoryNumber + "].Id";
+                    select.attr("name", "SelectedSubcategories[" + newIndex + "]");
                     select.addClass("form-control");
                  
                     for (var i = 0; i < subCategories.length; i++) {
@@ -146,7 +153,7 @@
             }
 
             // Create a div for new Author
-            var newAuthorDiv = document.createElement("div")
+            var newAuthorDiv = document.createElement("div");
             newAuthorDiv.className = "bookAuthor";
             newAuthorDiv.setAttribute("data-author-id", newBookAuthorId);
 
