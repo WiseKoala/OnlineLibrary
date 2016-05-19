@@ -263,21 +263,45 @@ namespace OnlineLibrary.Web.Controllers
 
                     if (author != null)
                     {
-                        // Update existing author.
-                        author.FirstName = authorModel.FirstName;
-                        author.MiddleName = authorModel.MiddleName;
-                        author.LastName = authorModel.LastName;
+                        // If author was removed on the page.
+                        if (authorModel.IsRemoved)
+                        {
+                            book.Authors.Remove(author);
+                        }
+                        else
+                        {
+                            // Update existing author.
+                            author.FirstName = authorModel.FirstName;
+                            author.MiddleName = authorModel.MiddleName;
+                            author.LastName = authorModel.LastName;
+                        }
                     }
                     else
                     {
-                        // Create and add new author.
-                        Author newAuthor = new Author()
+                        if (!authorModel.IsRemoved)
                         {
-                            FirstName = authorModel.FirstName,
-                            MiddleName = authorModel.MiddleName,
-                            LastName = authorModel.LastName
-                        };
-                        book.Authors.Add(newAuthor);
+                            // Try to find author with the same name.
+                            Author existingAuthor = DbContext.Authors
+                                                             .FirstOrDefault(a => a.FirstName == authorModel.FirstName
+                                                             && a.MiddleName == authorModel.MiddleName
+                                                             && a.LastName == authorModel.LastName);
+
+                            if (existingAuthor != null)
+                            {
+                                book.Authors.Add(existingAuthor);
+                            }
+                            else
+                            {
+                                // Create and add new author.
+                                Author newAuthor = new Author()
+                                {
+                                    FirstName = authorModel.FirstName,
+                                    MiddleName = authorModel.MiddleName,
+                                    LastName = authorModel.LastName
+                                };
+                                book.Authors.Add(newAuthor);
+                            }
+                        }
                     }
                 }
 
