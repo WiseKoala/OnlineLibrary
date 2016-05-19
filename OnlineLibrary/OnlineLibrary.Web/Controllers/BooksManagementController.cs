@@ -160,8 +160,8 @@ namespace OnlineLibrary.Web.Controllers
                 {
                     // Try to find author with the same name.
                     Author existingAuthor = DbContext.Authors
-                                                     .FirstOrDefault(a => a.FirstName == author.FirstName 
-                                                     && a.MiddleName == author.MiddleName 
+                                                     .FirstOrDefault(a => a.FirstName == author.FirstName
+                                                     && a.MiddleName == author.MiddleName
                                                      && a.LastName == author.LastName);
 
                     if (existingAuthor != null)
@@ -197,30 +197,65 @@ namespace OnlineLibrary.Web.Controllers
                 {
                     book.FrontCover = SaveImage(model.Image);
                 }
-                
-                // Update book copies.
-                foreach (var bookCopyModel in model.BookCopies)
+
+                // Delete book copy from database if element passed to model through HttpPost contains the IsToBeDeleted = true field
+
+                bool DbContextChanged = false;
+
+                foreach (var bookcopy in model.BookCopies)
                 {
-                    BookCopy bookCopy = DbContext.BookCopies.Find(bookCopyModel.Id);
-                    
-                    if (bookCopy != null)
+                    if (bookcopy.IsToBeDeleted == true && bookcopy.Id != 0) 
                     {
-                        // Update existing book copy.
-                        bookCopy.Condition = bookCopyModel.BookCondition;
-                    }
-                    else
-                    {
-                        // Create and add new book copy.
-                        BookCopy newBookCopy = new BookCopy()
+                        try
                         {
-                            Condition = bookCopyModel.BookCondition,
-                            BookId = book.Id
-                        };
-                        DbContext.BookCopies.Add(newBookCopy);
-                        DbContext.SaveChanges();
+                            _bookService.DeleteBookCopy(bookcopy.Id);
+                            DbContextChanged = true;
+                        }
+                        catch (BookCopyNotAvailableException ex)
+                        {
+                            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                            return Json(new { error = ex.Message });
+                        }
+                        catch (KeyNotFoundException ex)
+                        {
+                            Response.StatusCode = (int)HttpStatusCode.NotFound;
+                            return Json(new { error = ex.Message });
+                        }
                     }
                 }
 
+                if (DbContextChanged)
+                {
+                    DbContext.SaveChanges();
+                }
+
+                // Update book copies
+
+                foreach (var bookCopyModel in model.BookCopies)
+                {
+                    if (bookCopyModel.IsToBeDeleted == false)
+                    {
+                        BookCopy bookCopy = DbContext.BookCopies.Find(bookCopyModel.Id);
+
+                        if (bookCopy != null)
+                        {
+                            // Update existing book copy.
+                            bookCopy.Condition = bookCopyModel.BookCondition;
+                        }
+                        else
+                        {
+                            // Create and add new book copy.
+                            BookCopy newBookCopy = new BookCopy()
+                            {
+                                Condition = bookCopyModel.BookCondition,
+                                BookId = book.Id
+                            };
+                            DbContext.BookCopies.Add(newBookCopy);
+                            DbContext.SaveChanges();
+                        }
+                    }
+                }
+            
                 // Update authors.
                 foreach (var authorModel in model.Authors)
                 {

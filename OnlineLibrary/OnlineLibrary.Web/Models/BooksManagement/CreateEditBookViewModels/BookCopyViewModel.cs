@@ -10,5 +10,6 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
     {
         public int Id { get; set; }
         public BookCondition BookCondition { get; set; }
+        public bool IsToBeDeleted { get; set; }
     }
 }
