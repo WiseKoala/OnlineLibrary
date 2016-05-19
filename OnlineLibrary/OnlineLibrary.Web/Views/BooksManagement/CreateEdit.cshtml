@@ -34,7 +34,6 @@
         {
             <img width="100" height="100" src=@Url.Content(Model.FrontCover) />
         }
-        <p> <input type="file" name="Image" /> </p>
         //Load Image
         <div class="form-group">
             <input type="file" name="Image" />
@@ -91,6 +90,7 @@
         <p> <input type="submit" value="Save" class="btn btn-primary" /> </p>
 
     }
+
 
 </div>
 
@@ -152,7 +152,7 @@
                         label.innerHTML = "SubCategory";
 
                         var select = document.createElement("select");
-                        select.name = "Model.BookSubcategories[" + selectCategoryNumber + "].Id";
+                        select.name = "BookSubcategories[" + selectCategoryNumber + "].Id";
                         select.className = "form-control";
                  
                         for (var i = 0; i < subCategories.length; i++) {
