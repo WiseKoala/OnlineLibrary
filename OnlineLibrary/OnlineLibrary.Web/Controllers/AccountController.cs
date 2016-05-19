@@ -33,9 +33,10 @@ namespace OnlineLibrary.Web.Controllers
         [AllowAnonymous]
         public ActionResult Login()
         {
-            // Get the current URL
-            string returnUrl = Request.UrlReferrer.AbsoluteUri;
+            // Get the current URL if null use the Home page.
+            string returnUrl = Request.UrlReferrer?.AbsolutePath ?? "Home/Index";
 
+            // Using object cast for send the model
             return View((object)returnUrl);
         }
 
@@ -67,7 +68,7 @@ namespace OnlineLibrary.Web.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return Redirect(returnUrl);
+                    return RedirectToLocal(returnUrl);
 
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -113,11 +114,11 @@ namespace OnlineLibrary.Web.Controllers
                         {
                             return RedirectToAction("Index", "Role");
                         }
-                        return Redirect(returnUrl);
+                        return RedirectToLocal(returnUrl);
                     }
                 }
             }
-           return Redirect(returnUrl);
+           return RedirectToLocal(returnUrl);
         }
 
         //
@@ -137,7 +138,7 @@ namespace OnlineLibrary.Web.Controllers
                 await _userService.UpdateAsync(userToUpdate);
             }
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToLocal("Home/Index");
         }
 
         //

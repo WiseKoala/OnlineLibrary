@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Collections.Generic;
+using Microsoft.Owin.Security;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -35,7 +36,7 @@ namespace OnlineLibrary.Web.Controllers
 
                 var model = new RoleViewModel();
 
-                model.AllRoles = _roleService.GetRoleList();
+                model.AllRoles = _roleService.GetRoleList().OrderBy(r => r.Name);
                 model.UsersAndTheirRoles = new List<UserAndRole>();
 
                 foreach (var user in _userService.GetUserList())
@@ -79,6 +80,17 @@ namespace OnlineLibrary.Web.Controllers
 
                         if (await _userService.RemoveUserFromRole(user.Id, oldRoleName) && await _userService.AddUserToRole(user.Id, roleName))
                         {
+                            // If current user has changed his/her role.
+                            if (userName == User.Identity.Name)
+                            {
+                                // Sign the user out.
+                                AuthenticationManager.SignOut();
+
+                                // Sign the user back.
+                                var identity = await _userService.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+                                AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = true }, identity);
+                            }
+
                             return RedirectToAction("Index", "Role");
                         }
                         else
@@ -102,7 +114,7 @@ namespace OnlineLibrary.Web.Controllers
         {
             return IsFirstLogin() || user.IsInRole(UserRoles.SysAdmin) || user.IsInRole(UserRoles.SuperAdmin);
         }
-        
+
         public bool IsFirstLogin()
         {
             bool isFirstUserLogin = false;

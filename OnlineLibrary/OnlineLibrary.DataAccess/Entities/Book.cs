@@ -6,6 +6,14 @@ namespace OnlineLibrary.DataAccess.Entities
 {
     public class Book
     {
+        public Book()
+        {
+            Authors = new List<Author>();
+            SubCategories = new List<SubCategory>();
+            BookCopies = new List<BookCopy>();
+            Loans = new List<Loan>();
+        }
+
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }

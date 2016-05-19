@@ -9,6 +9,7 @@ using OnlineLibrary.Services.Abstract;
 using System.Data.Entity;
 using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.DataAccess.Abstract;
+using OnlineLibrary.Common.Exceptions;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -77,6 +78,96 @@ namespace OnlineLibrary.Services.Concrete
                 case BookCondition.Poor: return "Poor";
                 default: return string.Empty;
             }
+        }
+
+        public bool IsBookCopyRemovable(int id)
+        {
+            var bookCopyExists = _dbContext.BookCopies.Any(bc => bc.Id == id);
+
+            if (!bookCopyExists)
+            {
+                throw new KeyNotFoundException("Book Copy not found.");
+            }
+
+            // The book copy is removable if there are no loans with it's ID.
+            return !_dbContext.Loans.Any(l => l.BookCopyId == id);
+        }
+
+        public BookCopy DeleteBookCopy(int id)
+        {
+            // Determine if there're any loans for the specified book copy.
+            bool isRemovable = IsBookCopyRemovable(id);
+
+            if (!isRemovable)
+            {
+                throw new BookCopyNotAvailableException("The specified book copy is unavailable for removal.");
+            }
+            else
+            {
+                SetNullOnBookCopyCascade(id);
+
+                // Delete book copy.
+                var bookCopy = _dbContext.BookCopies.Find(id);
+                _dbContext.BookCopies.Remove(bookCopy);
+                _dbContext.SaveChanges();
+
+                return bookCopy;
+            }
+        }
+
+        public Book DeleteBook(int id)
+        {
+            var book = _dbContext.Books.Include(b => b.BookCopies).Where(b => b.Id == id).SingleOrDefault();
+
+            if (book == null)
+            {
+                throw new KeyNotFoundException("Book not found.");
+            }
+            else
+            {
+                if (!IsBookAvailable(book.Id))
+                {
+                    throw new BookNotAvailableException("The specified book is currently involved in some loans.");
+                }
+
+                foreach (var bookCopy in book.BookCopies)
+                {
+                    SetNullOnBookCopyCascade(bookCopy.Id);
+                }
+
+                _dbContext.Books.Remove(book);
+                _dbContext.SaveChanges();
+
+                return book;
+            }
+        }
+
+        private bool IsBookAvailable(int id)
+        {
+            var bookExists = _dbContext.Books.Any(b => b.Id == id);
+
+            if (!bookExists)
+            {
+                throw new KeyNotFoundException("Book Copy not found.");
+            }
+
+            bool anyLoans = _dbContext.Loans.Where(l => l.BookId == id).Any();
+
+            // Book is available if there're no loans.
+            return !anyLoans;
+        }
+
+        /// <summary>
+        /// Sets NULL for history records for the book copy.
+        /// </summary>
+        /// <param name="bookCopyId">ID of book copy</param>
+        private void SetNullOnBookCopyCascade(int bookCopyId)
+        {
+            var historyRecords = _dbContext.History
+                .Where(h => h.BookCopyId == bookCopyId)
+                .ToList();
+            historyRecords.ForEach(h => h.BookCopyId = null);
+            _dbContext.SaveChanges();
         }
     }
 }

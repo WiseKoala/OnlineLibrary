@@ -1,30 +1,74 @@
-﻿using OnlineLibrary.DataAccess.Abstract;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
+using System.Web;
+using OnlineLibrary.Common.Exceptions;
+using OnlineLibrary.DataAccess.Abstract;
+using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess.Enums;
+using OnlineLibrary.Services.Abstract;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models.BooksManagement;
 using OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Drawing;
-using System.IO;
-using System.Linq;
+using System.Net;
 using System.Web.Mvc;
+using System.Linq;
+using OnlineLibrary.DataAccess;
 
 namespace OnlineLibrary.Web.Controllers
 {
+    [Authorize(Roles = UserRoles.SysAdmin)]
     public class BooksManagementController : BaseController
     {
-        public BooksManagementController(ILibraryDbContext dbContext)
-            :base(dbContext) {}
+        private IBookService _bookService;
+
+        public BooksManagementController(ILibraryDbContext dbContext, IBookService bookService)
+            : base(dbContext)
+        {
+            _bookService = bookService;
+        }
 
         public ActionResult Index()
         {
-            return View();
+            var books = DbContext.Books
+                                .Select(b => new BookManagementViewModel
+                                {
+                                    Id = b.Id,
+                                    FrontCover = b.FrontCover,
+                                    ISBN = b.ISBN,
+                                    PublishDate = b.PublishDate,
+                                    Title = b.Title
+                                })
+                                .ToList();
+
+            return View(books);
+        }
+
+        [HttpPost]
+        public ActionResult DeleteBookCopy(int id)
+        {
+            BookCopy removedBookCopy = null;
+            try
+            {
+                removedBookCopy = _bookService.DeleteBookCopy(id);
+            }
+            catch (BookCopyNotAvailableException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { error = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message });
+            }
+
+            return Json(removedBookCopy, JsonRequestBehavior.DenyGet);
         }
 
         [HttpGet]
-        public ActionResult CreateEdit(int id = 1)
+        public ActionResult CreateEdit(int id )
         {
             var model = new CreateEditBookViewModel();
 
@@ -40,44 +84,219 @@ namespace OnlineLibrary.Web.Controllers
                                            PublishDate = m.PublishDate,
                                            FrontCover = m.FrontCover,
 
-                                          BookCopies = m.BookCopies.Select(bc => new BookCopyViewModel
-                                          {
-                                              Id = bc.Id,
-                                              BookCondition = bc.Condition
+                                           BookCopies = m.BookCopies.Select(bc => new BookCopyViewModel
+                                           {
+                                               Id = bc.Id,
+                                               BookCondition = bc.Condition
                                           }).ToList(),
 
                                           Authors = m.Authors.Select(a => new BookAuthorViewModel
                                           {
+                                              Id = a.Id,
                                               FirstName = a.FirstName,
                                               MiddleName = a.MiddleName,
                                               LastName = a.LastName
+
                                           }).ToList()
                                            
                                        })
                                        .SingleOrDefault();
 
-                // Set data for book-category drop down select.
-                model.AllCategories = DbContext.Categories.Select(sc => new SelectListItem
-                {
-                    Value = sc.Id.ToString(),
-                    Text = sc.Name
-                }).ToList();
-
-            // Create a empty model, if the book doesn't exist.
+            // Create the book if doesn't exist.
             if (model == null)
             {
                 model = new CreateEditBookViewModel();
             }
 
+            // Set data for book-category drop down select.
+            model.AllCategories = DbContext.Categories.Select(sc => new SelectListItem
+            {
+                Value = sc.Id.ToString(),
+                Text = sc.Name
+            }).ToList();
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult CreateEdit( CreateEditBookViewModel model )
+        public ActionResult CreateEdit(CreateEditBookViewModel model)
         {
-            return RedirectToAction("Index");
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // If book is new.
+            if (model.Id < 1)
+            {
+                // Create new book.
+                var book = new Book()
+                {
+                    Id = model.Id,
+                    Title = model.Title,
+                    Description = model.Description,
+                    ISBN = model.ISBN,
+                    PublishDate = model.PublishDate,
+                    FrontCover = SaveImage(model.Image)
+                };
+
+                // Add book copies.
+                foreach (var bookCopy in model.BookCopies)
+                {
+                    book.BookCopies.Add(new BookCopy
+                    {
+                        Condition = bookCopy.BookCondition
+                    });
+                }
+
+                // Add authors.
+                foreach (var author in model.Authors)
+                {
+                    // Try to find author with the same name.
+                    Author existingAuthor = DbContext.Authors
+                                                     .FirstOrDefault(a => a.FirstName == author.FirstName 
+                                                     && a.MiddleName == author.MiddleName 
+                                                     && a.LastName == author.LastName);
+
+                    if (existingAuthor != null)
+                    {
+                        book.Authors.Add(existingAuthor);
+                    }
+                    else
+                    {
+                        book.Authors.Add(new Author
+                        {
+                            FirstName = author.FirstName,
+                            MiddleName = author.MiddleName,
+                            LastName = author.LastName
+                        });
+                    }
+                }
+
+                // Save book.
+                DbContext.Books.Add(book);
+                DbContext.SaveChanges();
+            }
+            else
+            {
+                // Update book.
+                Book book = DbContext.Books.Find(model.Id);
+                book.Title = model.Title;
+                book.Description = model.Description;
+                book.ISBN = model.ISBN;
+                book.PublishDate = model.PublishDate;
+
+                // Update image only if was uploaded.
+                if (model.Image != null)
+                {
+                    book.FrontCover = SaveImage(model.Image);
+                }
+                
+                // Update book copies.
+                foreach (var bookCopyModel in model.BookCopies)
+                {
+                    BookCopy bookCopy = DbContext.BookCopies.Find(bookCopyModel.Id);
+                    
+                    if (bookCopy != null)
+                    {
+                        // Update existing book copy.
+                        bookCopy.Condition = bookCopyModel.BookCondition;
+                    }
+                    else
+                    {
+                        // Create and add new book copy.
+                        BookCopy newBookCopy = new BookCopy()
+                        {
+                            Condition = bookCopyModel.BookCondition,
+                            BookId = book.Id
+                        };
+                        DbContext.BookCopies.Add(newBookCopy);
+                        DbContext.SaveChanges();
+                    }
+                }
+
+                // Update authors.
+                foreach (var authorModel in model.Authors)
+                {
+                    Author author = DbContext.Authors.Find(authorModel.Id);
+
+                    if (author != null)
+                    {
+                        // Update existing author.
+                        author.FirstName = authorModel.FirstName;
+                        author.MiddleName = authorModel.MiddleName;
+                        author.LastName = authorModel.LastName;
+                    }
+                    else
+                    {
+                        // Create and add new author.
+                        Author newAuthor = new Author()
+                        {
+                            FirstName = authorModel.FirstName,
+                            MiddleName = authorModel.MiddleName,
+                            LastName = authorModel.LastName
+                        };
+                        book.Authors.Add(newAuthor);
+                    }
+                }
+
+                DbContext.SaveChanges();
+            }
+
+            return RedirectToAction("CreateEdit", new { id = model.Id });
         }
 
+        private string SaveImage(HttpPostedFileBase image)
+        {
+            string imageRelativeSavePath = null;
+
+            if (image != null)
+            {
+                var allowedContentTypes = new[]
+                {
+                    "image/jpeg", "image/png"
+                };
+
+                // If content type is allowed, save the image.
+                if (allowedContentTypes.Contains(image.ContentType))
+                {
+                    string contentPath = "~/Content/Images/Books/front-covers";
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                    string imageAbsoluteSavePath = Path.Combine(Server.MapPath(contentPath), fileName);
+                    image.SaveAs(imageAbsoluteSavePath);
+
+                    imageRelativeSavePath = string.Concat(contentPath, '/', fileName);
+                }
+            }
+
+            return imageRelativeSavePath;
+        }
+
+        [HttpPost]
+        public ActionResult DeleteBook(int id)
+        {
+            Book removedBook = null;
+
+            try
+            {
+                removedBook = _bookService.DeleteBook(id);
+
+                DeleteFileFromServer(removedBook.FrontCover);
+            }
+            catch (BookNotAvailableException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { error = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message });
+            }
+
+            return Json(removedBook, JsonRequestBehavior.DenyGet);
+        }
+
+        [AllowAnonymous]
         public JsonResult ListBookConditions()
         {
             var bookConditionNames = Enum.GetNames(typeof(BookCondition));
@@ -109,5 +328,14 @@ namespace OnlineLibrary.Web.Controllers
 
             return Json(subCategories, JsonRequestBehavior.AllowGet);
         }
+
+        #region Helpers
+
+        private void DeleteFileFromServer(string path)
+        {
+            System.IO.File.Delete(Server.MapPath(path));
+        }
+
+        #endregion
     }
 }
