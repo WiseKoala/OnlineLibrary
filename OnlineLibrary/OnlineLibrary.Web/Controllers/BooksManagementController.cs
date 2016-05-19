@@ -70,50 +70,49 @@ namespace OnlineLibrary.Web.Controllers
         [HttpGet]
         public ActionResult CreateEdit(int id )
         {
-            var model = new CreateEditBookViewModel();
+            CreateEditBookViewModel model = null;
 
-            model = DbContext.Books.Where(b => b.Id == id)
+            Book book = DbContext.Books.Where(b => b.Id == id)
                                        .Include(b => b.BookCopies)
                                        .Include(b => b.Authors)
-                                       .Select(m => new CreateEditBookViewModel
-                                       {
-                                           Id = m.Id,
-                                           Title = m.Title,
-                                           ISBN = m.ISBN,
-                                           Description = m.Description,
-                                           PublishDate = m.PublishDate,
-                                           FrontCover = m.FrontCover,
-
-                                           BookCopies = m.BookCopies.Select(bc => new BookCopyViewModel
-                                           {
-                                               Id = bc.Id,
-                                               BookCondition = bc.Condition
-                                          }).ToList(),
-
-                                          Authors = m.Authors.Select(a => new BookAuthorViewModel
-                                          {
-                                              Id = a.Id,
-                                              FirstName = a.FirstName,
-                                              MiddleName = a.MiddleName,
-                                              LastName = a.LastName
-
-                                          }).ToList()
-                                           
-                                       })
                                        .SingleOrDefault();
 
-            // Create the book if doesn't exist.
-            if (model == null)
+            if (book != null)
+            {
+                model = new CreateEditBookViewModel()
+                {
+                    Id = book.Id,
+                    Title = book.Title,
+                    ISBN = book.ISBN,
+                    Description = book.Description,
+                    PublishDate = book.PublishDate,
+                    FrontCover = book.FrontCover,
+
+                    BookCopies = book.BookCopies.Select(bc => new BookCopyViewModel
+                    {
+                        Id = bc.Id,
+                        BookCondition = bc.Condition
+                    }).ToList(),
+
+                    Authors = book.Authors.Select(a => new BookAuthorViewModel
+                    {
+                        Id = a.Id,
+                        FirstName = a.FirstName,
+                        MiddleName = a.MiddleName,
+                        LastName = a.LastName
+
+                    }).ToList()
+                };
+
+                // Add subcategories.
+                model.AllBookSubcategories = GetSubcategories();
+                model.SelectedSubcategories = book.SubCategories.Select(sc => sc.Id).ToList();
+            }
+            else
             {
                 model = new CreateEditBookViewModel();
             }
 
-            // Set data for book-category drop down select.
-            model.AllCategories = DbContext.Categories.Select(sc => new SelectListItem
-            {
-                Value = sc.Id.ToString(),
-                Text = sc.Name
-            }).ToList();
             return View(model);
         }
 
@@ -122,6 +121,7 @@ namespace OnlineLibrary.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                model.AllBookSubcategories = GetSubcategories();
                 return View(model);
             }
 
@@ -312,11 +312,17 @@ namespace OnlineLibrary.Web.Controllers
             return Json(bookConditions, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult ListBookSubCategories(int categoryId)
+        [AllowAnonymous]
+        public JsonResult ListBookSubCategories(int? categoryId)
         {
-            var allSubCategories = DbContext.SubCategories
-                                         .Where(sc => sc.CategoryId == categoryId)
-                                         .ToList();
+            var query = DbContext.SubCategories.AsQueryable();
+
+            if (categoryId != null)
+            {
+                 query = query.Where(sc => sc.CategoryId == categoryId);
+            }
+
+            var allSubCategories = query.ToList();
 
             var subCategories = allSubCategories
                 .Select(sc => new
@@ -334,6 +340,20 @@ namespace OnlineLibrary.Web.Controllers
         private void DeleteFileFromServer(string path)
         {
             System.IO.File.Delete(Server.MapPath(path));
+        }
+
+        private IEnumerable<SubCategoryViewModel> GetSubcategories()
+        {
+            // Retreive all book subcategories.
+            var allSubCategories = DbContext.SubCategories
+                .Select(sc => new SubCategoryViewModel()
+                {
+                    Id = sc.Id,
+                    Name = sc.Name
+                })
+                .ToList();
+
+            return allSubCategories;
         }
 
         #endregion

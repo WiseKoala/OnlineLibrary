@@ -40,33 +40,37 @@
         </div>
 
         //Book Auhtors
-    <div id="bookAuthors" class="form-group">
-        @for (int i = 0; i < Model.Authors.Count(); i++)
-        {
-            <div class="bookAuthor" data-author-id="@i">   
-                @Html.HiddenFor(m => m.Authors[i].Id)
-                <label> First Name</label>  @Html.EditorFor(m => m.Authors[i].FirstName)
-                <label> Middle Name</label> @Html.EditorFor(m => m.Authors[i].MiddleName)
-                <label> Last Name</label> @Html.EditorFor(m => m.Authors[i].LastName)
-            </div>
-        }
-    </div>
-    <p class="form-group"> 
-        <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-default"> 
-    </p>
-
-        //Book Category 
-    <div id="book-categories-subcategories" class="form-group">  
-            <div class="book-category-subcategory form-inline">
-                <div class="form-group">
-                    <label>Category</label>
-                    @Html.DropDownList("Categories", Model.AllCategories, new { @class = "book-category form-control" })
+        <div id="bookAuthors" class="form-group">
+            @for (int i = 0; i < Model.Authors.Count(); i++)
+            {
+                <div class="bookAuthor" data-author-id="@i">   
+                    @Html.HiddenFor(m => m.Authors[i].Id)
+                    <label> First Name</label>  @Html.EditorFor(m => m.Authors[i].FirstName)
+                    <label> Middle Name</label> @Html.EditorFor(m => m.Authors[i].MiddleName)
+                    <label> Last Name</label> @Html.EditorFor(m => m.Authors[i].LastName)
                 </div>
-            </div>
-    </div>
-    <p class="form-group">
-        <button type="button" id="add-category" class="btn btn-default"> Add Category </button>
-    </p>
+            }
+        </div>
+        <p class="form-group"> 
+            <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-default"> 
+        </p>
+
+        <h3>Book Subcategories</h3>
+        <div id="bookSubcategories" class="form-group">
+            @for (int i = 0; i < Model.SelectedSubcategories.Count; i++)
+            {
+                <div class="book-subcategory">
+                    <div class="form-group">
+                        <label>Subcategory</label>
+                        @Html.DropDownList($"SelectedSubcategories[{i}]", new SelectList(Model.AllBookSubcategories, "Id", "Name", Model.SelectedSubcategories[i]), new {@class = "form-control"})
+                    </div>
+                </div>
+            }
+        </div>
+        <p class="form-group">
+            <button type="button" id="addCategory" class="btn btn-default">Add Category</button>
+        </p>
+
         <p> <label>Book Copies</label> </p>
             <div id="bookCopies">
                 <table class="col-sm-12 table-hover">
@@ -88,90 +92,49 @@
 
         <p> <input type="button" id="AddBookCopy" value="Add Copy" class="btn btn-default" /> </p>
         <p> <input type="submit" value="Save" class="btn btn-primary" /> </p>
-
     }
-
-
 </div>
 
 @section scripts{
-
 <script>
     $(document).ready(function () {
-        $(".book-category").change(addNewSubcategory);
-    });
-
-    // Add new category select on button click.
-    $(document).ready(function (){
-        $("#add-category").click(function () {
-
-            // Create new book-category-subcategory div.
-        var newCategorySubCDiv = document.createElement("div");
-            newCategorySubCDiv.className = "book-category-subcategory form-inline";
-
-            var categoryDiv = document.createElement("div");
-            categoryDiv.className = "form-group";
-            newCategorySubCDiv.appendChild(categoryDiv);
-
-            var categoryLabel = document.createElement("label");
-            categoryLabel.innerHTML = "Category";
-            categoryDiv.appendChild(categoryLabel);
-
-            // Set select category and set chenge event function
-            var select = $(".book-category").first().clone().appendTo(categoryDiv);
-            select.change(addNewSubcategory)
-            $("#book-categories-subcategories").append(newCategorySubCDiv)
-        });
-    });
-
-    function  addNewSubcategory() {
-
-        var categorySelect = $(this);
-        var selectedId = categorySelect.val()
+        $("#addCategory").click(function() {
             // Retreive book sub categories.
             var ajaxData = {
-                data: {
-                    categoryId: $(this).val()
-                },
                 method: "GET",
-                complete: function (jqXHR) {
-                    var subCategories = jqXHR.responseJSON;
+                complete: function (jqXhr) {
+                    var subCategories = jqXhr.responseJSON;
 
-                    if (categorySelect.parent().siblings().length != 0) {
+                    //  Add subcategory dropdown for current choosen category.
+                    var subcategoryDiv = $(document.createElement("div"));
+                    subcategoryDiv.addClass("book-subcategory");
 
-                        var a = categorySelect.parent().siblings(".book-subcategory").html("")
-                    }
-                     
-                        var selectCategoryNumber = $(".book-category").length - 1;
+                    var formGroup = $(document.createElement("div"));
+                    formGroup.addClass("form-group");
 
-                        //  Add subcategory dropdow for current choosen category.
-                        var formGroup = document.createElement("div");
-                        formGroup.className = "form-group book-subcategory";                        
+                    var label = $(document.createElement("label"));
+                    label.text("Subcategory");
 
-                        var label = document.createElement("label");
-                        label.innerHTML = "SubCategory";
-
-                        var select = document.createElement("select");
-                        select.name = "BookSubcategories[" + selectCategoryNumber + "].Id";
-                        select.className = "form-control";
+                    var select = $(document.createElement("select"));
+                    //select.name = "BookSubcategories[" + selectCategoryNumber + "].Id";
+                    select.addClass("form-control");
                  
-                        for (var i = 0; i < subCategories.length; i++) {
-                            var option = document.createElement("option");
-                            option.value = subCategories[i].Value;
-                            option.innerHTML = subCategories[i].Name;
-                            select.appendChild(option);
-                        }
+                    for (var i = 0; i < subCategories.length; i++) {
+                        var option = $(document.createElement("option"));
+                        option.val(subCategories[i].Value);
+                        option.text(subCategories[i].Name);
+                        select.append(option);
+                    }
 
-                        formGroup.appendChild(label);
-                        formGroup.appendChild(select);
-
-                        var categoryFormGroup = categorySelect.parent();
-                        var categorySubcategory = categoryFormGroup.parent();
-                        categorySubcategory.append(formGroup);                   
+                    formGroup.append(label);
+                    formGroup.append(select);
+                    subcategoryDiv.append(formGroup);
+                    $("#bookSubcategories").append(subcategoryDiv);
                 }
             };
             $.ajax("@Url.Action("ListBookSubCategories", "BooksManagement")", ajaxData);
-        };
+        });
+    });
 
     $(document).ready(function () {
         $("#AddBookAuthor").click(function () {
