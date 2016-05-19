@@ -51,8 +51,9 @@ namespace OnlineLibrary.Web.Controllers
                                               FirstName = a.FirstName,
                                               MiddleName = a.MiddleName,
                                               LastName = a.LastName
-                                          }).ToList()                             
-                                      })
+                                          }).ToList()
+                                           
+                                       })
                                        .SingleOrDefault();
 
                 // Set data for book-category drop down select.
@@ -81,13 +82,12 @@ namespace OnlineLibrary.Web.Controllers
         {
             var bookConditionNames = Enum.GetNames(typeof(BookCondition));
 
-            var dict = new Dictionary<string, int>();
-            foreach (var name in Enum.GetNames(typeof(BookCondition)))
-            {
-                dict.Add(name, (int)Enum.Parse(typeof(BookCondition), name));
-            }
-            var bookConditions = dict
-                .Select(kvp => new { Value = kvp.Value, Name = kvp.Key })
+            var bookConditions = bookConditionNames
+                .Select(name => new
+                {
+                    Value = (int)Enum.Parse(typeof(BookCondition), name),
+                    Name = name
+                })
                 .ToList();
 
             return Json(bookConditions, JsonRequestBehavior.AllowGet);
@@ -99,14 +99,12 @@ namespace OnlineLibrary.Web.Controllers
                                          .Where(sc => sc.CategoryId == categoryId)
                                          .ToList();
 
-            var dict = new Dictionary<string, int>();
-            foreach (var subCategory in allSubCategories)
-            {
-                dict.Add(subCategory.Name, subCategory.Id);
-            }
-
-            var subCategories = dict
-                .Select(kvp => new { Value = kvp.Value, Name = kvp.Key })
+            var subCategories = allSubCategories
+                .Select(sc => new
+                {
+                    Value = sc.Id,
+                    Name = sc.Name
+                })
                 .ToList();
 
             return Json(subCategories, JsonRequestBehavior.AllowGet);
