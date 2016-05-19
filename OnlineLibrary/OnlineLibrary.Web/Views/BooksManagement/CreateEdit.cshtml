@@ -8,10 +8,6 @@
 
 @section CSS{
     <link href="~/Content/Views stylesheets/BooksManagement/CreateEdit.css" rel="stylesheet" />
-
-    <style>
-        #bookAuthors .book-author { margin-bottom: 10px; }
-    </style>
 }
 
 
@@ -38,7 +34,7 @@
         </div>
         <div class="form-group">
             <label>Front Cover</label>
-
+            <p></p>
             @if (Model.FrontCover != null)
             {
                 <img height="200" src=@Url.Content(Model.FrontCover) />
@@ -49,8 +45,8 @@
         </div>
 
     <div id="bookAuthors" class="form-inline">
-        <h3>Authors:</h3>
         <hr />
+        <h3>Authors:</h3>
             @for (int i = 0; i < Model.Authors.Count(); i++)
             {
             <div class="book-author" data-author-id="@i">
@@ -90,7 +86,8 @@
                 </div>
                 <div class="modal-footer">
                     <button id="btnRemoveAuthorConfirm" type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel
+                    </button>
                 </div>
             </div>
         </div>
@@ -99,10 +96,10 @@
         <div id="bookCategories">
 
         </div>
-        <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-default">
+        <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-primary">
 
-        <p></p>
-        <p> <strong>Book Copies</strong> </p>
+        <hr />
+        <p> <h3>Book Copies:</h3> </p>
 
         <div id="bookCopies">
             <table id="bookCopyTable" class="col-sm-12 table-hover">
@@ -111,17 +108,17 @@
                 {
                     <tr id="bookCopy@(i)">
                         <td class="col-sm-2">BookCopyId = @Model.BookCopies[i].Id</td>
-                        <td class="col-sm-6">
+                        <td class="col-sm-3">
                             <div class="bookCopy">
                                 @Html.HiddenFor(m => m.BookCopies[i].Id)
                                 @Html.EnumDropDownListFor(m => m.BookCopies[i].BookCondition, new { @class = "form-control" })
                                 <input class="IsToBeDeleted" type="hidden" name="BookCopies[@(i)].IsToBeDeleted" value="false"/>
                             </div>
                         </td>
-                        <td class="col-sm-4">
+                        <td class="col-sm-7">
                             <!-- Trigger Button for DeleteBookCopyModal -->
-                            <button type="button" class="btn btn-danger btn-sm passBookCopyForDelete" data-toggle="modal" data-target="#deleteCopy" data-book-copy-row-id="@i" data-book-copy-id="@Model.BookCopies[i].Id">
-                                Delete
+                            <button type="button" class="btn btn-danger btn-sm passBookCopyForDelete" data-toggle="modal" data-target="#deleteCopy" data-book-copy-row-id="@i">
+                                <span class="glyphicon glyphicon-remove"></span>
                             </button>
                         </td>
                     </tr>
@@ -151,7 +148,7 @@
             <div class="modal-footer">
                 <input id="bookCopyRowId" name="rowid" hidden="hidden" />
                 <input id="bookCopyId" name="id" hidden="hidden" />
-                <button type="submit" data-book-copy-row-id="" id="confirm-remove" class="btn btn-primary" data-dismiss="modal">Yes</button>
+                <button type="submit" id="confirm-remove" class="btn btn-primary" data-dismiss="modal">Yes</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
             </div>
         </div>
@@ -285,11 +282,18 @@
             // Add new Author div to all authors
             $("#bookAuthors").append(newAuthorDiv);
         })
-    });
 
-    $(document).ready(function () {
+        $(".passBookCopyForDelete").click(function () {
+            rowid = $(this).data('bookCopyRowId');
+        });
 
-        var id = 0;
+        $("#confirm-remove").click(function () {
+            var trToHide = $("#bookCopy" + rowid);
+            trToHide.fadeOut(1000, function () {
+                trToHide.hide();
+            })
+            $("#bookCopy" + rowid + " .bookCopy .IsToBeDeleted").attr("value", "true");
+        });
 
         $("#AddBookCopy").click(function () {
             // Retreive book conditions.
@@ -314,10 +318,10 @@
                     newTd.innerHTML = "BookCopyId = newId";
 
                     var newTd2 = document.createElement("td");
-                    newTd2.className = "col-sm-6";
+                    newTd2.className = "col-sm-3";
 
                     var newTd3 = document.createElement("td");
-                    newTd3.className = "col-sm-4";
+                    newTd3.className = "col-sm-7";
 
                     var newDiv = document.createElement("div");
                     newDiv.className = "bookCopy"
@@ -342,18 +346,24 @@
 
                         bookCopySelect.appendChild(optionElement);
                     }
-                    var newButton = document.createElement("button");
-                    newButton.className = "btn btn-danger btn-sm passBookCopyForDelete";
-                    newButton.type = "button";
-                    newButton.setAttribute("data-toggle", "modal");
-                    newButton.setAttribute("data-target", "#deleteCopy");
-                    newButton.setAttribute("data-book-copy-row-id", newBookCopyRowId);
-                    newButton.innerHTML = "Delete";
+
+                    // Remove button
+                    var newRemoveButton = document.createElement("button");
+                    newRemoveButton.className = "btn btn-danger btn-sm passBookCopyForDelete";
+                    newRemoveButton.type = "button";
+                    newRemoveButton.setAttribute("data-toggle", "modal");
+                    newRemoveButton.setAttribute("data-target", "#deleteCopy");
+                    newRemoveButton.setAttribute("data-book-copy-row-id", newBookCopyRowId);
+
+                    // Button icon.
+                    var newRemoveButtonIcon = document.createElement("span");
+                    newRemoveButtonIcon.className = "glyphicon glyphicon-remove";
+                    newRemoveButton.appendChild(newRemoveButtonIcon);
 
                     newDiv.appendChild(newInput);
                     newDiv.appendChild(bookCopySelect);
                     newTd2.appendChild(newDiv);
-                    newTd3.appendChild(newButton);
+                    newTd3.appendChild(newRemoveButton);
                     newTr.appendChild(newTd);
                     newTr.appendChild(newTd2);
                     newTr.appendChild(newTd3);
@@ -375,18 +385,6 @@
             }
             $.ajax("@Url.Action("ListBookConditions", "BooksManagement")", ajaxData);
         })
-
-        $(".passBookCopyForDelete").click(function () {
-            rowid = $(this).data('bookCopyRowId');
-        });
-
-        $("#confirm-remove").click(function () {
-            var trToHide = $("#bookCopy" + rowid);
-            trToHide.fadeOut(1000, function () {
-                trToHide.hide();
-            })
-            $("#bookCopy" + rowid + " .bookCopy .IsToBeDeleted").attr("value", "true");
-        });
     });
 
     </script>

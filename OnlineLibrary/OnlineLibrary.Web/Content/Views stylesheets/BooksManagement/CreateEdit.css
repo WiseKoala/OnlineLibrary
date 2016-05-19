@@ -1,3 +1,5 @@
 ﻿.hidden {
     visibility : hidden;
 }
+
+#bookAuthors .book-author { margin-bottom: 10px; }
