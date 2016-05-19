@@ -172,6 +172,13 @@ namespace OnlineLibrary.Web.Controllers
                     }
                 }
 
+                // Add subcategories.
+                foreach (var subcategoryId in model.SelectedSubcategories)
+                {
+                    SubCategory subCategory = DbContext.SubCategories.Find(subcategoryId);
+                    book.SubCategories.Add(subCategory);
+                }
+
                 // Save book.
                 DbContext.Books.Add(book);
                 DbContext.SaveChanges();
@@ -237,6 +244,25 @@ namespace OnlineLibrary.Web.Controllers
                         };
                         book.Authors.Add(newAuthor);
                     }
+                }
+
+                // Update subcategories.
+                var oldSubCategoriesIds = book.SubCategories.Select(sc => sc.Id).ToList();
+                var removedSubCategoriesIds = oldSubCategoriesIds.Except(model.SelectedSubcategories);
+                var newSubCategoriesIds = model.SelectedSubcategories.Except(oldSubCategoriesIds);
+
+                // Remove subcategories.
+                foreach (int subCategoryId in removedSubCategoriesIds)
+                {
+                    var subCategory = DbContext.SubCategories.Find(subCategoryId);
+                    book.SubCategories.Remove(subCategory);
+                }
+
+                // Add new subcategories.
+                foreach (int subCategoryId in newSubCategoriesIds)
+                {
+                    var subCategory = DbContext.SubCategories.Find(subCategoryId);
+                    book.SubCategories.Add(subCategory);
                 }
 
                 DbContext.SaveChanges();
