@@ -29,83 +29,88 @@
         </div>
         <div class="form-group">
             <label>Description</label>
-             @Html.TextAreaFor(m => m.Description, new { @class = "form-control", style= " height:200px " }) 
+            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", style = " height:200px " })
             @Html.ValidationMessageFor(m => m.Description)
         </div>
         <div class="form-group">
             <label>Publish Date</label>
-            @Html.TextBoxFor(m => m.PublishDate, new { @class = "form-control datepicker" })     
-            @Html.ValidationMessageFor(m => m.PublishDate)       
+            @Html.TextBoxFor(m => m.PublishDate, new { @class = "form-control datepicker ui-datepicker" })
+            @Html.ValidationMessageFor(m => m.PublishDate)
         </div>
         <div class="form-group">
             <label>Front Cover</label>
         </div>
-            if (!string.IsNullOrEmpty(Model.BookCover.FrontCover))
-            {
-                <img width="100" src=@Url.Content(Model.BookCover.FrontCover) />
+        if (!string.IsNullOrEmpty(Model.BookCover.FrontCover))
+        {
+            <img width="100" src=@Url.Content(Model.BookCover.FrontCover) />
                 <input type="hidden" value="@Model.BookCover.FrontCover" name="BookCover.FrontCover" />
-            }
+        }
         //Load Image
         <div class="form-group">
-            <input type="file" name="BookCover.Image" />
+            <label class="inputFileButton">
+                <input type="file" id="inputFile" name="BookCover.Image" class="inputfile" />
+                <span>Upload Image</span>
+            </label>
+            <text id="textImageFileName"></text>
         </div>
         @Html.ValidationMessageFor(m => m.BookCover)
 
-    <div id="bookAuthors">
-        <hr />
-        <h3>Authors:</h3>
-        <table class="table table-hover">
-            <tbody>
-                @for (int i = 0; i < Model.Authors.Count(); i++)
+        <div id="bookAuthors">
+            <hr />
+            <h3>Authors:</h3>
+            <table class="table table-hover">
+                <tbody>
+                    @for (int i = 0; i < Model.Authors.Count(); i++)
                 {
-                    <tr class="book-author" data-author-id="@i">
-                        @Html.HiddenFor(m => m.Authors[i].Id)
-                        @Html.HiddenFor(m => m.Authors[i].IsRemoved, new { @class = "is-removed" })
-                        <td>
-                            @Html.LabelFor(m => m.Authors[i].AuthorName.FirstName, new { @class = "control-label" })
-                            @Html.TextBoxFor(m => m.Authors[i].AuthorName.FirstName, new { @class = "form-control" })
-                        </td>
-                        <td>
-                            @Html.LabelFor(m => m.Authors[i].AuthorName.MiddleName)
-                            @Html.TextBoxFor(m => m.Authors[i].AuthorName.MiddleName, new { @class = "form-control" })
-                        </td>
-                        <td>
-                            @Html.LabelFor(m => m.Authors[i].AuthorName.LastName)
-                            @Html.TextBoxFor(m => m.Authors[i].AuthorName.LastName, new { @class = "form-control" })
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-danger btn-remove-author-modal" data-toggle="modal"
-                                    data-target="#removeAuthorConfirmation" type="button">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                        </td>
-                    </tr>
-                @Html.ValidationMessageFor(m => m.Authors[i].AuthorName)
-                }
-            </tbody>            
-        </table>
-        @Html.ValidationMessageFor(m => m.Authors)
+                        <tr class="book-author" data-author-id="@i">
+                            @Html.HiddenFor(m => m.Authors[i].Id)
+                            @Html.HiddenFor(m => m.Authors[i].IsRemoved, new { @class = "is-removed" })
+                            <td>
+                                @Html.LabelFor(m => m.Authors[i].AuthorName.FirstName, new { @class = "control-label" })
+                                @Html.TextBoxFor(m => m.Authors[i].AuthorName.FirstName, new { @class = "form-control" })
+                            </td>
+                            <td>
+                                @Html.LabelFor(m => m.Authors[i].AuthorName.MiddleName)
+                                @Html.TextBoxFor(m => m.Authors[i].AuthorName.MiddleName, new { @class = "form-control" })
+                            </td>
+                            <td>
+                                @Html.LabelFor(m => m.Authors[i].AuthorName.LastName)
+                                @Html.TextBoxFor(m => m.Authors[i].AuthorName.LastName, new { @class = "form-control" })
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-danger btn-remove-author-modal" data-toggle="modal"
+                                        data-target="#removeAuthorConfirmation" type="button">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </button>
+                            </td>
+                        </tr>
+                        @Html.ValidationMessageFor(m => m.Authors[i].AuthorName)
+                    }
+                </tbody>
+            </table>
+            @Html.ValidationMessageFor(m => m.Authors)
         </div>
-        <p class="form-group"> 
-    <div class="modal fade" id="removeAuthorConfirmation" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Warning!</h4>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to remove this author?
-                </div>
-                <div class="modal-footer">
-                    <button id="btnRemoveAuthorConfirm" type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel
-                    </button>
+        <p class="form-group">
+            <div class="modal fade" id="removeAuthorConfirmation" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Warning!</h4>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to remove this author?
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnRemoveAuthorConfirm" type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-            <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-default"> 
+            <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-default">
         </p>
 
         <hr />
@@ -116,7 +121,7 @@
                 <div class="book-subcategory" data-sequence-id="@i">
                     <div class="form-group">
                         <label>Subcategory</label>
-                        @Html.DropDownList($"SelectedSubcategories[{i}]", new SelectList(Model.AllBookSubcategories, "Id", "Name", Model.SelectedSubcategories[i]), new {@class = "form-control"})
+                        @Html.DropDownList($"SelectedSubcategories[{i}]", new SelectList(Model.AllBookSubcategories, "Id", "Name", Model.SelectedSubcategories[i]), new { @class = "form-control" })
                     </div>
                 </div>
             }
@@ -140,7 +145,7 @@
                             <div class="bookCopy">
                                 @Html.HiddenFor(m => m.BookCopies[i].Id)
                                 @Html.EnumDropDownListFor(m => m.BookCopies[i].BookCondition, new { @class = "form-control" })
-                                <input class="IsToBeDeleted" type="hidden" name="BookCopies[@(i)].IsToBeDeleted" value="false"/>
+                                <input class="IsToBeDeleted" type="hidden" name="BookCopies[@(i)].IsToBeDeleted" value="false" />
                             </div>
                         </td>
                         <td class="col-sm-7">
@@ -154,7 +159,7 @@
             </table>
         </div>
 
-            <p> <input type="button" id="AddBookCopy" value="Add Copy" class="btn btn-primary" /> </p>
+        <p> <input type="button" id="AddBookCopy" value="Add Copy" class="btn btn-primary" /> </p>
             @Html.ValidationMessageFor(m => m.BookCopies)
 
             <input type="submit" value="Save" class="btn btn-primary" />
@@ -205,6 +210,22 @@
                 var authorRowToRemove = $("#bookAuthors table tbody tr[data-author-id='" + authorIdToRemove + "']").fadeOut(1000);
             });
 
+            // Shows uploaded file name next to the Image Upload button
+            $("#inputFile").click(function () {
+                var inputs = document.querySelectorAll('.inputfile');
+                Array.prototype.forEach.call(inputs, function (input) {
+
+                    var text = document.getElementById("textImageFileName")
+
+                    input.addEventListener('change', function (e) {
+                        var fileName = '';
+                            fileName = e.target.value.split('\\').pop();
+                        if (fileName)
+                            text.innerHTML = fileName;
+                    });
+                });
+            });
+
         $("#addCategory").click(function() {
             // Retreive all sub categories.
             var ajaxData = {
@@ -232,8 +253,8 @@
                     var select = $(document.createElement("select"));
                     select.attr("name", "SelectedSubcategories[" + newIndex + "]");
                     select.addClass("form-control");
-                 
-                    for (var i = 0; i < subCategories.length; i++) {        
+
+                    for (var i = 0; i < subCategories.length; i++) {
                         var option = $(document.createElement("option"));
                         option.val(subCategories[i].Value);
                         option.text(subCategories[i].Name);
@@ -249,7 +270,7 @@
             $.ajax("@Url.Action("ListBookSubCategories", "BooksManagement")", ajaxData);
         });
     });
-    
+
         // Copies the author ID to modal window.
         function btnRemoveAuthorModal() {
             var authorId = $(this).closest(".book-author").data("authorId");
@@ -398,7 +419,7 @@
 
                     var newDiv = document.createElement("div");
                     newDiv.className = "bookCopy"
-                    
+
                     var newInput = document.createElement("input");
                     newInput.className = "IsToBeDeleted";
                     newInput.type = "hidden";
