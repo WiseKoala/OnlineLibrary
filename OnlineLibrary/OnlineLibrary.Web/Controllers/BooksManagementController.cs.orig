@@ -76,6 +76,53 @@ namespace OnlineLibrary.Web.Controllers
             Book book = DbContext.Books.Where(b => b.Id == id)
                                        .Include(b => b.BookCopies)
                                        .Include(b => b.Authors)
+<<<<<<< HEAD
+                                       .Select(m => new CreateEditBookViewModel
+                                       {
+                                           Id = m.Id,
+                                           Title = m.Title,
+                                           ISBN = m.ISBN,
+                                           Description = m.Description,
+                                           PublishDate = m.PublishDate,                                           
+                                           BookCover = new FrontCoverViewModel
+                                           { 
+                                               FrontCover = m.FrontCover ?? "" },
+
+                                           BookCopies = m.BookCopies.Select(bc => new BookCopyViewModel
+                                           {
+                                               Id = bc.Id,
+                                               BookCondition = bc.Condition
+                                          }).ToList(),
+
+                                          Authors = m.Authors.Select(a => new BookAuthorViewModel
+                                          {
+                                              Id = a.Id,
+                                              AuthorName = new AuthorNameViewModel
+                                              {
+                                                  FirstName = a.FirstName,
+                                                  MiddleName = a.MiddleName,
+                                                  LastName = a.LastName
+                                              }
+                                           }).ToList(),
+
+                                          BookCategories = m.SubCategories.Select( sc => new CategoryViewModel
+                                          {
+                                              Id = sc.CategoryId,
+                                              Name = sc.Category.Name,
+
+                                              BookSubCategories = new List<SubCategoryViewModel>
+                                              {
+                                                  new SubCategoryViewModel
+                                                  {
+                                                      Id = sc.Id,
+                                                      Name = sc.Name
+                                                  }
+                                              }
+
+                                           }).ToList()
+                                       })
+=======
+>>>>>>> subcategories_alternative
                                        .SingleOrDefault();
 
             if (book != null)
@@ -87,9 +134,7 @@ namespace OnlineLibrary.Web.Controllers
                     ISBN = book.ISBN,
                     Description = book.Description,
                     PublishDate = book.PublishDate,
-                                           BookCover = new FrontCoverViewModel
-                                           { 
-                                               FrontCover = book.FrontCover ?? "" },
+                    FrontCover = book.FrontCover,
 
                     BookCopies = book.BookCopies.Select(bc => new BookCopyViewModel
                     {
@@ -100,12 +145,9 @@ namespace OnlineLibrary.Web.Controllers
                     Authors = book.Authors.Select(a => new BookAuthorViewModel
                     {
                         Id = a.Id,
-                                              AuthorName = new AuthorNameViewModel
-                                              {
-                                                  FirstName = a.FirstName,
-                                                  MiddleName = a.MiddleName,
-                                                  LastName = a.LastName
-                                              }
+                        FirstName = a.FirstName,
+                        MiddleName = a.MiddleName,
+                        LastName = a.LastName
 
                     }).ToList()
                 };
@@ -151,13 +193,10 @@ namespace OnlineLibrary.Web.Controllers
                 // Add book copies.
                 foreach (var bookCopy in model.BookCopies)
                 {
-                    if (bookCopy.IsToBeDeleted == false)
+                    book.BookCopies.Add(new BookCopy
                     {
-                        book.BookCopies.Add(new BookCopy
-                        {
-                            Condition = bookCopy.BookCondition
-                        });
-                    }
+                        Condition = bookCopy.BookCondition
+                    });
                 }
 
                 // Add authors.

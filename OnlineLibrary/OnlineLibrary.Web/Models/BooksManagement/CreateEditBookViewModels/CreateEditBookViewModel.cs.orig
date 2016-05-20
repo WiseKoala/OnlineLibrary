@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Web;
+<<<<<<< HEAD
 using OnlineLibrary.Web.Infrastructure.CustomAttributes;
+=======
 using System.Web.Mvc;
+>>>>>>> subcategories_alternative
 
 namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
 {
@@ -33,7 +36,12 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         [MaxLength(13, ErrorMessage = "ISBN field is too long.")]
         public string ISBN { get; set; }
 
+<<<<<<< HEAD
         public FrontCoverViewModel BookCover { get; set; }
+=======
+        // Object for loading image 
+        public HttpPostedFileBase Image { get; set; }
+>>>>>>> subcategories_alternative
 
         [DataType(DataType.Date)]
         [Display(Name = "Publish Date")]
@@ -41,16 +49,19 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         [DateRange]
         public DateTime PublishDate { get; set; }
 
+<<<<<<< HEAD
         [NotEmptyList(ErrorMessage = "There has to be at least one author.")]
-        [CountLimit(ErrorMessage = "The authors number is too big.")]
+        public List<BookAuthorViewModel> Authors { get; set; }
+
+        public List<CategoryViewModel> BookCategories { get; set; }
+
+        public List<BookCopyViewModel> BookCopies { get; set; }
+
+=======
         public IList<BookAuthorViewModel> Authors { get; set; }
-
-        [CountLimit(ErrorMessage = "The book copies number is too big.")]
         public IList<BookCopyViewModel> BookCopies { get; set; }
-
         public IEnumerable<SubCategoryViewModel> AllBookSubcategories { get; set; }
-
-        [CountLimit(ErrorMessage = "The subcategories number is too big.")]
         public IList<int> SelectedSubcategories { get; set; }
+>>>>>>> subcategories_alternative
     }
 }

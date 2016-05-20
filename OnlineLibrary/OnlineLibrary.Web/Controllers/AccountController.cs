@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using OnlineLibrary.Common.Infrastructure;
 using OnlineLibrary.DataAccess;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
@@ -34,7 +35,7 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult Login()
         {
             // Get the current URL if null use the Home page.
-            string returnUrl = Request.UrlReferrer?.AbsolutePath ?? "Home/Index";
+            string returnUrl = Request.UrlReferrer?.AbsolutePath ?? Url.Action("Index","Home");
 
             // Using object cast for send the model
             return View((object)returnUrl);
@@ -147,6 +148,42 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult ExternalLoginFailure()
         {
             return View();
+        }
+
+
+        [HttpGet]
+        [Route("power")]
+        [AllowAnonymous]
+        public ActionResult Authorize()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route("power")]
+        [AllowAnonymous]
+        public async Task<ActionResult> Authorize(string SuperAdminPassword)
+        {
+
+            if (string.IsNullOrEmpty(SuperAdminPassword))
+            {
+                ModelState.AddModelError("", "Password can not be empty.");
+
+                return View();
+            }
+            else
+            {
+                var result = await _signInService.PasswordSignInAsync(LibraryConstants.SuperAdminUserName, SuperAdminPassword, isPersistent: false, shouldLockout: false);
+
+                if (result == SignInStatus.Success)
+                {
+                    return RedirectToAction("Index", "Role");
+                }
+
+                ModelState.AddModelError("", "The provided password was incorrect.");
+
+                return View();
+            }
         }
 
         public bool IsFirstLogin()
