@@ -35,7 +35,7 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult Login()
         {
             // Get the current URL if null use the Home page.
-            string returnUrl = Request.UrlReferrer?.AbsolutePath ?? "Home/Index";
+            string returnUrl = Request.UrlReferrer?.AbsolutePath ?? Url.Action("Index","Home");
 
             // Using object cast for send the model
             return View((object)returnUrl);
