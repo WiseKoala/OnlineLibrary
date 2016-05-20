@@ -214,7 +214,6 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\AdministratorController.cs" />
     <Compile Include="Controllers\BookDetailsController.cs" />
     <Compile Include="Controllers\BooksManagementController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
