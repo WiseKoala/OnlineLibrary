@@ -51,36 +51,40 @@
         </div>
         @Html.ValidationMessageFor(m => m.BookCover)
 
-    <div id="bookAuthors" class="form-inline">
+    <div id="bookAuthors">
         <hr />
         <h3>Authors:</h3>
-            @for (int i = 0; i < Model.Authors.Count(); i++)
-            {
-            <div class="book-author" data-author-id="@i">
-                    @Html.HiddenFor(m => m.Authors[i].Id)
-                @Html.HiddenFor(m => m.Authors[i].IsRemoved, new { @class = "is-removed" })
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Authors[i].AuthorName.FirstName)
-                    @Html.TextBoxFor(m => m.Authors[i].AuthorName.FirstName, new { @class = "form-control" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Authors[i].AuthorName.MiddleName)
-                    @Html.TextBoxFor(m => m.Authors[i].AuthorName.MiddleName, new { @class = "form-control" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Authors[i].AuthorName.LastName)
-                    @Html.TextBoxFor(m => m.Authors[i].AuthorName.LastName, new { @class = "form-control" })
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-sm btn-danger btn-remove-author-modal" data-toggle="modal" 
-                            data-target="#removeAuthorConfirmation" type="button">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </button>
-                </div>
-                </div>
+        <table class="table table-hover">
+            <tbody>
+                @for (int i = 0; i < Model.Authors.Count(); i++)
+                {
+                    <tr class="book-author" data-author-id="@i">
+                        @Html.HiddenFor(m => m.Authors[i].Id)
+                        @Html.HiddenFor(m => m.Authors[i].IsRemoved, new { @class = "is-removed" })
+                        <td>
+                            @Html.LabelFor(m => m.Authors[i].AuthorName.FirstName, new { @class = "control-label" })
+                            @Html.TextBoxFor(m => m.Authors[i].AuthorName.FirstName, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            @Html.LabelFor(m => m.Authors[i].AuthorName.MiddleName)
+                            @Html.TextBoxFor(m => m.Authors[i].AuthorName.MiddleName, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            @Html.LabelFor(m => m.Authors[i].AuthorName.LastName)
+                            @Html.TextBoxFor(m => m.Authors[i].AuthorName.LastName, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-danger btn-remove-author-modal" data-toggle="modal"
+                                    data-target="#removeAuthorConfirmation" type="button">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </td>
+                    </tr>
                 @Html.ValidationMessageFor(m => m.Authors[i].AuthorName)
-            }
-            @Html.ValidationMessageFor(m => m.Authors)
+                }
+            </tbody>            
+        </table>
+        @Html.ValidationMessageFor(m => m.Authors)
         </div>
         <p class="form-group"> 
     <div class="modal fade" id="removeAuthorConfirmation" tabindex="-1" role="dialog">
@@ -194,6 +198,14 @@
                 changeYear: true,
                 yearRange: "-60:+0"
             });
+
+            $("#btnRemoveAuthorConfirm").click(function () {
+                var authorIdToRemove = $(this).attr("data-author-to-remove-id");
+
+                $("#bookAuthors table tbody tr[data-author-id='" + authorIdToRemove + "'] .is-removed").first().val(true);
+                var authorRowToRemove = $("#bookAuthors table tbody tr[data-author-id='" + authorIdToRemove + "']").fadeOut(1000);
+            });
+
         $("#addCategory").click(function() {
             // Retreive all sub categories.
             var ajaxData = {
@@ -239,7 +251,7 @@
         });
     });
     
-    // Copies the author ID to modal window.
+        // Copies the author ID to modal window.
         function btnRemoveAuthorModal() {
             var authorId = $(this).closest(".book-author").data("authorId");
             $("#btnRemoveAuthorConfirm").attr("data-author-to-remove-id", authorId);
@@ -249,31 +261,30 @@
 
     $(document).ready(function () {
         $("#AddBookAuthor").click(function () {
-            var authorsDiv = document.getElementById("bookAuthors");
-            var newBookAuthorId = parseInt($("#bookAuthors .book-author").last().data("authorId")) + 1;
+            var authorsBody = $("#bookAuthors tbody");
+            var newBookAuthorId = parseInt($("#bookAuthors tbody .book-author").last().data("authorId")) + 1;
 
             if (isNaN(newBookAuthorId)) {
                 newBookAuthorId = 0;
             }
 
             // Create a div for new Author
-            var newAuthorDiv = document.createElement("div");
-            newAuthorDiv.className = "book-author";
-            newAuthorDiv.setAttribute("data-author-id", newBookAuthorId);
+            var newAuthorRow = document.createElement("tr");
+            newAuthorRow.className = "book-author";
+            newAuthorRow.setAttribute("data-author-id", newBookAuthorId);
 
             // Create inputs for Author data.
             // IsRemoved.
+            var cell = document.createElement("td");
+
             var isRemovedInput = document.createElement("input");
             isRemovedInput.className = "is-removed";
             isRemovedInput.name = "Authors[" + newBookAuthorId + "].IsRemoved";
             isRemovedInput.type = "hidden";
             isRemovedInput.value = "false";
 
-            newAuthorDiv.appendChild(isRemovedInput);
-
             // First Name.
-            var formGroup = document.createElement("div");
-            formGroup.className = "form-group";
+            cell = document.createElement("td");
 
             var firstNameLabel = document.createElement("label");
             firstNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__AuthorName.FirstName";
@@ -285,13 +296,13 @@
             firstNameInput.type = "text";
             firstNameInput.className = "form-control";
 
-            formGroup.appendChild(firstNameLabel);
-            formGroup.appendChild(firstNameInput);
-            newAuthorDiv.appendChild(formGroup);
+            cell.appendChild(isRemovedInput);
+            cell.appendChild(firstNameLabel);
+            cell.appendChild(firstNameInput);
+            newAuthorRow.appendChild(cell);
 
             // Middle Name.
-            formGroup = document.createElement("div");
-            formGroup.className = "form-group";
+            cell = document.createElement("td");
 
             var middleNameLabel = document.createElement("label");
             middleNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__AuthorName.MiddleName";
@@ -303,13 +314,12 @@
             middleNameInput.type = "text";
             middleNameInput.className = "form-control";
 
-            formGroup.appendChild(middleNameLabel);
-            formGroup.appendChild(middleNameInput);
-            newAuthorDiv.appendChild(formGroup);
+            cell.appendChild(middleNameLabel);
+            cell.appendChild(middleNameInput);
+            newAuthorRow.appendChild(cell);
 
             // Last Name.
-            formGroup = document.createElement("div");
-            formGroup.className = "form-group";
+            cell = document.createElement("td");
 
             var lastNameLabel = document.createElement("label");
             lastNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__AuthorName.LastName";
@@ -321,13 +331,12 @@
             lastNameInput.type = "text";
             lastNameInput.className = "form-control";
 
-            formGroup.appendChild(lastNameLabel);
-            formGroup.appendChild(lastNameInput);
-            newAuthorDiv.appendChild(formGroup);
+            cell.appendChild(lastNameLabel);
+            cell.appendChild(lastNameInput);
+            newAuthorRow.appendChild(cell);
 
             // Button.
-            formGroup = document.createElement("div");
-            formGroup.className = "form-group";
+            cell = document.createElement("td");
 
             var removeButton = document.createElement("button");
             removeButton.className = "btn btn-sm btn-danger btn-remove-author-modal";
@@ -341,11 +350,11 @@
             removeButtonIcon.className = "glyphicon glyphicon-remove";
             removeButton.appendChild(removeButtonIcon);
 
-            formGroup.appendChild(removeButton);
-            newAuthorDiv.appendChild(formGroup);
+            cell.appendChild(removeButton);
+            newAuthorRow.appendChild(cell);
 
             // Add new Author div to all authors
-            $("#bookAuthors").append(newAuthorDiv);
+            authorsBody.append(newAuthorRow);
         })
 
         $(".passBookCopyForDelete").click(function () {
