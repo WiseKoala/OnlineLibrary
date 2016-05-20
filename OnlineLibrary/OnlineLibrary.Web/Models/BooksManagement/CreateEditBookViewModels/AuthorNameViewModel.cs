@@ -4,7 +4,6 @@ using OnlineLibrary.Web.Infrastructure.CustomAttributes;
 
 namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
 {
-    [AtLeastOnePropertySet(ErrorMessage = "You must specify at least one field for each author.")]
     public class AuthorNameViewModel
     {
         [DisplayName("First Name")]
