@@ -42,10 +42,15 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         public DateTime PublishDate { get; set; }
 
         [NotEmptyList(ErrorMessage = "There has to be at least one author.")]
+        [CountLimit(ErrorMessage = "The authors number is too big.")]
         public IList<BookAuthorViewModel> Authors { get; set; }
-        public IList<BookCopyViewModel> BookCopies { get; set; }
-        public IEnumerable<SubCategoryViewModel> AllBookSubcategories { get; set; }
-        public IList<int> SelectedSubcategories { get; set; }
 
+        [CountLimit(ErrorMessage = "The book copies number is too big.")]
+        public IList<BookCopyViewModel> BookCopies { get; set; }
+
+        public IEnumerable<SubCategoryViewModel> AllBookSubcategories { get; set; }
+
+        [CountLimit(ErrorMessage = "The subcategories number is too big.")]
+        public IList<int> SelectedSubcategories { get; set; }
     }
 }
