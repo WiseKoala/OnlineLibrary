@@ -10,10 +10,14 @@ import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.selenium.By.ById;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.PageTitleFinder;
+import org.openqa.selenium.remote.server.handler.ClickElement;
 import org.openqa.selenium.remote.server.handler.GetElementText;
 import org.testng.Assert;
+
+import com.thoughtworks.selenium.webdriven.commands.Click;
 
 import utils.ReadFile;
 import utils.UI;
@@ -79,7 +83,10 @@ public class LibraryanLogin extends UI {
 		
 		clickItem("allowAccesGoogleAccount");
 		
-		clickItem("loansButtonMenuBar");
+		driver.findElement(ById.id("My Loans"));
+		
+		//clickItem("loansButtonMenuBar");
+		
 		
 		// then expect
 		String xpath = "hello";
