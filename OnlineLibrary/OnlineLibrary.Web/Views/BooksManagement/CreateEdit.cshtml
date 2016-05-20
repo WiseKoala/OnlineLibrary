@@ -16,7 +16,7 @@
 <div>
     @using (Html.BeginForm("CreateEdit", "BooksManagement", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-        @Html.ValidationSummary("Can't submit data:", new { @class = "text-danger" })
+        @Html.ValidationSummary("", new { @class = "text-danger" })
         <div class="form-group">
             <label>ISBN</label>
             @Html.TextBoxFor(m => m.ISBN, new { @class = "form-control" })
@@ -186,7 +186,6 @@
 @section scripts {
 
     @Scripts.Render("~/bundles/jqueryui")
-    <script src="~/Scripts/knockout-3.4.0.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -196,7 +195,7 @@
                 dateFormat: "mm-dd-yy",
                 changeMonth: true,
                 changeYear: true,
-                yearRange: "-60:+0"
+                yearRange: "-160:+0"
             });
 
             $("#btnRemoveAuthorConfirm").click(function () {
