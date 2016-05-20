@@ -151,10 +151,13 @@ namespace OnlineLibrary.Web.Controllers
                 // Add book copies.
                 foreach (var bookCopy in model.BookCopies)
                 {
-                    book.BookCopies.Add(new BookCopy
+                    if (bookCopy.IsToBeDeleted == false)
                     {
-                        Condition = bookCopy.BookCondition
-                    });
+                        book.BookCopies.Add(new BookCopy
+                        {
+                            Condition = bookCopy.BookCondition
+                        });
+                    }
                 }
 
                 // Add authors.
