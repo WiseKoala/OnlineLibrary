@@ -162,10 +162,10 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         [Route("power")]
         [AllowAnonymous]
-        public async Task<ActionResult> Authorize(string SuperAdminPassword)
+        public async Task<ActionResult> Authorize(string superAdminPassword)
         {
 
-            if (string.IsNullOrEmpty(SuperAdminPassword))
+            if (string.IsNullOrEmpty(superAdminPassword))
             {
                 ModelState.AddModelError("", "Password can not be empty.");
 
@@ -173,7 +173,7 @@ namespace OnlineLibrary.Web.Controllers
             }
             else
             {
-                var result = await _signInService.PasswordSignInAsync(LibraryConstants.SuperAdminUserName, SuperAdminPassword, isPersistent: false, shouldLockout: false);
+                var result = await _signInService.PasswordSignInAsync(LibraryConstants.SuperAdminUserName, superAdminPassword, isPersistent: false, shouldLockout: false);
 
                 if (result == SignInStatus.Success)
                 {
