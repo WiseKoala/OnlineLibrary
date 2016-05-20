@@ -16,22 +16,26 @@
 <div>
     @using (Html.BeginForm("CreateEdit", "BooksManagement", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-        @Html.ValidationSummary()
+        @Html.ValidationSummary("Can't submit data:", new { @class = "text-danger" })
         <div class="form-group">
             <label>ISBN</label>
             @Html.TextBoxFor(m => m.ISBN, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.ISBN)
         </div>
         <div class="form-group">
             <label>Title</label>
             @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Title)
         </div>
         <div class="form-group">
             <label>Description</label>
              @Html.TextAreaFor(m => m.Description, new { @class = "form-control", style= " height:200px " }) 
+            @Html.ValidationMessageFor(m => m.Description)
         </div>
         <div class="form-group">
             <label>Publish Date</label>
-            @Html.TextBoxFor(m => m.PublishDate, new { @class = "form-control datepicker" })            
+            @Html.TextBoxFor(m => m.PublishDate, new { @class = "form-control datepicker" })     
+            @Html.ValidationMessageFor(m => m.PublishDate)       
         </div>
         <div class="form-group">
             <label>Front Cover</label>
@@ -45,6 +49,7 @@
         <div class="form-group">
             <input type="file" name="BookCover.Image" />
         </div>
+        @Html.ValidationMessageFor(m => m.BookCover)
 
     <div id="bookAuthors" class="form-inline">
         <hr />
@@ -73,7 +78,9 @@
                     </button>
                 </div>
                 </div>
+                @Html.ValidationMessageFor(m => m.Authors[i].AuthorName)
             }
+            @Html.ValidationMessageFor(m => m.Authors)
         </div>
         <p class="form-group"> 
     <div class="modal fade" id="removeAuthorConfirmation" tabindex="-1" role="dialog">
@@ -108,6 +115,7 @@
                     </div>
                 </div>
             }
+            @Html.ValidationMessageFor(m => m.SelectedSubcategories)
         </div>
         <p class="form-group">
             <button type="button" id="addCategory" class="btn btn-default">Add Subcategory</button>
@@ -142,6 +150,8 @@
         </div>
 
             <p> <input type="button" id="AddBookCopy" value="Add Copy" class="btn btn-primary" /> </p>
+            @Html.ValidationMessageFor(m => m.BookCopies)
+
             <input type="submit" value="Save" class="btn btn-primary" />
     }
 </div>
