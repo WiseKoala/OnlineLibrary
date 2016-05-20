@@ -5,17 +5,18 @@
     ViewBag.Title = "CreateEdit";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<h2>Book Management</h2>
 
 @section CSS{
+    @Styles.Render("~/Content/cssjqueryUI")
+    @Styles.Render("~/Content/css")
     <link href="~/Content/Views stylesheets/BooksManagement/CreateEdit.css" rel="stylesheet" />
 }
-
-
-<h2>Book Management</h2>
 
 <div>
     @using (Html.BeginForm("CreateEdit", "BooksManagement", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
+        @Html.ValidationSummary()
         <div class="form-group">
             <label>ISBN</label>
             @Html.TextBoxFor(m => m.ISBN, new { @class = "form-control" })
@@ -30,18 +31,19 @@
         </div>
         <div class="form-group">
             <label>Publish Date</label>
-             @Html.TextBoxFor(m => m.PublishDate, new { @class = "form-control" }) 
+            @Html.TextBoxFor(m => m.PublishDate, new { @class = "form-control datepicker" })            
         </div>
         <div class="form-group">
             <label>Front Cover</label>
-            <p></p>
-            @if (Model.FrontCover != null)
+
+            @if (!string.IsNullOrEmpty(Model.BookCover.FrontCover))
             {
-                <img height="200" src=@Url.Content(Model.FrontCover) />
+                <img width="100" src=@Url.Content(Model.BookCover.FrontCover) />
+                <input type="hidden" value="@Model.BookCover.FrontCover" name="BookCover.FrontCover" />
             }
         </div>
         <div class="form-group">
-            <input type="file" name="Image" />
+            <input type="file" name="BookCover.Image" />
         </div>
 
     <div id="bookAuthors" class="form-inline">
@@ -53,16 +55,16 @@
                     @Html.HiddenFor(m => m.Authors[i].Id)
                 @Html.HiddenFor(m => m.Authors[i].IsRemoved, new { @class = "is-removed" })
                 <div class="form-group">
-                    @Html.LabelFor(m => m.Authors[i].FirstName)
-                    @Html.TextBoxFor(m => m.Authors[i].FirstName, new { @class = "form-control" })
+                    @Html.LabelFor(m => m.Authors[i].AuthorName.FirstName)
+                    @Html.TextBoxFor(m => m.Authors[i].AuthorName.FirstName, new { @class = "form-control" })
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(m => m.Authors[i].MiddleName)
-                    @Html.TextBoxFor(m => m.Authors[i].MiddleName, new { @class = "form-control" })
+                    @Html.LabelFor(m => m.Authors[i].AuthorName.MiddleName)
+                    @Html.TextBoxFor(m => m.Authors[i].AuthorName.MiddleName, new { @class = "form-control" })
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(m => m.Authors[i].LastName)
-                    @Html.TextBoxFor(m => m.Authors[i].LastName, new { @class = "form-control" })
+                    @Html.LabelFor(m => m.Authors[i].AuthorName.LastName)
+                    @Html.TextBoxFor(m => m.Authors[i].AuthorName.LastName, new { @class = "form-control" })
                 </div>
                 <div class="form-group">
                     <button class="btn btn-sm btn-danger btn-remove-author-modal" data-toggle="modal" 
@@ -157,10 +159,19 @@
 
 @section scripts {
 
+    @Scripts.Render("~/bundles/jqueryui")
     <script src="~/Scripts/knockout-3.4.0.js"></script>
 
     <script>
-    $(document).ready(function () {
+        $(document).ready(function () {
+
+            // Implement datepicker for datetime inputs on this page.
+            $('.datepicker').datepicker({
+                dateFormat: "mm-dd-yy",
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "-60:+0"
+            });
 
         $("#btnRemoveAuthorConfirm").click(function () {
             // Extract the author ID to remove.
@@ -211,12 +222,12 @@
             formGroup.className = "form-group";
 
             var firstNameLabel = document.createElement("label");
-            firstNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__FirstName";
+            firstNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__AuthorName.FirstName";
             firstNameLabel.innerHTML = "First Name";
 
             var firstNameInput = document.createElement("input");
-            firstNameInput.name = "Authors[" + newBookAuthorId + "].FirstName";
-            firstNameInput.id = "Authors_" + newBookAuthorId + "__FirstName";
+            firstNameInput.name = "Authors[" + newBookAuthorId + "].AuthorName.FirstName";
+            firstNameInput.id = "Authors_" + newBookAuthorId + "__AuthorName.FirstName";
             firstNameInput.type = "text";
             firstNameInput.className = "form-control";
 
@@ -229,12 +240,12 @@
             formGroup.className = "form-group";
 
             var middleNameLabel = document.createElement("label");
-            middleNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__MiddleName";
+            middleNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__AuthorName.MiddleName";
             middleNameLabel.innerHTML = "Middle Name";
 
             var middleNameInput = document.createElement("input");
-            middleNameInput.id = "Authors_" + newBookAuthorId + "__MiddleName";
-            middleNameInput.name = "Authors[" + newBookAuthorId + "].MiddleName";
+            middleNameInput.id = "Authors_" + newBookAuthorId + "__AuthorName.MiddleName";
+            middleNameInput.name = "Authors[" + newBookAuthorId + "].AuthorName.MiddleName";
             middleNameInput.type = "text";
             middleNameInput.className = "form-control";
 
@@ -247,12 +258,12 @@
             formGroup.className = "form-group";
 
             var lastNameLabel = document.createElement("label");
-            lastNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__LastName";
+            lastNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__AuthorName.LastName";
             lastNameLabel.innerHTML = "Last Name";
 
             var lastNameInput = document.createElement("input");
-            lastNameInput.id = "Authors_" + newBookAuthorId + "__LastName";
-            lastNameInput.name = "Authors[" + newBookAuthorId + "].LastName";
+            lastNameInput.id = "Authors_" + newBookAuthorId + "__AuthorName.LastName";
+            lastNameInput.name = "Authors[" + newBookAuthorId + "].AuthorName.LastName";
             lastNameInput.type = "text";
             lastNameInput.className = "form-control";
 
