@@ -19,37 +19,6 @@ namespace OnlineLibrary.Web.Controllers
             _signInService = signInService;
         }
 
-        [HttpGet]
-        [Route("power")]
-        public ActionResult Authorize()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [Route("power")]
-        public async Task<ActionResult> Authorize(string SuperAdminPassword)
-        {
-
-            if (string.IsNullOrEmpty(SuperAdminPassword))
-            {
-                ModelState.AddModelError("", "Password can not be empty.");
-
-                return View();
-            }
-            else
-            {
-                var result = await _signInService.PasswordSignInAsync(LibraryConstants.SuperAdminUserName, SuperAdminPassword, isPersistent: false, shouldLockout: false);
-
-                if (result == SignInStatus.Success)
-                {
-                    return RedirectToAction("Index", "Role");
-                }
-
-                ModelState.AddModelError("", "The provided password was incorrect.");
-
-                return View();
-            }
-        }
+        
     }
 }

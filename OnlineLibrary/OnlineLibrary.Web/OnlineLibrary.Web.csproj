@@ -361,7 +361,7 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
-    <Content Include="Views\Administrator\Authorize.cshtml" />
+    <Content Include="Views\Account\Authorize.cshtml" />
     <Content Include="Views\BookDetails\Index.cshtml" />
     <Content Include="Views\Librarian\Index.cshtml" />
     <Content Include="Views\UserLoans\MyLoans.cshtml" />
