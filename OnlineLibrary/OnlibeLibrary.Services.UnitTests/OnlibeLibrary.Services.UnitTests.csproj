@@ -67,6 +67,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Concrete_Tests\BookService_Tests\IsBookAvailableTestClass.cs" />
     <Compile Include="Concrete_Tests\BookService_Tests\IsBookCopyRemovableTestClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
