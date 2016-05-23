@@ -1,0 +1,34 @@
+﻿@model IEnumerable<OnlineLibrary.Web.Models.CategoriesManagement.CategoryViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@section CSS {
+    <style>
+        .list-group label.active {
+            color: #fff;
+            background-color: #2dafce;
+        }
+
+        .list-group label.active:hover {
+            color: #fff;
+            background-color: #2dafce;
+        }
+    </style>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>Categories</h2>
+
+        <div id="categoriesList" class="list-group btn-group-vertical" data-toggle="buttons">
+            @foreach (var category in Model)
+            {
+                <label class="btn btn-default">
+                    <input type="radio" name="categories" id="@category.Id" autocomplete="off"> @category.Name
+                </label>
+            }
+        </div>
+    </div>
+</div>
