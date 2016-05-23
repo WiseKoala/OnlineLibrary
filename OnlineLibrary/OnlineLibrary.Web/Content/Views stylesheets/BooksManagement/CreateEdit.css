@@ -1,0 +1,45 @@
+﻿.hidden {
+    visibility : hidden;
+}
+
+.hidden {
+    visibility : hidden;
+}
+
+#bookAuthors .book-author { margin-bottom: 10px; }
+
+.ui-datepicker {
+    background: #ffffff;
+    border: 1px solid #cccccc;
+}
+
+label.inputFileButton input[type="file"] {
+    position: fixed;
+    top: -1000px;
+}
+
+.inputFileButton {
+    border-color: #2794ae;
+    background-color: #2dafce !important;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    padding: 10px 10px;
+    margin-top: 8px;
+    cursor: pointer; /* "hand" cursor */
+    display: inline-block;
+}
+	
+.inputFileButton span {
+    font-weight: normal;
+}
+
+.inputFileButton:hover, .inputFileButton:active {
+    background-color: #2fa2bf !important;
+}
+
+.inputFileButton :invalid + span {
+    color: #fff;
+}
+.inputFileButton :valid + span {
+    color: #fff;
+}

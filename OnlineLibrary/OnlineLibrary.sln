@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineLibrary.Services", "O
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineLibrary.Common", "OnlineLibrary.Common\OnlineLibrary.Common.csproj", "{09039153-55E6-47B8-8B2C-B498B817BF42}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{87FE6622-1CEB-48E6-9C59-6C257A25BA02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlibeLibrary.Services.UnitTests", "OnlibeLibrary.Services.UnitTests\OnlibeLibrary.Services.UnitTests.csproj", "{3E9C81B1-331B-4236-8C79-383D9FA1BF23}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,8 +37,15 @@ Global
 		{09039153-55E6-47B8-8B2C-B498B817BF42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09039153-55E6-47B8-8B2C-B498B817BF42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09039153-55E6-47B8-8B2C-B498B817BF42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E9C81B1-331B-4236-8C79-383D9FA1BF23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E9C81B1-331B-4236-8C79-383D9FA1BF23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E9C81B1-331B-4236-8C79-383D9FA1BF23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E9C81B1-331B-4236-8C79-383D9FA1BF23}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3E9C81B1-331B-4236-8C79-383D9FA1BF23} = {87FE6622-1CEB-48E6-9C59-6C257A25BA02}
 	EndGlobalSection
 EndGlobal
