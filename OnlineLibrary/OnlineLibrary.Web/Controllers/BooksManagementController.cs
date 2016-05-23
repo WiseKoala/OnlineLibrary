@@ -19,7 +19,7 @@ using System.Text.RegularExpressions;
 
 namespace OnlineLibrary.Web.Controllers
 {
-    [Authorize(Roles = UserRoles.SysAdmin)]
+   // [Authorize(Roles = UserRoles.SysAdmin)]
     public class BooksManagementController : BaseController
     {
         private IBookService _bookService;

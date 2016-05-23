@@ -113,21 +113,29 @@
             <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-default">
         </p>
 
-        <hr />
-        <h3>Book Subcategories</h3>
-        <div id="bookSubcategories" class="form-group">
-                <div class="book-subcategory">
-                    <div class="form-group">
-                        <label>Subcategory</label>
-                    </div>
+        <div class="row" id="book-categories-subcategories">
+            <div class="row book-category-subcategory">
+                <div class="col-md-6 book-category">
+                    <h3>Book Category</h3>
+                </div>            
+                <div class="col-md-6 book-subcategory">
+                    <h3>Book Subcategory</h3>
                 </div>
-              @Html.ValidationMessageFor(m => m.SelectedSubcategories)
-        </div>
-        <p class="form-group">
-            <button type="button" id="addCategory" class="btn btn-default">Add Subcategory</button>
-        </p>
+            </div>
+            @*<div id="bookSubcategories" class="form-group">
+                    <div class="book-subcategory">
+                        <div class="form-group">
+                            <label>Subcategory</label>
+                        </div>
+                    </div>
+                  @Html.ValidationMessageFor(m => m.SelectedSubcategories)
+            </div>*@
+            <div class="col-md-12">
+                <button type="button" id="addCategory" class="btn btn-default">Add Subcategory</button>
+            </div>
+       </div>
 
-        <hr />
+
         <p> <h3>Book Copies:</h3> </p>
 
         <div id="bookCopies">
