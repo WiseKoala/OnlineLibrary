@@ -14,8 +14,6 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         {
             BookCopies = new List<BookCopyViewModel>();
             Authors = new List<BookAuthorViewModel>();
-            AllBookSubcategories = new List<SubCategoryViewModel>();
-            SelectedSubcategories = new List<int>();
         }
         
         public int Id { get; set; }
@@ -48,9 +46,7 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         [CountLimit(ErrorMessage = "The book copies number is too big.")]
         public IList<BookCopyViewModel> BookCopies { get; set; }
 
-        public IEnumerable<SubCategoryViewModel> AllBookSubcategories { get; set; }
-
-        [CountLimit(ErrorMessage = "The subcategories number is too big.")]
-        public IList<int> SelectedSubcategories { get; set; }
+        public IEnumerable<SelectListItem> AllCategories { get; set; }
+        public IList<CategoryViewModel> BookCategories { get; set; }
     }
 }

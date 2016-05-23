@@ -47,7 +47,7 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeleteBookCopy(int id)
+        public ActionResult DeleteBookCopy(int id = 2)
         {
             BookCopy removedBookCopy = null;
             try
@@ -69,9 +69,9 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult CreateEdit(int id )
+        public ActionResult CreateEdit(int id = 2)
         {
-            CreateEditBookViewModel model = null;
+            CreateEditBookViewModel model = new CreateEditBookViewModel();
 
             Book book = DbContext.Books.Where(b => b.Id == id)
                                        .Include(b => b.BookCopies)
@@ -89,7 +89,7 @@ namespace OnlineLibrary.Web.Controllers
                     PublishDate = book.PublishDate,
                                            BookCover = new FrontCoverViewModel
                                            { 
-                                               FrontCover = book.FrontCover ?? "" },
+                                               FrontCover = book.FrontCover ?? string.Empty },
 
                     BookCopies = book.BookCopies.Select(bc => new BookCopyViewModel
                     {
@@ -100,27 +100,49 @@ namespace OnlineLibrary.Web.Controllers
                     Authors = book.Authors.Select(a => new BookAuthorViewModel
                     {
                         Id = a.Id,
-                                              AuthorName = new AuthorNameViewModel
-                                              {
-                                                  FirstName = a.FirstName,
-                                                  MiddleName = a.MiddleName,
-                                                  LastName = a.LastName
-                                              }
+                        AuthorName = new AuthorNameViewModel
+                        {
+                            FirstName = a.FirstName,
+                            MiddleName = a.MiddleName,
+                            LastName = a.LastName
+                        }
 
+                    }).ToList(),
+
+                    BookCategories = book.SubCategories.Select( sc => new CategoryViewModel
+                    {
+                        Id = sc.CategoryId,
+                        Name = sc.Category.Name,
+                        Subcategory = new SubCategoryViewModel
+                        {
+                            Id = sc.Id,
+                            Name = sc.Name
+                        }
                     }).ToList()
                 };
 
-                // Add subcategories.
-                model.AllBookSubcategories = GetSubcategories();
-                model.SelectedSubcategories = book.SubCategories.Select(sc => sc.Id).ToList();
+                var subcategories = DbContext.SubCategories.ToList();
+                for (int i = 0; i < model.BookCategories.Count(); i++)
+                {
+                    model.BookCategories[i].Subcategories = subcategories
+                                     .Where(sc => sc.CategoryId == model.BookCategories[i].Id)
+                                     .Select(sc => new SelectListItem
+                                     {
+                                         Text = sc.Name,
+                                         Value = sc.Id.ToString()
+                                     }).ToList();
+                }
             }
             else
             {
-                model = new CreateEditBookViewModel()
-                {
-                    BookCover = new FrontCoverViewModel()
-                };
+                model.BookCover = new FrontCoverViewModel();             
             }
+
+            model.AllCategories = DbContext.Categories.Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.Id.ToString(),
+            }).ToList();
 
             return View(model);
         }
@@ -130,7 +152,6 @@ namespace OnlineLibrary.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.AllBookSubcategories = GetSubcategories();
                 return View(model);
             }
 
@@ -182,13 +203,6 @@ namespace OnlineLibrary.Web.Controllers
                             LastName = author.AuthorName.LastName
                         });
                     }
-                }
-
-                // Add subcategories.
-                foreach (var subcategoryId in model.SelectedSubcategories)
-                {
-                    SubCategory subCategory = DbContext.SubCategories.Find(subcategoryId);
-                    book.SubCategories.Add(subCategory);
                 }
 
                 // Save book.
@@ -317,25 +331,6 @@ namespace OnlineLibrary.Web.Controllers
                             }
                         }
                     }
-                }
-
-                // Update subcategories.
-                var oldSubCategoriesIds = book.SubCategories.Select(sc => sc.Id).ToList();
-                var removedSubCategoriesIds = oldSubCategoriesIds.Except(model.SelectedSubcategories);
-                var newSubCategoriesIds = model.SelectedSubcategories.Except(oldSubCategoriesIds);
-
-                // Remove subcategories.
-                foreach (int subCategoryId in removedSubCategoriesIds)
-                {
-                    var subCategory = DbContext.SubCategories.Find(subCategoryId);
-                    book.SubCategories.Remove(subCategory);
-                }
-
-                // Add new subcategories.
-                foreach (int subCategoryId in newSubCategoriesIds)
-                {
-                    var subCategory = DbContext.SubCategories.Find(subCategoryId);
-                    book.SubCategories.Add(subCategory);
                 }
 
                 DbContext.SaveChanges();
