@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Concrete_Tests\BookService_Tests\IsBookAvailableTestClass.cs" />
     <Compile Include="Concrete_Tests\BookService_Tests\IsBookCopyRemovableTestClass.cs" />
+    <Compile Include="Concrete_Tests\CategoryService_Tests\CreateCategoryTestClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
