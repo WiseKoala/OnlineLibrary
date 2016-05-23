@@ -15,5 +15,7 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         [MaxLength(50)]
         [Display(Name = "Subcategory")]
         public string Name { get; set; }
+        public CategoryViewModel Category { get; set; }
+
     }
 }

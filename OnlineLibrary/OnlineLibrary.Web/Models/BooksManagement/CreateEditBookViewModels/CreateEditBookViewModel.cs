@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Drawing;
 using System.Web;
 using OnlineLibrary.Web.Infrastructure.CustomAttributes;
 using System.Web.Mvc;
@@ -44,6 +43,11 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         [NotEmptyList(ErrorMessage = "There has to be at least one author.")]
         [CountLimit(ErrorMessage = "The authors number is too big.")]
         public IList<BookAuthorViewModel> Authors { get; set; }
+        public IList<BookCopyViewModel> BookCopies { get; set; }
+        public IList<CategoryViewModel> Categories { get; set; }
+
+        // List of categories for drop down select
+        public IEnumerable<SelectListItem> AllCategories { get; set; }
 
         [CountLimit(ErrorMessage = "The book copies number is too big.")]
         public IList<BookCopyViewModel> BookCopies { get; set; }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.IO;
-using System.Web;
-using OnlineLibrary.Common.Exceptions;
+﻿using OnlineLibrary.Common.Exceptions;
+using OnlineLibrary.DataAccess;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess.Enums;
@@ -11,10 +7,14 @@ using OnlineLibrary.Services.Abstract;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models.BooksManagement;
 using OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels;
-using System.Net;
-using System.Web.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
 using System.Linq;
-using OnlineLibrary.DataAccess;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
 using System.Text.RegularExpressions;
 
 namespace OnlineLibrary.Web.Controllers
@@ -69,7 +69,7 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult CreateEdit(int id )
+        public ActionResult CreateEdit(int id)
         {
             CreateEditBookViewModel model = null;
 
@@ -107,20 +107,46 @@ namespace OnlineLibrary.Web.Controllers
                                                   LastName = a.LastName
                                               }
 
-                    }).ToList()
+                                          }).ToList(),
                 };
 
-                // Add subcategories.
-                model.AllBookSubcategories = GetSubcategories();
-                model.SelectedSubcategories = book.SubCategories.Select(sc => sc.Id).ToList();
+                                           Categories = m.SubCategories.Select( sc => new CategoryViewModel
+                                           {
+                                               Id = sc.CategoryId,
+                                               Name = sc.Category.Name,
+                                               Subcategory = new SubCategoryViewModel
+                                               {
+                                                   Id = sc.Id
+                                               }
+                                           }).ToList()
+                                       })
+                                       .SingleOrDefault();
+            foreach (var item in model.Categories)
+            {
+                item.Subcategories = DbContext.SubCategories
+                                              .Where(sc => sc.CategoryId == item.Id)
+                                              .Select(sc => new SelectListItem
+                                              {
+                                                  Value = sc.Id.ToString(),
+                                                  Text = sc.Name
+                                              }).ToList();
             }
-            else
+
+            // Create the book if doesn't exist.
+            if (model == null)
             {
                 model = new CreateEditBookViewModel()
                 {
                     BookCover = new FrontCoverViewModel()
                 };
             }
+
+            // Set data for book-category drop down select.
+            model.AllCategories = DbContext.Categories.Select(sc => new SelectListItem
+            {
+                Value = sc.Id.ToString(),
+                Text = sc.Name
+            }).ToList();
 
             return View(model);
         }
@@ -183,6 +209,11 @@ namespace OnlineLibrary.Web.Controllers
                         });
                     }
                 }
+                //foreach (var subcategory in model.BookSubcategories)
+                //{
+                //    var exist = DbContext.SubCategories.First(sc => sc.CategoryId == subcategory.Id);
+                //    book.SubCategories.Add(exist);
+                //} 
 
                 // Add subcategories.
                 foreach (var subcategoryId in model.SelectedSubcategories)
