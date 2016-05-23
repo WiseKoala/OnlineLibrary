@@ -169,11 +169,11 @@ namespace OnlineLibrary.Web.Controllers
                                                      && a.MiddleName == author.AuthorName.MiddleName
                                                      && a.LastName == author.AuthorName.LastName);
 
-                    if (existingAuthor != null)
+                    if (existingAuthor != null && !author.IsRemoved)
                     {
                         book.Authors.Add(existingAuthor);
                     }
-                    else
+                    else if (!author.IsRemoved)
                     {
                         book.Authors.Add(new Author
                         {
@@ -194,6 +194,8 @@ namespace OnlineLibrary.Web.Controllers
                 // Save book.
                 DbContext.Books.Add(book);
                 DbContext.SaveChanges();
+
+                return RedirectToAction("Index", "BooksManagement");
             }
             else
             {
@@ -337,9 +339,9 @@ namespace OnlineLibrary.Web.Controllers
                 }
 
                 DbContext.SaveChanges();
-            }
 
-            return RedirectToAction("CreateEdit", new { id = model.Id });
+                return RedirectToAction("CreateEdit", "BooksManagement", new { id = model.Id });
+            }
         }
 
         private string SaveImage(HttpPostedFileBase image)

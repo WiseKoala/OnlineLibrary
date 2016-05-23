@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
@@ -25,11 +26,16 @@ namespace OnlineLibrary.Web.Controllers
         {
             var book = DbContext.Books.Include(b => b.BookCopies).First(b => b.Id == id);
 
-            var conditionStr = book.BookCopies
-                   .GroupBy(e => e.Condition)
+            var query = book.BookCopies;
+            string conditionStr = "None";
+            if (query.Any())
+            {
+                conditionStr = query.GroupBy(e => e.Condition)
                    .OrderBy(e => e.Key)
                    .Select(e => string.Concat(e.Count(), " ", _bookService.GetConditionDescription(e.Key))).ToList()
                    .Aggregate((current, next) => current + ", " + next);
+            }
+                   
 
             var book_view = new BookDetailsViewModel
             {
