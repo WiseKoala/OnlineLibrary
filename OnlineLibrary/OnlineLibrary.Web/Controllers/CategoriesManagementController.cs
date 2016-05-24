@@ -24,16 +24,7 @@ namespace OnlineLibrary.Web.Controllers
 
         public ActionResult Index()
         {
-            var model = DbContext.Categories
-                .Select(c => new CategoryViewModel
-                {
-                    Id = c.Id,
-                    Name = c.Name
-                })
-                .OrderBy(c => c.Name)
-                .ToList();
-
-            return View(model);
+            return View();
         }
 
         [HttpPost]
