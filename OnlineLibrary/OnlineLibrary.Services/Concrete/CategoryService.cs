@@ -76,7 +76,9 @@ namespace OnlineLibrary.Services.Concrete
                 throw new KeyNotFoundException("Category not found.");
             }
 
-            return category.SubCategories.ToList();
+            return category.SubCategories
+                .OrderBy(sc => sc.Name)
+                .ToList();
         }
     }
 }

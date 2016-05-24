@@ -16,17 +16,20 @@
             background-color: #2dafce;
         }
     </style>
+    <link href="~/Content/toastr.min.css" rel="stylesheet" />
 }
 
 @section scripts{
+    <script src="~/Scripts/toastr.min.js"></script>
+    <script src="~/Scripts/knockout-3.4.0.js"></script>
     <script src="~/Scripts/View Scripts/CategoriesManagement/index.js"></script>
 }
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <h2>Categories</h2>
 
-        <div id="categoriesList" class="list-group btn-group-vertical" data-toggle="buttons">
+        <div id="categoriesList" class="list-group btn-group-vertical" data-toggle="buttons" data-subcategory-url="@Url.Action("GetSubCategories", "CategoriesManagement")">
             @foreach (var category in Model)
             {
                 <label class="btn btn-default">
@@ -35,11 +38,12 @@
             }
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
         <h2>Subcategories</h2>
 
-        <div id="subcategoriesList" class="list-group btn-group-vertical">
-
+        <p data-bind="visible: subCategories().length == 0">No records...</p>
+        <div id="subcategoriesList" class="list-group" data-bind="foreach: subCategories">
+            <button type="button" class="list-group-item" data-bind="text: Name, attr: { 'data-id': Id }"></button>
         </div>
     </div>
 </div>

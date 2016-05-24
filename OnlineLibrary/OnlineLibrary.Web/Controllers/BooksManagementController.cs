@@ -403,7 +403,7 @@ namespace OnlineLibrary.Web.Controllers
             var bookConditions = bookConditionNames
                 .Select(name => new
                 {
-                    Value = (int)Enum.Parse(typeof(BookCondition), name),
+                    Id = (int)Enum.Parse(typeof(BookCondition), name),
                     Name = name
                 })
                 .ToList();
@@ -426,7 +426,7 @@ namespace OnlineLibrary.Web.Controllers
             var subCategories = allSubCategories
                 .Select(sc => new
                 {
-                    Value = sc.Id,
+                    Id = sc.Id,
                     Name = sc.Name
                 })
                 .ToList();
