@@ -62,13 +62,15 @@ namespace OnlineLibrary.Web.Controllers
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
-                return RedirectToAction("Login");
+                return RedirectToActionPermanent("Login");
             }
             // Sign in the user with this external login provider if the user already has a login
             var result = await _signInService.ExternalSignInAsync(loginInfo, isPersistent: false);
             switch (result)
             {
                 case SignInStatus.Success:
+                    if (returnUrl == "/o/oauth2/auth")
+                        returnUrl = "/";
                     return RedirectToLocal(returnUrl);
 
                 case SignInStatus.LockedOut:
