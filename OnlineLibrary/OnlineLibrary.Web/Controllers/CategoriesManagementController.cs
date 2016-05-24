@@ -39,13 +39,21 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public JsonResult CreateCategory(string name)
         {
-            Category category = _categoryService.CreateCategory(name);
-
-            return Json(new
+            try
             {
-                Id = category.Id,
-                Name = category.Name
-            });
+                Category category = _categoryService.CreateCategory(name);
+
+                return Json(new
+                {
+                    Id = category.Id,
+                    Name = category.Name
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(ex.Message, JsonRequestBehavior.DenyGet);
+            }
         }
 
         [HttpPost]

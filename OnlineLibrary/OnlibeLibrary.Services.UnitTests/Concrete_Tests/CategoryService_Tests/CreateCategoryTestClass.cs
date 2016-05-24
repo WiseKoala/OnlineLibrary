@@ -22,11 +22,20 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.CategoryService_Tests
         [OneTimeSetUp]
         public void Init()
         {
-            _categoriesSet = Substitute.For<DbSet<Category>>();
+            var categories = new List<Category>
+            {
+                new Category { Id = 1, Name = "History" }
+            }
+            .AsQueryable();
+
+            _categoriesSet = Substitute.For<DbSet<Category>, IQueryable<Category>>();
+            ((IQueryable<Category>)_categoriesSet).Provider.Returns(categories.Provider);
+            ((IQueryable<Category>)_categoriesSet).Expression.Returns(categories.Expression);
+            ((IQueryable<Category>)_categoriesSet).ElementType.Returns(categories.ElementType);
+            ((IQueryable<Category>)_categoriesSet).GetEnumerator().Returns(categories.GetEnumerator());
 
             _dbContext = Substitute.For<ILibraryDbContext>();
             _dbContext.Categories.Returns(_categoriesSet);
-
         }
 
         [Test]
@@ -45,6 +54,20 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.CategoryService_Tests
 
             Assert.DoesNotThrow(delegateOne);
             Assert.DoesNotThrow(delegateTwo);
+        }
+
+        [Test]
+        public void Should_ThrowArgumentException()
+        {
+            // Arrange.           
+            var categoryService = new CategoryService(_dbContext);
+            var categoryName = "History";
+
+            // Act.
+            var sutDelegate = new TestDelegate(() => categoryService.CreateCategory(categoryName));
+
+            // Assert.
+            Assert.Throws<ArgumentException>(sutDelegate);
         }
     }
 }

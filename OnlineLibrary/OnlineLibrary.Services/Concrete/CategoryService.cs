@@ -20,7 +20,16 @@ namespace OnlineLibrary.Services.Concrete
 
         public Category CreateCategory(string name)
         {
-            Category category = _dbContext.Categories.Add(new Category { Name = name });
+            // Try to find category with the same name.
+            Category category = _dbContext.Categories
+                .SingleOrDefault(c => c.Name.ToLower() == name.ToLower());
+
+            if (category != null)
+            {
+                throw new ArgumentException("Category with such name already exists.");
+            }
+
+            _dbContext.Categories.Add(new Category { Name = name });
             _dbContext.SaveChanges();
 
             return category;
