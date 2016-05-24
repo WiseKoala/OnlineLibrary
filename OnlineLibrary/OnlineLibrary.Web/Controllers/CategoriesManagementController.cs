@@ -80,5 +80,29 @@ namespace OnlineLibrary.Web.Controllers
                 return Json(new { error = ex.Message }, JsonRequestBehavior.DenyGet);
             }
         }
+
+        public JsonResult GetSubCategories(int categoryId)
+        {
+            try
+            {
+                IEnumerable<SubCategory> subCategories = _categoryService.GetSubCategories(categoryId);
+
+                // Project to JSON object.
+                var subCategoriesJson = subCategories
+                    .Select(sc => new
+                    {
+                        Id = sc.Id,
+                        Name = sc.Name
+                    })
+                    .ToList();
+
+                return Json(subCategoriesJson, JsonRequestBehavior.AllowGet);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

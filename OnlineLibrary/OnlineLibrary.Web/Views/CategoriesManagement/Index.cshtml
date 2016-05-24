@@ -18,6 +18,10 @@
     </style>
 }
 
+@section scripts{
+    <script src="~/Scripts/View Scripts/CategoriesManagement/index.js"></script>
+}
+
 <div class="row">
     <div class="col-md-6">
         <h2>Categories</h2>
@@ -26,9 +30,16 @@
             @foreach (var category in Model)
             {
                 <label class="btn btn-default">
-                    <input type="radio" name="categories" id="@category.Id" autocomplete="off"> @category.Name
+                    <input type="radio" name="categories" value="@category.Id" autocomplete="off"> @category.Name
                 </label>
             }
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h2>Subcategories</h2>
+
+        <div id="subcategoriesList" class="list-group btn-group-vertical">
+
         </div>
     </div>
 </div>

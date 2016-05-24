@@ -66,5 +66,17 @@ namespace OnlineLibrary.Services.Concrete
                 return subCategory;
             }
         }
+
+        public IEnumerable<SubCategory> GetSubCategories(int categoryId)
+        {
+            Category category = _dbContext.Categories.Find(categoryId);
+
+            if (category == null)
+            {
+                throw new KeyNotFoundException("Category not found.");
+            }
+
+            return category.SubCategories.ToList();
+        }
     }
 }
