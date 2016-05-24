@@ -61,21 +61,21 @@
             <table class="table table-hover">
                 <tbody>
                     @for (int i = 0; i < Model.Authors.Count(); i++)
-                {
+                    {
                         <tr class="book-author" data-author-id="@i">
-                            @Html.HiddenFor(m => m.Authors[i].Id)
-                            @Html.HiddenFor(m => m.Authors[i].IsRemoved, new { @class = "is-removed" })
                             <td>
-                                @Html.LabelFor(m => m.Authors[i].AuthorName.FirstName, new { @class = "control-label" })
-                                @Html.TextBoxFor(m => m.Authors[i].AuthorName.FirstName, new { @class = "form-control" })
+                                <input type="hidden" name="Authors[@i].Id" value="@Model.Authors[i].Id" class="form-control" />
+                                <input type="hidden" name="Authors[@i].IsRemoved" value="false" class="form-control is-removed" />
+                                @Html.LabelFor(m => m.Authors[i].AuthorName.FirstName)
+                                <input type="text" name="Authors[@i].AuthorName.FirstName" value="@Model.Authors[i].AuthorName.FirstName"  class="form-control"/>
                             </td>
                             <td>
                                 @Html.LabelFor(m => m.Authors[i].AuthorName.MiddleName)
-                                @Html.TextBoxFor(m => m.Authors[i].AuthorName.MiddleName, new { @class = "form-control" })
+                                <input type="text" name="Authors[@i].AuthorName.MiddleName" value="@Model.Authors[i].AuthorName.MiddleName"  class="form-control"/>
                             </td>
                             <td>
                                 @Html.LabelFor(m => m.Authors[i].AuthorName.LastName)
-                                @Html.TextBoxFor(m => m.Authors[i].AuthorName.LastName, new { @class = "form-control" })
+                                <input type="text" name="Authors[@i].AuthorName.LastName" value="@Model.Authors[i].AuthorName.LastName" class="form-control"/>
                             </td>
                             <td>
                                 <button class="btn btn-sm btn-danger btn-remove-author-modal" data-toggle="modal"
@@ -140,11 +140,22 @@
                 @for (int i = 0; i < Model.BookCopies.Count(); i++)
                 {
                     <tr id="bookCopy@(i)">
-                        <td class="col-sm-2">BookCopyId = @Model.BookCopies[i].Id</td>
+                        <td class="col-sm-2">Book Copy Id = @Model.BookCopies[i].Id</td>
                         <td class="col-sm-3">
                             <div class="bookCopy">
-                                @Html.HiddenFor(m => m.BookCopies[i].Id)
-                                @Html.EnumDropDownListFor(m => m.BookCopies[i].BookCondition, new { @class = "form-control" })
+                                <input type="hidden" name="BookCopies[@i].Id" value="@Model.BookCopies[i].Id" class="form-control" />
+                                <select name="BookCopies[@i].BookCondition" class="form-control">
+                                    @foreach (var item in Model.AllBookConditions)
+                                    {
+                                        <option value="@item.Key" 
+                                                @if (item.Key == Model.BookCopies[i].BookCondition)
+                                                {
+                                                    @:selected="selected"
+                                                }
+                                                >@item.Value</option>
+                                    }
+                                </select>
+                                @*@Html.EnumDropDownListFor(m => m.BookCopies[i].BookCondition, new { @class = "form-control" })*@
                                 <input class="IsToBeDeleted" type="hidden" name="BookCopies[@(i)].IsToBeDeleted" value="false" />
                             </div>
                         </td>
@@ -269,17 +280,16 @@
             };
             $.ajax("@Url.Action("ListBookSubCategories", "BooksManagement")", ajaxData);
         });
-    });
+    
 
         // Copies the author ID to modal window.
-        function btnRemoveAuthorModal() {
-            var authorId = $(this).closest(".book-author").data("authorId");
-            $("#btnRemoveAuthorConfirm").attr("data-author-to-remove-id", authorId);
-        }
+            function btnRemoveAuthorModal() {
+                var authorId = $(this).closest(".book-author").data("authorId");
+                $("#btnRemoveAuthorConfirm").attr("data-author-to-remove-id", authorId);
+            };
 
         $(".btn-remove-author-modal").click(btnRemoveAuthorModal);
 
-    $(document).ready(function () {
         $("#AddBookAuthor").click(function () {
             var authorsBody = $("#bookAuthors tbody");
             var newBookAuthorId = parseInt($("#bookAuthors tbody .book-author").last().data("authorId")) + 1;
@@ -409,7 +419,7 @@
 
                     var newTd = document.createElement("td");
                     newTd.className = "col-sm-2";
-                    newTd.innerHTML = "BookCopyId = newId";
+                    newTd.innerHTML = "Book Copy Id = new Id";
 
                     var newTd2 = document.createElement("td");
                     newTd2.className = "col-sm-3";
@@ -477,9 +487,9 @@
                 }
             }
             $.ajax("@Url.Action("ListBookConditions", "BooksManagement")", ajaxData);
-        })
-    });
+        });
 
+        });
     </script>
 
 }

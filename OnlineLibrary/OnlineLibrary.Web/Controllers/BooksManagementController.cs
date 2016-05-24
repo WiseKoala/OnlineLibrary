@@ -122,15 +122,46 @@ namespace OnlineLibrary.Web.Controllers
                 };
             }
 
+            model.AllBookConditions = PopulateWithBookConditions();
+
             return View(model);
         }
 
         [HttpPost]
         public ActionResult CreateEdit(CreateEditBookViewModel model)
         {
+            model.AllBookConditions = PopulateWithBookConditions();
+
             if (!ModelState.IsValid)
             {
                 model.AllBookSubcategories = GetSubcategories();
+
+                var bookcopies = model.BookCopies.ToList();
+
+                if (bookcopies.Count() > 0)
+                {
+                    foreach (var bookcopy in bookcopies)
+                    {
+                        if (bookcopy.IsToBeDeleted == true)
+                        {
+                            model.BookCopies.Remove(bookcopy);
+                        }
+                    }
+                }
+
+                var authors = model.Authors.ToList();
+
+                if (authors.Count() > 0)
+                {
+                    foreach (var author in authors)
+                    {
+                        if (author.IsRemoved == true)
+                        {
+                            model.Authors.Remove(author);
+                        }
+                    }
+                }
+
                 return View(model);
             }
 
@@ -398,17 +429,39 @@ namespace OnlineLibrary.Web.Controllers
         [AllowAnonymous]
         public JsonResult ListBookConditions()
         {
-            var bookConditionNames = Enum.GetNames(typeof(BookCondition));
+            //var bookConditionNames = Enum.GetNames(typeof(BookCondition));
 
-            var bookConditions = bookConditionNames
+            //var bookConditions = new Dictionary<BookCondition, string>();
+
+            //bookConditions = PopulateWithBookConditions();
+
+
+            //var bookConditionNames = Enum.GetNames(typeof(BookCondition));
+
+            var bookConditions = PopulateWithBookConditions()
                 .Select(name => new
                 {
-                    Value = (int)Enum.Parse(typeof(BookCondition), name),
-                    Name = name
+                    Value = (int)Enum.Parse(typeof(BookCondition), name.Key.ToString()),
+                    Name = name.Value
                 })
                 .ToList();
 
             return Json(bookConditions, JsonRequestBehavior.AllowGet);
+
+
+            return Json(bookConditions, JsonRequestBehavior.AllowGet);
+        }
+
+        private Dictionary<BookCondition, string> PopulateWithBookConditions()
+        {
+            var bookConditions = new Dictionary<BookCondition, string>();
+
+            foreach (var cond in Enum.GetValues(typeof(BookCondition)))
+            {
+                bookConditions.Add((BookCondition)cond, _bookService.GetConditionDescription((BookCondition)cond));
+            }
+
+            return bookConditions;
         }
 
         [AllowAnonymous]
