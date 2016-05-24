@@ -25,5 +25,37 @@ namespace OnlineLibrary.Services.Concrete
 
             return category;
         }
+
+        public SubCategory CreateSubCategory(int categoryId, string name)
+        {
+            Category category = _dbContext.Categories.SingleOrDefault(c => c.Id == categoryId);
+
+            if (category == null)
+            {
+                throw new KeyNotFoundException("Category not found.");
+            }
+            else
+            {
+                // Try to find subcategory with the same name.
+                SubCategory subCategory = _dbContext.SubCategories
+                    .FirstOrDefault(sc => sc.Name.ToLower() == name.ToLower());
+
+                if (subCategory != null)
+                {
+                    throw new ArgumentException("Subcategory with such name already exists.");
+                }
+
+                // Create new subcategory.
+                subCategory = new SubCategory
+                {
+                    Name = name
+                };
+
+                category.SubCategories.Add(subCategory);
+                _dbContext.SaveChanges();
+
+                return subCategory;
+            }
+        }
     }
 }

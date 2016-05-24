@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using OnlineLibrary.DataAccess.Abstract;
@@ -45,6 +46,31 @@ namespace OnlineLibrary.Web.Controllers
                 Id = category.Id,
                 Name = category.Name
             });
+        }
+
+        [HttpPost]
+        public JsonResult CreateSubCategory(int categoryId, string name)
+        {
+            try
+            {
+                SubCategory subCategory = _categoryService.CreateSubCategory(categoryId, name);
+
+                return Json(new
+                {
+                    Id = subCategory.Id,
+                    Name = subCategory.Name
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message }, JsonRequestBehavior.DenyGet);
+            }
+            catch (ArgumentException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { error = ex.Message }, JsonRequestBehavior.DenyGet);
+            }
         }
     }
 }

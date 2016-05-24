@@ -10,5 +10,6 @@ namespace OnlineLibrary.Services.Abstract
     public interface ICategoryService : IService
     {
         Category CreateCategory(string name);
+        SubCategory CreateSubCategory(int categoryId, string name);
     }
 }
