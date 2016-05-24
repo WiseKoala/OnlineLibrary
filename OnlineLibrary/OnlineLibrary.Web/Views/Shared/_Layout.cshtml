@@ -29,8 +29,7 @@
                         <li>@Html.ActionLink("My Loans", "MyLoans", "UserLoans")</li>
                     }
 
-                    @if (User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SuperAdmin)
-|| User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SysAdmin)
+                    @if (User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SysAdmin)
 || User.IsInRole(OnlineLibrary.DataAccess.UserRoles.Librarian))
                     {
                         <li>@Html.ActionLink("Manage Loans", "Index", "librarian")</li>
