@@ -26,3 +26,12 @@ textarea {
 .ui-datepicker {
     background-color: rgba(255, 255, 255, 0.9);
 }
+
+.navbar-default .navbar-collapse, .navbar-default .navbar-form{
+    border: none;
+}
+
+.navbar-nav{
+    margin-right: 0;
+    margin-left: 0;
+}
