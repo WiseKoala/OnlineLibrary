@@ -23,26 +23,28 @@
             <div class="collapse navbar-collapse navbar-left">
                 <ul class="nav navbar-nav text-center">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    @if (User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SysAdmin)
-     || User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SuperAdmin))
-                    {
-                        <li>@Html.ActionLink("Roles", "Index", "Role")</li>
-                    }
-                    @if (User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SuperAdmin)
-    || User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SysAdmin)
-    || User.IsInRole(OnlineLibrary.DataAccess.UserRoles.Librarian))
-                    {
-                        <li>@Html.ActionLink("Loans", "Index", "librarian")</li>
-                    }
 
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li>@Html.ActionLink("My Loans", "MyLoans", "UserLoans")</li>
                     }
 
+                    @if (User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SuperAdmin)
+|| User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SysAdmin)
+|| User.IsInRole(OnlineLibrary.DataAccess.UserRoles.Librarian))
+                    {
+                        <li>@Html.ActionLink("Manage Loans", "Index", "librarian")</li>
+                    }
+
                     @if (User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SysAdmin))
                     {
                         <li>@Html.ActionLink("Manage Books", "Index", "BooksManagement")</li>
+                    }
+
+                    @if (User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SysAdmin)
+|| User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SuperAdmin))
+                    {
+                        <li>@Html.ActionLink("Manage Roles", "Index", "Role")</li>
                     }
                 </ul>
             </div>
