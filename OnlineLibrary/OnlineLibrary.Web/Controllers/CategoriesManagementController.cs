@@ -52,7 +52,7 @@ namespace OnlineLibrary.Web.Controllers
             catch (ArgumentException ex)
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(ex.Message, JsonRequestBehavior.DenyGet);
+                return Json(new { error = ex.Message }, JsonRequestBehavior.DenyGet);
             }
         }
 
@@ -79,6 +79,20 @@ namespace OnlineLibrary.Web.Controllers
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(new { error = ex.Message }, JsonRequestBehavior.DenyGet);
             }
+        }
+
+        public JsonResult GetCategories()
+        {
+            var categories = DbContext.Categories
+                .OrderBy(c => c.Name)
+                .Select(c => new
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                })
+                .ToList();
+
+            return Json(categories, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetSubCategories(int categoryId)

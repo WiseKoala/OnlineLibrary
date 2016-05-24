@@ -29,4 +29,25 @@
 
         $.ajax(settings);
     });
+
+    $("#addCategory").click(function () {
+        var categoryName = $("#newCategoryName").val();
+        var url = $(this).data("addCategoryUrl");
+
+        var settings = {};
+        settings.type = "POST";
+        settings.url = url;
+        settings.data = {
+            name: categoryName
+        };
+        settings.success = function (data) {
+            $("#newCategoryName").val("");
+            toastr.success("Category " + data.Name + " has been successfully created.");
+        };
+        settings.error = function (jqXHR) {
+            toastr.error(jqXHR.responseJSON.error);
+        }
+
+        $.ajax(settings);
+    });
 });

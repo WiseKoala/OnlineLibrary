@@ -20,16 +20,21 @@ namespace OnlineLibrary.Services.Concrete
 
         public Category CreateCategory(string name)
         {
-            // Try to find category with the same name.
-            Category category = _dbContext.Categories
-                .SingleOrDefault(c => c.Name.ToLower() == name.ToLower());
+            if (String.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Category name cannot be empty.");
+            }
 
-            if (category != null)
+            // Try to find category with the same name.
+            bool duplicateExists = _dbContext.Categories
+                .Any(c => c.Name.ToLower() == name.ToLower());
+
+            if (duplicateExists)
             {
                 throw new ArgumentException("Category with such name already exists.");
             }
 
-            _dbContext.Categories.Add(new Category { Name = name });
+            Category category = _dbContext.Categories.Add(new Category { Name = name });
             _dbContext.SaveChanges();
 
             return category;
@@ -37,6 +42,11 @@ namespace OnlineLibrary.Services.Concrete
 
         public SubCategory CreateSubCategory(int categoryId, string name)
         {
+            if (String.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Subcategory name cannot be empty.");
+            }
+
             Category category = _dbContext.Categories.SingleOrDefault(c => c.Id == categoryId);
 
             if (category == null)
@@ -46,20 +56,18 @@ namespace OnlineLibrary.Services.Concrete
             else
             {
                 // Try to find subcategory with the same name.
-                SubCategory subCategory = _dbContext.SubCategories
-                    .FirstOrDefault(sc => sc.Name.ToLower() == name.ToLower());
+                bool duplicateExists = _dbContext.SubCategories
+                    .Any(sc => sc.Name.ToLower() == name.ToLower());
 
-                if (subCategory != null)
+                if (duplicateExists)
                 {
                     throw new ArgumentException("Subcategory with such name already exists.");
                 }
 
                 // Create new subcategory.
-                subCategory = new SubCategory
-                {
-                    Name = name
-                };
+                SubCategory subCategory = _dbContext.SubCategories.Add(new SubCategory { Name = name });
 
+                // Add to the corresponding category.
                 category.SubCategories.Add(subCategory);
                 _dbContext.SaveChanges();
 
