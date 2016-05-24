@@ -426,18 +426,8 @@ namespace OnlineLibrary.Web.Controllers
             return Json(removedBook, JsonRequestBehavior.DenyGet);
         }
 
-        [AllowAnonymous]
         public JsonResult ListBookConditions()
         {
-            //var bookConditionNames = Enum.GetNames(typeof(BookCondition));
-
-            //var bookConditions = new Dictionary<BookCondition, string>();
-
-            //bookConditions = PopulateWithBookConditions();
-
-
-            //var bookConditionNames = Enum.GetNames(typeof(BookCondition));
-
             var bookConditions = PopulateWithBookConditions()
                 .Select(name => new
                 {
@@ -445,9 +435,6 @@ namespace OnlineLibrary.Web.Controllers
                     Name = name.Value
                 })
                 .ToList();
-
-            return Json(bookConditions, JsonRequestBehavior.AllowGet);
-
 
             return Json(bookConditions, JsonRequestBehavior.AllowGet);
         }
@@ -464,7 +451,6 @@ namespace OnlineLibrary.Web.Controllers
             return bookConditions;
         }
 
-        [AllowAnonymous]
         public JsonResult ListBookSubCategories(int? categoryId)
         {
             var query = DbContext.SubCategories.AsQueryable();
