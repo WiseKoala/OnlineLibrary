@@ -179,7 +179,7 @@ namespace OnlineLibrary.Web.Controllers
 
                 if (result == SignInStatus.Success)
                 {
-                    return RedirectToAction("Index", "Role");
+                    return RedirectToAction("Index", "Home");
                 }
 
                 ModelState.AddModelError("", "The provided password was incorrect.");
