@@ -10,6 +10,14 @@
     // Activate knockout.js
     var viewModel = new LoansViewModel();
     ko.applyBindings(viewModel);
+    
+    // Set Toastr options.
+    toastr.options = {
+        "closeButton": true,
+        "positionClass": "toast-bottom-right",
+        "timeOut": 30000,           // 30 seconds
+        "extendedTimeOut": 60000    // another 30 seconds, if user hovers mouse over notification
+    };
 
     (function loadCategories() {
         var url = $("#categoriesList").data("categoriesUrl");

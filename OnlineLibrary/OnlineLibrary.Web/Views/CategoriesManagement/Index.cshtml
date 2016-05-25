@@ -33,7 +33,7 @@
                 <span class="input-group-btn">
                     <button id="addCategory" class="btn btn-success" type="button" data-add-category-url="@Url.Action("CreateCategory", "CategoriesManagement")">Add</button>
                 </span>
-                <input id="newCategoryName" class="form-control" type="text" name="newCategory" placeholder="New name..." />
+                <input id="newCategoryName" class="form-control" type="text" name="newCategory" placeholder="New category name..." />
             </div>
             <div id="categoriesList" class="list-group btn-group-vertical" data-toggle="buttons" data-bind="foreach: categories" data-categories-url="@Url.Action("GetCategories", "CategoriesManagement")" data-subcategory-url="@Url.Action("GetSubCategories", "CategoriesManagement")">
                 <label class="btn btn-default">
@@ -49,7 +49,7 @@
                 <span class="input-group-btn">
                     <button id="addSubcategory" class="btn btn-success" type="button" data-url="@Url.Action("CreateSubCategory", "CategoriesManagement")">Add</button>
                 </span>
-                <input id="newSubcategoryName" class="form-control" type="text" name="newCategory" placeholder="New name..." />
+                <input id="newSubcategoryName" class="form-control" type="text" name="newCategory" placeholder="New subcategory name..." />
             </div>
             <p data-bind="visible: subCategories().length == 0">No records...</p>
             <div id="subcategoriesList" class="list-group" data-toggle="buttons" data-bind="foreach: subCategories">
