@@ -161,6 +161,7 @@
 
         // Button.
         cell = document.createElement("td");
+        cell.id = "tdRemoveAuthorButton";
 
         var removeButton = document.createElement("button");
         removeButton.className = "btn btn-sm btn-danger btn-remove-author-modal";

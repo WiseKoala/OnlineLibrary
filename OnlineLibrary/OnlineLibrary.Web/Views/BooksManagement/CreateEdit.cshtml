@@ -90,7 +90,7 @@
                                 <input type="text" name="Authors[@i].AuthorName.LastName" value="@Model.Authors[i].AuthorName.LastName" class="form-control" />
                                 @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.LastName)
                             </td>
-                            <td>
+                            <td id="tdRemoveAuthorButton">
                                 <button class="btn btn-sm btn-danger btn-remove-author-modal" data-toggle="modal"
                                         data-target="#removeAuthorConfirmation" type="button">
                                     <span class="glyphicon glyphicon-remove"></span>

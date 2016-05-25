@@ -2,8 +2,9 @@
     visibility : hidden;
 }
 
-.hidden {
-    visibility : hidden;
+#tdRemoveAuthorButton {
+    vertical-align: middle;
+    text-align: center;
 }
 
 #bookAuthors .book-author { margin-bottom: 10px; }
