@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.IO;
-using System.Web;
-using OnlineLibrary.Common.Exceptions;
+﻿using OnlineLibrary.Common.Exceptions;
+using OnlineLibrary.DataAccess;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess.Enums;
@@ -11,15 +7,18 @@ using OnlineLibrary.Services.Abstract;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models.BooksManagement;
 using OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels;
-using System.Net;
-using System.Web.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
 using System.Linq;
-using OnlineLibrary.DataAccess;
-using System.Text.RegularExpressions;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
 
 namespace OnlineLibrary.Web.Controllers
 {
-   // [Authorize(Roles = UserRoles.SysAdmin)]
+    [Authorize(Roles = UserRoles.SysAdmin)]
     public class BooksManagementController : BaseController
     {
         private IBookService _bookService;
@@ -69,9 +68,12 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult CreateEdit(int id = 2)
+        public ActionResult CreateEdit(int id)
         {
             CreateEditBookViewModel model = new CreateEditBookViewModel();
+
+            var subcategories = DbContext.SubCategories.ToList();
+            var categories = DbContext.Categories.ToList();
 
             Book book = DbContext.Books.Where(b => b.Id == id)
                                        .Include(b => b.BookCopies)
@@ -87,9 +89,10 @@ namespace OnlineLibrary.Web.Controllers
                     ISBN = book.ISBN,
                     Description = book.Description,
                     PublishDate = book.PublishDate,
-                                           BookCover = new FrontCoverViewModel
-                                           { 
-                                               FrontCover = book.FrontCover ?? string.Empty },
+                    BookCover = new FrontCoverViewModel
+                    {
+                        FrontCover = book.FrontCover ?? string.Empty
+                    },
 
                     BookCopies = book.BookCopies.Select(bc => new BookCopyViewModel
                     {
@@ -108,8 +111,8 @@ namespace OnlineLibrary.Web.Controllers
                         }
 
                     }).ToList(),
-
-                    BookCategories = book.SubCategories.Select( sc => new CategoryViewModel
+                    // Get book categories and subcategories for this book.
+                    BookCategories = book.SubCategories.Select(sc => new CategoryViewModel
                     {
                         Id = sc.CategoryId,
                         Name = sc.Category.Name,
@@ -121,7 +124,7 @@ namespace OnlineLibrary.Web.Controllers
                     }).ToList()
                 };
 
-                var subcategories = DbContext.SubCategories.ToList();
+                // Get all subcategories for each category for this book.
                 for (int i = 0; i < model.BookCategories.Count(); i++)
                 {
                     model.BookCategories[i].Subcategories = subcategories
@@ -129,22 +132,40 @@ namespace OnlineLibrary.Web.Controllers
                                      .Select(sc => new SelectListItem
                                      {
                                          Text = sc.Name,
-                                         Value = sc.Id.ToString()
+                                         Value = sc.Id.ToString(),
+                                         Selected = model.BookCategories[i].Subcategory.Id == sc.Id
                                      }).ToList();
                 }
+
+                for (int i = 0; i < model.BookCategories.Count(); i++)
+                {
+                    // Get all categories for drop-down and set the selected item.
+                    model.BookCategories[i].Categories = categories.Select(c => new SelectListItem
+                    {
+                        Text = c.Name,
+                        Value = c.Id.ToString(),
+                        Selected = model.BookCategories[i].Id == c.Id
+                    }).ToList();
+                }
             }
+            // If the book doesn't exist, is initialising some data for view.
             else
             {
-                model.BookCover = new FrontCoverViewModel();             
+                model.BookCover = new FrontCoverViewModel();
+                model.BookCategories = new List<CategoryViewModel>()
+                {
+                    new CategoryViewModel
+                    {
+                         Categories = categories.Select(c => new SelectListItem
+                         {
+                             Text = c.Name,
+                             Value = c.Id.ToString(),
+                         }).ToList()
+                    }
+                };
             }
 
-            model.AllCategories = DbContext.Categories.Select(c => new SelectListItem
-            {
-                Text = c.Name,
-                Value = c.Id.ToString(),
-            }).ToList();
-
-            return View(model);
+           return View(model);
         }
 
         [HttpPost]
@@ -407,24 +428,30 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [AllowAnonymous]
-        public JsonResult ListBookSubCategories(int? categoryId)
+        public JsonResult ListBookCategories()
         {
-            var query = DbContext.SubCategories.AsQueryable();
+            var categories = DbContext.Categories
+                                      .Select(sc => new
+                                      {
+                                          Value = sc.Id,
+                                          Name = sc.Name
+                                      })
+                                      .ToList();
 
-            if (categoryId != null)
-            {
-                 query = query.Where(sc => sc.CategoryId == categoryId);
-            }
+            return Json(categories, JsonRequestBehavior.AllowGet);
+        }
 
-            var allSubCategories = query.ToList();
-
-            var subCategories = allSubCategories
-                .Select(sc => new
-                {
-                    Value = sc.Id,
-                    Name = sc.Name
-                })
-                .ToList();
+        [AllowAnonymous]
+        public JsonResult ListBookSubcategories(int categoryId )
+        {
+            var subCategories = DbContext.SubCategories
+                                         .Where( sc => sc.CategoryId == categoryId)
+                                         .Select(sc => new
+                                         {
+                                             Value = sc.Id,
+                                             Name = sc.Name
+                                         })
+                                         .ToList();
 
             return Json(subCategories, JsonRequestBehavior.AllowGet);
         }

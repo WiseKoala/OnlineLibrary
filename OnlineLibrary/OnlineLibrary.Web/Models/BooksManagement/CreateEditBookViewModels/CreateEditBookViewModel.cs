@@ -46,7 +46,6 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         [CountLimit(ErrorMessage = "The book copies number is too big.")]
         public IList<BookCopyViewModel> BookCopies { get; set; }
 
-        public IEnumerable<SelectListItem> AllCategories { get; set; }
         public IList<CategoryViewModel> BookCategories { get; set; }
     }
 }

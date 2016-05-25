@@ -13,5 +13,6 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         public string Name { get; set; }
         public SubCategoryViewModel Subcategory { get; set; }
         public IEnumerable<SelectListItem> Subcategories{ get; set; }
+        public IEnumerable<SelectListItem> Categories { get; set; }
     }
 }

@@ -11,7 +11,7 @@ using System.Linq;
 namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
 {
     [TestFixture]
-    class IsBookAvailableTestClass
+    public class IsBookAvailableTestClass
     {
         private ILibraryDbContext _dbContext;
 
