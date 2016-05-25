@@ -149,15 +149,29 @@ namespace OnlineLibrary.Web.Controllers
                     }
                 }
 
-                var authors = model.Authors.ToList();
-
-                if (authors.Count() > 0)
+                for (int i = 0; i < model.Authors.Count(); i++)
                 {
-                    foreach (var author in authors)
+                    if (model.Authors[i].IsRemoved)
                     {
-                        if (author.IsRemoved == true)
+                        if (ModelState.ContainsKey(string.Concat("Authors[", i, "].IsRemoved")))
                         {
-                            model.Authors.Remove(author);
+                            foreach (var state in ModelState.ToArray())
+                            {
+                                if (state.Key.StartsWith(string.Concat("Authors[", i)))
+                                {
+                                    ModelState.Remove(state);
+                                }
+                            }
+                        }
+
+                        if (model.Authors[i].IsRemoved == true)
+                        {
+                            model.Authors.Remove(model.Authors[i]);
+                        }
+
+                        if (!model.Authors.Any())
+                        {
+                            ModelState.AddModelError("Authors", "There has to be at least one author.");
                         }
                     }
                 }
