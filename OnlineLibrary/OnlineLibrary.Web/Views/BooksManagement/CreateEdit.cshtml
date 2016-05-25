@@ -17,43 +17,53 @@
     @using (Html.BeginForm("CreateEdit", "BooksManagement", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.ValidationSummary("", new { @class = "text-danger" })
-        <div class="form-group">
-            <label>ISBN</label>
-            @Html.TextBoxFor(m => m.ISBN, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.ISBN)
+        <div class="row">
+            <div class="col-sm-2">
+
+                <div class="form-group">
+                    <label>Front Cover</label>
+                    @if (!string.IsNullOrEmpty(Model.BookCover.FrontCover))
+                    {
+                        <img class="img-small-responsive" src=@Url.Content(Model.BookCover.FrontCover) />
+                        <input type="hidden" value="@Model.BookCover.FrontCover" name="BookCover.FrontCover" />
+                    }
+                </div>
+                @*Load Image*@
+                <div class="form-group">
+                    <label class="inputFileButton">
+                        <input type="file" id="inputFile" name="BookCover.Image" class="inputfile" />
+                        <span class="btn btn-default">Upload Image</span>
+                    </label>
+                    <div id="textImageFileName"></div>
+                </div>
+                @Html.ValidationMessageFor(m => m.BookCover)
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>ISBN</label>
+                    @Html.TextBoxFor(m => m.ISBN, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.ISBN)
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Title)
+                </div>
+                <div class="form-group">
+                    <label>Publish Date</label>
+                    @*@Html.TextBoxFor(m => m.PublishDate, new { @class = "form-control datepicker ui-datepicker" })*@
+                    <input type="text" class="form-control datepicker ui-datepicker" name="PublishDate" value="@Model.PublishDate.ToShortDateString()" />
+                    @Html.ValidationMessageFor(m => m.PublishDate)
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <div class="form-group">
+                    <label>Description</label>
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", style = "height: 185px; max-width: 100%;" })
+                    @Html.ValidationMessageFor(m => m.Description)
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Title</label>
-            @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Title)
-        </div>
-        <div class="form-group">
-            <label>Description</label>
-            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", style = " height:200px " })
-            @Html.ValidationMessageFor(m => m.Description)
-        </div>
-        <div class="form-group">
-            <label>Publish Date</label>
-            @Html.TextBoxFor(m => m.PublishDate, new { @class = "form-control datepicker ui-datepicker" })
-            @Html.ValidationMessageFor(m => m.PublishDate)
-        </div>
-        <div class="form-group">
-            <label>Front Cover</label>
-        </div>
-        if (!string.IsNullOrEmpty(Model.BookCover.FrontCover))
-        {
-            <img width="100" src=@Url.Content(Model.BookCover.FrontCover) />
-                <input type="hidden" value="@Model.BookCover.FrontCover" name="BookCover.FrontCover" />
-        }
-        //Load Image
-        <div class="form-group">
-            <label class="inputFileButton">
-                <input type="file" id="inputFile" name="BookCover.Image" class="inputfile" />
-                <span>Upload Image</span>
-            </label>
-            <text id="textImageFileName"></text>
-        </div>
-        @Html.ValidationMessageFor(m => m.BookCover)
 
         <div id="bookAuthors">
             <hr />
@@ -67,15 +77,18 @@
                                 <input type="hidden" name="Authors[@i].Id" value="@Model.Authors[i].Id" class="form-control" />
                                 <input type="hidden" name="Authors[@i].IsRemoved" value="false" class="form-control is-removed" />
                                 @Html.LabelFor(m => m.Authors[i].AuthorName.FirstName)
-                                <input type="text" name="Authors[@i].AuthorName.FirstName" value="@Model.Authors[i].AuthorName.FirstName"  class="form-control"/>
+                                <input type="text" name="Authors[@i].AuthorName.FirstName" value="@Model.Authors[i].AuthorName.FirstName" class="form-control" />
+                                @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.FirstName)
                             </td>
                             <td>
                                 @Html.LabelFor(m => m.Authors[i].AuthorName.MiddleName)
-                                <input type="text" name="Authors[@i].AuthorName.MiddleName" value="@Model.Authors[i].AuthorName.MiddleName"  class="form-control"/>
+                                <input type="text" name="Authors[@i].AuthorName.MiddleName" value="@Model.Authors[i].AuthorName.MiddleName" class="form-control" />
+                                @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.MiddleName)
                             </td>
                             <td>
                                 @Html.LabelFor(m => m.Authors[i].AuthorName.LastName)
-                                <input type="text" name="Authors[@i].AuthorName.LastName" value="@Model.Authors[i].AuthorName.LastName" class="form-control"/>
+                                <input type="text" name="Authors[@i].AuthorName.LastName" value="@Model.Authors[i].AuthorName.LastName" class="form-control" />
+                                @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.LastName)
                             </td>
                             <td>
                                 <button class="btn btn-sm btn-danger btn-remove-author-modal" data-toggle="modal"
@@ -86,11 +99,18 @@
                         </tr>
                         @Html.ValidationMessageFor(m => m.Authors[i].AuthorName)
                     }
+                    @if (!Model.Authors.Any())
+                    {
+                        <tr>
+                            <td>
+                                @Html.ValidationMessageFor(m => m.Authors)
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
-            @Html.ValidationMessageFor(m => m.Authors)
         </div>
-        <p class="form-group">
+        <div class="form-group">
             <div class="modal fade" id="removeAuthorConfirmation" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -111,7 +131,7 @@
                 </div>
             </div>
             <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-default">
-        </p>
+        </div>
 
         <hr />
         <h3>Book Subcategories</h3>
@@ -127,15 +147,16 @@
             }
             @Html.ValidationMessageFor(m => m.SelectedSubcategories)
         </div>
-        <p class="form-group">
+        <div class="form-group">
             <button type="button" id="addCategory" class="btn btn-default">Add Subcategory</button>
-        </p>
+        </div>
 
         <hr />
-        <p> <h3>Book Copies:</h3> </p>
 
-        <div id="bookCopies">
-            <table id="bookCopyTable" class="col-sm-12 table-hover">
+        <h3>Book Copies:</h3>
+
+        <div id="bookCopies" class="form-inline">
+            <table id="bookCopyTable" class="table table-hover">
 
                 @for (int i = 0; i < Model.BookCopies.Count(); i++)
                 {
@@ -147,12 +168,11 @@
                                 <select name="BookCopies[@i].BookCondition" class="form-control">
                                     @foreach (var item in Model.AllBookConditions)
                                     {
-                                        <option value="@item.Key" 
-                                                @if (item.Key == Model.BookCopies[i].BookCondition)
-                                                {
-                                                    @:selected="selected"
-                                                }
-                                                >@item.Value</option>
+                                        <option value="@item.Key"
+                                                @if (item.Key == Model.BookCopies[i].BookCondition) { @: selected="selected"
+                                                                                                }>
+                                            @item.Value
+                                                                                            </option>
                                     }
                                 </select>
                                 @*@Html.EnumDropDownListFor(m => m.BookCopies[i].BookCondition, new { @class = "form-control" })*@
@@ -170,10 +190,14 @@
             </table>
         </div>
 
-        <p> <input type="button" id="AddBookCopy" value="Add Copy" class="btn btn-primary" /> </p>
-            @Html.ValidationMessageFor(m => m.BookCopies)
+        <div class="form-group">
+            <input type="button" id="AddBookCopy" value="Add Copy" class="btn btn-primary" />
+        </div>
+        @Html.ValidationMessageFor(m => m.BookCopies)
 
+        <div class="form-group">
             <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
     }
 </div>
 

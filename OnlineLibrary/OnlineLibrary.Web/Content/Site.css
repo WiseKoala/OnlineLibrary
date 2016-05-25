@@ -41,3 +41,14 @@ textarea {
     border-top: 1px solid #ddd;
     padding-top: 10px;
 }
+
+.field-validation-error
+{
+    color: red;
+}
+
+.img-small-responsive{
+    max-width: 100px;
+    width: 100%;
+    display: block;
+}
