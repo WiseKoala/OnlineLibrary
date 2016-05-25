@@ -30,7 +30,7 @@
 
     // Bind
     function bindCategoriesRadioButtons() {
-        var categoryId = parseInt($("input[name=categories]:checked", "#categoriesList").val());
+        var categoryId = parseInt($("input[name=category]:checked", "#categoriesList").val());
         var url = $("#categoriesList").data("subcategoryUrl");
 
         var settings = {};
@@ -66,6 +66,35 @@
 
             viewModel.categories.push(data);
             $("#categoriesList input").on("change", bindCategoriesRadioButtons); // TO FIX.
+        };
+        settings.error = function (jqXHR) {
+            toastr.error(jqXHR.responseJSON.error);
+        }
+
+        $.ajax(settings);
+    });
+
+    $("#addSubcategory").click(function () {
+        var selectedCategoryId = parseInt($("input[name=category]:checked", "#categoriesList").val());
+        var subcategoryName = $("#newSubcategoryName").val();
+        var url = $(this).data("url");
+
+        var settings = {};
+        settings.type = "POST";
+        settings.url = url;
+        settings.data = {
+            categoryId: selectedCategoryId,
+            name: subcategoryName
+        };
+        settings.success = function (data) {
+            // Clear input.
+            $("#newSubcategoryName").val("");
+
+            // Show notification.
+            toastr.success("Subcategory <b>" + data.Name + "</b> has been successfully created.");
+
+            // Store data in view model.
+            viewModel.subCategories.push(data);
         };
         settings.error = function (jqXHR) {
             toastr.error(jqXHR.responseJSON.error);

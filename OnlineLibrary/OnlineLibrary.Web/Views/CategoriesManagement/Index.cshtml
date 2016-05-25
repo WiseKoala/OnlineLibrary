@@ -14,7 +14,7 @@
             background-color: #2dafce;
         }
 
-        #newCategoryNameGroup { margin-bottom: 10px; }
+        #newCategoryNameGroup, #newSubcategoryGroup { margin-bottom: 10px; }
     </style>
     <link href="~/Content/toastr.min.css" rel="stylesheet" />
 }
@@ -28,8 +28,7 @@
 <div class="row">
     <div class="col-md-4">
         <h2>Categories</h2>
-
-        <div class="text-center">
+        <div>
             <div id="newCategoryNameGroup" class="input-group">
                 <span class="input-group-btn">
                     <button id="addCategory" class="btn btn-success" type="button" data-add-category-url="@Url.Action("CreateCategory", "CategoriesManagement")">Add</button>
@@ -38,17 +37,24 @@
             </div>
             <div id="categoriesList" class="list-group btn-group-vertical" data-toggle="buttons" data-bind="foreach: categories" data-categories-url="@Url.Action("GetCategories", "CategoriesManagement")" data-subcategory-url="@Url.Action("GetSubCategories", "CategoriesManagement")">
                 <label class="btn btn-default">
-                    <input type="radio" name="categories" data-bind="attr: { value : Id }" autocomplete="off"> <span data-bind="text: Name"></span>
+                    <input type="radio" name="category" data-bind="attr: { value : Id }" autocomplete="off"> <span data-bind="text: Name"></span>
                 </label>
             </div>
         </div>
     </div>
     <div class="col-md-4">
         <h2>Subcategories</h2>
-
-        <p data-bind="visible: subCategories().length == 0">No records...</p>
-        <div id="subcategoriesList" class="list-group" data-bind="foreach: subCategories">
-            <button type="button" class="list-group-item" data-bind="text: Name, attr: { 'data-id': Id }"></button>
+        <div>
+            <div id="newSubcategoryGroup" class="input-group">
+                <span class="input-group-btn">
+                    <button id="addSubcategory" class="btn btn-success" type="button" data-url="@Url.Action("CreateSubCategory", "CategoriesManagement")">Add</button>
+                </span>
+                <input id="newSubcategoryName" class="form-control" type="text" name="newCategory" placeholder="New name..." />
+            </div>
+            <p data-bind="visible: subCategories().length == 0">No records...</p>
+            <div id="subcategoriesList" class="list-group" data-toggle="buttons" data-bind="foreach: subCategories">
+                <button type="button" class="list-group-item" data-bind="text: Name, attr: { 'data-id': Id }"></button>
+            </div>
         </div>
     </div>
 </div>
