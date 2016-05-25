@@ -28,6 +28,11 @@
         settings.success = function (data) {
             viewModel.categories(data);
             $("#categoriesList input").on("change", bindCategoriesRadioButtons);
+
+            // Set first radio input as checked.
+            $("#categoriesList label").first().addClass("active");
+            $("#categoriesList input").first().prop("checked", true);
+            $("#categoriesList input").trigger("change");
         };
         settings.error = function (jqXHR) {
             toastr.error(jqXHR.responseJSON.error);
@@ -70,7 +75,7 @@
         settings.success = function (data) {
             // Clear input.
             $("#newCategoryName").val("");
-            toastr.success("Category " + data.Name + " has been successfully created.");
+            toastr.success("Category <b>" + data.Name + "</b> has been successfully created.");
 
             viewModel.categories.push(data);
             $("#categoriesList input").on("change", bindCategoriesRadioButtons); // TO FIX.
