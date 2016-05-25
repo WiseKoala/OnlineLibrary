@@ -27,7 +27,14 @@
         settings.url = url;
         settings.success = function (data) {
             viewModel.categories(data);
-            $("#categoriesList input").on("change", bindCategoriesRadioButtons);
+
+            // Create the settings object.
+            var settings = { 
+                success: function (data) {
+                    viewModel.subCategories(data);
+                }
+            };
+            $("#categoriesList input").on("change", settings, bindCategoriesRadioButtonsFirstTime);
 
             // Set first radio input as checked.
             $("#categoriesList label").first().addClass("active");
@@ -42,22 +49,19 @@
     })();
 
     // Bind
-    function bindCategoriesRadioButtons() {
+    function bindCategoriesRadioButtonsFirstTime(settings) {
         var categoryId = parseInt($("input[name=category]:checked", "#categoriesList").val());
         var url = $("#categoriesList").data("subcategoryUrl");
-
-        var settings = {};
+        
+        // The success callback should be provided by the caller.
         settings.type = "GET";
         settings.url = url;
         settings.data = {
             categoryId: categoryId
         };
-        settings.success = function (data) {
-            viewModel.subCategories(data);
-        };
         settings.error = function (jqXHR) {
             toastr.error(jqXHR.responseJSON.error);
-        }
+        };
 
         $.ajax(settings);
     };
@@ -78,7 +82,17 @@
             toastr.success("Category <b>" + data.Name + "</b> has been successfully created.");
 
             viewModel.categories.push(data);
-            $("#categoriesList input").on("change", bindCategoriesRadioButtons); // TO FIX.
+
+            // Build settings object.
+            var settings = {
+                success: function (data) {
+                    $("#subcategoriesList").fadeOut(300, function () {
+                        viewModel.subCategories(data);
+                    });
+                    $("#subcategoriesList").fadeIn(300);
+                }
+            };
+            $("#categoriesList input").on("change", settings, bindCategoriesRadioButtons); // TO FIX.
         };
         settings.error = function (jqXHR) {
             toastr.error(jqXHR.responseJSON.error);
