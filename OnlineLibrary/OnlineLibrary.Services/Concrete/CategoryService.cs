@@ -55,8 +55,9 @@ namespace OnlineLibrary.Services.Concrete
             }
             else
             {
-                // Try to find subcategory with the same name.
-                bool duplicateExists = _dbContext.SubCategories
+                // Try to find subcategory with the same name that belongs
+                // to the specified category.
+                bool duplicateExists = category.SubCategories
                     .Any(sc => sc.Name.ToLower() == name.ToLower());
 
                 if (duplicateExists)
