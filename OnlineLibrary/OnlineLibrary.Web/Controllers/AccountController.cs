@@ -48,6 +48,11 @@ namespace OnlineLibrary.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ExternalLogin(string provider, string returnUrl)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                LogOff();
+            }
+
             // Request a redirect to the external login provider
             return new ChallengeResult(
                 provider,
