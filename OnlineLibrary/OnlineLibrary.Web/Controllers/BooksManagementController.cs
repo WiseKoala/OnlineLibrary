@@ -114,7 +114,7 @@ namespace OnlineLibrary.Web.Controllers
                     model.BookCategories[i].Categories = SetSelectedCategory(categoriesDropDownItems, model.BookCategories[i].Id);
                 }
             }
-            // If , is initializing some data for view.
+            // If, is initializing some data for view.
             else
             {
                 model.BookCover = new FrontCoverViewModel();

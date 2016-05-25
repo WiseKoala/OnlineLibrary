@@ -14,5 +14,6 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         public SubCategoryViewModel Subcategory { get; set; }
         public IEnumerable<SelectListItem> Subcategories{ get; set; }
         public IEnumerable<SelectListItem> Categories { get; set; }
+        public bool IsRemoved { get; set; }
     }
 }
