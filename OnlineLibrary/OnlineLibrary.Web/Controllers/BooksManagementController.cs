@@ -45,41 +45,17 @@ namespace OnlineLibrary.Web.Controllers
             return View(books);
         }
 
-        [HttpPost]
-        public ActionResult DeleteBookCopy(int id = 2)
-        {
-            BookCopy removedBookCopy = null;
-            try
-            {
-                removedBookCopy = _bookService.DeleteBookCopy(id);
-            }
-            catch (BookCopyNotAvailableException ex)
-            {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(new { error = ex.Message });
-            }
-            catch (KeyNotFoundException ex)
-            {
-                Response.StatusCode = (int)HttpStatusCode.NotFound;
-                return Json(new { error = ex.Message });
-            }
-
-            return Json(removedBookCopy, JsonRequestBehavior.DenyGet);
-        }
-
         [HttpGet]
         public ActionResult CreateEdit(int id)
         {
-            CreateEditBookViewModel model = new CreateEditBookViewModel();
-
+            // Get all data needed for this action.
             var subcategories = DbContext.SubCategories.ToList();
             var categories = DbContext.Categories.ToList();
+            var book = GetBook(id);
 
-            Book book = DbContext.Books.Where(b => b.Id == id)
-                                       .Include(b => b.BookCopies)
-                                       .Include(b => b.Authors)
-                                       .SingleOrDefault();
+            CreateEditBookViewModel model = new CreateEditBookViewModel();
 
+            // If book != null is edit else is create.
             if (book != null)
             {
                 model = new CreateEditBookViewModel()
@@ -124,31 +100,21 @@ namespace OnlineLibrary.Web.Controllers
                     }).ToList()
                 };
 
-                // Get all subcategories for each category for this book.
+                // Get all subcategories for each  book's category.
                 for (int i = 0; i < model.BookCategories.Count(); i++)
                 {
-                    model.BookCategories[i].Subcategories = subcategories
-                                     .Where(sc => sc.CategoryId == model.BookCategories[i].Id)
-                                     .Select(sc => new SelectListItem
-                                     {
-                                         Text = sc.Name,
-                                         Value = sc.Id.ToString(),
-                                         Selected = model.BookCategories[i].Subcategory.Id == sc.Id
-                                     }).ToList();
+                    var subcategoriesDropDownItems = SetSubCategoriesDropDownItems(subcategories, model.BookCategories[i].Id);
+                    model.BookCategories[i].Subcategories = SetSelectedCategory(subcategoriesDropDownItems, model.BookCategories[i].Id);
                 }
 
+                //  Get all categories for each book's category.
                 for (int i = 0; i < model.BookCategories.Count(); i++)
                 {
-                    // Get all categories for drop-down and set the selected item.
-                    model.BookCategories[i].Categories = categories.Select(c => new SelectListItem
-                    {
-                        Text = c.Name,
-                        Value = c.Id.ToString(),
-                        Selected = model.BookCategories[i].Id == c.Id
-                    }).ToList();
+                    var categoriesDropDownItems = SetCategoriesDropDownItems(categories);
+                    model.BookCategories[i].Categories = SetSelectedCategory(categoriesDropDownItems, model.BookCategories[i].Id);
                 }
             }
-            // If the book doesn't exist, is initialising some data for view.
+            // If , is initializing some data for view.
             else
             {
                 model.BookCover = new FrontCoverViewModel();
@@ -156,16 +122,12 @@ namespace OnlineLibrary.Web.Controllers
                 {
                     new CategoryViewModel
                     {
-                         Categories = categories.Select(c => new SelectListItem
-                         {
-                             Text = c.Name,
-                             Value = c.Id.ToString(),
-                         }).ToList()
+                         Categories = SetCategoriesDropDownItems(categories)
                     }
                 };
             }
 
-           return View(model);
+            return View(model);
         }
 
         [HttpPost]
@@ -253,7 +215,7 @@ namespace OnlineLibrary.Web.Controllers
 
                 foreach (var bookcopy in model.BookCopies)
                 {
-                    if (bookcopy.IsToBeDeleted == true && bookcopy.Id != 0) 
+                    if (bookcopy.IsToBeDeleted == true && bookcopy.Id != 0)
                     {
                         try
                         {
@@ -304,7 +266,7 @@ namespace OnlineLibrary.Web.Controllers
                         }
                     }
                 }
-            
+
                 // Update authors.
                 foreach (var authorModel in model.Authors)
                 {
@@ -358,6 +320,28 @@ namespace OnlineLibrary.Web.Controllers
 
                 return RedirectToAction("CreateEdit", "BooksManagement", new { id = model.Id });
             }
+        }
+
+        [HttpPost]
+        public ActionResult DeleteBookCopy(int id = 2)
+        {
+            BookCopy removedBookCopy = null;
+            try
+            {
+                removedBookCopy = _bookService.DeleteBookCopy(id);
+            }
+            catch (BookCopyNotAvailableException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { error = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message });
+            }
+
+            return Json(removedBookCopy, JsonRequestBehavior.DenyGet);
         }
 
         private string SaveImage(HttpPostedFileBase image)
@@ -463,18 +447,55 @@ namespace OnlineLibrary.Web.Controllers
             System.IO.File.Delete(Server.MapPath(path));
         }
 
-        private IEnumerable<SubCategoryViewModel> GetSubcategories()
+        private Book GetBook(int id)
         {
-            // Retreive all book subcategories.
-            var allSubCategories = DbContext.SubCategories
-                .Select(sc => new SubCategoryViewModel()
-                {
-                    Id = sc.Id,
-                    Name = sc.Name
-                })
-                .ToList();
+           return DbContext.Books.Where(b => b.Id == id)
+                                 .Include(b => b.BookCopies)
+                                 .Include(b => b.Authors)
+                                 .Include(b => b.SubCategories)
+                                 .SingleOrDefault();
+        }
 
-            return allSubCategories;
+        private IList<SelectListItem> SetCategoriesDropDownItems(IList<Category> categories)
+        {
+           return categories.Select(c => new SelectListItem
+                             {
+                                 Text = c.Name,
+                                 Value = c.Id.ToString()
+                             }).ToList();
+        }
+
+        /// <summary>
+        ///  Get subcategories for a specific category.
+        /// </summary>
+        /// <param name="categoryId">Specific subcategory.</param>
+        private IList<SelectListItem> SetSubCategoriesDropDownItems(IList<SubCategory> subcategories, int categoryId)
+        {
+
+           return subcategories.Where(sc => sc.CategoryId == categoryId)
+                               .Select(sc => new SelectListItem
+                               {
+                                   Text = sc.Name,
+                                   Value = sc.Id.ToString(),
+                               }).ToList();
+        }
+
+        private IList<SelectListItem> SetSelectedCategory(IList<SelectListItem> categories, int selectedId)
+        {
+           return categories.Select(c => 
+                             {
+                                c.Selected = c.Value == selectedId.ToString();
+                                return c;
+                             }).ToList();
+        }
+
+        private IList<SelectListItem> SetSelectedSubCategory(IList<SelectListItem> subCategories, int selectedId)
+        {
+            return subCategories.Select(c =>
+            {
+                c.Selected = c.Value == selectedId.ToString();
+                return c;
+            }).ToList();
         }
 
         #endregion
