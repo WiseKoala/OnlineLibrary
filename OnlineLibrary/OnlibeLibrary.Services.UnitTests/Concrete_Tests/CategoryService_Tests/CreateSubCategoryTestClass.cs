@@ -18,7 +18,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.CategoryService_Tests
         private DbSet<SubCategory> _subCategoriesSet;
         private Category _categoryToTest;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void Init()
         {
             var subCategoriesForCategory1 = Substitute.For<ICollection<SubCategory>>();
@@ -37,7 +37,16 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.CategoryService_Tests
             var categories = new List<Category>
             {
                 new Category { Id = 1, Name = "History", SubCategories = subCategoriesForCategory1 },
-                _categoryToTest
+                _categoryToTest,
+                new Category
+                {
+                    Id = 3,
+                    Name = "Arts",
+                    SubCategories = new List<SubCategory>
+                    {
+                        new SubCategory { Id = 5, Name = "Martial Arts" }
+                    }
+                }
             }
             .AsQueryable();
 
@@ -90,12 +99,12 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.CategoryService_Tests
         }
 
         [Test]
-        public void Should_ThrowArgumentException()
+        public void Should_ThrowArgumentException_Given_DuplicateSubcategoryInSpecifiedCategory()
         {
             // Arrange.
             var categoryService = new CategoryService(_dbContext);
-            var categoryId = 2;
-            var subCategoryName = "Classics";
+            var categoryId = 3;
+            var subCategoryName = "Martial Arts";
 
             // Act.
             var sutDelegate = new TestDelegate(() => 
