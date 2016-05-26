@@ -45,6 +45,11 @@
                     {
                         <li>@Html.ActionLink("Manage Roles", "Index", "Role")</li>
                     }
+
+                    @if (User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SysAdmin))
+                    {
+                        <li>@Html.ActionLink("Manage Categories", "Index", "CategoriesManagement")</li>
+                    }
                 </ul>
             </div>
 

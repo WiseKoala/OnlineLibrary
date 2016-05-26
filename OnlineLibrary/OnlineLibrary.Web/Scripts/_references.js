@@ -12,4 +12,5 @@
 /// <reference path="view scripts/bookdetails/index.js" />
 /// <reference path="view scripts/booksmanagement/createedit.js" />
 /// <reference path="view scripts/booksmanagement/deletebook.js" />
+/// <reference path="view scripts/categoriesmanagement/index.js" />
 /// <reference path="view scripts/librarian/index.js" />
