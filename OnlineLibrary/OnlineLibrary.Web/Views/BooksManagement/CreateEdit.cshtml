@@ -124,7 +124,7 @@
             </div>
             @for (int i = 0; i < Model.BookCategories.Count(); i++)
             {
-                <div class="row book-category-subcategory">
+                <div class="row book-category-subcategory" style="margin-top: 10px">
                     @Html.HiddenFor(m => m.BookCategories[i].IsRemoved, new { @class = "is-book-category-removed" })
                     <div class="col-md-3 book-category">
                         @Html.DropDownList($"BookCategories[{i}].Id", Model.BookCategories[i].Categories, new { @class = "form-control select-category" })
@@ -136,7 +136,7 @@
                         }
                     </div> 
                     <div class="col-md-2">
-                        <button class="btn btn-sm btn-danger" id="remove-book-category" type="button">
+                        <button class="btn btn-sm btn-danger remove-book-category" type="button">
                             <span class="glyphicon glyphicon-remove"></span>
                         </button>
                     </div>                      
@@ -282,8 +282,7 @@
                         var deleteCategoryDiv = document.createElement("div");
                         deleteCategoryDiv.className = "col-md-2";
                         var button = document.createElement("button");
-                        button.className = "btn btn-sm btn-danger";
-                        button.id = "remove-book-category";
+                        button.className = "btn btn-sm btn-danger remove-book-category";
                         button.type = "button";
                         $(button).bind("click", deleteCategory);
                         var span = document.createElement("span");
@@ -339,7 +338,7 @@
 
         $(".select-category").change(addSubcategory);
 
-        $("#remove-book-category").click(deleteCategory);   
+        $(".remove-book-category").click(deleteCategory);
 
         $("#btnRemoveAuthorConfirm").click(function () {
             var authorIdToRemove = $(this).attr("data-author-to-remove-id");

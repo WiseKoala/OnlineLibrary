@@ -100,18 +100,18 @@ namespace OnlineLibrary.Web.Controllers
                     }).ToList()
                 };
 
-                // Get all subcategories for each  book's category.
-                for (int i = 0; i < model.BookCategories.Count(); i++)
-                {
-                    var subcategoriesDropDownItems = SetSubCategoriesDropDownItems(subcategories, model.BookCategories[i].Id);
-                    model.BookCategories[i].Subcategories = SetSelectedCategory(subcategoriesDropDownItems, model.BookCategories[i].Id);
-                }
-
                 //  Get all categories for each book's category.
                 for (int i = 0; i < model.BookCategories.Count(); i++)
                 {
                     var categoriesDropDownItems = SetCategoriesDropDownItems(categories);
                     model.BookCategories[i].Categories = SetSelectedCategory(categoriesDropDownItems, model.BookCategories[i].Id);
+                }
+
+                // Get all subcategories for each  book's category.
+                for (int i = 0; i < model.BookCategories.Count(); i++)
+                {
+                    var subcategoriesDropDownItems = SetSubCategoriesDropDownItems(subcategories, model.BookCategories[i].Id);
+                    model.BookCategories[i].Subcategories = SetSelectedSubCategory(subcategoriesDropDownItems, model.BookCategories[i].Subcategory.Id);
                 }
             }
             // If, is initializing some data for view.
@@ -133,10 +133,10 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public ActionResult CreateEdit(CreateEditBookViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(model);
+            //}
 
             // If book is new.
             if (model.Id < 1)
@@ -155,7 +155,7 @@ namespace OnlineLibrary.Web.Controllers
                 // Add book copies.
                 foreach (var bookCopy in model.BookCopies)
                 {
-                    if (bookCopy.IsToBeDeleted == false)
+                    if (!bookCopy.IsToBeDeleted)
                     {
                         book.BookCopies.Add(new BookCopy
                         {
@@ -188,6 +188,17 @@ namespace OnlineLibrary.Web.Controllers
                     }
                 }
 
+                foreach (var category in model.BookCategories)
+                {
+                    if (!category.IsRemoved)
+                    {
+                        var bookSubcategory = DbContext.SubCategories
+                                                         .Find(category.Subcategory.Id);
+                                                                                
+                        book.SubCategories.Add(bookSubcategory);
+                    }
+                }
+
                 // Save book.
                 DbContext.Books.Add(book);
                 DbContext.SaveChanges();
@@ -210,7 +221,6 @@ namespace OnlineLibrary.Web.Controllers
                 }
 
                 // Delete book copy from database if element passed to model through HttpPost contains the IsToBeDeleted = true field
-
                 bool DbContextChanged = false;
 
                 foreach (var bookcopy in model.BookCopies)
@@ -315,6 +325,18 @@ namespace OnlineLibrary.Web.Controllers
                         }
                     }
                 }
+
+                book.SubCategories.Clear();
+                var subcategories = DbContext.SubCategories.ToList();
+
+                foreach (var category in model.BookCategories)
+                {
+                    if( !category.IsRemoved )
+                    {
+                        var addedCategory = subcategories.Find(sc => sc.Id == category.Subcategory.Id);
+                        book.SubCategories.Add(addedCategory);
+                    }
+                } 
 
                 DbContext.SaveChanges();
 
