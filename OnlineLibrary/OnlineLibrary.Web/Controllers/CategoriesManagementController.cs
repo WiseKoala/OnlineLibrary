@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using OnlineLibrary.DataAccess;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Services.Abstract;
@@ -12,6 +13,7 @@ using OnlineLibrary.Web.Models.CategoriesManagement;
 
 namespace OnlineLibrary.Web.Controllers
 {
+    [Authorize(Roles = UserRoles.SysAdmin)]
     public class CategoriesManagementController : BaseController
     {
         private ICategoryService _categoryService;
