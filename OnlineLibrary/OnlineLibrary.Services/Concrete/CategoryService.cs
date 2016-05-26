@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Services.Abstract;
+using System.Configuration;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -23,6 +24,13 @@ namespace OnlineLibrary.Services.Concrete
             if (String.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentException("Category name cannot be empty.");
+            }
+
+            // Verify max length.
+            int maxLength = Convert.ToInt32(ConfigurationManager.AppSettings["CategorySubcategoryMaxLength"]);
+            if (name.Length > maxLength)
+            {
+                throw new ArgumentException($"Category name is too long. Maximum length is {maxLength} characters");
             }
 
             // Try to find category with the same name.
@@ -45,6 +53,13 @@ namespace OnlineLibrary.Services.Concrete
             if (String.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentException("Subcategory name cannot be empty.");
+            }
+
+            // Verify max length.
+            int maxLength = Convert.ToInt32(ConfigurationManager.AppSettings["CategorySubcategoryMaxLength"]);
+            if (name.Length > maxLength)
+            {
+                throw new ArgumentException($"Subcategory name is too long. Maximum length is {maxLength} characters");
             }
 
             Category category = _dbContext.Categories.SingleOrDefault(c => c.Id == categoryId);

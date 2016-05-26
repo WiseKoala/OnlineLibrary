@@ -42,7 +42,6 @@
         $.ajax(settings);
     })();
 
-    // Bind
     function bindCategoriesRadioButtons() {
         var categoryId = parseInt($("input[name=category]:checked", "#categoriesList").val());
         var url = $("#categoriesList").data("subcategoryUrl");
