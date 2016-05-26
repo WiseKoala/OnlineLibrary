@@ -310,6 +310,7 @@
     <Content Include="Content\Views stylesheets\CategoriesManagement\Index.css" />
     <Content Include="Content\Views stylesheets\Home\Index.css" />
     <Content Include="Content\Views stylesheets\Librarian\Index.css" />
+    <Content Include="Content\Views stylesheets\UserLoans\MyLoans.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -341,6 +342,7 @@
     <Content Include="Scripts\toastr.js" />
     <Content Include="Scripts\toastr.min.js" />
     <Content Include="Scripts\View Scripts\BookDetails\Index.js" />
+    <Content Include="Scripts\View Scripts\BooksManagement\CreateEdit.js" />
     <Content Include="Scripts\View Scripts\BooksManagement\DeleteBook.js" />
     <Content Include="Scripts\View Scripts\CategoriesManagement\index.js" />
     <Content Include="Scripts\View Scripts\Librarian\index.js" />

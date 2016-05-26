@@ -122,15 +122,60 @@ namespace OnlineLibrary.Web.Controllers
                 };
             }
 
+            model.AllBookConditions = PopulateWithBookConditions();
+
             return View(model);
         }
 
         [HttpPost]
         public ActionResult CreateEdit(CreateEditBookViewModel model)
         {
+            model.AllBookConditions = PopulateWithBookConditions();
+
             if (!ModelState.IsValid)
             {
                 model.AllBookSubcategories = GetSubcategories();
+
+                var bookcopies = model.BookCopies.ToList();
+
+                if (bookcopies.Count() > 0)
+                {
+                    foreach (var bookcopy in bookcopies)
+                    {
+                        if (bookcopy.IsToBeDeleted == true)
+                        {
+                            model.BookCopies.Remove(bookcopy);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < model.Authors.Count(); i++)
+                {
+                    if (model.Authors[i].IsRemoved)
+                    {
+                        if (ModelState.ContainsKey(string.Concat("Authors[", i, "].IsRemoved")))
+                        {
+                            foreach (var state in ModelState.ToArray())
+                            {
+                                if (state.Key.StartsWith(string.Concat("Authors[", i)))
+                                {
+                                    ModelState.Remove(state);
+                                }
+                            }
+                        }
+
+                        if (model.Authors[i].IsRemoved == true)
+                        {
+                            model.Authors.Remove(model.Authors[i]);
+                        }
+
+                        if (!model.Authors.Any())
+                        {
+                            ModelState.AddModelError("Authors", "There has to be at least one author.");
+                        }
+                    }
+                }
+
                 return View(model);
             }
 
@@ -395,23 +440,31 @@ namespace OnlineLibrary.Web.Controllers
             return Json(removedBook, JsonRequestBehavior.DenyGet);
         }
 
-        [AllowAnonymous]
         public JsonResult ListBookConditions()
         {
-            var bookConditionNames = Enum.GetNames(typeof(BookCondition));
-
-            var bookConditions = bookConditionNames
+            var bookConditions = PopulateWithBookConditions()
                 .Select(name => new
                 {
-                    Id = (int)Enum.Parse(typeof(BookCondition), name),
-                    Name = name
+                    Value = (int)Enum.Parse(typeof(BookCondition), name.Key.ToString()),
+                    Name = name.Value
                 })
                 .ToList();
 
             return Json(bookConditions, JsonRequestBehavior.AllowGet);
         }
 
-        [AllowAnonymous]
+        private Dictionary<BookCondition, string> PopulateWithBookConditions()
+        {
+            var bookConditions = new Dictionary<BookCondition, string>();
+
+            foreach (var cond in Enum.GetValues(typeof(BookCondition)))
+            {
+                bookConditions.Add((BookCondition)cond, _bookService.GetConditionDescription((BookCondition)cond));
+            }
+
+            return bookConditions;
+        }
+
         public JsonResult ListBookSubCategories(int? categoryId)
         {
             var query = DbContext.SubCategories.AsQueryable();
@@ -426,7 +479,7 @@ namespace OnlineLibrary.Web.Controllers
             var subCategories = allSubCategories
                 .Select(sc => new
                 {
-                    Id = sc.Id,
+                    Value = sc.Id,
                     Name = sc.Name
                 })
                 .ToList();

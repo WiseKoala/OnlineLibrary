@@ -23,7 +23,7 @@ namespace OnlineLibrary.Web.Controllers
             _librarianService = librarianService;
         }
 
-        [Authorize(Roles = "Librarian, System administrator, Super administrator")]
+        [Authorize(Roles = "Librarian, System administrator")]
         public ActionResult Index()
         {
             var model = new LibrarianIndexViewModel()
