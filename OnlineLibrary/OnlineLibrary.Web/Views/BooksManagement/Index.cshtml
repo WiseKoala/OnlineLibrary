@@ -30,7 +30,7 @@
                 <td>
                     <img src="@Url.Content(book.FrontCover)" width="100" alt="Book cover" />
                 </td>
-                <td>@book.Title</td>
+                <td>@Html.ActionLink(book.Title, "Index", "BookDetails", new { id = book.Id }, null)</td>
                 <td>@book.ISBN</td>
                 <td>@book.PublishDate.ToShortDateString()</td>
                 <td class="text-center">

@@ -1,6 +1,7 @@
 ﻿@model OnlineLibrary.Web.Models.LibrarianLoansViewModels.LibrarianIndexViewModel
 @section CSS {
     <link href="~/Content/Views stylesheets/Librarian/Index.css" rel="stylesheet" />
+    <link href="~/Content/toastr.css" rel="stylesheet" />
 }
 
 <h2>Manage Loans</h2>
@@ -129,18 +130,17 @@
                         <td data-bind="text: BookTitle"></td>
                         <td>
                             <div class="form-inline">
-                                <form class="form-group" action="@Url.Action("ReturnBook", "Librarian")" method="post">
-                                    <input type="hidden" name="loanId" data-bind="attr: { value: LoanId }" />
-                                    <button type="submit" class="btn btn-primary btn-sm">
-                                        Return
-                                    </button>
-                                </form>
-                                <form class="form-group" action="@Url.Action("LostBook", "Librarian")" method="post">
-                                    <input type="hidden" name="loanId" data-bind="attr: { value: LoanId }" />
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        Lost
-                                    </button>
-                                </form>
+                                <!-- Trigger Button for ReturnModal -->
+                                <button type="button" class="btn btn-primary btn-sm return" data-toggle="modal"
+                                        data-target="#returnLoan" data-bind="attr: { 'data-loan-id': LoanId }">
+                                    Return
+                                </button>
+
+                                <!-- Trigger Button for LostModal -->
+                                <button type="button" class="btn btn-danger btn-sm lost" data-toggle="modal"
+                                        data-target="#lostBook" data-bind="attr: { 'data-loan-id': LoanId }">
+                                    Lost
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -320,7 +320,7 @@
                     <input id="approveUrl" hidden="hidden" value="@Url.Action("ApproveLoanRequest", "Librarian")" />
                     <input id="redirectUrl" hidden="hidden" value="@Url.Action("Index", "Librarian")" />
 
-                    <button id="approveLoanButton" type="submit" class="btn btn-primary">OK</button>
+                    <button id="approveLoanButton" type="submit" class="btn btn-primary" data-dismiss="modal">OK</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 </form>
                 <div id="approveLoanErrorAlert" class="alert alert-danger hidden fade in" role="alert">
@@ -368,41 +368,87 @@
                     <label>Are you sure you want to perform the loan for this approved loan request ?</label>
                 </div>
                 <div class="modal-footer">
-                    <form id="performLoan" action="@Url.Action("PerformLoan", "Librarian")" method="post">
+                    <div id="performLoan">
                         <input id="loanId" name="loanId" hidden="hidden" />
-                        <button type="submit" class="btn btn-default">Yes</button>
+                        <button type="submit" class="btn btn-default" data-dismiss="modal" data-url="@Url.Action("PerformLoan", "Librarian")">Yes</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Cancel Approved Loan Modal  -->
-    <div class="modal fade" id="cancelLoan" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="cancelLoanLabel">Cancel the current loan approved loan request</h4>
-                </div>
+<!-- Cancel Approved Loan Modal  -->
+<div class="modal fade" id="cancelLoan" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="cancelLoanLabel">Cancel the current loan approved loan request</h4>
+            </div>
 
-                <div class="modal-body">
-                    <label>Are you sure you want to cancel this approved loan request ?</label>
+            <div class="modal-body">
+                <label>Are you sure you want to cancel this approved loan request ?</label>
+            </div>
+            <div class="modal-footer">
+                <div id="cancelApprovedLoan">
+                    <input id="loanId" name="loanId" hidden="hidden" />
+                    <button type="submit" class="btn btn-default" data-dismiss="modal" data-url="@Url.Action("CancelApprovedLoan", "Librarian")">Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
                 </div>
-                <div class="modal-footer">
-                    <form id="cancelApprovedLoan" action="@Url.Action("CancelApprovedLoan", "Librarian")" method="post">
-                        <input id="loanId" name="loanId" hidden="hidden" />
-                        <button type="submit" class="btn btn-default">Yes</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                </form>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Return Loan Modal  -->
+<div class="modal fade" id="returnLoan" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="returnLoanLabel">Mark the current loan as returned</h4>
+            </div>
+
+            <div class="modal-body">
+                <label>Are you sure you want to mark this loan as returned?</label>
+            </div>
+            <div class="modal-footer">
+                <div id="returnLoanedBook">
+                    <input id="loanId" name="loanId" hidden="hidden" />
+                    <button type="submit" class="btn btn-default" data-dismiss="modal" data-url="@Url.Action("ReturnBook", "Librarian")">Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lost Book Modal  -->
+<div class="modal fade" id="lostBook" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="lostBookLabel">Mark current book as lost</h4>
+            </div>
+
+            <div class="modal-body">
+                <label>Are you sure you want to mark this loaned book as lost?</label>
+            </div>
+            <div class="modal-footer">
+                <div id="lostLoanedBook">
+                    <input id="loanId" name="loanId" hidden="hidden" />
+                    <button type="submit" class="btn btn-default" data-dismiss="modal" data-url="@Url.Action("LostBook", "Librarian")">Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
-    <script src="~/Scripts/View Scripts/Librarian/index.js"></script>
+    <script src="~/Scripts/toastr.min.js"></script>
     <script src="~/Scripts/knockout-3.4.0.js"></script>
+    <script src="~/Scripts/View Scripts/Librarian/index.js"></script>
 }

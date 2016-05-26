@@ -1,11 +1,11 @@
 ﻿.btn {
-    background-color: #2dafce;
-    border-color: #2794ae;
+    /*background-color: #2dafce;
+    border-color: #2794ae;*/
 }
 
-.btn:hover, .btn:active {
+/*.btn:hover, .btn:active {
     border-color: #2dafce;
-}
+}*/
 
 .btn-primary {
     background-color: #2dafce !important;
@@ -17,13 +17,13 @@
 
 
 .btn-default {
-    color: #fff;
-    background-color: #2dafce !important;
+    /*color: #fff;
+    background-color: #2dafce !important;*/
 }
 
 .btn-default:hover, .btn-default:active {
-    color: #fff;
-    background-color: #2fa2bf !important;
+    /*color: #fff;
+    background-color: #2fa2bf !important;*/
 }
 
 .btn-danger {

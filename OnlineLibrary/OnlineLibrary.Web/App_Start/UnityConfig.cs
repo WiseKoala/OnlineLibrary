@@ -60,6 +60,7 @@ namespace OnlineLibrary.Web.App_Start
             container.RegisterType<SignInService>();
             var userManagementService = GetUserManagementServiceInstance(container);
             container.RegisterInstance<UserManagementService>(userManagementService);
+            container.RegisterType<ICategoryService, CategoryService>();
         }
 
         private static UserManagementService GetUserManagementServiceInstance(IUnityContainer container)
