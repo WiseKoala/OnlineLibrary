@@ -1,0 +1,5 @@
+﻿.list-group label.active { color: #fff; background-color: #2dafce; }
+.list-group label.active:hover { color: #fff; background-color: #2dafce; }
+
+#newCategoryNameGroup, #newSubcategoryGroup { margin-bottom: 10px; }
+#subcategoriesList { display: inline-block; }

@@ -307,6 +307,7 @@
     <Content Include="Content\Views stylesheets\BookDetails\Index.css" />
     <Content Include="Content\Views stylesheets\BooksManagement\CreateEdit.css" />
     <Content Include="Content\Views stylesheets\BooksManagement\Index.css" />
+    <Content Include="Content\Views stylesheets\CategoriesManagement\Index.css" />
     <Content Include="Content\Views stylesheets\Home\Index.css" />
     <Content Include="Content\Views stylesheets\Librarian\Index.css" />
     <Content Include="favicon.ico" />
