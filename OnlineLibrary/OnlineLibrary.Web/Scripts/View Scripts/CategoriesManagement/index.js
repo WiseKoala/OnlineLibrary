@@ -28,13 +28,7 @@
         settings.success = function (data) {
             viewModel.categories(data);
 
-            // Create the settings object.
-            var settings = { 
-                success: function (data) {
-                    viewModel.subCategories(data);
-                }
-            };
-            $("#categoriesList input").on("change", settings, bindCategoriesRadioButtonsFirstTime);
+            $("#categoriesList input").change(bindCategoriesRadioButtons);
 
             // Set first radio input as checked.
             $("#categoriesList label").first().addClass("active");
@@ -49,11 +43,14 @@
     })();
 
     // Bind
-    function bindCategoriesRadioButtonsFirstTime(settings) {
+    function bindCategoriesRadioButtons() {
         var categoryId = parseInt($("input[name=category]:checked", "#categoriesList").val());
         var url = $("#categoriesList").data("subcategoryUrl");
         
-        // The success callback should be provided by the caller.
+        var settings = {};
+        settings.success = function (data) {
+            viewModel.subCategories(data);
+        };
         settings.type = "GET";
         settings.url = url;
         settings.data = {
@@ -84,15 +81,7 @@
             viewModel.categories.push(data);
 
             // Build settings object.
-            var settings = {
-                success: function (data) {
-                    $("#subcategoriesList").fadeOut(300, function () {
-                        viewModel.subCategories(data);
-                    });
-                    $("#subcategoriesList").fadeIn(300);
-                }
-            };
-            $("#categoriesList input").on("change", settings, bindCategoriesRadioButtons); // TO FIX.
+            $("#categoriesList input").change(bindCategoriesRadioButtons); // TO FIX.
         };
         settings.error = function (jqXHR) {
             toastr.error(jqXHR.responseJSON.error);
