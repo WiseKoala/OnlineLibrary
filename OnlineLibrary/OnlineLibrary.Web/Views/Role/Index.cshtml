@@ -13,7 +13,7 @@
 
     <table class="table table-striped">
         <tr>
-            <th>UserName</th>
+            <th>User Name</th>
             @foreach (var role in Model.AllRoles)
             {
                 <th class="col-xs-2">
@@ -29,17 +29,19 @@
             </tr>
         }
         else {
-            foreach (var item in Model.UsersAndTheirRoles)
-            {
-                using (Html.BeginForm("Index", "Role", FormMethod.Post))
-                {
-                    <tr>
+               int count = 0;
+               foreach (var item in Model.UsersAndTheirRoles)
+               {
+                 count++;
+                 using (Html.BeginForm("Index", "Role", FormMethod.Post))
+                 {
+                    <tr data-count="@count">
                         <td>
                             @item.UserName
                             <input name="userName" value="@item.UserName" type="hidden" />
                         </td>
                         @foreach (var role in Model.AllRoles)
-                        {
+                                               {
                             <td>
                                 <input type="hidden" name="userName" value="@item.UserName" />
                                 @if (role.Name == item.RoleName)
@@ -48,17 +50,17 @@
                                 }
                                 else
                                 {
-                                    <input type="radio" name="roleName" value="@role.Name" />
+                                    <input type="radio" name="roleName" value="@role.Name" class="radioIfChecked"/>
                                 }
                             </td>
                         }
                         <td>
-                            <input type="submit" class="btn btn-primary btn-xs" value="Save" />
+                            <input type="submit" id="buttonSave-@count" class="btn btn-primary btn-xs" disabled="disabled" value="Saved" title="First change the role, then click Save" />
                         </td>
                     </tr>
-                }
-            }
-        }
+                 }
+               }
+             }
     </table>
 </div>
 
@@ -66,3 +68,17 @@
 {
     <div class="alert alert-warning" style="margin-top: 15px" role="alert"><strong>Warning!</strong> If you change your own role you will be signed out and signed in back!</div>
 }
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $(".radioIfChecked").click(function () {
+                var rowNr = $(this).parent().parent().attr("data-count");
+                var buttonSaveToChange = document.getElementById("buttonSave-" + rowNr);
+                buttonSaveToChange.value = "Save";
+                buttonSaveToChange.disabled = "";
+                buttonSaveToChange.title = "";
+            });
+        });
+    </script>
+    }
