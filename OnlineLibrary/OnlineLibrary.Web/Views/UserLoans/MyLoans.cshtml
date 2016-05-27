@@ -388,11 +388,13 @@
     </div>
 </div>
 
-@section scripts{
+@section scripts {
+
 <script>
+
     $(document).ready(function ()
     {
-        var activeLoansBageNumber = @Model.InProgressLoans.Where(al => (al.ExpectedReturnDate.Value - DateTime.Now).Days <= 5).Count();
+        var activeLoansBageNumber = @Model.InProgressLoans.Count();
         if (activeLoansBageNumber != 0)
         {
             $("#activeLoansBadge").text(activeLoansBageNumber);
