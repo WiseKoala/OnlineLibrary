@@ -36,7 +36,7 @@
                             "timeOut": 30000,           // 30 seconds
                             "extendedTimeOut": 30000    // another 30 seconds, if user hovers mouse over notification
                         }
-                    toastr.info('Please wait for a confirmation from our librarian before coming to the library to pick up the book.', 'Loan Request Sent');
+                    toastr.success('Please wait for a confirmation from our librarian before coming to the library to pick up the book.', 'Loan Request Sent');
 
                 }
                 else if (response.error != null) {
