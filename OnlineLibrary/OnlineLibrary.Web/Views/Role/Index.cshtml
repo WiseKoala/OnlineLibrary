@@ -5,6 +5,7 @@
 
 @section CSS {
     <link href="~/Content/Views stylesheets/Role/Index.css" rel="stylesheet" />
+    <link href="~/Content/toastr.min.css" rel="stylesheet" />
 }
 
 <p></p>
@@ -28,40 +29,42 @@
                 <td class="text-center">No Roles</td>
             </tr>
         }
-        else {
-               int count = 0;
-               foreach (var item in Model.UsersAndTheirRoles)
-               {
-                 count++;
-                 using (Html.BeginForm("Index", "Role", FormMethod.Post))
-                 {
+        else
+        {
+            int count = 0;
+            foreach (var item in Model.UsersAndTheirRoles)
+            {
+                count++;
+                <form>
                     <tr data-count="@count">
                         <td>
                             @item.UserName
                             <input name="userName" value="@item.UserName" type="hidden" />
                         </td>
                         @foreach (var role in Model.AllRoles)
-                                               {
+                        {
                             <td>
                                 <input type="hidden" name="userName" value="@item.UserName" />
                                 @if (role.Name == item.RoleName)
                                 {
-                                    <input type="radio" name="roleName" value="@role.Name" checked="checked" />
+                                    <input type="radio" name="roleName" value="@role.Name" checked="checked" class="radioIfChecked" />
                                 }
                                 else
                                 {
-                                    <input type="radio" name="roleName" value="@role.Name" class="radioIfChecked"/>
+                                    <input type="radio" name="roleName" value="@role.Name" class="radioIfChecked" />
                                 }
                             </td>
                         }
                         <td>
-                            <input type="submit" id="buttonSave-@count" class="btn btn-primary btn-xs" disabled="disabled" value="Saved" title="First change the role, then click Save" />
+                            <input type="button" id="buttonSave-@count" class="btn btn-primary btn-xs saveIsClicked" disabled="disabled" value="Saved"
+                                   title="First change the role, then click Save" data-url="@Url.Action("Index", "Role")" />
                         </td>
                     </tr>
-                 }
-               }
-             }
-    </table>
+                   </form>
+            }
+        }
+
+</table>
 </div>
 
 @if (!User.IsInRole(UserRoles.SuperAdmin))
@@ -70,8 +73,71 @@
 }
 
 @section scripts {
+
     <script>
         $(document).ready(function () {
+            $('.saveIsClicked').click(function () {
+                var buttonSaveToChange = $(this);
+            $.ajax({
+
+                url: $(this).data("url"),
+                
+                data: {
+                    'userName': $(this).parent().parent().find("td input").attr("value"),
+                    'roleName': $(this).parent().parent().find("input[name=roleName]:checked").attr("value")
+                },
+
+                async: true, 
+
+                method: "POST",
+
+                success: function (response) {
+                    
+                    if (response.success != null)
+                    {
+                        buttonSaveToChange.attr("value", "Saved");
+                        buttonSaveToChange.attr("disabled", "disabled");
+                        buttonSaveToChange.attr("title", "First change the role, then click Save");
+
+                        toastr.options =
+                            {
+                                "closeButton": true,
+                                "onclick": null,
+                                "positionClass": "toast-bottom-right",
+                                "timeOut": 5000,
+                                "extendedTimeOut": 10000
+                            }
+                        toastr.success(response.success, 'Success!');
+                    }
+                    if (response.error != null)
+                        
+                        {
+                            toastr.options =
+                            {
+                                "closeButton": true,
+                                "onclick": null,
+                                "positionClass": "toast-bottom-right",
+                                "timeOut": 5000,
+                                "extendedTimeOut": 10000
+                            }
+
+                            toastr.error("An error has occured when trying to change the role of this user: " + response.error, "Error!");
+                        }
+                   },
+
+                error: function (jqXHR) {
+                    toastr.options =
+                            {
+                                "closeButton": true,
+                                "onclick": null,
+                                "positionClass": "toast-bottom-right",
+                                "timeOut": 5000,           
+                                "extendedTimeOut": 10000   
+                            }
+                    toastr.error("Please try one more time or contact our library\'s system administrator if the error persists: Couldn\'t Send Role Change Request", "Error!")
+                }
+              });
+            });
             $(".radioIfChecked").click(function () {
                 var rowNr = $(this).parent().parent().attr("data-count");
                 var buttonSaveToChange = document.getElementById("buttonSave-" + rowNr);
@@ -80,5 +146,8 @@
                 buttonSaveToChange.title = "";
             });
         });
+        
     </script>
-    }
+
+    <script src="~/Scripts/toastr.min.js"></script>
+}

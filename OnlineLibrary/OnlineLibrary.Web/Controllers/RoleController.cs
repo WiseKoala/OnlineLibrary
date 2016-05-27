@@ -62,7 +62,7 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(string userName, string roleName)
+        public async Task<JsonResult> Index(string userName, string roleName)
         {
             if (HasAdminPrivileges(User))
             {
@@ -91,21 +91,21 @@ namespace OnlineLibrary.Web.Controllers
                                 AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = true }, identity);
                             }
 
-                            return RedirectToAction("Index", "Role");
+                            return Json(new { success = "User role was succesfully changed." });
                         }
                         else
                         {
-                            return View("Error", new string[] { "Role or User was Not Found" });
+                            return Json(new { error = "Role or User was Not Found." });
                         }
                     }
 
-                    return View("Error", new string[] { "User was Not Found" });
+                    return Json(new { error = "User was Not Found." });
                 }
 
-                return View("Error", new string[] { "Role or User was Not Found" });
+                return Json(new { error = "Role or User was Not Found." });
             }
 
-            return RedirectToAction("Index", "Home");
+            return Json(new { error = "You must be system administrator to access this page." });
         }
 
         #region Helper Methods
