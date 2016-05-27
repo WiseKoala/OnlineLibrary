@@ -134,22 +134,38 @@
         </div>
 
         <hr />
-        <h3>Book Subcategories</h3>
-        <div id="bookSubcategories" class="form-group">
-            @for (int i = 0; i < Model.SelectedSubcategories.Count; i++)
+        <div id="book-categories-subcategories">
+            <div class="row">
+                <div class="col-md-3">
+                    <h4>Book Category</h4>
+                </div>
+                <div class="col-md-3">
+                    <h4>Book Subcategory</h4>
+                </div>
+            </div>
+            @for (int i = 0; i < Model.BookCategories.Count(); i++)
             {
-                <div class="book-subcategory" data-sequence-id="@i">
-                    <div class="form-group">
-                        <label>Subcategory</label>
-                        @Html.DropDownList($"SelectedSubcategories[{i}]", new SelectList(Model.AllBookSubcategories, "Id", "Name", Model.SelectedSubcategories[i]), new { @class = "form-control" })
+                <div class="row book-category-subcategory" style="margin-top: 10px">
+                    @Html.HiddenFor(m => m.BookCategories[i].IsRemoved, new { @class = "is-book-category-removed" })
+                    <div class="col-md-3 book-category">
+                        @Html.DropDownList($"BookCategories[{i}].Id", Model.BookCategories[i].Categories, new { @class = "form-control select-category" })
+                    </div>
+                    <div class="col-md-3 book-subcategory">
+                        @if (Model.BookCategories[i].Subcategories != null)
+                        {
+                            @Html.DropDownList($"BookCategories[{i}].Subcategory.Id", Model.BookCategories[i].Subcategories, new { @class = "form-control" })
+                        }
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-sm btn-danger remove-book-category" type="button">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
                     </div>
                 </div>
             }
-            @Html.ValidationMessageFor(m => m.SelectedSubcategories)
         </div>
-        <div class="form-group">
-            <button type="button" id="addCategory" class="btn btn-default">Add Subcategory</button>
-        </div>
+        <button type="button" id="add-category" class="btn btn-default" style="margin-top: 10px">Add Category</button>
+
 
         <hr />
 
@@ -227,5 +243,117 @@
 
     @Scripts.Render("~/bundles/jqueryui")
     <script src="~/Scripts/View Scripts/BooksManagement/CreateEdit.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#add-category").click(function () {
+                // Retreive all sub categories.
+                var ajaxData = {
+                    method: "GET",
+                    complete: function (jqXhr) {
+                        var categories = jqXhr.responseJSON;
+                        var mainDiv = $("#book-categories-subcategories");
+
+                        // Index for next category is equal with number of book-category-subcatery divs.
+                        var index = mainDiv.children(".book-category-subcategory").length;
+
+                        // New book-category-subcategory div.
+                        var categorySubcategryDiv = document.createElement("div");
+                        categorySubcategryDiv.className = "row book-category-subcategory"
+                        $(categorySubcategryDiv).css("margin-top", "10px");
+
+                        var isRemovedInput = document.createElement("input");
+                        isRemovedInput.className = "is-book-category-removed";
+                        isRemovedInput.name = "BookCategories[" + index + "].IsRemoved";
+                        isRemovedInput.type = "hidden";
+                        isRemovedInput.value = false;
+                        categorySubcategryDiv.appendChild(isRemovedInput);
+
+                        // New category div.
+                        var categoryDiv = document.createElement("div");
+                        categoryDiv.className = "col-md-3 book-category";
+
+                        // New subcateogry div.
+                        var subcategoryDiv = document.createElement("div");
+                        subcategoryDiv.className = "col-md-3 book-subcategory";
+
+                        var select = document.createElement("select");
+                        select.className = "form-control";
+                        select.id = "select-category";
+                        select.name = "BookCategories[" + index + "].Id";
+                        $(select).bind("change", addSubcategory);
+
+                        for (var i = 0; i < categories.length; i++) {
+                            var option = document.createElement("option");
+                            option.value = categories[i].Value
+                            option.text = categories[i].Name
+                            select.appendChild(option);
+
+                        }
+                        categoryDiv.appendChild(select);
+
+                        // New Delete category div/button
+                        var deleteCategoryDiv = document.createElement("div");
+                        deleteCategoryDiv.className = "col-md-2";
+                        var button = document.createElement("button");
+                        button.className = "btn btn-sm btn-danger remove-book-category";
+                        button.type = "button";
+                        $(button).bind("click", deleteCategory);
+                        var span = document.createElement("span");
+                        span.className = "glyphicon glyphicon-remove";
+                        button.appendChild(span);
+                        deleteCategoryDiv.appendChild(button);
+
+                        // Add all elements on mainDiv.
+                        categorySubcategryDiv.appendChild(categoryDiv);
+                        categorySubcategryDiv.appendChild(subcategoryDiv);
+                        categorySubcategryDiv.appendChild(deleteCategoryDiv);
+                        mainDiv.append(categorySubcategryDiv);
+                    }
+                };
+                $.ajax("@Url.Action("ListBookCategories", "BooksManagement")", ajaxData);
+            });
+
+            function addSubcategory() {
+                var id = parseInt( $(this).val() );
+                var subcategoryDiv = $(this).parent().siblings(".book-subcategory");
+                var selectName = this.name;
+                var subcategoryName = selectName.replace("Id", "Subcategory.Id")
+
+                var ajaxData = {
+                    method: "GET",
+                    data: { categoryId : id },
+                    success: function (data) {
+
+                        var subcategories = data;
+                        subcategoryDiv.empty()
+                        var select = document.createElement("select");
+                        select.className = "form-control";
+                        select.name = subcategoryName;
+
+                        for (var i = 0; i < subcategories.length; i++) {
+                            var option = document.createElement("option");
+                            option.value = subcategories[i].Value
+                            option.text = subcategories[i].Name
+                            select.appendChild(option);
+                        }
+                        subcategoryDiv.append(select);
+                    }
+                };
+                $.ajax("@Url.Action("ListBookSubcategories","BooksManagement")", ajaxData);
+            }
+
+            function deleteCategory() {
+                $(this).parent().parent().children(".is-book-category-removed").val(true);
+                var element = $(this).parent().parent();
+                $(element).fadeOut(1000);
+            }
+
+            $(".select-category").change(addSubcategory);
+
+            $(".remove-book-category").click(deleteCategory);
+
+        });
+
+    </script>
 }
 

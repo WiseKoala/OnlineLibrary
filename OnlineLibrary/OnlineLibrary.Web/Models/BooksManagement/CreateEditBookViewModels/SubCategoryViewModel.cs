@@ -9,11 +9,6 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
     public class SubCategoryViewModel
     {
         public int Id { get; set; }
-
-        [Required]
-        [MinLength(2)]
-        [MaxLength(50)]
-        [Display(Name = "Subcategory")]
         public string Name { get; set; }
     }
 }

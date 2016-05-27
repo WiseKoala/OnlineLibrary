@@ -31,49 +31,7 @@
         });
     });
 
-    $("#addCategory").click(function () {
-        // Retreive all sub categories.
-        var ajaxData = {
-            method: "POST",
-            complete: function (jqXhr) {
-                var subCategories = jqXhr.responseJSON;
-                var newIndex = 0;
-                var lastSubcategorySequenceNumber = parseInt($("#bookSubcategories .book-subcategory").last().data("sequenceId"));
-
-                if (!isNaN(lastSubcategorySequenceNumber)) {
-                    newIndex = lastSubcategorySequenceNumber + 1;
-                }
-
-                // Add subcategory dropdown for current choosen category.
-                var subcategoryDiv = $(document.createElement("div"));
-                subcategoryDiv.addClass("book-subcategory");
-                subcategoryDiv.attr("data-sequence-id", newIndex);
-
-                var formGroup = $(document.createElement("div"));
-                formGroup.addClass("form-group");
-
-                var label = $(document.createElement("label"));
-                label.text("Subcategory");
-
-                var select = $(document.createElement("select"));
-                select.attr("name", "SelectedSubcategories[" + newIndex + "]");
-                select.addClass("form-control");
-
-                for (var i = 0; i < subCategories.length; i++) {
-                    var option = $(document.createElement("option"));
-                    option.val(subCategories[i].Value);
-                    option.text(subCategories[i].Name);
-                    select.append(option);
-                }
-
-                formGroup.append(label);
-                formGroup.append(select);
-                subcategoryDiv.append(formGroup);
-                $("#bookSubcategories").append(subcategoryDiv);
-            }
-        };
-        $.ajax(window.location.origin + "/BooksManagement/ListBookSubCategories", ajaxData);
-    });
+   
     
 
     // Copies the author ID to modal window.
