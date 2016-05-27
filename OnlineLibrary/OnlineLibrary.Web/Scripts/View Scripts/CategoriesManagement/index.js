@@ -77,7 +77,7 @@
             $("#newCategoryName").val("");
             toastr.success("Category <b>" + data.Name + "</b> has been successfully created.");
 
-            viewModel.categories.push(data);
+            viewModel.categories.splice(0, 0, data);
 
             // Build settings object.
             $("#categoriesList input").change(bindCategoriesRadioButtons); // TO FIX.
@@ -109,7 +109,7 @@
             toastr.success("Subcategory <b>" + data.Name + "</b> has been successfully created.");
 
             // Store data in view model.
-            viewModel.subCategories.push(data);
+            viewModel.subCategories.splice(0, 0, data);
         };
         settings.error = function (jqXHR) {
             toastr.error(jqXHR.responseJSON.error);
