@@ -76,6 +76,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -86,9 +87,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\IBookService.cs" />
+    <Compile Include="Abstract\ICategoryService.cs" />
     <Compile Include="Abstract\ILibrarianService.cs" />
     <Compile Include="Abstract\IService.cs" />
     <Compile Include="Concrete\BookService.cs" />
+    <Compile Include="Concrete\CategoryService.cs" />
     <Compile Include="Concrete\LibrarianService.cs" />
     <Compile Include="Concrete\RoleManagementService.cs" />
     <Compile Include="Concrete\SignInService.cs" />

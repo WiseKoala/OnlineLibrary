@@ -48,6 +48,11 @@ namespace OnlineLibrary.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ExternalLogin(string provider, string returnUrl)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                LogOff();
+            }
+
             // Request a redirect to the external login provider
             return new ChallengeResult(
                 provider,
@@ -69,6 +74,8 @@ namespace OnlineLibrary.Web.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    if (returnUrl == "/o/oauth2/auth")
+                        returnUrl = "/";
                     return RedirectToLocal(returnUrl);
 
                 case SignInStatus.LockedOut:
@@ -177,7 +184,7 @@ namespace OnlineLibrary.Web.Controllers
 
                 if (result == SignInStatus.Success)
                 {
-                    return RedirectToAction("Index", "Role");
+                    return RedirectToAction("Index", "Home");
                 }
 
                 ModelState.AddModelError("", "The provided password was incorrect.");

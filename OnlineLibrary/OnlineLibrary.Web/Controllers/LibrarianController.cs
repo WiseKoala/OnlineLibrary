@@ -10,6 +10,8 @@ using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models.LibrarianLoansViewModels;
 using System.Configuration;
 using System;
+using System.Collections.Generic;
+using System.Net;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -23,7 +25,7 @@ namespace OnlineLibrary.Web.Controllers
             _librarianService = librarianService;
         }
 
-        [Authorize(Roles = "Librarian, System administrator, Super administrator")]
+        [Authorize(Roles = "Librarian, System administrator")]
         public ActionResult Index()
         {
             var model = new LibrarianIndexViewModel()
@@ -112,45 +114,100 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public ActionResult RejectLoanRequest(int loanId)
         {
-            var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
-            _librarianService.RejectLoanRequest(loanId, librarian);
-
-            return RedirectToAction("Index");
+            try
+            {
+                var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
+                _librarianService.RejectLoanRequest(loanId, librarian);
+                return Json(new { success = 1 });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message });
+            }
+            catch
+            {
+                return Json(new { error = 1 });
+            }
         }
 
         [HttpPost]
         public ActionResult PerformLoan(int loanId)
         {
-            _librarianService.PerformLoan(loanId);
-
-            return RedirectToAction("Index");
+            try
+            {
+                _librarianService.PerformLoan(loanId);
+                return Json(new { success = 1 });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message });
+            }
+            catch
+            {
+                return Json(new { error = 1 });
+            }
         }
 
         [HttpPost]
         public ActionResult ReturnBook(int loanId)
-        {            
-            var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
-            _librarianService.ReturnBook(loanId, librarian);
-
-            return RedirectToAction("Index");
+        {
+            try
+            {
+                var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
+                _librarianService.ReturnBook(loanId, librarian);
+                return Json(new { success = 1 });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message });
+            }
+            catch
+            {
+                return Json(new { error = 1 });
+            }
         }
 
         [HttpPost]
         public ActionResult LostBook(int loanId)
         {
-            var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
-            _librarianService.LostBook(loanId, librarian);
-
-            return RedirectToAction("Index");
+            try
+            {
+                var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
+                _librarianService.LostBook(loanId, librarian);
+                return Json(new { success = 1 });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message });
+            }
+            catch
+            {
+                return Json(new { error = 1 });
+            }
         }
 
         [HttpPost]
         public ActionResult CancelApprovedLoan(int loanId)
         {
-            var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
-            _librarianService.CancelApprovedLoan(loanId, librarian);
-
-            return RedirectToAction("Index");
+            try
+            {
+                var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
+                _librarianService.CancelApprovedLoan(loanId, librarian);
+                return Json(new { success = 1 });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message });
+            }
+            catch
+            {
+                return Json(new { error = 1 });
+            }
         }
     }
 }

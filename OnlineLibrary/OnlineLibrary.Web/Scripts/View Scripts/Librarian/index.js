@@ -1,30 +1,58 @@
 ﻿$(document).ready(function () {
 
+    //Don't dismiss the modal window by default.
+    var dismissModal = 0;
+
     $("#approveLoanButton").click(function () {
+
         var approveForm = $("#approveForm");
-        var settings = {
+        $.ajax({
             method: "POST",
             url: approveForm.find('input[id="approveUrl"]').val(),
             data: {
                 bookCopyId: approveForm.find('input[id="bookCopyId"]').val(),
                 loanId: approveForm.find('input[id="loanId"]').val()
-            }
-        }
-        // Make AJAX request.
-        $.ajax(settings)
-            .done(function (response) {
-                if (response.error) {
+            },
+            success: function (response) {
+
+                if (response.error != null) {
                     $("#approveLoanErrorAlert").removeClass("hidden");
                     $("#approveLoanError").text(response.error);
+                    dismissModal = 1;
+                    return false;
                 }
                 else {
-                    window.location.replace(approveForm.find('input[id="redirectUrl"]').val());
+                    toastr.options =
+                    {
+                        "closeButton": true,
+                        "onclick": null,
+                        "positionClass": "toast-bottom-right",
+                        "timeOut": 5000,
+                        "extendedTimeOut": 10000
+                    };
+                    toastr.success("The book has been successfully marked as loaned.", "Success.");
+                    dismissModal = 0;
                 }
+            },
+            error: function (jqXHR) {
+                toastr.options =
+                        {
+                            "closeButton": true,
+                            "onclick": null,
+                            "positionClass": "toast-bottom-right",
+                            "timeOut": 5000,
+                            "extendedTimeOut": 10000
+                        }
 
-                //return false;
-            });
+                toastr.error("An error has occured.", "Error.");
+                dismissModal = 0;
+            }
+        });
 
-        return false;
+        if (dismissModal === 0) {
+            return false;
+        }
+
     });
 
     // ===== Tabs functionality.
@@ -95,7 +123,7 @@
             settings.url = requestUrl;
         }
         else {
-            var status = tabAnchor.data("status");
+            var status = tabAnchor.attr("data-status");
             settings.url = requestUrl + "?status=" + status;
         }
 
@@ -105,26 +133,193 @@
 
     // Trigger the event manually in order to load the tab content.
     $('a[data-toggle="tab"]:first').trigger("show.bs.tab");
+
+    $('#performLoan button[type="submit"]').click(function () {
+        $.ajax({
+            url: $(this).attr("data-url"),
+            data: { loanId: $("#performLoan").find('input[id="loanId"]').val() },
+            method: "POST",
+            success: function (response) {
+                var itemToRemove = $('tr button[data-loan-id="' + $("#performLoan").find('input[id="loanId"]').val() + '"]').closest("tr");
+                itemToRemove.fadeOut(1000, function () { itemToRemove.remove(); });
+
+                toastr.options =
+                        {
+                            "closeButton": true,
+                            "onclick": null,
+                            "positionClass": "toast-bottom-right",
+                            "timeOut": 5000,
+                            "extendedTimeOut": 10000
+                        };
+                toastr.success("The book has been successfully marked as loaned.", "Success.");
+            },
+            error: function (jqXHR) {
+                toastr.options =
+                        {
+                            "closeButton": true,
+                            "onclick": null,
+                            "positionClass": "toast-bottom-right",
+                            "timeOut": 5000,
+                            "extendedTimeOut": 10000
+                        }
+
+                if (jqXHR.status == 404) {
+                    toastr.error(jqXHR.responseJSON.error, jqXHR.statusText);
+                }
+                else {
+                    toastr.error("An error has occured.", "Error.");
+                }
+            }
+        });
+    });
+
+    $('#cancelApprovedLoan button[type="submit"]').click(function () {
+        $.ajax({
+            url: $(this).attr("data-url"),
+            data: { loanId: $("#cancelApprovedLoan").find('input[id="loanId"]').val() },
+            method: "POST",
+            success: function (response) {
+                var itemToRemove = $('tr button[data-loan-id="' + $("#cancelApprovedLoan").find('input[id="loanId"]').val() + '"]').closest("tr");
+                itemToRemove.fadeOut(1000, function () { itemToRemove.remove(); });
+
+                toastr.options =
+                        {
+                            "closeButton": true,
+                            "onclick": null,
+                            "positionClass": "toast-bottom-right",
+                            "timeOut": 5000,
+                            "extendedTimeOut": 10000
+                        };
+                toastr.success("The loan has been successfully cancelled.", "Success.");
+            },
+            error: function (jqXHR) {
+                toastr.options =
+                        {
+                            "closeButton": true,
+                            "onclick": null,
+                            "positionClass": "toast-bottom-right",
+                            "timeOut": 5000,
+                            "extendedTimeOut": 10000
+                        }
+
+                if (jqXHR.status == 404) {
+                    toastr.error(jqXHR.responseJSON.error, jqXHR.statusText);
+                }
+                else {
+                    toastr.error("An error has occured.", "Error.");
+                }
+            }
+        });
+    });
+
+    $('#returnLoanedBook button[type="submit"]').click(function () {
+        $.ajax({
+            url: $(this).attr("data-url"),
+            data: { loanId: $("#returnLoanedBook").find('input[id="loanId"]').val() },
+            method: "POST",
+            success: function (response) {
+                var itemToRemove = $('tr button[data-loan-id="' + $("#returnLoanedBook").find('input[id="loanId"]').val() + '"]').closest("tr");
+                itemToRemove.fadeOut(1000, function () { itemToRemove.remove(); });
+
+                toastr.options =
+                        {
+                            "closeButton": true,
+                            "onclick": null,
+                            "positionClass": "toast-bottom-right",
+                            "timeOut": 5000,
+                            "extendedTimeOut": 10000
+                        };
+                toastr.success("The loaned book has been successfully marked as returned.", "Success.");
+            },
+            error: function (jqXHR) {
+                toastr.options =
+                        {
+                            "closeButton": true,
+                            "onclick": null,
+                            "positionClass": "toast-bottom-right",
+                            "timeOut": 5000,
+                            "extendedTimeOut": 10000
+                        }
+
+                if (jqXHR.status == 404) {
+                    toastr.error(jqXHR.responseJSON.error, jqXHR.statusText);
+                }
+                else {
+                    toastr.error("An error has occured.", "Error.");
+                }
+            }
+        });
+    });
+
+    $('#lostLoanedBook button[type="submit"]').click(function () {
+        $.ajax({
+            url: $(this).attr("data-url"),
+            data: { loanId: $("#lostLoanedBook").find('input[id="loanId"]').val() },
+            method: "POST",
+            success: function (response) {
+                var itemToRemove = $('tr button[data-loan-id="' + $("#lostLoanedBook").find('input[id="loanId"]').val() + '"]').closest("tr");
+                itemToRemove.fadeOut(1000, function () { itemToRemove.remove(); });
+
+                toastr.options =
+                        {
+                            "closeButton": true,
+                            "onclick": null,
+                            "positionClass": "toast-bottom-right",
+                            "timeOut": 5000,
+                            "extendedTimeOut": 10000
+                        };
+                toastr.success("The loaned book has been successfully marked as lost.", "Success.");
+            },
+            error: function (jqXHR) {
+                toastr.options =
+                        {
+                            "closeButton": true,
+                            "onclick": null,
+                            "positionClass": "toast-bottom-right",
+                            "timeOut": 5000,
+                            "extendedTimeOut": 10000
+                        }
+
+                if (jqXHR.status == 404) {
+                    toastr.error(jqXHR.responseJSON.error, jqXHR.statusText);
+                }
+                else {
+                    toastr.error("An error has occured.", "Error.");
+                }
+            }
+        });
+    });
+
+
+    function performBinding() {
+        $(".approve").click(function () {
+            var loanId = $(this).data('loanId');
+            $("#approveForm").find('input[id="loanId"]').val(loanId);
+        });
+
+        $(".reject").click(function () {
+            var loanId = $(this).data('loanId');
+            $("#reject").find('input[id="loanId"]').val(loanId);
+        });
+
+        $(".passLoanIdForLoan").click(function () {
+            var loanId = $(this).data('loanId');
+            $("#performLoan").find('input[id="loanId"]').val(loanId);
+        });
+
+        $(".passLoanIdForCancel").click(function () {
+            var loanId = $(this).data('loanId');
+            $("#cancelApprovedLoan").find('input[id="loanId"]').val(loanId);
+        });
+
+        $(".return").click(function () {
+            var loanId = $(this).data('loanId');
+            $("#returnLoanedBook").find('input[id="loanId"]').attr("value",loanId);
+        });
+
+        $(".lost").click(function () {
+            var loanId = $(this).data('loanId');
+            $("#lostLoanedBook").find('input[id="loanId"]').attr("value", loanId);
+        });
+    }
 });
-
-function performBinding() {
-    $(".approve").click(function () {
-        var loanId = $(this).data('loanId');
-        $("#approveForm").find('input[id="loanId"]').val(loanId);
-    });
-
-    $(".reject").click(function () {
-        var loanId = $(this).data('loanId');
-        $("#reject").find('input[id="loanId"]').val(loanId);
-    });
-
-    $(".passLoanIdForLoan").click(function () {
-        var loanId = $(this).data('loanId');
-        $("#performLoan").find('input[id="loanId"]').val(loanId);
-    });
-
-    $(".passLoanIdForCancel").click(function () {
-        var loanId = $(this).data('loanId');
-        $("#cancelApprovedLoan").find('input[id="loanId"]').val(loanId);
-    });
-}

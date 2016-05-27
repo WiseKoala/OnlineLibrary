@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Web;
 using OnlineLibrary.Web.Infrastructure.CustomAttributes;
 using System.Web.Mvc;
+using OnlineLibrary.DataAccess.Enums;
 
 namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
 {
@@ -14,7 +15,8 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         {
             BookCopies = new List<BookCopyViewModel>();
             Authors = new List<BookAuthorViewModel>();
-        }
+            AllBookConditions = new Dictionary<BookCondition, string>();
+    }
         
         public int Id { get; set; }
 
@@ -45,6 +47,8 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
 
         [CountLimit(ErrorMessage = "The book copies number is too big.")]
         public IList<BookCopyViewModel> BookCopies { get; set; }
+
+        public IDictionary<BookCondition, string> AllBookConditions { get; set; }
 
         public IList<CategoryViewModel> BookCategories { get; set; }
     }
