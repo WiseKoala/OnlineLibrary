@@ -62,7 +62,7 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(string userName, string roleName)
+        public async Task<ActionResult> Index(string userName, string roleName)
         {
             if (HasAdminPrivileges(User))
             {
@@ -89,6 +89,7 @@ namespace OnlineLibrary.Web.Controllers
                                 // Sign the user back.
                                 var identity = await _userService.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
                                 AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = true }, identity);
+                                return Json(new { success = "User changed his own role succesfully.", redirectUrl = Url.Action("Index", "Home") });
                             }
 
                             return Json(new { success = "User role was succesfully changed." });
@@ -105,7 +106,7 @@ namespace OnlineLibrary.Web.Controllers
                 return Json(new { error = "Role or User was Not Found." });
             }
 
-            return Json(new { error = "You must be system administrator to access this page." });
+            return Json(new { error = "You must have System Administrator rights in order to carry out this action." });
         }
 
         #region Helper Methods

@@ -40,16 +40,17 @@
                         <li>@Html.ActionLink("Manage Books", "Index", "BooksManagement")</li>
                     }
 
+                    @if (User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SysAdmin))
+                    {
+                        <li>@Html.ActionLink("Manage Categories", "Index", "CategoriesManagement")</li>
+                    }
+
                     @if (User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SysAdmin)
 || User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SuperAdmin))
                     {
                         <li>@Html.ActionLink("Manage Roles", "Index", "Role")</li>
                     }
 
-                    @if (User.IsInRole(OnlineLibrary.DataAccess.UserRoles.SysAdmin))
-                    {
-                        <li>@Html.ActionLink("Manage Categories", "Index", "CategoriesManagement")</li>
-                    }
                 </ul>
             </div>
 
