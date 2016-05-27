@@ -127,7 +127,7 @@
                 <div class="row book-category-subcategory" style="margin-top: 10px">
                     @Html.HiddenFor(m => m.BookCategories[i].IsRemoved, new { @class = "is-book-category-removed" })
                     <div class="col-md-3 book-category">
-                        @Html.DropDownList($"BookCategories[{i}].Id", Model.BookCategories[i].Categories, new { @class = "form-control select-category" })
+                        @Html.DropDownList($"BookCategories[{i}].Id", Model.BookCategories[i].Categories, new { @class = "form-control select-category" })                        
                     </div>
                     <div class="col-md-3 book-subcategory">
                         @if (Model.BookCategories[i].Subcategories != null)

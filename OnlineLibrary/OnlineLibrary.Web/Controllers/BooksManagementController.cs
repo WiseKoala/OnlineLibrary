@@ -110,8 +110,11 @@ namespace OnlineLibrary.Web.Controllers
                 // Get all subcategories for each  book's category.
                 for (int i = 0; i < model.BookCategories.Count(); i++)
                 {
-                    var subcategoriesDropDownItems = SetSubCategoriesDropDownItems(subcategories, model.BookCategories[i].Id);
-                    model.BookCategories[i].Subcategories = SetSelectedSubCategory(subcategoriesDropDownItems, model.BookCategories[i].Subcategory.Id);
+                    if (model.BookCategories[i].Subcategory != null)
+                    {
+                        var subcategoriesDropDownItems = SetSubCategoriesDropDownItems(subcategories, model.BookCategories[i].Id);
+                        model.BookCategories[i].Subcategories = SetSelectedSubCategory(subcategoriesDropDownItems, model.BookCategories[i].Subcategory.Id);
+                    }
                 }
             }
             // If, is initializing some data for view.
@@ -133,11 +136,31 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public ActionResult CreateEdit(CreateEditBookViewModel model)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return View(model);
-            //}
+            var subcategories = DbContext.SubCategories.ToList();
 
+            if (!ModelState.IsValid)
+            {
+                var categories = DbContext.Categories.ToList();
+                //  Get all categories for each book's category.
+                for (int i = 0; i < model.BookCategories.Count(); i++)
+                {
+                    var categoriesDropDownItems = SetCategoriesDropDownItems(categories);
+                    model.BookCategories[i].Categories = SetSelectedCategory(categoriesDropDownItems, model.BookCategories[i].Id);
+                }
+
+                // Get all subcategories for each  book's category.
+                for (int i = 0; i < model.BookCategories.Count(); i++)
+                {
+                    if (model.BookCategories[i].Subcategory != null)
+                    {
+                        var subcategoriesDropDownItems = SetSubCategoriesDropDownItems(subcategories, model.BookCategories[i].Id);
+                        model.BookCategories[i].Subcategories = SetSelectedSubCategory(subcategoriesDropDownItems, model.BookCategories[i].Subcategory.Id);
+                    }
+                }
+
+                return View(model);
+            }
+              
             // If book is new.
             if (model.Id < 1)
             {
@@ -327,16 +350,15 @@ namespace OnlineLibrary.Web.Controllers
                 }
 
                 book.SubCategories.Clear();
-                var subcategories = DbContext.SubCategories.ToList();
 
                 foreach (var category in model.BookCategories)
                 {
-                    if( !category.IsRemoved )
+                    if (!category.IsRemoved && !book.SubCategories.Any(sc => sc.Id == category.Subcategory.Id ))
                     {
                         var addedCategory = subcategories.Find(sc => sc.Id == category.Subcategory.Id);
                         book.SubCategories.Add(addedCategory);
                     }
-                } 
+                }
 
                 DbContext.SaveChanges();
 
