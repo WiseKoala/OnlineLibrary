@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewBag.Title = "ImportFromGoogle";
+}
+
+<h2>ImportFromGoogle</h2>
+
+<h4>Search the book to be imported by entering an ISBN:</h4>
+<input type="text" id="ISBN" />
+<input type="button" class="btn btn-default" id="searchByISBN" value="Search" />
+
+<div id="content"></div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#searchByISBN").click(function () {
+                $.ajax({
+                    url: "https://www.googleapis.com/books/v1/volumes?q=isbn:" + $("#ISBN").val(),
+                    success: function (response) {
+                        for (var i = 0; i < response.items.length; i++) {
+                            var item = response.items[i];
+
+                            var itemToAdd = document.createElement("div");
+
+                            itemToAdd.innerHTML = "Book Title: " + item.volumeInfo.title;
+
+                            itemToAdd.appendChild(document.createElement("br"));
+
+                            $("#content").append(itemToAdd);
+                        }
+                    }
+                })
+            });
+        });
+    </script>
+}
