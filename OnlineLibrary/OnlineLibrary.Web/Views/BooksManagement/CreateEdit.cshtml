@@ -17,43 +17,53 @@
     @using (Html.BeginForm("CreateEdit", "BooksManagement", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.ValidationSummary("", new { @class = "text-danger" })
-        <div class="form-group">
-            <label>ISBN</label>
-            @Html.TextBoxFor(m => m.ISBN, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.ISBN)
+        <div class="row">
+            <div class="col-sm-2">
+
+                <div class="form-group">
+                    <label>Front Cover</label>
+                    @if (!string.IsNullOrEmpty(Model.BookCover.FrontCover))
+                    {
+                        <img class="img-small-responsive" src=@Url.Content(Model.BookCover.FrontCover) />
+                        <input type="hidden" value="@Model.BookCover.FrontCover" name="BookCover.FrontCover" />
+                    }
+                </div>
+                @*Load Image*@
+                <div class="form-group">
+                    <label class="inputFileButton">
+                        <input type="file" id="inputFile" name="BookCover.Image" class="inputfile" />
+                        <span class="btn btn-default">Upload Image</span>
+                    </label>
+                    <div id="textImageFileName"></div>
+                </div>
+                @Html.ValidationMessageFor(m => m.BookCover)
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>ISBN</label>
+                    @Html.TextBoxFor(m => m.ISBN, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.ISBN)
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Title)
+                </div>
+                <div class="form-group">
+                    <label>Publish Date</label>
+                    @*@Html.TextBoxFor(m => m.PublishDate, new { @class = "form-control datepicker ui-datepicker" })*@
+                    <input type="text" class="form-control datepicker ui-datepicker" name="PublishDate" value="@Model.PublishDate.ToShortDateString()" />
+                    @Html.ValidationMessageFor(m => m.PublishDate)
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <div class="form-group">
+                    <label>Description</label>
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", style = "height: 185px; max-width: 100%;" })
+                    @Html.ValidationMessageFor(m => m.Description)
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Title</label>
-            @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Title)
-        </div>
-        <div class="form-group">
-            <label>Description</label>
-            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", style = " height:200px " })
-            @Html.ValidationMessageFor(m => m.Description)
-        </div>
-        <div class="form-group">
-            <label>Publish Date</label>
-            @Html.TextBoxFor(m => m.PublishDate, new { @class = "form-control datepicker ui-datepicker" })
-            @Html.ValidationMessageFor(m => m.PublishDate)
-        </div>
-        <div class="form-group">
-            <label>Front Cover</label>
-        </div>
-        if (!string.IsNullOrEmpty(Model.BookCover.FrontCover))
-        {
-            <img width="100" src=@Url.Content(Model.BookCover.FrontCover) />
-                <input type="hidden" value="@Model.BookCover.FrontCover" name="BookCover.FrontCover" />
-        }
-        //Load Image
-        <div class="form-group">
-            <label class="inputFileButton">
-                <input type="file" id="inputFile" name="BookCover.Image" class="inputfile" />
-                <span>Upload Image</span>
-            </label>
-            <text id="textImageFileName"></text>
-        </div>
-        @Html.ValidationMessageFor(m => m.BookCover)
 
         <div id="bookAuthors">
             <hr />
@@ -61,23 +71,26 @@
             <table class="table table-hover">
                 <tbody>
                     @for (int i = 0; i < Model.Authors.Count(); i++)
-                {
+                    {
                         <tr class="book-author" data-author-id="@i">
-                            @Html.HiddenFor(m => m.Authors[i].Id)
-                            @Html.HiddenFor(m => m.Authors[i].IsRemoved, new { @class = "is-removed" })
                             <td>
-                                @Html.LabelFor(m => m.Authors[i].AuthorName.FirstName, new { @class = "control-label" })
-                                @Html.TextBoxFor(m => m.Authors[i].AuthorName.FirstName, new { @class = "form-control" })
+                                <input type="hidden" name="Authors[@i].Id" value="@Model.Authors[i].Id" class="form-control" />
+                                <input type="hidden" name="Authors[@i].IsRemoved" value="false" class="form-control is-removed" />
+                                @Html.LabelFor(m => m.Authors[i].AuthorName.FirstName)
+                                <input type="text" name="Authors[@i].AuthorName.FirstName" value="@Model.Authors[i].AuthorName.FirstName" class="form-control" />
+                                @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.FirstName)
                             </td>
                             <td>
                                 @Html.LabelFor(m => m.Authors[i].AuthorName.MiddleName)
-                                @Html.TextBoxFor(m => m.Authors[i].AuthorName.MiddleName, new { @class = "form-control" })
+                                <input type="text" name="Authors[@i].AuthorName.MiddleName" value="@Model.Authors[i].AuthorName.MiddleName" class="form-control" />
+                                @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.MiddleName)
                             </td>
                             <td>
                                 @Html.LabelFor(m => m.Authors[i].AuthorName.LastName)
-                                @Html.TextBoxFor(m => m.Authors[i].AuthorName.LastName, new { @class = "form-control" })
+                                <input type="text" name="Authors[@i].AuthorName.LastName" value="@Model.Authors[i].AuthorName.LastName" class="form-control" />
+                                @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.LastName)
                             </td>
-                            <td>
+                            <td id="tdRemoveAuthorButton">
                                 <button class="btn btn-sm btn-danger btn-remove-author-modal" data-toggle="modal"
                                         data-target="#removeAuthorConfirmation" type="button">
                                     <span class="glyphicon glyphicon-remove"></span>
@@ -86,11 +99,18 @@
                         </tr>
                         @Html.ValidationMessageFor(m => m.Authors[i].AuthorName)
                     }
+                    @if (!Model.Authors.Any())
+                    {
+                        <tr>
+                            <td>
+                                @Html.ValidationMessageFor(m => m.Authors)
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
-            @Html.ValidationMessageFor(m => m.Authors)
         </div>
-        <p class="form-group">
+        <div class="form-group">
             <div class="modal fade" id="removeAuthorConfirmation" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -111,40 +131,67 @@
                 </div>
             </div>
             <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-default">
-        </p>
+        </div>
 
         <hr />
-        <h3>Book Subcategories</h3>
-        <div id="bookSubcategories" class="form-group">
-            @for (int i = 0; i < Model.SelectedSubcategories.Count; i++)
+        <div id="book-categories-subcategories">
+            <div class="row">
+                <div class="col-md-3">
+                    <h4>Book Category</h4>
+                </div>
+                <div class="col-md-3">
+                    <h4>Book Subcategory</h4>
+                </div>
+            </div>
+            @for (int i = 0; i < Model.BookCategories.Count(); i++)
             {
-                <div class="book-subcategory" data-sequence-id="@i">
-                    <div class="form-group">
-                        <label>Subcategory</label>
-                        @Html.DropDownList($"SelectedSubcategories[{i}]", new SelectList(Model.AllBookSubcategories, "Id", "Name", Model.SelectedSubcategories[i]), new { @class = "form-control" })
+                <div class="row book-category-subcategory" style="margin-top: 10px">
+                    @Html.HiddenFor(m => m.BookCategories[i].IsRemoved, new { @class = "is-book-category-removed" })
+                    <div class="col-md-3 book-category">
+                        @Html.DropDownList($"BookCategories[{i}].Id", Model.BookCategories[i].Categories, new { @class = "form-control select-category" })
+                    </div>
+                    <div class="col-md-3 book-subcategory">
+                        @if (Model.BookCategories[i].Subcategories != null)
+                        {
+                            @Html.DropDownList($"BookCategories[{i}].Subcategory.Id", Model.BookCategories[i].Subcategories, new { @class = "form-control" })
+                        }
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-sm btn-danger remove-book-category" type="button">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
                     </div>
                 </div>
             }
-            @Html.ValidationMessageFor(m => m.SelectedSubcategories)
         </div>
-        <p class="form-group">
-            <button type="button" id="addCategory" class="btn btn-default">Add Subcategory</button>
-        </p>
+        <button type="button" id="add-category" class="btn btn-default" style="margin-top: 10px">Add Category</button>
+
 
         <hr />
-        <p> <h3>Book Copies:</h3> </p>
 
-        <div id="bookCopies">
-            <table id="bookCopyTable" class="col-sm-12 table-hover">
+        <h3>Book Copies:</h3>
+
+        <div id="bookCopies" class="form-inline">
+            <table id="bookCopyTable" class="table table-hover">
 
                 @for (int i = 0; i < Model.BookCopies.Count(); i++)
                 {
                     <tr id="bookCopy@(i)">
-                        <td class="col-sm-2">BookCopyId = @Model.BookCopies[i].Id</td>
+                        <td class="col-sm-2">Book Copy Id = @Model.BookCopies[i].Id</td>
                         <td class="col-sm-3">
                             <div class="bookCopy">
-                                @Html.HiddenFor(m => m.BookCopies[i].Id)
-                                @Html.EnumDropDownListFor(m => m.BookCopies[i].BookCondition, new { @class = "form-control" })
+                                <input type="hidden" name="BookCopies[@i].Id" value="@Model.BookCopies[i].Id" class="form-control" />
+                                <select name="BookCopies[@i].BookCondition" class="form-control">
+                                    @foreach (var item in Model.AllBookConditions)
+                                    {
+                                        <option value="@item.Key"
+                                                @if (item.Key == Model.BookCopies[i].BookCondition) { @: selected="selected"
+                                                                                                }>
+                                            @item.Value
+                                                                                            </option>
+                                    }
+                                </select>
+                                @*@Html.EnumDropDownListFor(m => m.BookCopies[i].BookCondition, new { @class = "form-control" })*@
                                 <input class="IsToBeDeleted" type="hidden" name="BookCopies[@(i)].IsToBeDeleted" value="false" />
                             </div>
                         </td>
@@ -159,10 +206,14 @@
             </table>
         </div>
 
-        <p> <input type="button" id="AddBookCopy" value="Add Copy" class="btn btn-primary" /> </p>
-            @Html.ValidationMessageFor(m => m.BookCopies)
+        <div class="form-group">
+            <input type="button" id="AddBookCopy" value="Add Copy" class="btn btn-primary" />
+        </div>
+        @Html.ValidationMessageFor(m => m.BookCopies)
 
+        <div class="form-group">
             <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
     }
 </div>
 
@@ -191,296 +242,7 @@
 @section scripts {
 
     @Scripts.Render("~/bundles/jqueryui")
-
-    <script>
-        $(document).ready(function () {
-
-            // Implement datepicker for datetime inputs on this page.
-            $('.datepicker').datepicker({
-                dateFormat: "mm-dd-yy",
-                changeMonth: true,
-                changeYear: true,
-                yearRange: "-160:+0"
-            });
-
-            $("#btnRemoveAuthorConfirm").click(function () {
-                var authorIdToRemove = $(this).attr("data-author-to-remove-id");
-
-                $("#bookAuthors table tbody tr[data-author-id='" + authorIdToRemove + "'] .is-removed").first().val(true);
-                var authorRowToRemove = $("#bookAuthors table tbody tr[data-author-id='" + authorIdToRemove + "']").fadeOut(1000);
-            });
-
-            // Shows uploaded file name next to the Image Upload button
-            $("#inputFile").click(function () {
-                var inputs = document.querySelectorAll('.inputfile');
-                Array.prototype.forEach.call(inputs, function (input) {
-
-                    var text = document.getElementById("textImageFileName")
-
-                    input.addEventListener('change', function (e) {
-                        var fileName = '';
-                            fileName = e.target.value.split('\\').pop();
-                        if (fileName)
-                            text.innerHTML = fileName;
-                    });
-                });
-            });
-
-        $("#addCategory").click(function() {
-            // Retreive all sub categories.
-            var ajaxData = {
-                method: "GET",
-                complete: function (jqXhr) {
-                    var subCategories = jqXhr.responseJSON;
-                    var newIndex = 0;
-                    var lastSubcategorySequenceNumber = parseInt($("#bookSubcategories .book-subcategory").last().data("sequenceId"));
-
-                    if (!isNaN(lastSubcategorySequenceNumber)) {
-                        newIndex = lastSubcategorySequenceNumber + 1;
-                    }
-
-                    // Add subcategory dropdown for current choosen category.
-                    var subcategoryDiv = $(document.createElement("div"));
-                    subcategoryDiv.addClass("book-subcategory");
-                    subcategoryDiv.attr("data-sequence-id", newIndex);
-
-                    var formGroup = $(document.createElement("div"));
-                    formGroup.addClass("form-group");
-
-                    var label = $(document.createElement("label"));
-                    label.text("Subcategory");
-
-                    var select = $(document.createElement("select"));
-                    select.attr("name", "SelectedSubcategories[" + newIndex + "]");
-                    select.addClass("form-control");
-
-                    for (var i = 0; i < subCategories.length; i++) {
-                        var option = $(document.createElement("option"));
-                        option.val(subCategories[i].Value);
-                        option.text(subCategories[i].Name);
-                        select.append(option);
-                    }
-
-                    formGroup.append(label);
-                    formGroup.append(select);
-                    subcategoryDiv.append(formGroup);
-                    $("#bookSubcategories").append(subcategoryDiv);
-                }
-            };
-            $.ajax("@Url.Action("ListBookSubCategories", "BooksManagement")", ajaxData);
-        });
-    });
-
-        // Copies the author ID to modal window.
-        function btnRemoveAuthorModal() {
-            var authorId = $(this).closest(".book-author").data("authorId");
-            $("#btnRemoveAuthorConfirm").attr("data-author-to-remove-id", authorId);
-        }
-
-        $(".btn-remove-author-modal").click(btnRemoveAuthorModal);
-
-    $(document).ready(function () {
-        $("#AddBookAuthor").click(function () {
-            var authorsBody = $("#bookAuthors tbody");
-            var newBookAuthorId = parseInt($("#bookAuthors tbody .book-author").last().data("authorId")) + 1;
-
-            if (isNaN(newBookAuthorId)) {
-                newBookAuthorId = 0;
-            }
-
-            // Create a div for new Author
-            var newAuthorRow = document.createElement("tr");
-            newAuthorRow.className = "book-author";
-            newAuthorRow.setAttribute("data-author-id", newBookAuthorId);
-
-            // Create inputs for Author data.
-            // IsRemoved.
-            var cell = document.createElement("td");
-
-            var isRemovedInput = document.createElement("input");
-            isRemovedInput.className = "is-removed";
-            isRemovedInput.name = "Authors[" + newBookAuthorId + "].IsRemoved";
-            isRemovedInput.type = "hidden";
-            isRemovedInput.value = "false";
-
-            // First Name.
-            cell = document.createElement("td");
-
-            var firstNameLabel = document.createElement("label");
-            firstNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__AuthorName.FirstName";
-            firstNameLabel.innerHTML = "First Name";
-
-            var firstNameInput = document.createElement("input");
-            firstNameInput.name = "Authors[" + newBookAuthorId + "].AuthorName.FirstName";
-            firstNameInput.id = "Authors_" + newBookAuthorId + "__AuthorName.FirstName";
-            firstNameInput.type = "text";
-            firstNameInput.className = "form-control";
-
-            cell.appendChild(isRemovedInput);
-            cell.appendChild(firstNameLabel);
-            cell.appendChild(firstNameInput);
-            newAuthorRow.appendChild(cell);
-
-            // Middle Name.
-            cell = document.createElement("td");
-
-            var middleNameLabel = document.createElement("label");
-            middleNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__AuthorName.MiddleName";
-            middleNameLabel.innerHTML = "Middle Name";
-
-            var middleNameInput = document.createElement("input");
-            middleNameInput.id = "Authors_" + newBookAuthorId + "__AuthorName.MiddleName";
-            middleNameInput.name = "Authors[" + newBookAuthorId + "].AuthorName.MiddleName";
-            middleNameInput.type = "text";
-            middleNameInput.className = "form-control";
-
-            cell.appendChild(middleNameLabel);
-            cell.appendChild(middleNameInput);
-            newAuthorRow.appendChild(cell);
-
-            // Last Name.
-            cell = document.createElement("td");
-
-            var lastNameLabel = document.createElement("label");
-            lastNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__AuthorName.LastName";
-            lastNameLabel.innerHTML = "Last Name";
-
-            var lastNameInput = document.createElement("input");
-            lastNameInput.id = "Authors_" + newBookAuthorId + "__AuthorName.LastName";
-            lastNameInput.name = "Authors[" + newBookAuthorId + "].AuthorName.LastName";
-            lastNameInput.type = "text";
-            lastNameInput.className = "form-control";
-
-            cell.appendChild(lastNameLabel);
-            cell.appendChild(lastNameInput);
-            newAuthorRow.appendChild(cell);
-
-            // Button.
-            cell = document.createElement("td");
-
-            var removeButton = document.createElement("button");
-            removeButton.className = "btn btn-sm btn-danger btn-remove-author-modal";
-            removeButton.type = "button";
-            removeButton.setAttribute("data-toggle", "modal");
-            removeButton.setAttribute("data-target", "#removeAuthorConfirmation");
-            $(removeButton).click(btnRemoveAuthorModal);
-
-            // Button icon.
-            var removeButtonIcon = document.createElement("span");
-            removeButtonIcon.className = "glyphicon glyphicon-remove";
-            removeButton.appendChild(removeButtonIcon);
-
-            cell.appendChild(removeButton);
-            newAuthorRow.appendChild(cell);
-
-            // Add new Author div to all authors
-            authorsBody.append(newAuthorRow);
-        })
-
-        $(".passBookCopyForDelete").click(function () {
-            rowid = $(this).data('bookCopyRowId');
-        });
-
-        $("#confirm-remove").click(function () {
-            var trToHide = $("#bookCopy" + rowid);
-            trToHide.fadeOut(1000, function () {
-                trToHide.hide();
-            })
-            $("#bookCopy" + rowid + " .bookCopy .IsToBeDeleted").attr("value", "true");
-        });
-
-        $("#AddBookCopy").click(function () {
-            // Retreive book conditions.
-            var ajaxData = {
-                method: "GET",
-                complete: function (jqXHR) {
-                    var bookConditions = jqXHR.responseJSON;
-
-                    var newId = 0;
-
-                    var newBookCopyRowId = parseInt($(".passBookCopyForDelete").last().attr("data-book-copy-row-id")) + 1;
-
-                    if (isNaN(newBookCopyRowId)) {
-                        newBookCopyRowId = 0;
-                    }
-
-                    var newTr = document.createElement("tr");
-                    newTr.id = "bookCopy" + newBookCopyRowId;
-
-                    var newTd = document.createElement("td");
-                    newTd.className = "col-sm-2";
-                    newTd.innerHTML = "BookCopyId = newId";
-
-                    var newTd2 = document.createElement("td");
-                    newTd2.className = "col-sm-3";
-
-                    var newTd3 = document.createElement("td");
-                    newTd3.className = "col-sm-7";
-
-                    var newDiv = document.createElement("div");
-                    newDiv.className = "bookCopy"
-
-                    var newInput = document.createElement("input");
-                    newInput.className = "IsToBeDeleted";
-                    newInput.type = "hidden";
-                    newInput.name = "BookCopies[" + newBookCopyRowId + "].IsToBeDeleted";
-                    newInput.value = "false";
-
-                    var bookCopySelect = document.createElement("select");
-                    bookCopySelect.id = "BookCopies_" + newBookCopyRowId + "__BookCondition";
-                    bookCopySelect.name = "BookCopies[" + newBookCopyRowId + "].BookCondition";
-                    bookCopySelect.className = "form-control";
-
-                    // Fill dropdown.
-                    for (var i = 0; i < bookConditions.length; i++) {
-                        var optionElement = document.createElement("option");
-                        optionElement.value = bookConditions[i].Value;
-                        optionElement.innerHTML = bookConditions[i].Name;
-
-                        bookCopySelect.appendChild(optionElement);
-                    }
-
-                    // Remove button
-                    var newRemoveButton = document.createElement("button");
-                    newRemoveButton.className = "btn btn-danger btn-sm passBookCopyForDelete";
-                    newRemoveButton.type = "button";
-                    newRemoveButton.setAttribute("data-toggle", "modal");
-                    newRemoveButton.setAttribute("data-target", "#deleteCopy");
-                    newRemoveButton.setAttribute("data-book-copy-row-id", newBookCopyRowId);
-
-                    // Button icon.
-                    var newRemoveButtonIcon = document.createElement("span");
-                    newRemoveButtonIcon.className = "glyphicon glyphicon-remove";
-                    newRemoveButton.appendChild(newRemoveButtonIcon);
-
-                    newDiv.appendChild(newInput);
-                    newDiv.appendChild(bookCopySelect);
-                    newTd2.appendChild(newDiv);
-                    newTd3.appendChild(newRemoveButton);
-                    newTr.appendChild(newTd);
-                    newTr.appendChild(newTd2);
-                    newTr.appendChild(newTd3);
-
-                    $("#bookCopies table").append(newTr);
-
-                    $(".passBookCopyForDelete").click(function () {
-                        rowid = $(this).data('bookCopyRowId');
-                    });
-
-                    $("#confirm-remove").click(function () {
-                        var trToHide = $("#bookCopy" + rowid);
-                        trToHide.fadeOut(1000, function () {
-                            trToHide.hide();
-                        })
-                        $("#bookCopy" + rowid + " .bookCopy .IsToBeDeleted").attr("value", "true");
-                    });
-                }
-            }
-            $.ajax("@Url.Action("ListBookConditions", "BooksManagement")", ajaxData);
-        })
-    });
-
-    </script>
+    <script src="~/Scripts/View Scripts/BooksManagement/CreateEdit.js"></script>
 
 }
 

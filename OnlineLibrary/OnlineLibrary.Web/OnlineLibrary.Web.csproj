@@ -216,6 +216,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BookDetailsController.cs" />
     <Compile Include="Controllers\BooksManagementController.cs" />
+    <Compile Include="Controllers\CategoriesManagementController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LibrarianController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
@@ -241,6 +242,7 @@
     <Compile Include="Models\BooksManagement\CreateEditBookViewModels\FrontCoverViewModel.cs" />
     <Compile Include="Models\BooksManagement\CreateEditBookViewModels\SubCategoryViewModel.cs" />
     <Compile Include="Models\BookViewModel.cs" />
+    <Compile Include="Models\CategoriesManagement\CategoryViewModel.cs" />
     <Compile Include="Models\CategoryViewModel.cs" />
     <Compile Include="Models\LibrarianLoansViewModels\HistoryLoansViewModel.cs" />
     <Compile Include="Models\LibrarianLoansViewModels\HistoryLoanViewModel.cs" />
@@ -305,8 +307,10 @@
     <Content Include="Content\Views stylesheets\BookDetails\Index.css" />
     <Content Include="Content\Views stylesheets\BooksManagement\CreateEdit.css" />
     <Content Include="Content\Views stylesheets\BooksManagement\Index.css" />
+    <Content Include="Content\Views stylesheets\CategoriesManagement\Index.css" />
     <Content Include="Content\Views stylesheets\Home\Index.css" />
     <Content Include="Content\Views stylesheets\Librarian\Index.css" />
+    <Content Include="Content\Views stylesheets\UserLoans\MyLoans.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -338,7 +342,9 @@
     <Content Include="Scripts\toastr.js" />
     <Content Include="Scripts\toastr.min.js" />
     <Content Include="Scripts\View Scripts\BookDetails\Index.js" />
+    <Content Include="Scripts\View Scripts\BooksManagement\CreateEdit.js" />
     <Content Include="Scripts\View Scripts\BooksManagement\DeleteBook.js" />
+    <Content Include="Scripts\View Scripts\CategoriesManagement\index.js" />
     <Content Include="Scripts\View Scripts\Librarian\index.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config">
@@ -367,7 +373,7 @@
     <Content Include="Views\UserLoans\MyLoans.cshtml" />
     <Content Include="Views\BooksManagement\Index.cshtml" />
     <Content Include="Views\BooksManagement\CreateEdit.cshtml" />
-    <Content Include="Views\BooksManagement\EditorTemplates\BookCopyViewModel.cshtml" />
+    <Content Include="Views\CategoriesManagement\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
