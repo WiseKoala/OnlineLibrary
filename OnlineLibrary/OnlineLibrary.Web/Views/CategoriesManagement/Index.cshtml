@@ -10,6 +10,7 @@
 @section scripts{
     <script src="~/Scripts/toastr.min.js"></script>
     <script src="~/Scripts/knockout-3.4.0.js"></script>
+    <script src="~/Scripts/knockout.mapping-latest.js"></script>
     <script src="~/Scripts/View Scripts/CategoriesManagement/index.js"></script>
 }
 
@@ -26,12 +27,15 @@
             <p data-bind="visible: categories().length == 0">No records...</p>
             <div id="categoriesList" class="list-group btn-group-vertical" data-toggle="buttons" data-bind="foreach: categories" data-categories-url="@Url.Action("GetCategories", "CategoriesManagement")" data-subcategory-url="@Url.Action("GetSubCategories", "CategoriesManagement")">
                 <label class="btn btn-default">
-                    <input type="radio" name="category" data-bind="attr: { value : Id }" autocomplete="off"> <span data-bind="text: Name"></span> 
+                    <input type="radio" name="category" data-bind="attr: { value : Id }" autocomplete="off"> <span class="category-name-caption" data-bind="text: Name"></span> 
                     <span class="control-buttons pull-right">
-                        <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></button>
+                        <button type="button" class="btn btn-default btn-xs btn-edit-category"><span class="glyphicon glyphicon-pencil"></span></button>
                         <button type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
                     </span>
-                    <input type="text" class="form-control" style="display: none" name="categoryName" data-bind="attr: { value : Name }" autocomplete="off" />
+                    <span class="save-category-controls">
+                        <input type="text" class="form-control" name="categoryName" data-bind="value : Name" autocomplete="off" />
+                        <button type="button" class="btn btn-success btn-sm save-category-changes">Save</button>
+                    </span>
                 </label>
             </div>
         </div>

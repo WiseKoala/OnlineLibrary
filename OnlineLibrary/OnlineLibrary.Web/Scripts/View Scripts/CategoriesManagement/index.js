@@ -26,7 +26,8 @@
         settings.type = "GET";
         settings.url = url;
         settings.success = function (data) {
-            viewModel.categories(data);
+
+            ko.mapping.fromJS(data, {}, viewModel.categories);
 
             $("#categoriesList input").change(bindCategoriesRadioButtons);
 
@@ -34,6 +35,11 @@
             $("#categoriesList label").first().addClass("active");
             $("#categoriesList input").first().prop("checked", true);
             $("#categoriesList input").trigger("change");
+
+            // Bind edit category button.
+            $("button.btn-edit-category").click(bindEditCategoryButtons);
+            $("button.save-category-changes").click(bindSaveCategoryChangesButtons);
+            $("input[name='categoryName']").blur(bindSaveCategoryChangesButtons);
         };
         settings.error = function (jqXHR) {
             toastr.error(jqXHR.responseJSON.error);
@@ -117,4 +123,31 @@
 
         $.ajax(settings);
     });
+
+    function bindEditCategoryButtons() {
+        var root = $(this).closest("label");
+        
+        // Show edit category controls.
+        var saveCategoryControls = root.children("span.save-category-controls").first();
+        saveCategoryControls.css("display", "inline-block");
+
+        // Set focus to the input element.
+        var inputElement = saveCategoryControls.children("input");
+        inputElement.first().focus();
+
+        // Hide caption.
+        root.children("span.control-buttons").first().hide();
+        root.children("span.category-name-caption").first().hide();
+    };
+
+    function bindSaveCategoryChangesButtons() {
+        var root = $(this).closest("label");
+
+        // Show caption.
+        root.children("span.control-buttons").first().css("display", "inline-block");
+        root.children("span.category-name-caption").first().css("display", "inline-block");
+
+        // Hide edit category controls.
+        root.children("span.save-category-controls").first().hide();
+    }
 });
