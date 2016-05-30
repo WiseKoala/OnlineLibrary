@@ -1,11 +1,13 @@
-﻿.btn {
-    /*background-color: #2dafce;
-    border-color: #2794ae;*/
+﻿/*
+.btn {
+    background-color: #2dafce;
+    border-color: #2794ae;
 }
 
-/*.btn:hover, .btn:active {
+.btn:hover, .btn:active {
     border-color: #2dafce;
-}*/
+}
+*/
 
 .btn-primary {
     background-color: #2dafce !important;
@@ -16,15 +18,17 @@
 }
 
 
+/*
 .btn-default {
-    /*color: #fff;
-    background-color: #2dafce !important;*/
+    color: #fff;
+    background-color: #2dafce !important;
 }
 
 .btn-default:hover, .btn-default:active {
-    /*color: #fff;
-    background-color: #2fa2bf !important;*/
+    color: #fff;
+    background-color: #2fa2bf !important;
 }
+*/
 
 .btn-danger {
     background-color: #ff5050;
@@ -64,12 +68,14 @@
   color: #fdfdfd;
   background-color: #2fa2bf;
 }
+/*
 .navbar-default .navbar-nav > li > .dropdown-menu {
   background-color: #2dafce;
 }
 .navbar-default .navbar-nav > li > .dropdown-menu > li > a {
   color: #fdfdfd;
 }
+
 .navbar-default .navbar-nav > li > .dropdown-menu > li > a:hover,
 .navbar-default .navbar-nav > li > .dropdown-menu > li > a:focus {
   color: #d9dadb;
@@ -78,12 +84,24 @@
 .navbar-default .navbar-nav > li > .dropdown-menu > li > .divider {
   background-color: #2794ae;
 }
-.navbar-default .navbar-nav .open .dropdown-menu > .active > a,
-.navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
-.navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+.navbar-default .navbar-nav .open .dropdown-menu > .active a,
+.navbar-default .navbar-nav .open .dropdown-menu > .active a:hover,
+.navbar-default .navbar-nav .open .dropdown-menu > .active a:focus {
   color: #d9dadb;
   background-color: #2794ae;
 }
+*/
+
+.dropdown-menu { 
+    color: #d9dadb;
+    background-color: #fff;
+}
+
+.dropdown-menu > li > a:hover, focus {
+    color: #fff;
+    background-color: #2794ae;
+}
+
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
