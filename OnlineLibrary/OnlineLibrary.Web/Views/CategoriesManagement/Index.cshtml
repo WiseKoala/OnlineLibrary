@@ -18,14 +18,20 @@
         <h2>Categories</h2>
         <div>
             <div id="newCategoryNameGroup" class="input-group">
+                <input id="newCategoryName" class="form-control" type="text" name="newCategory" placeholder="New category name..." />
                 <span class="input-group-btn">
                     <button id="addCategory" class="btn btn-success" type="button" data-add-category-url="@Url.Action("CreateCategory", "CategoriesManagement")">Add</button>
                 </span>
-                <input id="newCategoryName" class="form-control" type="text" name="newCategory" placeholder="New category name..." />
             </div>
+            <p data-bind="visible: categories().length == 0">No records...</p>
             <div id="categoriesList" class="list-group btn-group-vertical" data-toggle="buttons" data-bind="foreach: categories" data-categories-url="@Url.Action("GetCategories", "CategoriesManagement")" data-subcategory-url="@Url.Action("GetSubCategories", "CategoriesManagement")">
                 <label class="btn btn-default">
-                    <input type="radio" name="category" data-bind="attr: { value : Id }" autocomplete="off"> <span data-bind="text: Name"></span>
+                    <input type="radio" name="category" data-bind="attr: { value : Id }" autocomplete="off"> <span data-bind="text: Name"></span> 
+                    <span class="control-buttons pull-right">
+                        <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></button>
+                        <button type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+                    </span>
+                    <input type="text" class="form-control" style="display: none" name="categoryName" data-bind="attr: { value : Name }" autocomplete="off" />
                 </label>
             </div>
         </div>
@@ -34,15 +40,21 @@
         <h2>Subcategories</h2>
         <div>
             <div id="newSubcategoryGroup" class="input-group">
+                <input id="newSubcategoryName" class="form-control" type="text" name="newCategory" placeholder="New subcategory name..." />
                 <span class="input-group-btn">
                     <button id="addSubcategory" class="btn btn-success" type="button" data-url="@Url.Action("CreateSubCategory", "CategoriesManagement")">Add</button>
                 </span>
-                <input id="newSubcategoryName" class="form-control" type="text" name="newCategory" placeholder="New subcategory name..." />
             </div>
             <p data-bind="visible: subCategories().length == 0">No records...</p>
-            <div id="subcategoriesList" class="list-group" data-toggle="buttons" data-bind="foreach: subCategories">
-                <button type="button" class="list-group-item" data-bind="text: Name, attr: { 'data-id': Id }"></button>
-            </div>
+            <ul id="subcategoriesList" class="list-group" data-toggle="buttons" data-bind="foreach: subCategories">
+                <li type="button" class="list-group-item" data-bind="attr: { 'data-id': Id }">
+                    <span data-bind="text: Name"></span>
+                    <span class="control-buttons pull-right">
+                        <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></button>
+                        <button type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+                    </span>
+                </li>
+            </ul>
         </div>
     </div>
 </div>

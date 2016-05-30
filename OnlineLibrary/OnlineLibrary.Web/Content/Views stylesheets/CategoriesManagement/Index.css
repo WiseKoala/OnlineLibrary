@@ -3,3 +3,8 @@
 
 #newCategoryNameGroup, #newSubcategoryGroup { margin-bottom: 10px; }
 #subcategoriesList { display: inline-block; }
+
+.input-group { display: inline-block; }
+
+.control-buttons { margin-left: 15px; }
+.control-buttons button { font-size: 9px; }
