@@ -123,5 +123,22 @@ namespace OnlineLibrary.Services.Concrete
 
             return category;
         }
+
+        public SubCategory UpdateSubCategory(int subcategoryId, string newName)
+        {
+            SubCategory subCategory = _dbContext.SubCategories.Find(subcategoryId);
+
+            if (subCategory == null)
+            {
+                throw new KeyNotFoundException("Subctegory not found.");
+            }
+
+            // Update data.
+            subCategory.Name = newName;
+
+            _dbContext.SaveChanges();
+
+            return subCategory;
+        }
     }
 }

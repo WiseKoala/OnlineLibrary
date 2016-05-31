@@ -130,5 +130,26 @@ namespace OnlineLibrary.Web.Controllers
                 return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public JsonResult UpdateSubCategory(int subCategoryId, string newName)
+        {
+            try
+            {
+                SubCategory updatedSubCategory = 
+                    _categoryService.UpdateSubCategory(subCategoryId, newName);
+
+                return Json(new
+                {
+                    Id = updatedSubCategory.Id,
+                    Name = updatedSubCategory.Name
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }
