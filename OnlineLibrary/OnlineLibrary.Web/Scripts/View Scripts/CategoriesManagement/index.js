@@ -29,7 +29,7 @@
 
             ko.mapping.fromJS(data, {}, viewModel.categories);
 
-            $("#categoriesList input").change(bindCategoriesRadioButtons);
+            $("#categoriesList input").change(categoriesRadioButtonsChange);
 
             // Set first radio input as checked.
             $("#categoriesList label").first().addClass("active");
@@ -54,13 +54,26 @@
         $.ajax(settings);
     })();
 
-    function bindCategoriesRadioButtons() {
+    function categoriesRadioButtonsChange() {
         var categoryId = parseInt($("input[name=category]:checked", "#categoriesList").val());
         var url = $("#categoriesList").data("subcategoryUrl");
         
         var settings = {};
         settings.success = function (data) {
-            viewModel.subCategories(data);
+            //viewModel.subCategories(data);
+
+            ko.mapping.fromJS(data, {}, viewModel.subCategories);
+
+            // Bind edit buttons.
+            $("button.btn-edit-subcategory").click(editSubcategoryClick);
+            $("button.save-subcategory-changes").click(subcategorySaveChangesClick);
+            $("button.save-subcategory-changes").mousedown(function (e) {
+                $(this).data("mouseDown", true);
+            });
+            $("button.save-subcategory-changes").mouseup(function (e) {
+                $(this).data("mouseDown", false);
+            });
+            $("input[name='subcategoryName']").blur(subcategoryInputBlur);
         };
         settings.type = "GET";
         settings.url = url;
@@ -92,7 +105,7 @@
             viewModel.categories.splice(0, 0, data);
 
             // Build settings object.
-            $("#categoriesList input").change(bindCategoriesRadioButtons); // TO FIX.
+            $("#categoriesList input").change(categoriesRadioButtonsChange); // TO FIX.
         };
         settings.error = function (jqXHR) {
             toastr.error(jqXHR.responseJSON.error);
@@ -132,24 +145,29 @@
 
     var currentlyEditingName;
 
+    // Categories.
     function editCategoryClick() {
         var root = $(this).closest("label");
 
+        enterCategoryEditMode(root);
+    }
+
+    function enterCategoryEditMode(rootElement) {
         // Save category name.
-        currentlyEditingName = root.children(".category-name-caption").first().text();
-        
+        currentlyEditingName = rootElement.children(".category-name-caption").first().text();
+
         // Show edit category controls.
-        var saveCategoryControls = root.children("span.edit-category-controls").first();
+        var saveCategoryControls = rootElement.children("span.edit-category-controls").first();
         saveCategoryControls.css("display", "inline-block");
 
         // Set focus to the input element.
         var inputElement = saveCategoryControls.children("input");
         inputElement.first().focus();
 
-        // Hide caption.
-        root.children("span.control-buttons").first().hide();
-        root.children("span.category-name-caption").first().hide();
-    };
+        // Hide control buttons and caption.
+        rootElement.children("span.control-buttons").first().hide();
+        rootElement.children("span.category-name-caption").first().hide();
+    }
 
     function categorySaveChangesClick() {
         var root = $(this).closest("label");
@@ -181,5 +199,61 @@
 
         // Hide edit category controls.
         rootElement.children("span.edit-category-controls").first().hide();
+    }
+
+    // Subcategories.
+    function editSubcategoryClick() {
+        var root = $(this).closest("li");
+
+        enterSubcategoryEditMode(root);
+    }
+
+    function enterSubcategoryEditMode(rootElement) {
+        // Save subcategory name.
+        currentlyEditingName = rootElement.children(".subcategory-name-caption").first().text();
+
+        // Show edit subcategory controls.
+        var saveCategoryControls = rootElement.children("span.edit-subcategory-controls").first();
+        saveCategoryControls.css("display", "inline-block");
+
+        // Set focus to the input element.
+        var inputElement = saveCategoryControls.children("input");
+        inputElement.first().focus();
+
+        // Hide control buttons and caption.
+        rootElement.children("span.control-buttons").first().hide();
+        rootElement.children("span.subcategory-name-caption").first().hide();
+    }
+
+    function subcategorySaveChangesClick() {
+        var root = $(this).closest("li");
+
+        alert("Saved!");
+
+        exitSubcategoryEditMode(root);
+    }
+
+    function subcategoryInputBlur() {
+        var root = $(this).closest("li");
+
+        // Is mouse down over button 'Save Changes'.
+        var isMouseDown = root.find("button.save-subcategory-changes").first().data("mouseDown");
+
+        if (!isMouseDown) {
+            // Restore category name.
+            root.find(".subcategory-name-caption").first().text(currentlyEditingName);
+            root.find("input[name='subcategoryName']").first().val(currentlyEditingName);
+
+            exitSubcategoryEditMode(root);
+        }
+    }
+
+    function exitSubcategoryEditMode(rootElement) {
+        // Show caption.
+        rootElement.children("span.control-buttons").first().css("display", "inline-block");
+        rootElement.children("span.subcategory-name-caption").first().css("display", "inline-block");
+
+        // Hide edit category controls.
+        rootElement.children("span.edit-subcategory-controls").first().hide();
     }
 });
