@@ -350,6 +350,8 @@ $(document).ready(function () {
         $.ajax(window.location.origin + "/BooksManagement/ListBookConditions", ajaxData);
     });
 
+    var googleBooksJson = {};
+
     $("#searchByISBN").click(function () {
 
         $("#validationMessage").text("");
@@ -366,6 +368,7 @@ $(document).ready(function () {
                         $("#validationMessage").text("No books with such ISBN were found.");
                     }
                     else {
+                        googleBooksJson = response;
                         for (var i = 0; i < response.items.length; i++) {
                             var item = response.items[i];
 
@@ -375,24 +378,36 @@ $(document).ready(function () {
                             tr_td1.setAttribute("rowspan", "5");
                             tr_td1.setAttribute("style", "border: 1px solid #ddd; padding: 10px;");
                             tr_td1.innerHTML = "#" + (i + 1);
-
-
+                            var tr_td4 = document.createElement("td");
+                            tr_td4.setAttribute("rowspan", "5");
+                            tr_td4.setAttribute("style", "border: 1px solid #ddd; padding: 10px;");
+                            var td_button = document.createElement("button");
+                            td_button.className = "btn btn-primary btn-sm selectGoogleBookButton";
+                            td_button.innerHTML = "Select Book";
+                            td_button.setAttribute("data-bookresult", i);
+                            tr_td4.appendChild(td_button);
+                           
                             for (var j = 0; j < 5; j++) {
 
                                 var tr = document.createElement("tr");
                                 var tr_td2 = document.createElement("td");
                                 tr_td2.className = "col-sm-2";
                                 var tr_td3 = document.createElement("td");
-                                tr_td3.className = "col-sm-10";
+                                tr_td3.className = "col-sm-9";
                                 var td_ul = document.createElement("ul");
-
+                                
                                 switch (j) {
                                     case 0: tr.appendChild(tr_td1);
                                         tr_td2.innerHTML = "Title";
                                         tr_td3.innerHTML = item.volumeInfo.title;
+                                        tr.appendChild(tr_td2);
+                                        tr.appendChild(tr_td3);
+                                        tr.appendChild(tr_td4);
                                         break;
                                     case 1: tr_td2.innerHTML = "Publish Date";
                                         tr_td3.innerHTML = item.volumeInfo.publishedDate;
+                                        tr.appendChild(tr_td2);
+                                        tr.appendChild(tr_td3);
                                         break;
                                     case 2: tr_td2.innerHTML = "Authors";
                                         if (item.volumeInfo.authors != undefined) {
@@ -407,27 +422,51 @@ $(document).ready(function () {
                                         else {
                                             tr_td3.innerHTML = "undefined";
                                         }
+                                        tr.appendChild(tr_td2);
+                                        tr.appendChild(tr_td3);
                                         break;
                                     case 3: tr_td2.innerHTML = "Category/Subecategory";
                                         tr_td3.innerHTML = item.volumeInfo.categories;
+                                        tr.appendChild(tr_td2);
+                                        tr.appendChild(tr_td3);
                                         break;
                                     case 4: tr_td2.innerHTML = "Description";
                                         tr_td3.innerHTML = item.volumeInfo.description;
+                                        tr.appendChild(tr_td2);
+                                        tr.appendChild(tr_td3);
                                         break;
                                     default: break;
                                 };
                                 tr_td2.setAttribute("style", "font-weight: bold; vertical-align: text-top; padding: 5px; border:1px solid #ddd;");
                                 tr_td3.setAttribute("style", "padding: 10px; border:1px solid #ddd;");
 
-                                tr.appendChild(tr_td2);
-                                tr.appendChild(tr_td3);
+                               
+                                
                                 resultTable.appendChild(tr);
                             }
                             resultTable.setAttribute("cellpadding", "10");
                         }
                     }
-                }
+                    $(".selectGoogleBookButton").click(function () {
+                        var itemNr = $(this).attr("data-bookresult");
+                        var item = googleBooksJson.items[itemNr];
+                        $("#Title").val(item.volumeInfo.title);
+                        $("#Description").val(item.volumeInfo.description);
+                        $("#ISBN").val($("#searchISBN").val());
+
+                        var publishedDate = item.volumeInfo.publishedDate.split("-");
+                        var year = publishedDate[0];
+                        var month = publishedDate[1] || "01";
+                        var day = publishedDate[2] || "01";
+                        $("input[name='PublishDate']").val(day + "-" + month + "-" + year);
+                        $("#googleJsonCategory").html("<p>The imported Google Books category is: <strong>" + item.volumeInfo.categories + "</strong></p>");
+                        
+                        
+                    });
+                },
+                error: { } // to do
             })
         }
     });
+    
 });
