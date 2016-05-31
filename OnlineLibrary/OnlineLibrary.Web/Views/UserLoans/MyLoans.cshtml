@@ -339,7 +339,7 @@
                     {
                         foreach (var loan in Model.LostBookLoans)
                         {
-                            <tr class="success" title="Returned books">
+                            <tr class="danger" title="Returned books">
                                 <td colspan="1">#@(++counter)</td>
                                 <td colspan="9">
                                     You have loaned the book <strong> "@loan.BookTitle" </strong> on @loan.StartDate.Value.ToLongDateString(). It was lent to you by @loan.LibrarianName, but you have lost it.
@@ -388,11 +388,13 @@
     </div>
 </div>
 
-@section scripts{
+@section scripts {
+
 <script>
+
     $(document).ready(function ()
     {
-        var activeLoansBageNumber = @Model.InProgressLoans.Where(al => (al.ExpectedReturnDate.Value - DateTime.Now).Days <= 5).Count();
+        var activeLoansBageNumber = @Model.InProgressLoans.Count();
         if (activeLoansBageNumber != 0)
         {
             $("#activeLoansBadge").text(activeLoansBageNumber);
