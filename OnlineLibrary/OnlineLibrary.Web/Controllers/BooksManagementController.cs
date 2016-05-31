@@ -536,11 +536,6 @@ namespace OnlineLibrary.Web.Controllers
             return Json(subCategories, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ImportFromGoogle()
-        {
-            return View();
-        }
-
         #region Helpers
 
         private void DeleteFileFromServer(string path)

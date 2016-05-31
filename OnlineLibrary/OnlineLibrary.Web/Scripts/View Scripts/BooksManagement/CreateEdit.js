@@ -349,4 +349,85 @@ $(document).ready(function () {
         }
         $.ajax(window.location.origin + "/BooksManagement/ListBookConditions", ajaxData);
     });
+
+    $("#searchByISBN").click(function () {
+
+        $("#validationMessage").text("");
+        $("#resultTable").html("");
+
+        if (!/^\d{10,13}$/.test($("#searchISBN").val())) {
+            $("#validationMessage").text("ISBN is not in a correct format.");
+        }
+        else {
+            $.ajax({
+                url: "https://www.googleapis.com/books/v1/volumes?q=isbn:" + $("#searchISBN").val(),
+                success: function (response) {
+                    if (response.items === undefined) {
+                        $("#validationMessage").text("No books with such ISBN were found.");
+                    }
+                    else {
+                        for (var i = 0; i < response.items.length; i++) {
+                            var item = response.items[i];
+
+                            var resultTable = document.getElementById("resultTable");
+
+                            var tr_td1 = document.createElement("td");
+                            tr_td1.setAttribute("rowspan", "5");
+                            tr_td1.setAttribute("style", "border: 1px solid #ddd; padding: 10px;");
+                            tr_td1.innerHTML = "#" + (i + 1);
+
+
+                            for (var j = 0; j < 5; j++) {
+
+                                var tr = document.createElement("tr");
+                                var tr_td2 = document.createElement("td");
+                                tr_td2.className = "col-sm-2";
+                                var tr_td3 = document.createElement("td");
+                                tr_td3.className = "col-sm-10";
+                                var td_ul = document.createElement("ul");
+
+                                switch (j) {
+                                    case 0: tr.appendChild(tr_td1);
+                                        tr_td2.innerHTML = "Title";
+                                        tr_td3.innerHTML = item.volumeInfo.title;
+                                        break;
+                                    case 1: tr_td2.innerHTML = "Publish Date";
+                                        tr_td3.innerHTML = item.volumeInfo.publishedDate;
+                                        break;
+                                    case 2: tr_td2.innerHTML = "Authors";
+                                        if (item.volumeInfo.authors != undefined) {
+                                            for (k = 0; k < item.volumeInfo.authors.length; k++) {
+                                                var ul_li = document.createElement("li");
+                                                ul_li.innerHTML = item.volumeInfo.authors[k];
+                                                td_ul.appendChild(ul_li);
+                                                td_ul.setAttribute("style", "margin-left: -28px; margin-bottom: 0px;");
+                                                tr_td3.appendChild(td_ul);
+                                            }
+                                        }
+                                        else {
+                                            tr_td3.innerHTML = "undefined";
+                                        }
+                                        break;
+                                    case 3: tr_td2.innerHTML = "Category/Subecategory";
+                                        tr_td3.innerHTML = item.volumeInfo.categories;
+                                        break;
+                                    case 4: tr_td2.innerHTML = "Description";
+                                        tr_td3.innerHTML = item.volumeInfo.description;
+                                        break;
+                                    default: break;
+                                };
+                                tr_td2.setAttribute("style", "font-weight: bold; vertical-align: text-top; padding: 5px; border:1px solid #ddd;");
+                                tr_td3.setAttribute("style", "padding: 10px; border:1px solid #ddd;");
+
+                                tr.appendChild(tr_td2);
+                                tr.appendChild(tr_td3);
+                                resultTable.appendChild(tr);
+                            }
+                            resultTable.setAttribute("cellpadding", "10");
+                        }
+                    }
+                }
+            })
+        }
+    });
 });
