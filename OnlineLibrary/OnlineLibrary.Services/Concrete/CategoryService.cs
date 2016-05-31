@@ -106,5 +106,22 @@ namespace OnlineLibrary.Services.Concrete
                 .OrderBy(sc => sc.Name)
                 .ToList();
         }
+
+        public Category UpdateCategory(int categoryId, string newName)
+        {
+            Category category = _dbContext.Categories.Find(categoryId);
+
+            if (category == null)
+            {
+                throw new KeyNotFoundException("Category not found.");
+            }
+
+            // Update data.
+            category.Name = newName;
+
+            _dbContext.SaveChanges();
+
+            return category;
+        }
     }
 }
