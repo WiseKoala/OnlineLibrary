@@ -385,6 +385,7 @@ $(document).ready(function () {
                             td_button.className = "btn btn-primary btn-sm selectGoogleBookButton";
                             td_button.innerHTML = "Select Book";
                             td_button.setAttribute("data-bookresult", i);
+                            td_button.setAttribute("data-dismiss", "modal");
                             tr_td4.appendChild(td_button);
                            
                             for (var j = 0; j < 5; j++) {
