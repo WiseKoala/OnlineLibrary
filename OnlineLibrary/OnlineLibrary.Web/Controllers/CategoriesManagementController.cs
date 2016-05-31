@@ -132,7 +132,6 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public JsonResult UpdateSubCategory(int subCategoryId, string newName)
         {
             try
