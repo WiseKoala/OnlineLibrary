@@ -36,10 +36,10 @@
             $("#categoriesList input").first().prop("checked", true);
             $("#categoriesList input").trigger("change");
 
-            // Bind edit category button.
-            $("button.btn-edit-category").click(bindEditCategoryButtons);
-            $("button.save-category-changes").click(bindSaveCategoryChangesButtons);
-            $("input[name='categoryName']").blur(bindSaveCategoryChangesButtons);
+            // Bind edit buttons.
+            $("button.btn-edit-category").click(editCategoryClick);
+            $("button.save-category-changes").click(categorySaveChangesClick);
+            $("input[name='categoryName']").blur(categoryInputBlur);
         };
         settings.error = function (jqXHR) {
             toastr.error(jqXHR.responseJSON.error);
@@ -124,11 +124,16 @@
         $.ajax(settings);
     });
 
-    function bindEditCategoryButtons() {
+    var currentlyEditingName;
+
+    function editCategoryClick() {
         var root = $(this).closest("label");
+
+        // Save category name.
+        currentlyEditingName = root.children(".category-name-caption").first().text();
         
         // Show edit category controls.
-        var saveCategoryControls = root.children("span.save-category-controls").first();
+        var saveCategoryControls = root.children("span.edit-category-controls").first();
         saveCategoryControls.css("display", "inline-block");
 
         // Set focus to the input element.
@@ -140,14 +145,28 @@
         root.children("span.category-name-caption").first().hide();
     };
 
-    function bindSaveCategoryChangesButtons() {
+    function categorySaveChangesClick() {
         var root = $(this).closest("label");
 
+        exitCategoryEditMode(root);
+    }
+
+    function categoryInputBlur() {
+        var root = $(this).closest("label");
+
+        // Restore category name.
+        root.find(".category-name-caption").first().text(currentlyEditingName);
+        root.find("input[name='categoryName']").first().val(currentlyEditingName);
+
+        exitCategoryEditMode(root);
+    }
+
+    function exitCategoryEditMode(rootElement) {
         // Show caption.
-        root.children("span.control-buttons").first().css("display", "inline-block");
-        root.children("span.category-name-caption").first().css("display", "inline-block");
+        rootElement.children("span.control-buttons").first().css("display", "inline-block");
+        rootElement.children("span.category-name-caption").first().css("display", "inline-block");
 
         // Hide edit category controls.
-        root.children("span.save-category-controls").first().hide();
+        rootElement.children("span.edit-category-controls").first().hide();
     }
 });
