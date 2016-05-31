@@ -52,3 +52,7 @@ textarea {
     width: 100%;
     display: block;
 }
+
+.inlineblock {
+display: inline-block
+}

@@ -6,32 +6,87 @@
 <h2>ImportFromGoogle</h2>
 
 <h4>Search the book to be imported by entering an ISBN:</h4>
-<input type="text" id="ISBN" />
-<input type="button" class="btn btn-default" id="searchByISBN" value="Search" />
+<p class="form-group">
+    <input type="text" id="ISBN" class="form-control inlineblock"/>
+    <input type="button" class="btn btn-primary" id="searchByISBN" value="Search" />
+</p>
 
-<div id="content"></div>
+<div id="content">
+    <table id="resultTable" class="table table-bordered" cellpadding="10"></table>
+</div>
 
 @section scripts{
     <script>
         $(document).ready(function () {
             $("#searchByISBN").click(function () {
+                $("#resultTable").html("");
                 $.ajax({
                     url: "https://www.googleapis.com/books/v1/volumes?q=isbn:" + $("#ISBN").val(),
                     success: function (response) {
                         for (var i = 0; i < response.items.length; i++) {
                             var item = response.items[i];
 
-                            var itemToAdd = document.createElement("div");
+                            var resultTable = document.getElementById("resultTable");
+                                                        
+                            var tr_td1 = document.createElement("td");
+                            tr_td1.setAttribute("rowspan", "5");
+                            tr_td1.setAttribute("style", "border: 1px solid #ddd; padding: 10px;");
+                            tr_td1.innerHTML = "#" + (i + 1);
+                            
 
-                            itemToAdd.innerHTML = "Book Title: " + item.volumeInfo.title;
+                            for (var j = 0; j < 5; j++) {
 
-                            itemToAdd.appendChild(document.createElement("br"));
+                                var tr = document.createElement("tr");
+                                var tr_td2 = document.createElement("td");
+                                tr_td2.className = "col-sm-2";
+                                var tr_td3 = document.createElement("td");
+                                tr_td3.className = "col-sm-10";
+                                var td_ul = document.createElement("ul");
 
-                            $("#content").append(itemToAdd);
+                                switch (j) {
+                                    case 0: tr.appendChild(tr_td1);
+                                            tr_td2.innerHTML = "Title";
+                                            tr_td3.innerHTML = item.volumeInfo.title;
+                                            break;
+                                    case 1: tr_td2.innerHTML = "Publish Date";
+                                            tr_td3.innerHTML = item.volumeInfo.publishedDate;
+                                            break;
+                                    case 2: tr_td2.innerHTML = "Authors";
+                                            for (k = 0; k < item.volumeInfo.authors.length; k++)
+                                            {
+                                                var ul_li = document.createElement("li");
+                                                ul_li.innerHTML = item.volumeInfo.authors[k];
+                                                td_ul.appendChild(ul_li);
+                                            }
+                                            td_ul.setAttribute("style", "margin-left: -28px; margin-bottom: 0px;");
+                                            tr_td3.appendChild(td_ul);
+                                            break;
+                                    case 3: tr_td2.innerHTML = "Category/Subecategory";
+                                            tr_td3.innerHTML = item.volumeInfo.categories;
+                                            break;
+                                    case 4: tr_td2.innerHTML = "Description";
+                                            tr_td3.innerHTML = item.volumeInfo.description;
+                                            break;
+                                    default: break;
+                                };
+                                tr_td2.setAttribute("style", "font-weight: bold; vertical-align: text-top; padding: 5px; border:1px solid #ddd;");
+                                tr_td3.setAttribute("style", "padding: 10px; border:1px solid #ddd;");
+
+                                tr.appendChild(tr_td2);
+                                tr.appendChild(tr_td3);
+                                resultTable.appendChild(tr);
+                            }
+                         
+                                $("#content").append(newTable);
+                                resultTable.className = "table table-bordered";
+                                
+                                resultTable.setAttribute("cellpadding", "10");
+                                
                         }
                     }
                 })
             });
+
         });
     </script>
 }
