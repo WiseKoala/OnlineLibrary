@@ -39,6 +39,12 @@
             // Bind edit buttons.
             $("button.btn-edit-category").click(editCategoryClick);
             $("button.save-category-changes").click(categorySaveChangesClick);
+            $("button.save-category-changes").mousedown(function (e) {
+                $(this).data("mouseDown", true);
+            });
+            $("button.save-category-changes").mouseup(function (e) {
+                $(this).data("mouseDown", false);
+            });
             $("input[name='categoryName']").blur(categoryInputBlur);
         };
         settings.error = function (jqXHR) {
@@ -148,17 +154,24 @@
     function categorySaveChangesClick() {
         var root = $(this).closest("label");
 
+        alert("Saved!");
+
         exitCategoryEditMode(root);
     }
 
     function categoryInputBlur() {
         var root = $(this).closest("label");
 
-        // Restore category name.
-        root.find(".category-name-caption").first().text(currentlyEditingName);
-        root.find("input[name='categoryName']").first().val(currentlyEditingName);
+        // Is mouse down over button 'Save Changes'.
+        var isMouseDown = root.find("button.save-category-changes").first().data("mouseDown");
+        
+        if (!isMouseDown) {
+            // Restore category name.
+            root.find(".category-name-caption").first().text(currentlyEditingName);
+            root.find("input[name='categoryName']").first().val(currentlyEditingName);
 
-        exitCategoryEditMode(root);
+            exitCategoryEditMode(root);
+        }        
     }
 
     function exitCategoryEditMode(rootElement) {
