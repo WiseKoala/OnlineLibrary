@@ -7,6 +7,7 @@ using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Services.Abstract;
 using System.Configuration;
+using OnlineLibrary.Common.Exceptions;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -91,6 +92,26 @@ namespace OnlineLibrary.Services.Concrete
 
                 return subCategory;
             }
+        }
+
+        public Category DeleteBookCategory(int id)
+        {
+            if (!IsCategoryRemovable(id))
+            {
+                throw new BookCategoryIsNotRemovableException("Book category has books or subcategories");
+            }
+
+            var removedCategory = _dbContext.Categories.Find(id);
+            var result = _dbContext.Categories.Remove(removedCategory);
+            _dbContext.SaveChanges();
+
+            return result;          
+        }
+
+        public bool IsCategoryRemovable(int categoryId)
+        {
+            // Book can't have just category without subcategory, it's enough to check just the following condition.
+            return !_dbContext.SubCategories.Any(sc => sc.CategoryId == categoryId);              
         }
 
         public IEnumerable<SubCategory> GetSubCategories(int categoryId)
