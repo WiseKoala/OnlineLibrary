@@ -374,7 +374,6 @@
     <Content Include="Views\BooksManagement\Index.cshtml" />
     <Content Include="Views\BooksManagement\CreateEdit.cshtml" />
     <Content Include="Views\CategoriesManagement\Index.cshtml" />
-    <Content Include="Views\BooksManagement\ImportFromGoogle.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
