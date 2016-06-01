@@ -131,7 +131,7 @@ namespace OnlineLibrary.Services.Concrete
         {
             if(!IsSubcategoryRemovable(subcategoryId))
             {
-                throw new BookSubcateogryIsNotRemovableException("Subcategory has book");
+                throw new BookSubcateogryIsNotRemovableException("Subcategory has books");
             }
 
             var removedSubcategory = _dbContext.SubCategories.FirstOrDefault(sc => sc.Id == subcategoryId);
