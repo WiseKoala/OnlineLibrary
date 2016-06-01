@@ -203,21 +203,38 @@ namespace OnlineLibrary.Web.Controllers
 
                 return View(model);
             }
-              
+            
             // If book is new.
             if (model.Id < 1)
             {
-                // Create new book.
-                var book = new Book()
+                Book book;
+                if (!String.IsNullOrEmpty(model.BookCover.FrontCover))
                 {
-                    Id = model.Id,
-                    Title = model.Title,
-                    Description = model.Description,
-                    ISBN = model.ISBN,
-                    PublishDate = model.PublishDate,
-                    FrontCover = SaveImage(model.BookCover.Image)
-                };
-
+                    // Create new book.
+                    book = new Book()
+                    {
+                        Id = model.Id,
+                        Title = model.Title,
+                        Description = model.Description,
+                        ISBN = model.ISBN,
+                        PublishDate = model.PublishDate,
+                        FrontCover = SaveImageFromUrl(model.BookCover.FrontCover)
+                    };
+                }
+                else
+                {
+                    // Create new book.
+                    book = new Book()
+                    {
+                        Id = model.Id,
+                        Title = model.Title,
+                        Description = model.Description,
+                        ISBN = model.ISBN,
+                        PublishDate = model.PublishDate,
+                        FrontCover = SaveImage(model.BookCover.Image)
+                    };
+                }
+                
                 // Add book copies.
                 foreach (var bookCopy in model.BookCopies)
                 {
@@ -280,6 +297,19 @@ namespace OnlineLibrary.Web.Controllers
                 book.ISBN = model.ISBN;
                 book.PublishDate = model.PublishDate;
 
+                // Delete old book cover image from database in case new image is added
+                if (!String.IsNullOrEmpty(model.OldImagePath))
+                {
+                    string correctedPath = "~" + model.OldImagePath.Substring(model.OldImagePath.IndexOf("/Content"));
+                    DeleteFileFromServer(correctedPath);
+                }
+
+                // Save image from Url address in case image is imported
+                if (!String.IsNullOrEmpty(model.BookCover.FrontCover) && model.BookCover.FrontCover.StartsWith("http"))
+                {
+                    book.FrontCover = SaveImageFromUrl(model.BookCover.FrontCover);
+                }
+                
                 // Update image only if was uploaded.
                 if (model.BookCover.Image != null)
                 {
@@ -457,6 +487,17 @@ namespace OnlineLibrary.Web.Controllers
             return imageRelativeSavePath;
         }
 
+        private string SaveImageFromUrl(string url)
+        {
+                string contentPath = "~/Content/Images/Books/front-covers";
+                string fileName = Guid.NewGuid().ToString() + ".jpg"; // + Path.GetExtension(image.FileName);
+                string imageAbsoluteSavePath = Path.Combine(Server.MapPath(contentPath), fileName);
+                string imageRelativeSavePath = string.Concat(contentPath, '/', fileName);
+                WebClient webClient = new WebClient();
+                webClient.DownloadFile(url, imageAbsoluteSavePath);
+                return imageRelativeSavePath;
+        }
+
         [HttpPost]
         public ActionResult DeleteBook(int id)
         {
@@ -535,12 +576,6 @@ namespace OnlineLibrary.Web.Controllers
 
             return Json(subCategories, JsonRequestBehavior.AllowGet);
         }
-
-        public ActionResult ImportFromGoogle()
-        {
-            return View();
-        }
-
         #region Helpers
 
         private void DeleteFileFromServer(string path)

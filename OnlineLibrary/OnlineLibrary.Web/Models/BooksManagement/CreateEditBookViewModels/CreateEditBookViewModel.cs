@@ -51,5 +51,7 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         public IDictionary<BookCondition, string> AllBookConditions { get; set; }
 
         public IList<CategoryViewModel> BookCategories { get; set; }
+
+        public string OldImagePath { get; set; }
     }
 }
