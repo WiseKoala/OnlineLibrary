@@ -36,16 +36,7 @@
             $("#categoriesList input").first().prop("checked", true);
             $("#categoriesList input").trigger("change");
 
-            // Bind edit buttons.
-            $("button.btn-edit-category").click(editCategoryClick);
-            $("button.save-category-changes").click(categorySaveChangesClick);
-            $("button.save-category-changes").mousedown(function (e) {
-                $(this).data("mouseDown", true);
-            });
-            $("button.save-category-changes").mouseup(function (e) {
-                $(this).data("mouseDown", false);
-            });
-            $("input[name='categoryName']").blur(categoryInputBlur);
+            bindCategoryButtons();
         };
         settings.error = function (jqXHR) {
             toastr.error(jqXHR.responseJSON.error);
@@ -53,6 +44,18 @@
 
         $.ajax(settings);
     })();
+
+    function bindCategoryButtons() {
+        $("button.btn-edit-category").click(editCategoryClick);
+        $("button.save-category-changes").click(categorySaveChangesClick);
+        $("button.save-category-changes").mousedown(function (e) {
+            $(this).data("mouseDown", true);
+        });
+        $("button.save-category-changes").mouseup(function (e) {
+            $(this).data("mouseDown", false);
+        });
+        $("input[name='categoryName']").blur(categoryInputBlur);
+    }
 
     function categoriesRadioButtonsChange() {
         var categoryId = parseInt($("input[name=category]:checked", "#categoriesList").val());
@@ -64,16 +67,7 @@
 
             ko.mapping.fromJS(data, {}, viewModel.subCategories);
 
-            // Bind edit buttons.
-            $("button.btn-edit-subcategory").click(editSubcategoryClick);
-            $("button.save-subcategory-changes").click(subcategorySaveChangesClick);
-            $("button.save-subcategory-changes").mousedown(function (e) {
-                $(this).data("mouseDown", true);
-            });
-            $("button.save-subcategory-changes").mouseup(function (e) {
-                $(this).data("mouseDown", false);
-            });
-            $("input[name='subcategoryName']").blur(subcategoryInputBlur);
+            bindSubCategoryButtons();
         };
         settings.type = "GET";
         settings.url = url;
@@ -86,6 +80,18 @@
 
         $.ajax(settings);
     };
+
+    function bindSubCategoryButtons() {
+        $("button.btn-edit-subcategory").click(editSubcategoryClick);
+        $("button.save-subcategory-changes").click(subcategorySaveChangesClick);
+        $("button.save-subcategory-changes").mousedown(function (e) {
+            $(this).data("mouseDown", true);
+        });
+        $("button.save-subcategory-changes").mouseup(function (e) {
+            $(this).data("mouseDown", false);
+        });
+        $("input[name='subcategoryName']").blur(subcategoryInputBlur);
+    }
 
     $("#addCategory").click(function () {
         var categoryName = $("#newCategoryName").val();
@@ -104,8 +110,7 @@
 
             viewModel.categories.splice(0, 0, data);
 
-            // Build settings object.
-            $("#categoriesList input").change(categoriesRadioButtonsChange); // TO FIX.
+            bindCategoryButtons(); // TO FIX.
         };
         settings.error = function (jqXHR) {
             toastr.error(jqXHR.responseJSON.error);
@@ -135,6 +140,8 @@
 
             // Store data in view model.
             viewModel.subCategories.splice(0, 0, data);
+
+            bindSubCategoryButtons();
         };
         settings.error = function (jqXHR) {
             toastr.error(jqXHR.responseJSON.error);
