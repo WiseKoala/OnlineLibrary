@@ -1,5 +1,6 @@
 ﻿@using OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
 @using System.Linq
+
 @model CreateEditBookViewModel
 @{
     ViewBag.Title = "CreateEdit";
@@ -167,7 +168,7 @@
             }
         </div>
        
-        <button type="button" id="add-category" class="btn btn-default" style="margin-top: 10px">Add Category</button>
+        <button type="button" id="add-category" class="btn btn-primary" style="margin-top: 10px">Add Category</button>
         
         <p></p>
 
@@ -275,7 +276,7 @@
 </div>
 
 @section scripts {
-
+    
     @Scripts.Render("~/bundles/jqueryui")
     <script src="~/Scripts/View Scripts/BooksManagement/CreateEdit.js"></script>
 

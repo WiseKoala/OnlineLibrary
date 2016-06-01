@@ -378,16 +378,7 @@ $(document).ready(function () {
                             tr_td1.setAttribute("rowspan", "5");
                             tr_td1.setAttribute("style", "border: 1px solid #ddd; padding: 10px;");
                             tr_td1.innerHTML = "#" + (i + 1);
-                            var tr_td4 = document.createElement("td");
-                            tr_td4.setAttribute("rowspan", "5");
-                            tr_td4.setAttribute("style", "border: 1px solid #ddd; padding: 10px;");
-                            var td_button = document.createElement("button");
-                            td_button.className = "btn btn-primary btn-sm selectGoogleBookButton";
-                            td_button.innerHTML = "Select Book";
-                            td_button.setAttribute("data-bookresult", i);
-                            td_button.setAttribute("data-dismiss", "modal");
-                            tr_td4.appendChild(td_button);
-                           
+                                                        
                             for (var j = 0; j < 5; j++) {
 
                                 var tr = document.createElement("tr");
@@ -403,6 +394,24 @@ $(document).ready(function () {
                                         tr_td3.innerHTML = item.volumeInfo.title;
                                         tr.appendChild(tr_td2);
                                         tr.appendChild(tr_td3);
+
+                                        var tr_td4 = document.createElement("td");
+                                        tr_td4.setAttribute("style", "border: 1px solid #ddd; padding: 10px; text-align: center; vertical-align: top;");
+                                        tr_td4.setAttribute("rowspan", "5");
+
+                                        var td_image = document.createElement("img");
+                                        td_image.src = item.volumeInfo.imageLinks.thumbnail;
+                                        td_image.width = "120";
+                                        td_image.setAttribute("style", "margin-bottom: 10px;");
+                                        tr_td4.appendChild(td_image);
+                                        
+                                        var td_button = document.createElement("button");
+                                        td_button.className = "btn btn-primary btn-sm selectGoogleBookButton";
+                                        td_button.innerHTML = "Select Book";
+                                        td_button.setAttribute("data-bookresult", i);
+                                        td_button.setAttribute("data-dismiss", "modal");
+                                        tr_td4.appendChild(td_button);
+
                                         tr.appendChild(tr_td4);
                                         break;
                                     case 1: tr_td2.innerHTML = "Publish Date";
@@ -461,8 +470,7 @@ $(document).ready(function () {
                         var day = publishedDate[2] || "01";
                         $("input[name='PublishDate']").val(day + "-" + month + "-" + year);
                         $("#googleJsonCategory").html("<p>The imported Google Books category is: <strong>" + item.volumeInfo.categories + "</strong></p>");
-                        
-                        
+                                                
                     });
                 },
                 error: { } // to do
