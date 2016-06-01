@@ -470,12 +470,49 @@ $(document).ready(function () {
                         var day = publishedDate[2] || "01";
                         $("input[name='PublishDate']").val(day + "-" + month + "-" + year);
                         $("#googleJsonCategory").html("<p>The imported Google Books category is: <strong>" + item.volumeInfo.categories + "</strong></p>");
-                                                
+
+                        var divImageLoad = document.getElementById("ImageLoad");
+                        
+
+                        var imgImageLoad = document.createElement("img");
+                        imgImageLoad.className = "img-small-responsive margin-bottom-10";
+                        imgImageLoad.src = item.volumeInfo.imageLinks.thumbnail;
+                        imgImageLoad.id = "localImage";
+
+                        var inputImageLoad = document.createElement("input");
+                        inputImageLoad.type = "hidden";
+                        inputImageLoad.value = item.volumeInfo.imageLinks.thumbnail;
+                        inputImageLoad.name = "BookCover.FrontCover";
+                        inputImageLoad.id = "localImageInput";
+
+                        var localImage = document.getElementById("localImage");
+                        if (localImage === null) {
+                            divImageLoad.insertBefore(imgImageLoad, divImageLoad.childNodes[0]);
+                            divImageLoad.appendChild(inputImageLoad);
+                        }
+                        else {
+                            localImage.src = item.volumeInfo.imageLinks.thumbnail;
+                            var localInput = document.getElementById("localImageInput");
+                            localInput.value = item.volumeInfo.imageLinks.thumbnail;
+                        }
+                        $("#inputFile").val("");
+                        $("#textImageFileName").text("");
+                        
+                        $("#inputFile").click(function () {
+                            $("#localImage").remove();
+                            $("#localImageInput").remove();
+
+                        });
                     });
+
                 },
                 error: { } // to do
             })
         }
     });
-    
+
+    $("#inputFile").click(function () {
+        $("#localImage").remove();
+        $("#localImageInput").remove();
+    });
 });

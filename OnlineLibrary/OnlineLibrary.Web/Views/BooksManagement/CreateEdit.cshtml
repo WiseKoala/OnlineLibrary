@@ -27,17 +27,18 @@
                     <label>Front Cover</label>
                     @if (!string.IsNullOrEmpty(Model.BookCover.FrontCover))
                     {
-                        <img class="img-small-responsive" src=@Url.Content(Model.BookCover.FrontCover) />
-                        <input type="hidden" value="@Model.BookCover.FrontCover" name="BookCover.FrontCover" />
+                        <img id="localImage" class="img-small-responsive margin-bottom-10" src=@Url.Content(Model.BookCover.FrontCover) />
+                        <input id="localImageInput" type="hidden" value="@Model.BookCover.FrontCover" name="BookCover.FrontCover" />
                     }
-                </div>
-                @*Load Image*@
-                <div class="form-group">
-                    <label class="inputFileButton">
-                        <input type="file" id="inputFile" name="BookCover.Image" class="inputfile" />
-                        <span class="btn btn-primary">Upload Image</span>
-                    </label>
-                    <div id="textImageFileName"></div>
+                    
+                    @*Load Image*@
+                    <div id="ImageLoad" class="form-group">
+                        <label class="inputFileButton">
+                            <input type="file" id="inputFile" name="BookCover.Image" class="inputfile" />
+                            <span class="btn btn-primary">Upload Image</span>
+                        </label>
+                        <div id="textImageFileName"></div>
+                    </div>
                 </div>
                 @Html.ValidationMessageFor(m => m.BookCover)
             </div>
