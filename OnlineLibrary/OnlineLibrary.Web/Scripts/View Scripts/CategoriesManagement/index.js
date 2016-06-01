@@ -172,9 +172,33 @@
     function categorySaveChangesClick() {
         var root = $(this).closest("label");
 
-        alert("Saved!");
+        // New name.
+        var newCategoryName = $(this).siblings("input[name='categoryName']").first().val();
 
-        exitCategoryEditMode(root);
+        // Extract category ID.
+        var categoryId = parseInt(root.find("input[name='category']").val());
+
+        // Extract URL.
+        var updateCategoryUrl = $("#categoriesList").data("categoryUpdateUrl");
+
+        var settings = {};
+        settings.type = "POST";
+        settings.url = updateCategoryUrl;
+        settings.data = {
+            categoryId: categoryId,
+            newName: newCategoryName
+        };
+        settings.success = function (data) {
+            exitCategoryEditMode(root);
+
+            // Show notification.
+            toastr.success("Subcategory <b>" + data.Name + "</b> has been successfully updated.");
+        };
+        settings.error = function (jqXHR) {
+            toastr.error(jqXHR.responseJSON.error);
+        }
+
+        $.ajax(settings);
     }
 
     function categoryInputBlur() {
