@@ -556,16 +556,20 @@ $(document).ready(function () {
                                 executeAddBookAuthor(authorFirstName, authorMiddleName, authorLastName);
                             }
                         }
-                        
-                        //function () {
-                        //    var authorsBody = $("#bookAuthors tbody");
-                        //    var newBookAuthorId = parseInt($("#bookAuthors tbody .book-author").last().data("authorId")) + 1;
-                        //}
-
                     });
 
                 },
-                error: { } // to do
+                error: function () {
+                    toastr.options =
+                        {
+                            "closeButton": true,
+                            "onclick": null,
+                            "positionClass": "toast-bottom-right",
+                            "timeOut": 5000,
+                            "extendedTimeOut": 10000
+                        }
+                    toastr.error("Can not access Google Books.", "Error!");
+                }
             })
         }
     });

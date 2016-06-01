@@ -10,6 +10,7 @@
 
 @section CSS{
     @Styles.Render("~/Content/cssjqueryUI")
+    <link href="~/Content/toastr.min.css" rel="stylesheet" />
     @Styles.Render("~/Content/css")
     <link href="~/Content/Views stylesheets/BooksManagement/CreateEdit.css" rel="stylesheet" />
 }
@@ -276,10 +277,9 @@
     </div>
 </div>
 
-@section scripts {
-    
+@section scripts {    
     @Scripts.Render("~/bundles/jqueryui")
+    <script src="~/Scripts/toastr.min.js"></script>
     <script src="~/Scripts/View Scripts/BooksManagement/CreateEdit.js"></script>
-
 }
 
