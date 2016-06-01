@@ -112,10 +112,10 @@ namespace OnlineLibrary.Services.Concrete
         {
             if (!IsCategoryRemovable(cateogryId))
             {
-                throw new BookCategoryIsNotRemovableException("Book category has books or subcategories");
+                throw new BookCategoryIsNotRemovableException("Book category has subcategories");
             }
 
-            var removedCategory = _dbContext.Categories.FirstOrDefault(x => x.Id == cateogryId);
+            var removedCategory = _dbContext.Categories.FirstOrDefault(c => c.Id == cateogryId);
             _dbContext.Categories.Remove(removedCategory);
             _dbContext.SaveChanges();
 
@@ -127,9 +127,22 @@ namespace OnlineLibrary.Services.Concrete
             return !_dbContext.SubCategories.Any(sc => sc.CategoryId == categoryId);
         }
 
-        public bool IsSubcategoryRemovable(int categoryId)
+        public void DeleteBookSubcategory(int subcategoryId)
         {
-            return !_dbContext.Books.Any(b => b.SubCategories.Any(sc => sc.Id == categoryId));
+            if(!IsSubcategoryRemovable(subcategoryId))
+            {
+                throw new BookSubcateogryIsNotRemovableException("Subcategory has book");
+            }
+
+            var removedSubcategory = _dbContext.SubCategories.FirstOrDefault(sc => sc.Id == subcategoryId);
+            _dbContext.SubCategories.Remove(removedSubcategory);
+            _dbContext.SaveChanges();
         }
+
+        public bool IsSubcategoryRemovable(int subcategoryId)
+        {
+            return !_dbContext.Books.Any(b => b.SubCategories.Any(sc => sc.Id == subcategoryId));
+        }
+        
     }
 }

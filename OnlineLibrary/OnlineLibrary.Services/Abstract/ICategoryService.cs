@@ -15,5 +15,6 @@ namespace OnlineLibrary.Services.Abstract
         void DeleteBookCategory(int cateogryId);
         bool IsCategoryRemovable(int cateogryId);
         bool IsSubcategoryRemovable(int cateogryId);
+        void DeleteBookSubcategory(int subcategoryId);
     }
 }
