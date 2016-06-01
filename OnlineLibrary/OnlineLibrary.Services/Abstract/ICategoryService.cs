@@ -12,5 +12,7 @@ namespace OnlineLibrary.Services.Abstract
         Category CreateCategory(string name);
         SubCategory CreateSubCategory(int categoryId, string name);
         IEnumerable<SubCategory> GetSubCategories(int categoryId);
+        Category UpdateCategory(int categoryId, string newName);
+        SubCategory UpdateSubCategory(int subcategoryId, string newName);
     }
 }

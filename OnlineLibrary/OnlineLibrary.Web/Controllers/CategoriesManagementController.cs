@@ -111,5 +111,56 @@ namespace OnlineLibrary.Web.Controllers
                 return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        public JsonResult UpdateCategory(int categoryId, string newName)
+        {
+            try
+            {
+                Category updatedCategory = _categoryService.UpdateCategory(categoryId, newName);
+
+                return Json(new
+                {
+                    Id = updatedCategory.Id,
+                    Name = updatedCategory.Name
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ArgumentException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult UpdateSubCategory(int subCategoryId, string newName)
+        {
+            try
+            {
+                SubCategory updatedSubCategory = 
+                    _categoryService.UpdateSubCategory(subCategoryId, newName);
+
+                return Json(new
+                {
+                    Id = updatedSubCategory.Id,
+                    Name = updatedSubCategory.Name
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ArgumentException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }
