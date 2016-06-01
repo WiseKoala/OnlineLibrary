@@ -94,25 +94,6 @@ namespace OnlineLibrary.Services.Concrete
             }
         }
 
-        public void DeleteBookCategory(int id)
-        {
-            if (!IsCategoryRemovable(id))
-            {
-                throw new BookCategoryIsNotRemovableException("Book category has books or subcategories");
-            }
-
-            var removedCategory = _dbContext.Categories.FirstOrDefault(x => x.Id == id);
-            _dbContext.Categories.Remove(removedCategory);
-            _dbContext.SaveChanges();
-    
-        }
-
-        public bool IsCategoryRemovable(int categoryId)
-        {
-            // Book can't have just category without subcategory, it's enough to check just the following condition.
-            return !_dbContext.SubCategories.Any(sc => sc.CategoryId == categoryId);              
-        }
-
         public IEnumerable<SubCategory> GetSubCategories(int categoryId)
         {
             Category category = _dbContext.Categories.Find(categoryId);
@@ -125,6 +106,30 @@ namespace OnlineLibrary.Services.Concrete
             return category.SubCategories
                 .OrderBy(sc => sc.Name)
                 .ToList();
+        }
+
+        public void DeleteBookCategory(int cateogryId)
+        {
+            if (!IsCategoryRemovable(cateogryId))
+            {
+                throw new BookCategoryIsNotRemovableException("Book category has books or subcategories");
+            }
+
+            var removedCategory = _dbContext.Categories.FirstOrDefault(x => x.Id == cateogryId);
+            _dbContext.Categories.Remove(removedCategory);
+            _dbContext.SaveChanges();
+
+        }
+
+        public bool IsCategoryRemovable(int categoryId)
+        {
+            // Book can't have just category without subcategory, it's enough to check just the following condition.
+            return !_dbContext.SubCategories.Any(sc => sc.CategoryId == categoryId);
+        }
+
+        public bool IsSubcategoryRemovable(int categoryId)
+        {
+            return !_dbContext.Books.Any(b => b.SubCategories.Any(sc => sc.Id == categoryId));
         }
     }
 }

@@ -12,7 +12,8 @@ namespace OnlineLibrary.Services.Abstract
         Category CreateCategory(string name);
         SubCategory CreateSubCategory(int categoryId, string name);
         IEnumerable<SubCategory> GetSubCategories(int categoryId);
-        void DeleteBookCategory(int id);
-        bool IsCategoryRemovable(int categoryId);
+        void DeleteBookCategory(int cateogryId);
+        bool IsCategoryRemovable(int cateogryId);
+        bool IsSubcategoryRemovable(int cateogryId);
     }
 }
