@@ -297,6 +297,14 @@ namespace OnlineLibrary.Web.Controllers
                 book.ISBN = model.ISBN;
                 book.PublishDate = model.PublishDate;
 
+                // Delete old book cover image from database in case new image is added
+                if (!String.IsNullOrEmpty(model.OldImagePath))
+                {
+                    string correctedPath = "~" + model.OldImagePath.Substring(model.OldImagePath.IndexOf("/Content"));
+                    DeleteFileFromServer(correctedPath);
+                }
+
+                // Save image from Url address in case image is imported
                 if (!String.IsNullOrEmpty(model.BookCover.FrontCover) && model.BookCover.FrontCover.StartsWith("http"))
                 {
                     book.FrontCover = SaveImageFromUrl(model.BookCover.FrontCover);

@@ -518,16 +518,20 @@ $(document).ready(function () {
                                 localImage.src = imageUrl[itemNr];
                                 var localInput = document.getElementById("localImageInput");
                                 localInput.value = imageUrl[itemNr];
+                                $("#oldImagePath").attr("value", localImage.src);
                             }
 
                             $("#inputFile").val("");
                             $("#textImageFileName").text("");
                         }
                                                 
-                        $("#inputFile").click(function () {
+                        $("#ImageLoad span").click(function () {
+                            var temp = localImage.src
+                            alert();
+                            $("#oldImagePath").attr("value", temp);
                             $("#localImage").remove();
                             $("#localImageInput").remove();
-
+                            
                         });
 
                         if (item.volumeInfo.authors != undefined) {
@@ -575,6 +579,8 @@ $(document).ready(function () {
     });
 
     $("#inputFile").click(function () {
+        var temp = localImage.src;
+        $("#oldImagePath").attr("value", temp);
         $("#localImage").remove();
         $("#localImageInput").remove();
     });
