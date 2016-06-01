@@ -94,18 +94,17 @@ namespace OnlineLibrary.Services.Concrete
             }
         }
 
-        public Category DeleteBookCategory(int id)
+        public void DeleteBookCategory(int id)
         {
             if (!IsCategoryRemovable(id))
             {
                 throw new BookCategoryIsNotRemovableException("Book category has books or subcategories");
             }
 
-            var removedCategory = _dbContext.Categories.Find(id);
-            var result = _dbContext.Categories.Remove(removedCategory);
+            var removedCategory = _dbContext.Categories.FirstOrDefault(x => x.Id == id);
+            _dbContext.Categories.Remove(removedCategory);
             _dbContext.SaveChanges();
-
-            return result;          
+    
         }
 
         public bool IsCategoryRemovable(int categoryId)
