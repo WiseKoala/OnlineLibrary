@@ -32,16 +32,6 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
             }
             .AsQueryable();
 
-            var book = new Book
-            {
-                Id = 1, SubCategories = new List<SubCategory> { subcateogories.First( sc => sc.Id == 1 ) }
-            };
-            var books = new List<Book>
-            {
-                book
-            }
-            .AsQueryable();
-
             var categoriesSet = Substitute.For<DbSet<Category>, IQueryable<Category>>();
             ((IQueryable<Category>)categoriesSet).Provider.Returns(categories.Provider);
             ((IQueryable<Category>)categoriesSet).Expression.Returns(categories.Expression);
@@ -54,16 +44,9 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
             ((IQueryable<SubCategory>)subcategoriesSet).ElementType.Returns(subcateogories.ElementType);
             ((IQueryable<SubCategory>)subcategoriesSet).GetEnumerator().Returns(subcateogories.GetEnumerator());
 
-            var bookSet = Substitute.For<DbSet<Book>, IQueryable<Book>>();
-            ((IQueryable<Book>)bookSet).Provider.Returns(books.Provider);
-            ((IQueryable<Book>)bookSet).Expression.Returns(books.Expression);
-            ((IQueryable<Book>)bookSet).ElementType.Returns(books.ElementType);
-            ((IQueryable<Book>)bookSet).GetEnumerator().Returns(books.GetEnumerator());
-
             _dbContext = Substitute.For<ILibraryDbContext>();
             _dbContext.Categories.Returns(categoriesSet);
             _dbContext.SubCategories.Returns(subcategoriesSet);
-            _dbContext.Books.Returns(bookSet);
         }
         [Test]
         public void Should_RetrunFalse_When_CategoryHasSubcategories()
