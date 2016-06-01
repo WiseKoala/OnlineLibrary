@@ -76,6 +76,8 @@
     <Compile Include="Concrete_Tests\CategoryService_Tests\CreateSubCategoryTestClass.cs" />
     <Compile Include="Concrete_Tests\CategoryService_Tests\GetSubCategoriesTestClass.cs" />
     <Compile Include="Concrete_Tests\CategoryService_Tests\IsSubcategoryRemovableTestClass.cs" />
+    <Compile Include="Concrete_Tests\CategoryService_Tests\UpdateCategoryTestClass.cs" />
+    <Compile Include="Concrete_Tests\CategoryService_Tests\UpdateSubCategoryTestClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

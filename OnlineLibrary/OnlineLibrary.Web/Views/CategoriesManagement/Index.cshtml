@@ -10,6 +10,7 @@
 @section scripts{
     <script src="~/Scripts/toastr.min.js"></script>
     <script src="~/Scripts/knockout-3.4.0.js"></script>
+    <script src="~/Scripts/knockout.mapping-latest.js"></script>
     <script src="~/Scripts/View Scripts/CategoriesManagement/index.js"></script>
 }
 
@@ -24,16 +25,19 @@
                 </span>
             </div>
             <p data-bind="visible: categories().length == 0">No records...</p>
-            <div id="categoriesList" class="list-group btn-group-vertical" data-toggle="buttons" data-bind="foreach: categories" data-categories-url="@Url.Action("GetCategories", "CategoriesManagement")" data-subcategory-url="@Url.Action("GetSubCategories", "CategoriesManagement")">
+            <div id="categoriesList" class="list-group btn-group-vertical" data-toggle="buttons" data-bind="foreach: categories" data-categories-url="@Url.Action("GetCategories", "CategoriesManagement")" data-subcategory-url="@Url.Action("GetSubCategories", "CategoriesManagement")" data-category-update-url="@Url.Action("UpdateCategory", "CategoriesManagement")">
                 <label class="btn btn-default">
-                    <input type="radio" name="category" data-bind="attr: { value : Id }" autocomplete="off"> <span data-bind="text: Name"></span> 
+                    <input type="radio" name="category" data-bind="attr: { value : Id }" autocomplete="off"> <span class="category-name-caption" data-bind="text: Name"></span> 
                     <span class="control-buttons pull-right">
-                        <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></button>
+                        <button type="button" class="btn btn-default btn-xs btn-edit-category"><span class="glyphicon glyphicon-pencil"></span></button>
                         <button type="button" class="btn btn-danger btn-xs deleteCategory" data-toggle="modal" data-target="#removeCategoryConfirmation" data-bind="attr: { value : Id }">
                             <span class="glyphicon glyphicon-remove"></span>
                         </button>
                     </span>
-                    <input type="text" class="form-control" style="display: none" name="categoryName" data-bind="attr: { value : Name }" autocomplete="off" />
+                    <span class="edit-category-controls form-inline">
+                        <input type="text" class="form-control" name="categoryName" data-bind="value : Name" autocomplete="off" />
+                        <button type="button" class="btn btn-success btn-sm save-category-changes">Save</button>
+                    </span>
                 </label>
             </div>
         </div>
@@ -50,12 +54,16 @@
                 </span>
             </div>
             <p data-bind="visible: subCategories().length == 0">No records...</p>
-            <ul id="subcategoriesList" class="list-group" data-toggle="buttons" data-bind="foreach: subCategories">
+            <ul id="subcategoriesList" class="list-group" data-toggle="buttons" data-bind="foreach: subCategories" data-subcategory-update-url="@Url.Action("UpdateSubCategory", "CategoriesManagement")">
                 <li type="button" class="list-group-item" data-bind="attr: { 'data-id': Id }">
-                    <span data-bind="text: Name"></span>
+                    <span class="subcategory-name-caption" data-bind="text: Name"></span>
                     <span class="control-buttons pull-right">
-                        <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></button>
+                        <button type="button" class="btn btn-default btn-xs btn-edit-subcategory"><span class="glyphicon glyphicon-pencil"></span></button>
                         <button type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+                    </span>
+                    <span class="edit-subcategory-controls form-inline">
+                        <input type="text" class="form-control" name="subcategoryName" data-bind="value : Name" autocomplete="off" />
+                        <button type="button" class="btn btn-success btn-sm save-subcategory-changes">Save</button>
                     </span>
                 </li>
             </ul>

@@ -6,5 +6,8 @@
 
 .input-group { display: inline-block; }
 
+/**/
 .control-buttons { margin-left: 15px; }
 .control-buttons button { font-size: 9px; }
+
+span.edit-category-controls, span.edit-subcategory-controls { display: none; }
