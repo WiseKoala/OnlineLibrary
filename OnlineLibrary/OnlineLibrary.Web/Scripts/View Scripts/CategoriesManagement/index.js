@@ -108,7 +108,11 @@
             $("#newCategoryName").val("");
             toastr.success("Category <b>" + data.Name + "</b> has been successfully created.");
 
-            viewModel.categories.splice(0, 0, data);
+            // Convert data to observable.
+            var mappedData = ko.mapping.fromJS(data);
+
+            // Store data in view model.
+            viewModel.categories.splice(0, 0, mappedData);
 
             bindCategoryButtons(); // TO FIX.
         };
@@ -138,8 +142,11 @@
             // Show notification.
             toastr.success("Subcategory <b>" + data.Name + "</b> has been successfully created.");
 
+            // Convert data to observable.
+            var mappedData = ko.mapping.fromJS(data);
+
             // Store data in view model.
-            viewModel.subCategories.splice(0, 0, data);
+            viewModel.subCategories.splice(0, 0, mappedData);
 
             bindSubCategoryButtons();
         };
