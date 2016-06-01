@@ -192,7 +192,7 @@
             exitCategoryEditMode(root);
 
             // Show notification.
-            toastr.success("Subcategory <b>" + data.Name + "</b> has been successfully updated.");
+            toastr.success("Category <b>" + data.Name + "</b> has been successfully updated.");
         };
         settings.error = function (jqXHR) {
             toastr.error(jqXHR.responseJSON.error);
@@ -259,9 +259,36 @@
     function subcategorySaveChangesClick() {
         var root = $(this).closest("li");
 
-        alert("Saved!");
+        // New name.
+        var newSubcategoryName = $(this).siblings("input[name='subcategoryName']").first().val();
 
-        exitSubcategoryEditMode(root);
+        // Extract subcategory ID.
+        var subCategoryId = parseInt(root.attr("data-id"));
+
+        // Extract URL.
+        var updateSubCategoryUrl = $("#subcategoriesList").data("subcategoryUpdateUrl");
+
+        var settings = {};
+        settings.type = "POST";
+        settings.url = updateSubCategoryUrl;
+        settings.data = {
+            subCategoryId: subCategoryId,
+            newName: newSubcategoryName
+        };
+        settings.success = function (data) {
+            exitSubcategoryEditMode(root);
+
+            // Show notification.
+            toastr.success("Subcategory <b>" + data.Name + "</b> has been successfully updated.");
+        };
+        settings.error = function (jqXHR) {
+            toastr.error(jqXHR.responseJSON.error);
+
+            restoreSubcategoryName(root);
+            exitSubcategoryEditMode(root);
+        }
+
+        $.ajax(settings);
     }
 
     function subcategoryInputBlur() {
@@ -271,12 +298,14 @@
         var isMouseDown = root.find("button.save-subcategory-changes").first().data("mouseDown");
 
         if (!isMouseDown) {
-            // Restore category name.
-            root.find(".subcategory-name-caption").first().text(currentlyEditingName);
-            root.find("input[name='subcategoryName']").first().val(currentlyEditingName);
-
+            restoreSubcategoryName(root);
             exitSubcategoryEditMode(root);
         }
+    }
+
+    function restoreSubcategoryName(rootElement) {
+        rootElement.find(".subcategory-name-caption").first().text(currentlyEditingName);
+        rootElement.find("input[name='subcategoryName']").first().val(currentlyEditingName);
     }
 
     function exitSubcategoryEditMode(rootElement) {

@@ -50,7 +50,7 @@
                 </span>
             </div>
             <p data-bind="visible: subCategories().length == 0">No records...</p>
-            <ul id="subcategoriesList" class="list-group" data-toggle="buttons" data-bind="foreach: subCategories">
+            <ul id="subcategoriesList" class="list-group" data-toggle="buttons" data-bind="foreach: subCategories" data-subcategory-update-url="@Url.Action("UpdateSubCategory", "CategoriesManagement")">
                 <li type="button" class="list-group-item" data-bind="attr: { 'data-id': Id }">
                     <span class="subcategory-name-caption" data-bind="text: Name"></span>
                     <span class="control-buttons pull-right">
