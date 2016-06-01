@@ -127,6 +127,12 @@ namespace OnlineLibrary.Web.Controllers
             }
             catch (KeyNotFoundException ex)
             {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ArgumentException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }

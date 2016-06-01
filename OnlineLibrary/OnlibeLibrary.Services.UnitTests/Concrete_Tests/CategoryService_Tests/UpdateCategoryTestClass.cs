@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using NSubstitute;
@@ -77,6 +78,21 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.CategoryService_Tests
 
             // Assert.
             Assert.Throws<KeyNotFoundException>(testDelegate);
+        }
+
+        [TestCase("")] // Empty name.
+        [TestCase("New NameNew NameNew NameNew NameNew NameNew NameNew Name")] // Too long name.
+        public void Should_ThrowArgumentException_Given_InvalidName(string newCategoryName)
+        {
+            // Arrange.
+            var categoryService = new CategoryService(_dbContext);
+            var categoryIdToUpdate = 2;
+
+            var testDelegate = new TestDelegate(() =>
+                categoryService.UpdateCategory(categoryIdToUpdate, newCategoryName));
+
+            // Assert.
+            Assert.Throws<ArgumentException>(testDelegate);
         }
     }
 }

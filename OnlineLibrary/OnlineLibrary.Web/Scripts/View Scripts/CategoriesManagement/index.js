@@ -196,6 +196,9 @@
         };
         settings.error = function (jqXHR) {
             toastr.error(jqXHR.responseJSON.error);
+
+            restoreCategoryName(root);
+            exitCategoryEditMode(root);
         }
 
         $.ajax(settings);
@@ -209,11 +212,15 @@
         
         if (!isMouseDown) {
             // Restore category name.
-            root.find(".category-name-caption").first().text(currentlyEditingName);
-            root.find("input[name='categoryName']").first().val(currentlyEditingName);
+            restoreCategoryName(root);
 
             exitCategoryEditMode(root);
         }        
+    }
+
+    function restoreCategoryName(rootElement) {
+        rootElement.find(".category-name-caption").first().text(currentlyEditingName);
+        rootElement.find("input[name='categoryName']").first().val(currentlyEditingName);
     }
 
     function exitCategoryEditMode(rootElement) {

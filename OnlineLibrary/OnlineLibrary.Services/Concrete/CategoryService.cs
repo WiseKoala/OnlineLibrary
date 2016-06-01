@@ -21,27 +21,7 @@ namespace OnlineLibrary.Services.Concrete
 
         public Category CreateCategory(string name)
         {
-            if (String.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentException("Category name cannot be empty.");
-            }
-
-            // Verify max length.
-            int maxLength = Convert.ToInt32(ConfigurationManager.AppSettings["CategorySubcategoryMaxLength"]);
-            if (name.Length > maxLength)
-            {
-                throw new ArgumentException($"Category name is too long. Maximum length is {maxLength} characters");
-            }
-
-            // Try to find category with the same name.
-            string trimmedName = name.Trim();
-            bool duplicateExists = _dbContext.Categories
-                .Any(c => c.Name.ToLower() == trimmedName.ToLower());
-
-            if (duplicateExists)
-            {
-                throw new ArgumentException("Category with such name already exists.");
-            }
+            VerifyCategoryName(name);
 
             Category category = _dbContext.Categories.Add(new Category { Name = name });
             _dbContext.SaveChanges();
@@ -116,9 +96,10 @@ namespace OnlineLibrary.Services.Concrete
                 throw new KeyNotFoundException("Category not found.");
             }
 
+            VerifyCategoryName(newName);
+
             // Update data.
             category.Name = newName;
-
             _dbContext.SaveChanges();
 
             return category;
@@ -139,6 +120,31 @@ namespace OnlineLibrary.Services.Concrete
             _dbContext.SaveChanges();
 
             return subCategory;
+        }
+
+        private void VerifyCategoryName(string name)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Category name cannot be empty.");
+            }
+
+            // Verify max length.
+            int maxLength = Convert.ToInt32(ConfigurationManager.AppSettings["CategorySubcategoryMaxLength"]);
+            if (name.Length > maxLength)
+            {
+                throw new ArgumentException($"Category name is too long. Maximum length is {maxLength} characters");
+            }
+
+            // Try to find category with the same name.
+            string trimmedName = name.Trim();
+            bool duplicateExists = _dbContext.Categories
+                .Any(c => c.Name.ToLower() == trimmedName.ToLower());
+
+            if (duplicateExists)
+            {
+                throw new ArgumentException("Category with such name already exists.");
+            }
         }
     }
 }
