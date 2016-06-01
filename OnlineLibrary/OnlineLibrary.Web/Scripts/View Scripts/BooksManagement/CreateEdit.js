@@ -1,5 +1,107 @@
 ﻿
 $(document).ready(function () {
+
+    var executeAddBookAuthor = function addBookAuthor(firstName, middleName, lastName) {
+        var authorsBody = $("#bookAuthors tbody");
+        var newBookAuthorId = parseInt($("#bookAuthors tbody .book-author").last().data("authorId")) + 1;
+
+        if (isNaN(newBookAuthorId)) {
+            newBookAuthorId = 0;
+        }
+
+        // Create a div for new Author
+        var newAuthorRow = document.createElement("tr");
+        newAuthorRow.className = "book-author";
+        newAuthorRow.setAttribute("data-author-id", newBookAuthorId);
+
+        // Create inputs for Author data.
+        // IsRemoved.
+        var cell = document.createElement("td");
+
+        var isRemovedInput = document.createElement("input");
+        isRemovedInput.className = "is-removed";
+        isRemovedInput.name = "Authors[" + newBookAuthorId + "].IsRemoved";
+        isRemovedInput.type = "hidden";
+        isRemovedInput.value = "false";
+
+        // First Name.
+        cell = document.createElement("td");
+
+        var firstNameLabel = document.createElement("label");
+        firstNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__AuthorName.FirstName";
+        firstNameLabel.innerHTML = "First Name";
+
+        var firstNameInput = document.createElement("input");
+        firstNameInput.name = "Authors[" + newBookAuthorId + "].AuthorName.FirstName";
+        firstNameInput.id = "Authors_" + newBookAuthorId + "__AuthorName.FirstName";
+        firstNameInput.type = "text";
+        firstNameInput.className = "form-control";
+        firstNameInput.value = firstName || "";
+
+        cell.appendChild(isRemovedInput);
+        cell.appendChild(firstNameLabel);
+        cell.appendChild(firstNameInput);
+        newAuthorRow.appendChild(cell);
+
+        // Middle Name.
+        cell = document.createElement("td");
+
+        var middleNameLabel = document.createElement("label");
+        middleNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__AuthorName.MiddleName";
+        middleNameLabel.innerHTML = "Middle Name";
+
+        var middleNameInput = document.createElement("input");
+        middleNameInput.id = "Authors_" + newBookAuthorId + "__AuthorName.MiddleName";
+        middleNameInput.name = "Authors[" + newBookAuthorId + "].AuthorName.MiddleName";
+        middleNameInput.type = "text";
+        middleNameInput.className = "form-control";
+        middleNameInput.value = middleName || "";
+
+        cell.appendChild(middleNameLabel);
+        cell.appendChild(middleNameInput);
+        newAuthorRow.appendChild(cell);
+
+        // Last Name.
+        cell = document.createElement("td");
+
+        var lastNameLabel = document.createElement("label");
+        lastNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__AuthorName.LastName";
+        lastNameLabel.innerHTML = "Last Name";
+
+        var lastNameInput = document.createElement("input");
+        lastNameInput.id = "Authors_" + newBookAuthorId + "__AuthorName.LastName";
+        lastNameInput.name = "Authors[" + newBookAuthorId + "].AuthorName.LastName";
+        lastNameInput.type = "text";
+        lastNameInput.className = "form-control";
+        lastNameInput.value = lastName || "";
+
+        cell.appendChild(lastNameLabel);
+        cell.appendChild(lastNameInput);
+        newAuthorRow.appendChild(cell);
+
+        // Button.
+        cell = document.createElement("td");
+        cell.id = "tdRemoveAuthorButton";
+
+        var removeButton = document.createElement("button");
+        removeButton.className = "btn btn-sm btn-danger btn-remove-author-modal";
+        removeButton.type = "button";
+        removeButton.setAttribute("data-toggle", "modal");
+        removeButton.setAttribute("data-target", "#removeAuthorConfirmation");
+        $(removeButton).click(btnRemoveAuthorModal);
+
+        // Button icon.
+        var removeButtonIcon = document.createElement("span");
+        removeButtonIcon.className = "glyphicon glyphicon-remove";
+        removeButton.appendChild(removeButtonIcon);
+
+        cell.appendChild(removeButton);
+        newAuthorRow.appendChild(cell);
+
+        // Add new Author div to all authors
+        authorsBody.append(newAuthorRow);    
+    }
+
     $("#add-category").click(function () {
         
         // Retreive all sub categories.
@@ -150,103 +252,9 @@ $(document).ready(function () {
 
     $(".btn-remove-author-modal").click(btnRemoveAuthorModal);
 
-    $("#AddBookAuthor").click(function () {
-        var authorsBody = $("#bookAuthors tbody");
-        var newBookAuthorId = parseInt($("#bookAuthors tbody .book-author").last().data("authorId")) + 1;
-
-        if (isNaN(newBookAuthorId)) {
-            newBookAuthorId = 0;
-        }
-
-        // Create a div for new Author
-        var newAuthorRow = document.createElement("tr");
-        newAuthorRow.className = "book-author";
-        newAuthorRow.setAttribute("data-author-id", newBookAuthorId);
-
-        // Create inputs for Author data.
-        // IsRemoved.
-        var cell = document.createElement("td");
-
-        var isRemovedInput = document.createElement("input");
-        isRemovedInput.className = "is-removed";
-        isRemovedInput.name = "Authors[" + newBookAuthorId + "].IsRemoved";
-        isRemovedInput.type = "hidden";
-        isRemovedInput.value = "false";
-
-        // First Name.
-        cell = document.createElement("td");
-
-        var firstNameLabel = document.createElement("label");
-        firstNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__AuthorName.FirstName";
-        firstNameLabel.innerHTML = "First Name";
-
-        var firstNameInput = document.createElement("input");
-        firstNameInput.name = "Authors[" + newBookAuthorId + "].AuthorName.FirstName";
-        firstNameInput.id = "Authors_" + newBookAuthorId + "__AuthorName.FirstName";
-        firstNameInput.type = "text";
-        firstNameInput.className = "form-control";
-
-        cell.appendChild(isRemovedInput);
-        cell.appendChild(firstNameLabel);
-        cell.appendChild(firstNameInput);
-        newAuthorRow.appendChild(cell);
-
-        // Middle Name.
-        cell = document.createElement("td");
-
-        var middleNameLabel = document.createElement("label");
-        middleNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__AuthorName.MiddleName";
-        middleNameLabel.innerHTML = "Middle Name";
-
-        var middleNameInput = document.createElement("input");
-        middleNameInput.id = "Authors_" + newBookAuthorId + "__AuthorName.MiddleName";
-        middleNameInput.name = "Authors[" + newBookAuthorId + "].AuthorName.MiddleName";
-        middleNameInput.type = "text";
-        middleNameInput.className = "form-control";
-
-        cell.appendChild(middleNameLabel);
-        cell.appendChild(middleNameInput);
-        newAuthorRow.appendChild(cell);
-
-        // Last Name.
-        cell = document.createElement("td");
-
-        var lastNameLabel = document.createElement("label");
-        lastNameLabel.htmlFor = "Authors_" + newBookAuthorId + "__AuthorName.LastName";
-        lastNameLabel.innerHTML = "Last Name";
-
-        var lastNameInput = document.createElement("input");
-        lastNameInput.id = "Authors_" + newBookAuthorId + "__AuthorName.LastName";
-        lastNameInput.name = "Authors[" + newBookAuthorId + "].AuthorName.LastName";
-        lastNameInput.type = "text";
-        lastNameInput.className = "form-control";
-
-        cell.appendChild(lastNameLabel);
-        cell.appendChild(lastNameInput);
-        newAuthorRow.appendChild(cell);
-
-        // Button.
-        cell = document.createElement("td");
-        cell.id = "tdRemoveAuthorButton";
-
-        var removeButton = document.createElement("button");
-        removeButton.className = "btn btn-sm btn-danger btn-remove-author-modal";
-        removeButton.type = "button";
-        removeButton.setAttribute("data-toggle", "modal");
-        removeButton.setAttribute("data-target", "#removeAuthorConfirmation");
-        $(removeButton).click(btnRemoveAuthorModal);
-
-        // Button icon.
-        var removeButtonIcon = document.createElement("span");
-        removeButtonIcon.className = "glyphicon glyphicon-remove";
-        removeButton.appendChild(removeButtonIcon);
-
-        cell.appendChild(removeButton);
-        newAuthorRow.appendChild(cell);
-
-        // Add new Author div to all authors
-        authorsBody.append(newAuthorRow);
-    })
+    $("#AddBookAuthor").click(function(){
+        executeAddBookAuthor("", "", "");
+    });
 
     $(".passBookCopyForDelete").click(function () {
         rowid = $(this).data('bookCopyRowId');
@@ -351,7 +359,7 @@ $(document).ready(function () {
     });
 
     var googleBooksJson = {};
-    var imageUrl;
+    var imageUrl = [];
 
     $("#searchByISBN").click(function () {
 
@@ -370,7 +378,9 @@ $(document).ready(function () {
                     }
                     else {
                         googleBooksJson = response;
+
                         for (var i = 0; i < response.items.length; i++) {
+                            
                             var item = response.items[i];
 
                             var resultTable = document.getElementById("resultTable");
@@ -378,8 +388,17 @@ $(document).ready(function () {
                             var tr_td1 = document.createElement("td");
                             tr_td1.setAttribute("rowspan", "5");
                             tr_td1.setAttribute("style", "border: 1px solid #ddd; padding: 10px;");
-                            tr_td1.innerHTML = "#" + (i + 1);
-                                                        
+                            tr_td1.innerHTML = "#" + (i + 1);                            
+
+                            if (item.volumeInfo.imageLinks != undefined) {
+                                if (item.volumeInfo.imageLinks.thumbnail != undefined) {
+                                    imageUrl[i] = item.volumeInfo.imageLinks.thumbnail;
+                                }
+                                else if (item.volumeInfo.imageLinks.smallThumbnail != undefined) {
+                                    imageUrl[i] = item.volumeInfo.imageLinks.smallThumbnail;
+                                }
+                            }
+
                             for (var j = 0; j < 5; j++) {
 
                                 var tr = document.createElement("tr");
@@ -399,21 +418,10 @@ $(document).ready(function () {
                                         var tr_td4 = document.createElement("td");
                                         tr_td4.setAttribute("style", "border: 1px solid #ddd; padding: 10px; text-align: center; vertical-align: top;");
                                         tr_td4.setAttribute("rowspan", "5");
-
-                                        if (item.volumeInfo.imageLinks != undefined)
-                                        {
-                                            if (item.volumeInfo.imageLinks.thumbnail != undefined) {
-                                                imageUrl = item.volumeInfo.imageLinks.thumbnail;
-                                            }
-                                            else if (item.volumeInfo.imageLinks.smallThumbnail != undefined)
-                                            {
-                                                imageUrl = item.volumeInfo.imageLinks.smallThumbnail;
-                                            }
-                                        }
-
-                                        if (imageUrl != null) {
+                                        
+                                        if (imageUrl[i] != null) {
                                             var td_image = document.createElement("img");
-                                            td_image.src = imageUrl;
+                                            td_image.src = imageUrl[i];
                                             td_image.width = "120";
                                             td_image.setAttribute("style", "margin-bottom: 10px;");
                                             tr_td4.appendChild(td_image);
@@ -487,28 +495,29 @@ $(document).ready(function () {
 
                         var divImageLoad = document.getElementById("ImageLoad");
                         
-                        if (imageUrl != null)
+                        if (imageUrl[itemNr] != null)
                         {
                             var imgImageLoad = document.createElement("img");
                             imgImageLoad.className = "img-small-responsive margin-bottom-10";
-                            imgImageLoad.src = imageUrl;
+                            imgImageLoad.src = imageUrl[itemNr];
                             imgImageLoad.id = "localImage";
 
                             var inputImageLoad = document.createElement("input");
                             inputImageLoad.type = "hidden";
-                            inputImageLoad.value = imageUrl;
+                            inputImageLoad.value = imageUrl[itemNr];
                             inputImageLoad.name = "BookCover.FrontCover";
                             inputImageLoad.id = "localImageInput";
 
                             var localImage = document.getElementById("localImage");
+
                             if (localImage === null) {
                                 divImageLoad.insertBefore(imgImageLoad, divImageLoad.childNodes[0]);
                                 divImageLoad.appendChild(inputImageLoad);
                             }
                             else {
-                                localImage.src = imageUrl;
+                                localImage.src = imageUrl[itemNr];
                                 var localInput = document.getElementById("localImageInput");
-                                localInput.value = imageUrl;
+                                localInput.value = imageUrl[itemNr];
                             }
 
                             $("#inputFile").val("");
@@ -520,6 +529,39 @@ $(document).ready(function () {
                             $("#localImageInput").remove();
 
                         });
+
+                        if (item.volumeInfo.authors != undefined) {
+                            $("#bookAuthors tbody").empty();
+                            
+                            for (var authorNr = 0; authorNr < item.volumeInfo.authors.length; authorNr++) {
+
+                                var authorName = item.volumeInfo.authors[authorNr].split(" ");
+
+                                var authorFirstName = authorName[0];
+                                var authorMiddleName;
+                                var authorLastName;
+
+                                if (authorName.length > 2) {
+                                    authorLastName = authorName[authorName.length - 1];
+
+                                    authorMiddleName = "";
+                                    for (var authorMiddleNameNr = 1; authorMiddleNameNr < authorName.length - 1; authorMiddleNameNr++) {
+                                        authorMiddleName += authorName[authorMiddleNameNr] + " ";
+                                    }
+                                }
+                                else if (authorName.length == 2) {
+                                    authorLastName = authorName[1];
+                                }
+
+                                executeAddBookAuthor(authorFirstName, authorMiddleName, authorLastName);
+                            }
+                        }
+                        
+                        //function () {
+                        //    var authorsBody = $("#bookAuthors tbody");
+                        //    var newBookAuthorId = parseInt($("#bookAuthors tbody .book-author").last().data("authorId")) + 1;
+                        //}
+
                     });
 
                 },
