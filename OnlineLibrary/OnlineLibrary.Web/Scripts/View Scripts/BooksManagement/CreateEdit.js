@@ -351,6 +351,7 @@ $(document).ready(function () {
     });
 
     var googleBooksJson = {};
+    var imageUrl;
 
     $("#searchByISBN").click(function () {
 
@@ -399,12 +400,25 @@ $(document).ready(function () {
                                         tr_td4.setAttribute("style", "border: 1px solid #ddd; padding: 10px; text-align: center; vertical-align: top;");
                                         tr_td4.setAttribute("rowspan", "5");
 
-                                        var td_image = document.createElement("img");
-                                        td_image.src = item.volumeInfo.imageLinks.thumbnail;
-                                        td_image.width = "120";
-                                        td_image.setAttribute("style", "margin-bottom: 10px;");
-                                        tr_td4.appendChild(td_image);
-                                        
+                                        if (item.volumeInfo.imageLinks != undefined)
+                                        {
+                                            if (item.volumeInfo.imageLinks.thumbnail != undefined) {
+                                                imageUrl = item.volumeInfo.imageLinks.thumbnail;
+                                            }
+                                            else if (item.volumeInfo.imageLinks.smallThumbnail != undefined)
+                                            {
+                                                imageUrl = item.volumeInfo.imageLinks.smallThumbnail;
+                                            }
+                                        }
+
+                                        if (imageUrl != null) {
+                                            var td_image = document.createElement("img");
+                                            td_image.src = imageUrl;
+                                            td_image.width = "120";
+                                            td_image.setAttribute("style", "margin-bottom: 10px;");
+                                            tr_td4.appendChild(td_image);
+                                        }
+                                                                                
                                         var td_button = document.createElement("button");
                                         td_button.className = "btn btn-primary btn-sm selectGoogleBookButton";
                                         td_button.innerHTML = "Select Book";
@@ -473,31 +487,34 @@ $(document).ready(function () {
 
                         var divImageLoad = document.getElementById("ImageLoad");
                         
+                        if (imageUrl != null)
+                        {
+                            var imgImageLoad = document.createElement("img");
+                            imgImageLoad.className = "img-small-responsive margin-bottom-10";
+                            imgImageLoad.src = imageUrl;
+                            imgImageLoad.id = "localImage";
 
-                        var imgImageLoad = document.createElement("img");
-                        imgImageLoad.className = "img-small-responsive margin-bottom-10";
-                        imgImageLoad.src = item.volumeInfo.imageLinks.thumbnail;
-                        imgImageLoad.id = "localImage";
+                            var inputImageLoad = document.createElement("input");
+                            inputImageLoad.type = "hidden";
+                            inputImageLoad.value = imageUrl;
+                            inputImageLoad.name = "BookCover.FrontCover";
+                            inputImageLoad.id = "localImageInput";
 
-                        var inputImageLoad = document.createElement("input");
-                        inputImageLoad.type = "hidden";
-                        inputImageLoad.value = item.volumeInfo.imageLinks.thumbnail;
-                        inputImageLoad.name = "BookCover.FrontCover";
-                        inputImageLoad.id = "localImageInput";
+                            var localImage = document.getElementById("localImage");
+                            if (localImage === null) {
+                                divImageLoad.insertBefore(imgImageLoad, divImageLoad.childNodes[0]);
+                                divImageLoad.appendChild(inputImageLoad);
+                            }
+                            else {
+                                localImage.src = imageUrl;
+                                var localInput = document.getElementById("localImageInput");
+                                localInput.value = imageUrl;
+                            }
 
-                        var localImage = document.getElementById("localImage");
-                        if (localImage === null) {
-                            divImageLoad.insertBefore(imgImageLoad, divImageLoad.childNodes[0]);
-                            divImageLoad.appendChild(inputImageLoad);
+                            $("#inputFile").val("");
+                            $("#textImageFileName").text("");
                         }
-                        else {
-                            localImage.src = item.volumeInfo.imageLinks.thumbnail;
-                            var localInput = document.getElementById("localImageInput");
-                            localInput.value = item.volumeInfo.imageLinks.thumbnail;
-                        }
-                        $("#inputFile").val("");
-                        $("#textImageFileName").text("");
-                        
+                                                
                         $("#inputFile").click(function () {
                             $("#localImage").remove();
                             $("#localImageInput").remove();
