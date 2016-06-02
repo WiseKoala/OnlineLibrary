@@ -30,7 +30,9 @@
                     <input type="radio" name="category" data-bind="attr: { value : Id }" autocomplete="off"> <span class="category-name-caption" data-bind="text: Name"></span> 
                     <span class="control-buttons pull-right">
                         <button type="button" class="btn btn-default btn-xs btn-edit-category"><span class="glyphicon glyphicon-pencil"></span></button>
-                        <button type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+                        <button type="button" class="btn btn-danger btn-xs deleteCategory" data-toggle="modal" data-target="#removeCategoryConfirmation" data-bind="attr: { value : Id }">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
                     </span>
                     <span class="edit-category-controls form-inline">
                         <input type="text" class="form-control" name="categoryName" data-bind="value : Name" autocomplete="off" />
@@ -40,13 +42,14 @@
             </div>
         </div>
     </div>
+
     <div class="col-md-5">
         <h2>Subcategories</h2>
         <div>
             <div id="newSubcategoryGroup" class="input-group">
                 <input id="newSubcategoryName" class="form-control" type="text" name="newCategory" placeholder="New subcategory name..." />
                 <span class="input-group-btn">
-                    <button id="addSubcategory" class="btn btn-success" type="button" data-url="@Url.Action("CreateSubCategory", "CategoriesManagement")">Add</button>
+                    <button id="addSubcategory" data-toggle="modal" class="btn btn-success " type="button" data-url="@Url.Action("CreateSubCategory", "CategoriesManagement")">Add</button>
                 </span>
             </div>
             <p data-bind="visible: subCategories().length == 0">No records...</p>
@@ -55,7 +58,9 @@
                     <span class="subcategory-name-caption" data-bind="text: Name"></span>
                     <span class="control-buttons pull-right">
                         <button type="button" class="btn btn-default btn-xs btn-edit-subcategory"><span class="glyphicon glyphicon-pencil"></span></button>
-                        <button type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+                        <button type="button" class="btn btn-danger btn-xs deleteSubcategory" data-toggle="modal" data-target="#removeSubcategoryConfirmation" data-bind="attr: { 'value': Id }">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
                     </span>
                     <span class="edit-subcategory-controls form-inline">
                         <input type="text" class="form-control" name="subcategoryName" data-bind="value : Name" autocomplete="off" />
@@ -65,4 +70,47 @@
             </ul>
         </div>
     </div>
+
+    <!-- DeleteBookCategoryModal -->  
+        <div class="modal fade" id="removeCategoryConfirmation" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Warning!</h4>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to remove this book category?
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnRemoveCategoryConfirm" type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- DeleteBookSubcategoryModal -->
+    <div class="modal fade" id="removeSubcategoryConfirmation" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Warning!</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to remove this book subcategory?
+                </div>
+                <div class="modal-footer">
+                    <button id="btnRemoveSubcategoryConfirm" type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+   
 </div>

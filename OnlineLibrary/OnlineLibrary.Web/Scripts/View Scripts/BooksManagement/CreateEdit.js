@@ -103,7 +103,12 @@ $(document).ready(function () {
     }
 
     $("#add-category").click(function () {
-        
+  
+        $(".deleteCategory").click(function () {
+            var e = document.createElement("div");
+            var value = $(this).attr("value");
+        });
+
         // Retreive all sub categories.
         var ajaxData = {
             method: "GET",

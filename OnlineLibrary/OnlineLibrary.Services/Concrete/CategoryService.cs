@@ -7,6 +7,7 @@ using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Services.Abstract;
 using System.Configuration;
+using OnlineLibrary.Common.Exceptions;
 using System.Data.Entity;
 
 namespace OnlineLibrary.Services.Concrete
@@ -159,5 +160,67 @@ namespace OnlineLibrary.Services.Concrete
                 throw new ArgumentException("Subcategory with such name already exists.");
             }
         }
+
+        public void DeleteBookCategory(int cateogryId)
+        {
+            if (!CategoryExists(cateogryId))
+            {
+                throw new BookCategoryNotFoundException("Book Category does't exist");
+            }
+            if (!IsCategoryRemovable(cateogryId))
+            {
+                throw new BookCategoryIsNotRemovableException("Book category has subcategories");
+            }
+
+            var removedCategory = _dbContext.Categories.Find(cateogryId);
+            _dbContext.Categories.Remove(removedCategory);
+            _dbContext.SaveChanges();
+
+        }
+
+        public bool IsCategoryRemovable(int categoryId)
+        {
+            // Book can't have just category without subcategory, it's enough to check just the following condition.
+            return !_dbContext.SubCategories.Any(sc => sc.CategoryId == categoryId);
+        }
+
+        public bool CategoryExists(int categoryId)
+        {
+            if (_dbContext.Categories.Find(categoryId) != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public void DeleteBookSubcategory(int subcategoryId)
+        {
+            if (!SubcategoryExists(subcategoryId))
+            {
+                throw new BookSubcategoryNotFoundException("Subcategory doesn't exist");
+            }
+            if (!IsSubcategoryRemovable(subcategoryId))
+            {
+                throw new BookSubcateogryIsNotRemovableException("Subcategory has books");
+            }
+
+            var removedSubcategory = _dbContext.SubCategories.Find(subcategoryId);
+            _dbContext.SubCategories.Remove(removedSubcategory);
+            _dbContext.SaveChanges();
+        }
+
+        public bool IsSubcategoryRemovable(int subcategoryId)
+        {
+            return !_dbContext.Books.Any(b => b.SubCategories.Any(sc => sc.Id == subcategoryId));
+        }
+
+        public bool SubcategoryExists(int subcategoryId)
+        {
+            if (_dbContext.SubCategories.Find(subcategoryId) != null)
+            {
+                return true;
+            }
+            return false;
+        }        
     }
 }

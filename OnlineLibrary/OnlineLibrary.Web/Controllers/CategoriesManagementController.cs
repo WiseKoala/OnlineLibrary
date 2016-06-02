@@ -10,6 +10,7 @@ using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Services.Abstract;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models.CategoriesManagement;
+using OnlineLibrary.Common.Exceptions;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -109,6 +110,36 @@ namespace OnlineLibrary.Web.Controllers
             {
                 Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteBookCategory(int categoryId)
+        {
+            try
+            {
+                _categoryService.DeleteBookCategory(categoryId);
+                return Json(JsonRequestBehavior.AllowGet);
+            }
+            catch( BookCategoryIsNotRemovableException )
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteBookSubcategory(int subcategoryId)
+        {
+            try
+            {
+                _categoryService.DeleteBookSubcategory(subcategoryId);
+                return Json(JsonRequestBehavior.AllowGet);
+            }
+            catch ( BookSubcateogryIsNotRemovableException )
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(JsonRequestBehavior.AllowGet);
             }
         }
 
