@@ -22,7 +22,6 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.CategoryService_Tests
         [OneTimeSetUp]
         public void init()
         {
-
             var categories = new List<Category>
             {
                 new Category { Id = 1 },
@@ -47,10 +46,14 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.CategoryService_Tests
             ((IQueryable<Category>)categoriesSet).GetEnumerator().Returns(categoriesQueryable.GetEnumerator());
 
             // Category to remove.
-            var categoryIdToRemove = 2;
+            var categoryIdRemovable = 2;
+            var categoryIdNotRemovable = 3;
             // Mock Remove method.
-            categoriesSet.When(x => x.Remove(categories.FirstOrDefault(c => c.Id == categoryIdToRemove)))
-                         .Do(x => categories.Remove(categories.FirstOrDefault(c => c.Id == categoryIdToRemove)));
+            categoriesSet.When(x => x.Remove(categories.FirstOrDefault(c => c.Id == categoryIdRemovable)))
+                         .Do(x => categories.Remove(categories.FirstOrDefault(c => c.Id == categoryIdRemovable)));
+
+            categoriesSet.Find(categoryIdRemovable).Returns(x => categories.Find(c => c.Id == categoryIdRemovable));
+            categoriesSet.Find(categoryIdNotRemovable).Returns(x => categories.Find(c => c.Id == categoryIdNotRemovable));
 
 
             var subcategoriesSet = Substitute.For<DbSet<SubCategory>, IQueryable<SubCategory>>();
@@ -69,11 +72,11 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.CategoryService_Tests
         {
             // Arrange.
             var sut = Substitute.For<CategoryService>( _dbContext);
-
+            var categoryId = 2;
             // Act.
             // Current number of category minus one to be removed.
             var expectedResult = _dbContext.Categories.Count() - 1;
-            sut.DeleteBookCategory(2);
+            sut.DeleteBookCategory(categoryId);
             // Number of categories after remove method.
             var result = _dbContext.Categories.Count();
 
@@ -86,9 +89,9 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.CategoryService_Tests
         {
             // Arrange.
             var sut = Substitute.For<CategoryService>(_dbContext);
-
+            var categoryId = 3;
             // Act.
-            var testDelegate = new TestDelegate(() => sut.DeleteBookCategory(3));
+            var testDelegate = new TestDelegate(() => sut.DeleteBookCategory(categoryId));
 
             // Assert.
             Assert.Throws<BookCategoryIsNotRemovableException>(testDelegate);
