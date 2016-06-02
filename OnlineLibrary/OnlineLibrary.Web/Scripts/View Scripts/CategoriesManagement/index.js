@@ -29,8 +29,6 @@
 
             ko.mapping.fromJS(data, {}, viewModel.categories);
 
-            $("#categoriesList input").change(categoriesRadioButtonsChange);
-
             // Set first radio input as checked.
             $("#categoriesList label").first().addClass("active");
             $("#categoriesList input").first().prop("checked", true);
@@ -94,6 +92,7 @@
     }
 
     function bindCategoryButtons() {
+        $("#categoriesList input").change(categoriesRadioButtonsChange);
         $(".deleteCategory").click(bindCategoryIdToPopUp);
         $("button.btn-edit-category").click(editCategoryClick);
         $("button.save-category-changes").click(categorySaveChangesClick);
