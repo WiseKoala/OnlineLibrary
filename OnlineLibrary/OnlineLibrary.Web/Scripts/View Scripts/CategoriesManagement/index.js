@@ -135,7 +135,7 @@
         $("button.save-subcategory-changes").mousedown(function (e) {
             $(this).data("mouseDown", true);
         });
-        $("button.save-subcategory-changes").mouseup(function (e) {
+        $("button.save-subcategory-changes").mouseout(function (e) {
             $(this).data("mouseDown", false);
         });
         $("input[name='subcategoryName']").blur(subcategoryInputBlur);
@@ -220,7 +220,7 @@
     function editCategoryClick() {
         var root = $(this).closest("label");
 
-        // Hide ALL edit category controls.
+        // Exit out of edit mode for all categories.
         $("#categoriesList label").each(function (index, element) {
             exitCategoryEditMode($(element));
         });
@@ -311,6 +311,11 @@
     // Subcategories.
     function editSubcategoryClick() {
         var root = $(this).closest("li");
+
+        // Exit out of edit mode for all subcategories.
+        $("#subcategoriesList li").each(function (index, element) {
+            exitSubcategoryEditMode($(element));
+        });
 
         enterSubcategoryEditMode(root);
     }
