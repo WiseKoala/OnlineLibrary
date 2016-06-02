@@ -368,12 +368,8 @@ $(document).ready(function () {
         $("#validationMessage").text("");
         $("#resultTable").html("");
 
-        if (!/^\d{10,13}$/.test($("#searchISBN").val())) {
-            $("#validationMessage").text("ISBN is not in a correct format.");
-        }
-        else {
             $.ajax({
-                url: "https://www.googleapis.com/books/v1/volumes?q=isbn:" + $("#searchISBN").val(),
+                url: "https://www.googleapis.com/books/v1/volumes?q=" + setURL(),
                 success: function (response) {
                     if (response.items === undefined) {
                         $("#validationMessage").text("No books with such ISBN were found.");
@@ -388,7 +384,7 @@ $(document).ready(function () {
                             var resultTable = document.getElementById("resultTable");
 
                             var tr_td1 = document.createElement("td");
-                            tr_td1.setAttribute("rowspan", "5");
+                            tr_td1.setAttribute("rowspan", "6");
                             tr_td1.setAttribute("style", "border: 1px solid #ddd; padding: 10px;");
                             tr_td1.innerHTML = "#" + (i + 1);
 
@@ -401,7 +397,7 @@ $(document).ready(function () {
                                 }
                             }
 
-                            for (var j = 0; j < 5; j++) {
+                            for (var j = 0; j < 7; j++) {
 
                                 var tr = document.createElement("tr");
                                 var tr_td2 = document.createElement("td");
@@ -411,15 +407,17 @@ $(document).ready(function () {
                                 var td_ul = document.createElement("ul");
 
                                 switch (j) {
-                                    case 0: tr.appendChild(tr_td1);
-                                        tr_td2.innerHTML = "Title";
-                                        tr_td3.innerHTML = item.volumeInfo.title;
+                                    case 0: 
+                                        tr.appendChild(tr_td1);
+                                        tr_td2.innerHTML = "ISBN";
+                                        tr_td3.innerHTML = getISBN(item);
                                         tr.appendChild(tr_td2);
                                         tr.appendChild(tr_td3);
 
                                         var tr_td4 = document.createElement("td");
                                         tr_td4.setAttribute("style", "border: 1px solid #ddd; padding: 10px; text-align: center; vertical-align: top;");
-                                        tr_td4.setAttribute("rowspan", "5");
+                                        tr_td4.setAttribute("rowspan", "6");
+                                        tr_td4.className = "col-sm-2";
 
                                         if (imageUrl[i] != null) {
                                             var td_image = document.createElement("img");
@@ -438,12 +436,17 @@ $(document).ready(function () {
 
                                         tr.appendChild(tr_td4);
                                         break;
-                                    case 1: tr_td2.innerHTML = "Publish Date";
+                                    case 1: tr_td2.innerHTML = "Title";
+                                        tr_td3.innerHTML = item.volumeInfo.title;
+                                        tr.appendChild(tr_td2);
+                                        tr.appendChild(tr_td3);
+                                        break;
+                                    case 2: tr_td2.innerHTML = "Publish Date";
                                         tr_td3.innerHTML = item.volumeInfo.publishedDate;
                                         tr.appendChild(tr_td2);
                                         tr.appendChild(tr_td3);
                                         break;
-                                    case 2: tr_td2.innerHTML = "Authors";
+                                    case 3: tr_td2.innerHTML = "Authors";
                                         if (item.volumeInfo.authors != undefined) {
                                             for (k = 0; k < item.volumeInfo.authors.length; k++) {
                                                 var ul_li = document.createElement("li");
@@ -459,15 +462,21 @@ $(document).ready(function () {
                                         tr.appendChild(tr_td2);
                                         tr.appendChild(tr_td3);
                                         break;
-                                    case 3: tr_td2.innerHTML = "Category/Subecategory";
+                                    case 4: tr_td2.innerHTML = "Category/Subecategory";
                                         tr_td3.innerHTML = item.volumeInfo.categories;
                                         tr.appendChild(tr_td2);
                                         tr.appendChild(tr_td3);
                                         break;
-                                    case 4: tr_td2.innerHTML = "Description";
+                                    case 5: tr_td2.innerHTML = "Description";
                                         tr_td3.innerHTML = item.volumeInfo.description;
                                         tr.appendChild(tr_td2);
                                         tr.appendChild(tr_td3);
+                                        break;
+                                    case 6:
+                                        var tdSpace = document.createElement("td");
+                                        tdSpace.setAttribute("style", "height: 10px; border-top:1px solid #ddd;");
+                                        tdSpace.setAttribute("colspan", "4");
+                                        tr.appendChild(tdSpace);
                                         break;
                                     default: break;
                                 };
@@ -486,7 +495,7 @@ $(document).ready(function () {
                         var item = googleBooksJson.items[itemNr];
                         $("#Title").val(item.volumeInfo.title);
                         $("#Description").val(item.volumeInfo.description);
-                        $("#ISBN").val($("#searchISBN").val());
+                        $("#ISBN").val(getISBN(item));
 
                         var publishedDate = item.volumeInfo.publishedDate.split("-");
                         var year = publishedDate[0];
@@ -584,7 +593,6 @@ $(document).ready(function () {
                     toastr.error("Can not access Google Books.", "Error!");
                 }
             })
-        }
     });
 
     $("#inputFile").click(function () {
@@ -598,4 +606,22 @@ $(document).ready(function () {
         imageShow.remove();
         $("#imgImageInput").remove();
     });
+
+    function getISBN(responseItem) {
+        var getISBNFromInput = /^\d{10,13}$/.test($("#searchString").val());
+        if (getISBNFromInput) {
+            return $("#searchString").val();
+        }
+        else {
+            return responseItem.volumeInfo.industryIdentifiers[0].identifier;
+        }
+    }
+
+    function setURL() {
+        if (/^\d{10,13}$/.test($("#searchString").val()))
+            return "isbn:" + $("#searchString").val() + "&maxResults=40";
+        else {
+            return $("#searchString").val() + "&maxResults=40";
+        }
+    }
 });
