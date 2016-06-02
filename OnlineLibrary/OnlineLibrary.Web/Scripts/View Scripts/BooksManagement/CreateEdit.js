@@ -613,7 +613,12 @@ $(document).ready(function () {
             return $("#searchString").val();
         }
         else {
-            return responseItem.volumeInfo.industryIdentifiers[0].identifier;
+            if (responseItem.volumeInfo.industryIdentifiers != undefined) {
+                return responseItem.volumeInfo.industryIdentifiers[0].identifier;
+            }
+            else {
+                return "undefined ISBN";
+            }
         }
     }
 
