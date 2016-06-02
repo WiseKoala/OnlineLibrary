@@ -247,6 +247,23 @@ namespace OnlineLibrary.Web.Controllers
                     }
                 }
 
+                // Remove duplicate authors from model.
+                var authors = model.Authors.ToList();
+
+                foreach (var author in authors)
+                {
+                    var duplicateAuthors = model.Authors.Where(a => a.AuthorName.FirstName == author.AuthorName.FirstName
+                                                     && a.AuthorName.MiddleName == author.AuthorName.MiddleName
+                                                     && a.AuthorName.LastName == author.AuthorName.LastName).ToList();
+                    if (duplicateAuthors.Count() > 1)
+                    {
+                        for (var i = 1; i < duplicateAuthors.Count(); i++)
+                        {
+                            model.Authors.RemoveAt(i);
+                        }
+                    }
+                }
+
                 // Add authors.
                 foreach (var author in model.Authors)
                 {
@@ -376,6 +393,31 @@ namespace OnlineLibrary.Web.Controllers
                     }
                 }
 
+                // Remove duplicate authors from model.
+                var authors = model.Authors.ToList();
+
+                foreach (var author in authors)
+                {
+                    var duplicateAuthors = model.Authors.Where(a => a.AuthorName.FirstName == author.AuthorName.FirstName
+                                                     && a.AuthorName.MiddleName == author.AuthorName.MiddleName
+                                                     && a.AuthorName.LastName == author.AuthorName.LastName).ToList();
+                    if (duplicateAuthors.Count() > 1)
+                    {
+                        for (var i = 1; i < duplicateAuthors.Count(); i++)
+                        {
+                            model.Authors.RemoveAt(i);
+                        }
+
+                        var authorsToRemove = book.Authors.Where(ba => ba.Id != author.Id).Select(ba => ba).ToList();
+
+                        foreach (var authorToRemove in authorsToRemove)
+                        {
+                            book.Authors.Remove(authorToRemove);
+                        }
+                    }
+                }
+
+
                 // Update authors.
                 foreach (var authorModel in model.Authors)
                 {
@@ -384,32 +426,25 @@ namespace OnlineLibrary.Web.Controllers
                     Author author = DbContext.Authors.FirstOrDefault(a => a.FirstName == authorModel.AuthorName.FirstName
                                                              && a.MiddleName == authorModel.AuthorName.MiddleName
                                                              && a.LastName == authorModel.AuthorName.LastName);
-
-                    // Variable "bookauthor" is checking whether the author is already attributed to this book
-                    // It selects the item or returns null if not found
                     Author bookauthor = book.Authors.FirstOrDefault(a => a.FirstName == authorModel.AuthorName.FirstName
                                                              && a.MiddleName == authorModel.AuthorName.MiddleName
                                                              && a.LastName == authorModel.AuthorName.LastName);
+
+                    Author authorById = DbContext.Authors.FirstOrDefault(a => a.Id == authorModel.Id);
+
                     if (author != null)
                     {
-                        // Checks if author was removed on the page.
-                        if (authorModel.IsRemoved)
+                        if (bookauthor != null)
                         {
-                            book.Authors.Remove(bookauthor);
+                            // Checks if author was removed on the page.
+                            if (authorModel.IsRemoved)
+                            {
+                                book.Authors.Remove(author);
+                            }
                         }
                         else
                         {
-                            // Checks if author is attributed to this particular book (even though author is in the database)
-                            if (bookauthor == null)
-                            {
-                                Author newBookAuthor = new Author()
-                                {
-                                    FirstName = authorModel.AuthorName.FirstName,
-                                    MiddleName = authorModel.AuthorName.MiddleName,
-                                    LastName = authorModel.AuthorName.LastName
-                                };
-                                book.Authors.Add(newBookAuthor);
-                            }                           
+                            book.Authors.Add(author);
                         }
                     }
                     else
@@ -424,6 +459,16 @@ namespace OnlineLibrary.Web.Controllers
                                 LastName = authorModel.AuthorName.LastName
                             };
                             book.Authors.Add(newAuthor);
+                        }
+                    }
+
+                    if (authorById != null)
+                    {
+                        if (authorById.FirstName != authorModel.AuthorName.FirstName
+                            || authorById.MiddleName != authorModel.AuthorName.MiddleName
+                            || authorById.LastName != authorModel.AuthorName.LastName)
+                        {
+                            book.Authors.Remove(authorById);
                         }
                     }
                 }
