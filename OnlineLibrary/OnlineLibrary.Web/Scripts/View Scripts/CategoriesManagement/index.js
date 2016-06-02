@@ -99,7 +99,7 @@
         $("button.save-category-changes").mousedown(function (e) {
             $(this).data("mouseDown", true);
         });
-        $("button.save-category-changes").mouseup(function (e) {
+        $("button.save-category-changes").mouseout(function (e) {
             $(this).data("mouseDown", false);
         });
         $("input[name='categoryName']").blur(categoryInputBlur);
@@ -135,7 +135,7 @@
         $("button.save-subcategory-changes").mousedown(function (e) {
             $(this).data("mouseDown", true);
         });
-        $("button.save-subcategory-changes").mouseup(function (e) {
+        $("button.save-subcategory-changes").mouseout(function (e) {
             $(this).data("mouseDown", false);
         });
         $("input[name='subcategoryName']").blur(subcategoryInputBlur);
@@ -219,6 +219,11 @@
     // Categories.
     function editCategoryClick() {
         var root = $(this).closest("label");
+
+        // Exit out of edit mode for all categories.
+        $("#categoriesList label").each(function (index, element) {
+            exitCategoryEditMode($(element));
+        });
 
         enterCategoryEditMode(root);
     }
@@ -306,6 +311,11 @@
     // Subcategories.
     function editSubcategoryClick() {
         var root = $(this).closest("li");
+
+        // Exit out of edit mode for all subcategories.
+        $("#subcategoriesList li").each(function (index, element) {
+            exitSubcategoryEditMode($(element));
+        });
 
         enterSubcategoryEditMode(root);
     }
