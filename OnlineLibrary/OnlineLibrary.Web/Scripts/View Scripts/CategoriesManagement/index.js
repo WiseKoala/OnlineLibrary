@@ -1,99 +1,99 @@
 ﻿$(document).ready(function () {
 
-        function LoansViewModel() {
+    function LoansViewModel() {
 
-            var self = this;
-            self.categories = ko.observableArray([]);
-            self.subCategories = ko.observableArray([]);
-        }
+        var self = this;
+        self.categories = ko.observableArray([]);
+        self.subCategories = ko.observableArray([]);
+    }
 
-        // Activate knockout.js
-        var viewModel = new LoansViewModel();
-        ko.applyBindings(viewModel);
-    
-        // Set Toastr options.
-        toastr.options = {
-            "closeButton": true,
-            "positionClass": "toast-bottom-right",
-            "timeOut": 30000,           // 30 seconds
-            "extendedTimeOut": 60000    // another 30 seconds, if user hovers mouse over notification
-        };
+    // Activate knockout.js
+    var viewModel = new LoansViewModel();
+    ko.applyBindings(viewModel);
 
-            (function loadCategories() {
-            var url = $("#categoriesList").data("categoriesUrl");
+    // Set Toastr options.
+    toastr.options = {
+        "closeButton": true,
+        "positionClass": "toast-bottom-right",
+        "timeOut": 30000,           // 30 seconds
+        "extendedTimeOut": 60000    // another 30 seconds, if user hovers mouse over notification
+    };
 
-            var settings = {};
-            settings.type = "GET";
-            settings.url = url;
-            settings.success = function (data) {
+    (function loadCategories() {
+        var url = $("#categoriesList").data("categoriesUrl");
+
+        var settings = {};
+        settings.type = "GET";
+        settings.url = url;
+        settings.success = function (data) {
 
             ko.mapping.fromJS(data, {}, viewModel.categories);
 
             $("#categoriesList input").change(categoriesRadioButtonsChange);
 
-                // Set first radio input as checked.
-                $("#categoriesList label").first().addClass("active");
-                $("#categoriesList input").first().prop("checked", true);
-                $("#categoriesList input").trigger("change");
+            // Set first radio input as checked.
+            $("#categoriesList label").first().addClass("active");
+            $("#categoriesList input").first().prop("checked", true);
+            $("#categoriesList input").trigger("change");
 
             bindCategoryButtons();
-            };
-            settings.error = function (jqXHR) {
-                toastr.error(jqXHR.responseJSON.error);
-            }
+        };
+        settings.error = function (jqXHR) {
+            toastr.error(jqXHR.responseJSON.error);
+        }
 
-            $.ajax(settings);
-            })();
+        $.ajax(settings);
+    })();
 
-            $("#btnRemoveCategoryConfirm").click(function () {
-                var categoryId = parseInt($(this).attr("cateogry-id"));
+    $("#btnRemoveCategoryConfirm").click(function () {
+        var categoryId = parseInt($(this).attr("cateogry-id"));
 
-                var ajaxSettings = {
-                    type: "POST",
-                    data: { categoryId: categoryId },
-                    success: function () {
-                        viewModel.categories.remove(function (category) {
-                            return category.Id() == categoryId
-                        });
-                        toastr.success("Category was successfully removed.");
-                    },
-                    error: function () {
-                        toastr.error("Category is not removable, it has subcategories.");
-                    },
-                }
-                $.ajax("/CategoriesManagement/DeleteBookCategory/", ajaxSettings);
-            });
+        var ajaxSettings = {
+            type: "POST",
+            data: { categoryId: categoryId },
+            success: function () {
+                viewModel.categories.remove(function (category) {
+                    return category.Id() == categoryId
+                });
+                toastr.success("Category was successfully removed.");
+            },
+            error: function () {
+                toastr.error("Category is not removable, it has subcategories.");
+            },
+        }
+        $.ajax("/CategoriesManagement/DeleteBookCategory/", ajaxSettings);
+    });
 
-            $("#btnRemoveSubcategoryConfirm").click(function () {
-                var subcategoryId = parseInt($(this).attr("subcateogry-id"));
+    $("#btnRemoveSubcategoryConfirm").click(function () {
+        var subcategoryId = parseInt($(this).attr("subcateogry-id"));
 
-                var ajaxSettings = {
-                    type: "POST",
-                    data: { subcategoryId: subcategoryId },
-                    success: function () {
-                        viewModel.subCategories.remove(function (subcategory) {
-                            return subcategory.Id() == subcategoryId
-                        });
-                        toastr.success("Subcategory was successfully removed.");
-                    },
-                    error: function () {
-                        toastr.error("Subcategory is not removable, it has books.");
-                    },
-                }
-                $.ajax("/CategoriesManagement/DeleteBookSubcategory/", ajaxSettings);
-            });
+        var ajaxSettings = {
+            type: "POST",
+            data: { subcategoryId: subcategoryId },
+            success: function () {
+                viewModel.subCategories.remove(function (subcategory) {
+                    return subcategory.Id() == subcategoryId
+                });
+                toastr.success("Subcategory was successfully removed.");
+            },
+            error: function () {
+                toastr.error("Subcategory is not removable, it has books.");
+            },
+        }
+        $.ajax("/CategoriesManagement/DeleteBookSubcategory/", ajaxSettings);
+    });
 
-            function bindCategoryIdToPopUp() {
-                var value = $(this).attr("value");
-                $("#btnRemoveCategoryConfirm").attr("cateogry-id", value);
-            }
+    function bindCategoryIdToPopUp() {
+        var value = $(this).attr("value");
+        $("#btnRemoveCategoryConfirm").attr("cateogry-id", value);
+    }
 
-            function bindSubcategoryIdToPopUp() {
-                var value = $(this).attr("value");
-                $("#btnRemoveSubcategoryConfirm").attr("subcateogry-id", value);
-            }
+    function bindSubcategoryIdToPopUp() {
+        var value = $(this).attr("value");
+        $("#btnRemoveSubcategoryConfirm").attr("subcateogry-id", value);
+    }
 
-            function bindCategoryButtons() {
+    function bindCategoryButtons() {
         $(".deleteCategory").click(bindCategoryIdToPopUp);
         $("button.btn-edit-category").click(editCategoryClick);
         $("button.save-category-changes").click(categorySaveChangesClick);
@@ -107,27 +107,27 @@
     }
 
     function categoriesRadioButtonsChange() {
-            var categoryId = parseInt($("input[name=category]:checked", "#categoriesList").val());
-            var url = $("#categoriesList").data("subcategoryUrl");
-        
-            var settings = {};
-            settings.success = function (data) {
+        var categoryId = parseInt($("input[name=category]:checked", "#categoriesList").val());
+        var url = $("#categoriesList").data("subcategoryUrl");
+
+        var settings = {};
+        settings.success = function (data) {
 
             ko.mapping.fromJS(data, {}, viewModel.subCategories);
 
             bindSubCategoryButtons();
-            };
-            settings.type = "GET";
-            settings.url = url;
-            settings.data = {
-                categoryId: categoryId
-            };
-            settings.error = function (jqXHR) {
-                toastr.error(jqXHR.responseJSON.error);
-            };
-
-            $.ajax(settings);
         };
+        settings.type = "GET";
+        settings.url = url;
+        settings.data = {
+            categoryId: categoryId
+        };
+        settings.error = function (jqXHR) {
+            toastr.error(jqXHR.responseJSON.error);
+        };
+
+        $.ajax(settings);
+    };
 
     function bindSubCategoryButtons() {
         $(".deleteSubcategory").click(bindSubcategoryIdToPopUp);
@@ -142,20 +142,24 @@
         $("input[name='subcategoryName']").blur(subcategoryInputBlur);
     }
 
-        $("#addCategory").click(function () {
-            var categoryName = $("#newCategoryName").val();
-            var url = $(this).data("addCategoryUrl");
+    $("#addCategory").click(function () {
+        var input = $("#newCategoryName");
+        input.val(input.val().trim());
 
-            var settings = {};
-            settings.type = "POST";
-            settings.url = url;
-            settings.data = {
-                name: categoryName
-            };
-            settings.success = function (data) {
-                // Clear input.
-                $("#newCategoryName").val("");
-                toastr.success("Category <b>" + data.Name + "</b> has been successfully created.");
+        // Trim entered name.
+        var categoryName = input.val();
+        var url = $(this).data("addCategoryUrl");
+
+        var settings = {};
+        settings.type = "POST";
+        settings.url = url;
+        settings.data = {
+            name: categoryName
+        };
+        settings.success = function (data) {
+            // Clear input.
+            $("#newCategoryName").val("");
+            toastr.success("Category <b>" + data.Name + "</b> has been successfully created.");
 
             // Convert data to observable.
             var mappedData = ko.mapping.fromJS(data);
@@ -164,47 +168,52 @@
             viewModel.categories.splice(0, 0, mappedData);
             bindCategoryButtons(); // TO FIX.
             $(".deleteCategory").click(bindCategoryIdToPopUp);
-            };
-            settings.error = function (jqXHR) {
-                toastr.error(jqXHR.responseJSON.error);
-            }
+        };
+        settings.error = function (jqXHR) {
+            toastr.error(jqXHR.responseJSON.error);
+        }
 
-            $.ajax(settings);
-        });
+        $.ajax(settings);
+    });
 
-        $("#addSubcategory").click(function () {
-            var selectedCategoryId = parseInt($("input[name=category]:checked", "#categoriesList").val());
-            var subcategoryName = $("#newSubcategoryName").val();
-            var url = $(this).data("url");
+    $("#addSubcategory").click(function () {
+        var selectedCategoryId = parseInt($("input[name=category]:checked", "#categoriesList").val());
 
-            var settings = {};
-            settings.type = "POST";
-            settings.url = url;
-            settings.data = {
-                categoryId: selectedCategoryId,
-                name: subcategoryName
-            };
-            settings.success = function (data) {
-                // Clear input.
-                $("#newSubcategoryName").val("");
+        // Trim entered name.
+        var input = $("#newSubcategoryName");
+        input.val(input.val().trim());
 
-                // Show notification.
-                toastr.success("Subcategory <b>" + data.Name + "</b> has been successfully created.");
+        var subcategoryName = input.val();
+        var url = $(this).data("url");
+
+        var settings = {};
+        settings.type = "POST";
+        settings.url = url;
+        settings.data = {
+            categoryId: selectedCategoryId,
+            name: subcategoryName
+        };
+        settings.success = function (data) {
+            // Clear input.
+            $("#newSubcategoryName").val("");
+
+            // Show notification.
+            toastr.success("Subcategory <b>" + data.Name + "</b> has been successfully created.");
 
             // Convert data to observable.
             var mappedData = ko.mapping.fromJS(data);
 
-                // Store data in view model.
+            // Store data in view model.
             viewModel.subCategories.splice(0, 0, mappedData);
 
             bindSubCategoryButtons();
-            };
-            settings.error = function (jqXHR) {
-                toastr.error(jqXHR.responseJSON.error);
-            }
+        };
+        settings.error = function (jqXHR) {
+            toastr.error(jqXHR.responseJSON.error);
+        }
 
-            $.ajax(settings);
-        });
+        $.ajax(settings);
+    });
 
     var currentlyEditingName;
 
@@ -272,13 +281,13 @@
 
         // Is mouse down over button 'Save Changes'.
         var isMouseDown = root.find("button.save-category-changes").first().data("mouseDown");
-        
+
         if (!isMouseDown) {
             // Restore category name.
             restoreCategoryName(root);
 
             exitCategoryEditMode(root);
-        }        
+        }
     }
 
     function restoreCategoryName(rootElement) {
@@ -379,4 +388,4 @@
         // Hide edit category controls.
         rootElement.children("span.edit-subcategory-controls").first().hide();
     }
-    });
+});

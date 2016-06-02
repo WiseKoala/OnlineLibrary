@@ -25,7 +25,10 @@ namespace OnlineLibrary.Services.Concrete
         {
             VerifyCategoryName(name);
 
-            Category category = _dbContext.Categories.Add(new Category { Name = name });
+            Category category = _dbContext.Categories.Add(new Category
+            {
+                Name = name.Trim()
+            });
             _dbContext.SaveChanges();
 
             return category;
@@ -43,8 +46,13 @@ namespace OnlineLibrary.Services.Concrete
             {
                 VerifySubCategoryName(name, category);
 
+                name = name.Trim();
+
                 // Create new subcategory.
-                SubCategory subCategory = _dbContext.SubCategories.Add(new SubCategory { Name = name });
+                SubCategory subCategory = _dbContext.SubCategories.Add(new SubCategory
+                {
+                    Name = name.Trim()
+                });
 
                 // Add to the corresponding category.
                 category.SubCategories.Add(subCategory);
@@ -80,7 +88,7 @@ namespace OnlineLibrary.Services.Concrete
             VerifyCategoryName(newName);
 
             // Update data.
-            category.Name = newName;
+            category.Name = newName.Trim();
             _dbContext.SaveChanges();
 
             return category;
@@ -103,7 +111,7 @@ namespace OnlineLibrary.Services.Concrete
             }
 
             // Update data.
-            subCategory.Name = newName;
+            subCategory.Name = newName.Trim();
 
             _dbContext.SaveChanges();
 
