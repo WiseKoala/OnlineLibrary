@@ -94,8 +94,20 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.CategoryService_Tests
             var testDelegate = new TestDelegate(() => sut.DeleteBookCategory(categoryId));
 
             // Assert.
-            Assert.Throws<BookCategoryIsNotRemovableException>(testDelegate);
-            
+            Assert.Throws<BookCategoryIsNotRemovableException>(testDelegate);            
+        }
+
+        [Test]
+        public void Should_ThrowBookCategoryNotFoundException_When_IsCategoryRemovable_ReturnFalse()
+        {
+            // Arrange.
+            var sut = Substitute.For<CategoryService>(_dbContext);
+            var categoryId = 100;
+            // Act.
+            var testDelegate = new TestDelegate(() => sut.DeleteBookCategory(categoryId));
+
+            // Assert.
+            Assert.Throws<BookCategoryNotFoundException>(testDelegate);
         }
     }
 }

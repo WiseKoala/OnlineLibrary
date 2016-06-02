@@ -98,5 +98,18 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.CategoryService_Tests
             Assert.Throws<BookSubcateogryIsNotRemovableException>(testDelegate);
         }
 
+        [Test]
+        public void Should_ThrowBookSubcateogryNotFoundException_When_IsSubcategoryRemovable_ReturnFalse()
+        {
+            // Arrange.
+            var sut = Substitute.For<CategoryService>(_dbContext);
+            int subcategoryId = 10;
+            // Act.
+            var testDelegate = new TestDelegate(() => sut.DeleteBookSubcategory(subcategoryId));
+
+            // Assert.
+            Assert.Throws<BookSubcategoryNotFoundException>(testDelegate);
+        }
+
     }
 }
