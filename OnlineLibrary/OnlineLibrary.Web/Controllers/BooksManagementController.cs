@@ -300,8 +300,11 @@ namespace OnlineLibrary.Web.Controllers
                 // Delete old book cover image from database in case new image is added
                 if (!String.IsNullOrEmpty(model.OldImagePath))
                 {
-                    string correctedPath = "~" + model.OldImagePath.Substring(model.OldImagePath.IndexOf("/Content"));
-                    DeleteFileFromServer(correctedPath);
+                    if (model.OldImagePath.IndexOf("/Content/Images/Books/front-covers") != -1)
+                    {
+                        string correctedPath = "~" + model.OldImagePath.Substring(model.OldImagePath.IndexOf("/Content/Images/Books/front-covers"));
+                        DeleteFileFromServer(correctedPath);
+                    }
                 }
 
                 // Save image from Url address in case image is imported
@@ -376,51 +379,56 @@ namespace OnlineLibrary.Web.Controllers
                 // Update authors.
                 foreach (var authorModel in model.Authors)
                 {
-                    Author author = DbContext.Authors.Find(authorModel.Id);
+                    // Variable "author" is checking whether the author is already in the database
+                    // It selects the item or returns null if not found
+                    Author author = DbContext.Authors.FirstOrDefault(a => a.FirstName == authorModel.AuthorName.FirstName
+                                                             && a.MiddleName == authorModel.AuthorName.MiddleName
+                                                             && a.LastName == authorModel.AuthorName.LastName);
 
+                    // Variable "bookauthor" is checking whether the author is already attributed to this book
+                    // It selects the item or returns null if not found
+                    Author bookauthor = book.Authors.FirstOrDefault(a => a.FirstName == authorModel.AuthorName.FirstName
+                                                             && a.MiddleName == authorModel.AuthorName.MiddleName
+                                                             && a.LastName == authorModel.AuthorName.LastName);
                     if (author != null)
                     {
-                        // If author was removed on the page.
+                        // Checks if author was removed on the page.
                         if (authorModel.IsRemoved)
                         {
-                            book.Authors.Remove(author);
+                            book.Authors.Remove(bookauthor);
                         }
                         else
                         {
-                            // Update existing author.
-                            author.FirstName = authorModel.AuthorName.FirstName;
-                            author.MiddleName = authorModel.AuthorName.MiddleName;
-                            author.LastName = authorModel.AuthorName.LastName;
+                            // Checks if author is attributed to this particular book (even though author is in the database)
+                            if (bookauthor == null)
+                            {
+                                Author newBookAuthor = new Author()
+                                {
+                                    FirstName = authorModel.AuthorName.FirstName,
+                                    MiddleName = authorModel.AuthorName.MiddleName,
+                                    LastName = authorModel.AuthorName.LastName
+                                };
+                                book.Authors.Add(newBookAuthor);
+                            }                           
                         }
                     }
                     else
                     {
                         if (!authorModel.IsRemoved)
                         {
-                            // Try to find author with the same name.
-                            Author existingAuthor = DbContext.Authors
-                                                             .FirstOrDefault(a => a.FirstName == authorModel.AuthorName.FirstName
-                                                             && a.MiddleName == authorModel.AuthorName.MiddleName
-                                                             && a.LastName == authorModel.AuthorName.LastName);
-
-                            if (existingAuthor != null)
+                            // Create and add new author.
+                            Author newAuthor = new Author()
                             {
-                                book.Authors.Add(existingAuthor);
-                            }
-                            else
-                            {
-                                // Create and add new author.
-                                Author newAuthor = new Author()
-                                {
-                                    FirstName = authorModel.AuthorName.FirstName,
-                                    MiddleName = authorModel.AuthorName.MiddleName,
-                                    LastName = authorModel.AuthorName.LastName
-                                };
-                                book.Authors.Add(newAuthor);
-                            }
+                                FirstName = authorModel.AuthorName.FirstName,
+                                MiddleName = authorModel.AuthorName.MiddleName,
+                                LastName = authorModel.AuthorName.LastName
+                            };
+                            book.Authors.Add(newAuthor);
                         }
                     }
                 }
+
+                DbContext.SaveChanges();
 
                 book.SubCategories.Clear();
 
