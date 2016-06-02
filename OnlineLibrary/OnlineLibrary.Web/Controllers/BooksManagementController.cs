@@ -203,21 +203,38 @@ namespace OnlineLibrary.Web.Controllers
 
                 return View(model);
             }
-              
+            
             // If book is new.
             if (model.Id < 1)
             {
-                // Create new book.
-                var book = new Book()
+                Book book;
+                if (!String.IsNullOrEmpty(model.BookCover.FrontCover))
                 {
-                    Id = model.Id,
-                    Title = model.Title,
-                    Description = model.Description,
-                    ISBN = model.ISBN,
-                    PublishDate = model.PublishDate,
-                    FrontCover = SaveImage(model.BookCover.Image)
-                };
-
+                    // Create new book.
+                    book = new Book()
+                    {
+                        Id = model.Id,
+                        Title = model.Title,
+                        Description = model.Description,
+                        ISBN = model.ISBN,
+                        PublishDate = model.PublishDate,
+                        FrontCover = SaveImageFromUrl(model.BookCover.FrontCover)
+                    };
+                }
+                else
+                {
+                    // Create new book.
+                    book = new Book()
+                    {
+                        Id = model.Id,
+                        Title = model.Title,
+                        Description = model.Description,
+                        ISBN = model.ISBN,
+                        PublishDate = model.PublishDate,
+                        FrontCover = SaveImage(model.BookCover.Image)
+                    };
+                }
+                
                 // Add book copies.
                 foreach (var bookCopy in model.BookCopies)
                 {
@@ -227,6 +244,23 @@ namespace OnlineLibrary.Web.Controllers
                         {
                             Condition = bookCopy.BookCondition
                         });
+                    }
+                }
+
+                // Remove duplicate authors from model.
+                var authors = model.Authors.ToList();
+
+                foreach (var author in authors)
+                {
+                    var duplicateAuthors = model.Authors.Where(a => a.AuthorName.FirstName == author.AuthorName.FirstName
+                                                     && a.AuthorName.MiddleName == author.AuthorName.MiddleName
+                                                     && a.AuthorName.LastName == author.AuthorName.LastName).ToList();
+                    if (duplicateAuthors.Count() > 1)
+                    {
+                        for (var i = 1; i < duplicateAuthors.Count(); i++)
+                        {
+                            model.Authors.RemoveAt(i);
+                        }
                     }
                 }
 
@@ -280,6 +314,22 @@ namespace OnlineLibrary.Web.Controllers
                 book.ISBN = model.ISBN;
                 book.PublishDate = model.PublishDate;
 
+                // Delete old book cover image from database in case new image is added
+                if (!String.IsNullOrEmpty(model.OldImagePath))
+                {
+                    if (model.OldImagePath.IndexOf("/Content/Images/Books/front-covers") != -1)
+                    {
+                        string correctedPath = "~" + model.OldImagePath.Substring(model.OldImagePath.IndexOf("/Content/Images/Books/front-covers"));
+                        DeleteFileFromServer(correctedPath);
+                    }
+                }
+
+                // Save image from Url address in case image is imported
+                if (!String.IsNullOrEmpty(model.BookCover.FrontCover) && model.BookCover.FrontCover.StartsWith("http"))
+                {
+                    book.FrontCover = SaveImageFromUrl(model.BookCover.FrontCover);
+                }
+                
                 // Update image only if was uploaded.
                 if (model.BookCover.Image != null)
                 {
@@ -343,54 +393,87 @@ namespace OnlineLibrary.Web.Controllers
                     }
                 }
 
+                // Remove duplicate authors from model.
+                var authors = model.Authors.ToList();
+
+                foreach (var author in authors)
+                {
+                    var duplicateAuthors = model.Authors.Where(a => a.AuthorName.FirstName == author.AuthorName.FirstName
+                                                     && a.AuthorName.MiddleName == author.AuthorName.MiddleName
+                                                     && a.AuthorName.LastName == author.AuthorName.LastName).ToList();
+                    if (duplicateAuthors.Count() > 1)
+                    {
+                        for (var i = 1; i < duplicateAuthors.Count(); i++)
+                        {
+                            model.Authors.RemoveAt(i);
+                        }
+
+                        var authorsToRemove = book.Authors.Where(ba => ba.Id != author.Id).Select(ba => ba).ToList();
+
+                        foreach (var authorToRemove in authorsToRemove)
+                        {
+                            book.Authors.Remove(authorToRemove);
+                        }
+                    }
+                }
+
+
                 // Update authors.
                 foreach (var authorModel in model.Authors)
                 {
-                    Author author = DbContext.Authors.Find(authorModel.Id);
+                    // Variable "author" is checking whether the author is already in the database
+                    // It selects the item or returns null if not found
+                    Author author = DbContext.Authors.FirstOrDefault(a => a.FirstName == authorModel.AuthorName.FirstName
+                                                             && a.MiddleName == authorModel.AuthorName.MiddleName
+                                                             && a.LastName == authorModel.AuthorName.LastName);
+                    Author bookauthor = book.Authors.FirstOrDefault(a => a.FirstName == authorModel.AuthorName.FirstName
+                                                             && a.MiddleName == authorModel.AuthorName.MiddleName
+                                                             && a.LastName == authorModel.AuthorName.LastName);
+
+                    Author authorById = DbContext.Authors.FirstOrDefault(a => a.Id == authorModel.Id);
 
                     if (author != null)
                     {
-                        // If author was removed on the page.
-                        if (authorModel.IsRemoved)
+                        if (bookauthor != null)
                         {
-                            book.Authors.Remove(author);
+                            // Checks if author was removed on the page.
+                            if (authorModel.IsRemoved)
+                            {
+                                book.Authors.Remove(author);
+                            }
                         }
                         else
                         {
-                            // Update existing author.
-                            author.FirstName = authorModel.AuthorName.FirstName;
-                            author.MiddleName = authorModel.AuthorName.MiddleName;
-                            author.LastName = authorModel.AuthorName.LastName;
+                            book.Authors.Add(author);
                         }
                     }
                     else
                     {
                         if (!authorModel.IsRemoved)
                         {
-                            // Try to find author with the same name.
-                            Author existingAuthor = DbContext.Authors
-                                                             .FirstOrDefault(a => a.FirstName == authorModel.AuthorName.FirstName
-                                                             && a.MiddleName == authorModel.AuthorName.MiddleName
-                                                             && a.LastName == authorModel.AuthorName.LastName);
+                            // Create and add new author.
+                            Author newAuthor = new Author()
+                            {
+                                FirstName = authorModel.AuthorName.FirstName,
+                                MiddleName = authorModel.AuthorName.MiddleName,
+                                LastName = authorModel.AuthorName.LastName
+                            };
+                            book.Authors.Add(newAuthor);
+                        }
+                    }
 
-                            if (existingAuthor != null)
-                            {
-                                book.Authors.Add(existingAuthor);
-                            }
-                            else
-                            {
-                                // Create and add new author.
-                                Author newAuthor = new Author()
-                                {
-                                    FirstName = authorModel.AuthorName.FirstName,
-                                    MiddleName = authorModel.AuthorName.MiddleName,
-                                    LastName = authorModel.AuthorName.LastName
-                                };
-                                book.Authors.Add(newAuthor);
-                            }
+                    if (authorById != null)
+                    {
+                        if (authorById.FirstName != authorModel.AuthorName.FirstName
+                            || authorById.MiddleName != authorModel.AuthorName.MiddleName
+                            || authorById.LastName != authorModel.AuthorName.LastName)
+                        {
+                            book.Authors.Remove(authorById);
                         }
                     }
                 }
+
+                DbContext.SaveChanges();
 
                 book.SubCategories.Clear();
 
@@ -455,6 +538,17 @@ namespace OnlineLibrary.Web.Controllers
             }
 
             return imageRelativeSavePath;
+        }
+
+        private string SaveImageFromUrl(string url)
+        {
+                string contentPath = "~/Content/Images/Books/front-covers";
+                string fileName = Guid.NewGuid().ToString() + ".jpg"; // + Path.GetExtension(image.FileName);
+                string imageAbsoluteSavePath = Path.Combine(Server.MapPath(contentPath), fileName);
+                string imageRelativeSavePath = string.Concat(contentPath, '/', fileName);
+                WebClient webClient = new WebClient();
+                webClient.DownloadFile(url, imageAbsoluteSavePath);
+                return imageRelativeSavePath;
         }
 
         [HttpPost]
@@ -535,7 +629,6 @@ namespace OnlineLibrary.Web.Controllers
 
             return Json(subCategories, JsonRequestBehavior.AllowGet);
         }
-
         #region Helpers
 
         private void DeleteFileFromServer(string path)

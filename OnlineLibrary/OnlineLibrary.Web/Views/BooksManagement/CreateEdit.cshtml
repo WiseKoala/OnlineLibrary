@@ -1,5 +1,6 @@
 ﻿@using OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
 @using System.Linq
+
 @model CreateEditBookViewModel
 @{
     ViewBag.Title = "CreateEdit";
@@ -9,11 +10,14 @@
 
 @section CSS{
     @Styles.Render("~/Content/cssjqueryUI")
+    <link href="~/Content/toastr.min.css" rel="stylesheet" />
     @Styles.Render("~/Content/css")
     <link href="~/Content/Views stylesheets/BooksManagement/CreateEdit.css" rel="stylesheet" />
 }
 
 <div>
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#googleImportModal">Import from Google Books</button>
+
     @using (Html.BeginForm("CreateEdit", "BooksManagement", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.ValidationSummary("", new { @class = "text-danger" })
@@ -24,17 +28,20 @@
                     <label>Front Cover</label>
                     @if (!string.IsNullOrEmpty(Model.BookCover.FrontCover))
                     {
-                        <img class="img-small-responsive" src=@Url.Content(Model.BookCover.FrontCover) />
-                        <input type="hidden" value="@Model.BookCover.FrontCover" name="BookCover.FrontCover" />
+                        <img id="imageShow" class="img-small-responsive margin-bottom-10" src=@Url.Content(Model.BookCover.FrontCover) />
+                        <input id="imageInput" type="hidden" value="@Model.BookCover.FrontCover" name="BookCover.FrontCover" />
                     }
-                </div>
-                @*Load Image*@
-                <div class="form-group">
-                    <label class="inputFileButton">
-                        <input type="file" id="inputFile" name="BookCover.Image" class="inputfile" />
-                        <span class="btn btn-default">Upload Image</span>
-                    </label>
-                    <div id="textImageFileName"></div>
+                    
+                    @*Load Image*@
+                    <div id="imageLoad" class="form-group">
+                        <label class="inputFileButton">
+                            <input type="file" id="inputFile" name="BookCover.Image" class="inputfile" />
+                            <span class="btn btn-primary">Upload Image</span>
+                        </label>
+                        <div id="textImageFileName"></div>
+                    </div>
+
+                    <input type="hidden" id="oldImagePath" name="OldImagePath" value="" />
                 </div>
                 @Html.ValidationMessageFor(m => m.BookCover)
             </div>
@@ -130,7 +137,7 @@
                     </div>
                 </div>
             </div>
-            <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-default">
+            <input type="button" id="AddBookAuthor" value="Add Author" class="btn btn-primary">
         </div>
 
         <hr />
@@ -164,8 +171,12 @@
                 </div>
             }
         </div>
-        <button type="button" id="add-category" class="btn btn-default" style="margin-top: 10px">Add Category</button>
+       
+        <button type="button" id="add-category" class="btn btn-primary" style="margin-top: 10px">Add Category</button>
+        
+        <p></p>
 
+        <div id="googleJsonCategory"></div>
 
         <hr />
 
@@ -239,10 +250,38 @@
     </div>
 </div>
 
-@section scripts {
+<!-- Google Import Modal -->
+<div class="container">
+    <div class="modal fade" id="googleImportModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Import book details from Google Books</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>Search book by keyword or ISBN:</h4>
+                    <p class="form-group">
+                        <input type="text" id="searchString" class="form-control inlineblock" />
+                        <input type="button" class="btn btn-primary" id="searchByISBN" value="Search" />
+                        <div id="validationMessage"></div>
+                    </p>
 
+                    <div id="content">
+                        <table id="resultTable" class="table" cellpadding="10"></table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {    
     @Scripts.Render("~/bundles/jqueryui")
+    <script src="~/Scripts/toastr.min.js"></script>
     <script src="~/Scripts/View Scripts/BooksManagement/CreateEdit.js"></script>
-
 }
 

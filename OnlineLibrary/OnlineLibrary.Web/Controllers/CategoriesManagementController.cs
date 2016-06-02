@@ -10,6 +10,7 @@ using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Services.Abstract;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models.CategoriesManagement;
+using OnlineLibrary.Common.Exceptions;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -108,6 +109,87 @@ namespace OnlineLibrary.Web.Controllers
             catch (KeyNotFoundException ex)
             {
                 Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteBookCategory(int categoryId)
+        {
+            try
+            {
+                _categoryService.DeleteBookCategory(categoryId);
+                return Json(JsonRequestBehavior.AllowGet);
+            }
+            catch( BookCategoryIsNotRemovableException )
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteBookSubcategory(int subcategoryId)
+        {
+            try
+            {
+                _categoryService.DeleteBookSubcategory(subcategoryId);
+                return Json(JsonRequestBehavior.AllowGet);
+            }
+            catch ( BookSubcateogryIsNotRemovableException )
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult UpdateCategory(int categoryId, string newName)
+        {
+            try
+            {
+                Category updatedCategory = _categoryService.UpdateCategory(categoryId, newName);
+
+                return Json(new
+                {
+                    Id = updatedCategory.Id,
+                    Name = updatedCategory.Name
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ArgumentException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult UpdateSubCategory(int subCategoryId, string newName)
+        {
+            try
+            {
+                SubCategory updatedSubCategory = 
+                    _categoryService.UpdateSubCategory(subCategoryId, newName);
+
+                return Json(new
+                {
+                    Id = updatedSubCategory.Id,
+                    Name = updatedSubCategory.Name
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ArgumentException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
