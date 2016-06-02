@@ -19,25 +19,6 @@
             "extendedTimeOut": 60000    // another 30 seconds, if user hovers mouse over notification
         };
 
-        $("#btnRemoveCategoryConfirm").click(function () {
-            var categoryId = parseInt($(this).attr("cateogry-id"));
-
-            var ajaxSettings = {
-                type: "POST",
-                data: { categoryId: categoryId },
-                success: function (jqXhr) {
-                    viewModel.categories.remove(function (category) {
-                        return category.Id() == categoryId
-                    });
-                    toastr.success(jqXhr.succes);
-                },
-                error: function (jqXhr) {
-                    toastr.error(jqXhr.responseJSON.error);
-                },
-            }
-            $.ajax("/CategoriesManagement/DeleteBookCategory/", ajaxSettings);
-        });
-
             (function loadCategories() {
             var url = $("#categoriesList").data("categoriesUrl");
 
@@ -49,7 +30,6 @@
             ko.mapping.fromJS(data, {}, viewModel.categories);
 
             $("#categoriesList input").change(categoriesRadioButtonsChange);
-            $(".deleteCategory").click(bindCategoryIdToPopUp)
 
                 // Set first radio input as checked.
                 $("#categoriesList label").first().addClass("active");
@@ -65,12 +45,56 @@
             $.ajax(settings);
             })();
 
+            $("#btnRemoveCategoryConfirm").click(function () {
+                var categoryId = parseInt($(this).attr("cateogry-id"));
+
+                var ajaxSettings = {
+                    type: "POST",
+                    data: { categoryId: categoryId },
+                    success: function () {
+                        viewModel.categories.remove(function (category) {
+                            return category.Id() == categoryId
+                        });
+                        toastr.success("Category was successfully removed.");
+                    },
+                    error: function () {
+                        toastr.error("Category is not removable, it has subcategories.");
+                    },
+                }
+                $.ajax("/CategoriesManagement/DeleteBookCategory/", ajaxSettings);
+            });
+
+            $("#btnRemoveSubcategoryConfirm").click(function () {
+                var subcategoryId = parseInt($(this).attr("subcateogry-id"));
+
+                var ajaxSettings = {
+                    type: "POST",
+                    data: { subcategoryId: subcategoryId },
+                    success: function () {
+                        viewModel.subCategories.remove(function (subcategory) {
+                            return subcategory.Id() == subcategoryId
+                        });
+                        toastr.success("Subcategory was successfully removed.");
+                    },
+                    error: function () {
+                        toastr.error("Subcategory is not removable, it has books.");
+                    },
+                }
+                $.ajax("/CategoriesManagement/DeleteBookSubcategory/", ajaxSettings);
+            });
+
             function bindCategoryIdToPopUp() {
                 var value = $(this).attr("value");
                 $("#btnRemoveCategoryConfirm").attr("cateogry-id", value);
             }
 
-    function bindCategoryButtons() {
+            function bindSubcategoryIdToPopUp() {
+                var value = $(this).attr("value");
+                $("#btnRemoveSubcategoryConfirm").attr("subcateogry-id", value);
+            }
+
+            function bindCategoryButtons() {
+        $(".deleteCategory").click(bindCategoryIdToPopUp);
         $("button.btn-edit-category").click(editCategoryClick);
         $("button.save-category-changes").click(categorySaveChangesClick);
         $("button.save-category-changes").mousedown(function (e) {
@@ -106,6 +130,7 @@
         };
 
     function bindSubCategoryButtons() {
+        $(".deleteSubcategory").click(bindSubcategoryIdToPopUp);
         $("button.btn-edit-subcategory").click(editSubcategoryClick);
         $("button.save-subcategory-changes").click(subcategorySaveChangesClick);
         $("button.save-subcategory-changes").mousedown(function (e) {

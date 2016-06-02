@@ -119,12 +119,27 @@ namespace OnlineLibrary.Web.Controllers
             try
             {
                 _categoryService.DeleteBookCategory(categoryId);
-                return Json(new { succes = "Category was successfully removed." }, JsonRequestBehavior.AllowGet);
+                return Json(JsonRequestBehavior.AllowGet);
             }
-            catch( BookCategoryIsNotRemovableException ex)
+            catch( BookCategoryIsNotRemovableException )
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+                return Json(JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteBookSubcategory(int subcategoryId)
+        {
+            try
+            {
+                _categoryService.DeleteBookSubcategory(subcategoryId);
+                return Json(JsonRequestBehavior.AllowGet);
+            }
+            catch ( BookSubcateogryIsNotRemovableException )
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(JsonRequestBehavior.AllowGet);
             }
         }
 
