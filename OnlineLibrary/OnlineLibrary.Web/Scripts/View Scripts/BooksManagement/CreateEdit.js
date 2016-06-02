@@ -506,7 +506,9 @@ $(document).ready(function () {
                             }
                             if (!imgImageShow.src.includes("books.google.com"))
                             {
-                                $("#oldImagePath").attr("value", imgImageShow.src);
+                                if ($("#oldImagePath").val() == "") {
+                                    $("#oldImagePath").attr("value", imgImageShow.src);
+                                }
                             }
                             
                             imgImageShow.className = "img-small-responsive margin-bottom-10";
@@ -589,7 +591,9 @@ $(document).ready(function () {
         var imageShow = document.getElementById("imageShow");
         if (!imageShow.src.includes("books.google.com"))
         {
-            $("#oldImagePath").attr("value", imageShow.src);
+            if ($("#oldImagePath").val() == "") {
+                $("#oldImagePath").attr("value", imageShow.src);
+            }
         }
         imageShow.remove();
         $("#imgImageInput").remove();
