@@ -629,4 +629,6 @@ $(document).ready(function () {
             return $("#searchString").val() + "&maxResults=40";
         }
     }
+
+    $(".book-category .select-category option:first-child").attr("disabled", "disabled");
 });
