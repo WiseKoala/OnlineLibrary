@@ -29,11 +29,7 @@
 
             ko.mapping.fromJS(data, {}, viewModel.categories);
 
-            // Set first radio input as checked.
-            $("#categoriesList label").first().addClass("active");
-            $("#categoriesList input").first().prop("checked", true);
-            $("#categoriesList input").trigger("change");
-
+            setFirstCategoryAsChecked();
             bindCategoryButtons();
         };
         settings.error = function (jqXHR) {
@@ -42,6 +38,13 @@
 
         $.ajax(settings);
     })();
+
+    function setFirstCategoryAsChecked() {
+        // Set first radio input as checked.
+        $("#categoriesList label").first().addClass("active");
+        $("#categoriesList input").first().prop("checked", true);
+        $("#categoriesList input").trigger("change");
+    }
 
     $("#btnRemoveCategoryConfirm").click(function () {
         var categoryId = parseInt($(this).attr("cateogry-id"));
@@ -54,6 +57,8 @@
                     return category.Id() == categoryId
                 });
                 toastr.success("Category was successfully removed.");
+
+                setFirstCategoryAsChecked();
             },
             error: function (result) {
                 toastr.error(result.responseJSON.error);
