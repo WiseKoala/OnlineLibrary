@@ -1,7 +1,7 @@
 ﻿$(document).ready(function () {
 
     //Don't dismiss the modal window by default.
-    var dismissModal = 0;
+    var dismissModal = false;
 
     $("#approveLoanButton").click(function () {
 
@@ -13,12 +13,12 @@
                 bookCopyId: approveForm.find('input[id="bookCopyId"]').val(),
                 loanId: approveForm.find('input[id="loanId"]').val()
             },
+            async: false,
             success: function (response) {
 
                 if (response.error != null) {
                     $("#approveLoanErrorAlert").removeClass("hidden");
                     $("#approveLoanError").text(response.error);
-                    dismissModal = 1;
                     return false;
                 }
                 else {
@@ -31,7 +31,11 @@
                         "extendedTimeOut": 10000
                     };
                     toastr.success("The book has been successfully marked as loaned.", "Success.");
-                    dismissModal = 0;
+
+                    var itemToRemove = $('tr button[data-loan-id="' + $("#approveForm").find('input[id="loanId"]').val() + '"]').closest("tr");
+                    itemToRemove.fadeOut(1000, function () { itemToRemove.remove(); });
+
+                    dismissModal = true;
                 }
             },
             error: function (jqXHR) {
@@ -45,11 +49,11 @@
                         }
 
                 toastr.error("An error has occured.", "Error.");
-                dismissModal = 0;
+                dismissModal = true;
             }
         });
 
-        if (dismissModal === 0) {
+        if (!dismissModal) {
             return false;
         }
 
