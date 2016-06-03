@@ -201,6 +201,33 @@ namespace OnlineLibrary.Web.Controllers
                     }
                 }
 
+                for (int i = 0; i < model.BookCategories.Count(); i++)
+                {
+                    if (model.BookCategories[i].IsRemoved)
+                    {
+                        if (ModelState.ContainsKey(string.Concat("BookCategories[", i, "].IsRemoved")))
+                        {
+                            foreach (var state in ModelState.ToArray())
+                            {
+                                if (state.Key.StartsWith(string.Concat("BookCategories[", i)))
+                                {
+                                    ModelState.Remove(state);
+                                }
+                            }
+                        }
+
+                        if (model.BookCategories[i].IsRemoved == true)
+                        {
+                            model.BookCategories.Remove(model.BookCategories[i]);
+                        }
+
+                        if (!model.BookCategories.Any())
+                        {
+                            ModelState.AddModelError("Book Categories", "There has to be at least one Book Category.");
+                        }
+                    }
+                }
+
                 return View(model);
             }
             
