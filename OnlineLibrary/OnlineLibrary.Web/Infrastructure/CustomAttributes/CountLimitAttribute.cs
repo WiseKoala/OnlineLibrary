@@ -6,26 +6,14 @@ namespace OnlineLibrary.Web.Infrastructure.CustomAttributes
 {
     public class CountLimitAttribute : ValidationAttribute
     {
-        private int limit
-        {
-            get
-            {
-                int a = 20;
-                int.TryParse(ConfigurationManager.AppSettings["ListLimitNumber"], out a);
-                return a;
-            }
-        }
-
         public override bool IsValid(object value)
         {
             var list = value as IList;
+            var limit = int.Parse(ConfigurationManager.AppSettings["ListLimitNumber"]);
 
-            if (list != null)
+            if (list != null && list.Count < limit)
             {
-                if (list.Count < limit)
-                {
-                    return true;
-                }
+                return true;
             }
 
             return false;
