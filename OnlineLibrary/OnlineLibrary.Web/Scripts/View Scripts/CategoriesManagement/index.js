@@ -55,8 +55,8 @@
                 });
                 toastr.success("Category was successfully removed.");
             },
-            error: function () {
-                toastr.error("Category is not removable, it has subcategories.");
+            error: function (result) {
+                toastr.error(result.responseJSON.error);
             },
         }
         $.ajax("/CategoriesManagement/DeleteBookCategory/", ajaxSettings);
@@ -74,8 +74,8 @@
                 });
                 toastr.success("Subcategory was successfully removed.");
             },
-            error: function () {
-                toastr.error("Subcategory is not removable, it has books.");
+            error: function (result) {
+                toastr.error(result.responseJSON.error);
             },
         }
         $.ajax("/CategoriesManagement/DeleteBookSubcategory/", ajaxSettings);
