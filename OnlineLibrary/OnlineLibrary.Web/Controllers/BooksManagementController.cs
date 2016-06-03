@@ -254,7 +254,7 @@ namespace OnlineLibrary.Web.Controllers
                 {
                     var duplicateAuthors = model.Authors.Where(a => a.AuthorName.FirstName == author.AuthorName.FirstName
                                                      && a.AuthorName.MiddleName == author.AuthorName.MiddleName
-                                                     && a.AuthorName.LastName == author.AuthorName.LastName).ToList();
+                                                     && a.AuthorName.LastName == author.AuthorName.LastName && a.IsRemoved == false).ToList();
                     if (duplicateAuthors.Count() > 1)
                     {
                         for (var i = 1; i < duplicateAuthors.Count(); i++)
@@ -398,20 +398,25 @@ namespace OnlineLibrary.Web.Controllers
 
                 foreach (var author in authors)
                 {
+                    // Identify all duplicate authors with the same name as current iterated author that is also not marked as removed.
                     var duplicateAuthors = model.Authors.Where(a => a.AuthorName.FirstName == author.AuthorName.FirstName
                                                      && a.AuthorName.MiddleName == author.AuthorName.MiddleName
-                                                     && a.AuthorName.LastName == author.AuthorName.LastName).ToList();
+                                                     && a.AuthorName.LastName == author.AuthorName.LastName && a.IsRemoved == false).ToList();
                     if (duplicateAuthors.Count() > 1)
                     {
                         for (var i = 1; i < duplicateAuthors.Count(); i++)
                         {
+                            // Remove duplicate author from model.
                             model.Authors.RemoveAt(i);
                         }
 
-                        var authorsToRemove = book.Authors.Where(ba => ba.Id != author.Id).Select(ba => ba).ToList();
+                        var authorsToRemove = book.Authors.Where(ba => ba.Id != author.Id && ba.FirstName == author.AuthorName.FirstName
+                                                                 && ba.MiddleName == author.AuthorName.MiddleName
+                                                                 && ba.LastName == author.AuthorName.LastName).Select(ba => ba).ToList();
 
                         foreach (var authorToRemove in authorsToRemove)
                         {
+                            // Remove duplicate author from book.
                             book.Authors.Remove(authorToRemove);
                         }
                     }
@@ -430,6 +435,7 @@ namespace OnlineLibrary.Web.Controllers
                                                              && a.MiddleName == authorModel.AuthorName.MiddleName
                                                              && a.LastName == authorModel.AuthorName.LastName);
 
+                    // Select author from database with id coresponding to current author iterated from model.
                     Author authorById = DbContext.Authors.FirstOrDefault(a => a.Id == authorModel.Id);
 
                     if (author != null)
@@ -462,6 +468,7 @@ namespace OnlineLibrary.Web.Controllers
                         }
                     }
 
+                    // If user edits existing author name, previous author name is removed. 
                     if (authorById != null)
                     {
                         if (authorById.FirstName != authorModel.AuthorName.FirstName

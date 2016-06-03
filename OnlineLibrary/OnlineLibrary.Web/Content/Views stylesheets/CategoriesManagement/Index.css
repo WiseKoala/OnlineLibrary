@@ -4,7 +4,7 @@
 #newCategoryNameGroup, #newSubcategoryGroup { margin-bottom: 10px; }
 #subcategoriesList { display: inline-block; }
 
-.input-group { display: inline-block; }
+.input-group { display: block; }
 
 /**/
 .control-buttons { margin-left: 15px; }

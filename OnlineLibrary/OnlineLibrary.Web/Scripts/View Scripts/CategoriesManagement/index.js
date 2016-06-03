@@ -29,8 +29,6 @@
 
             ko.mapping.fromJS(data, {}, viewModel.categories);
 
-            $("#categoriesList input").change(categoriesRadioButtonsChange);
-
             // Set first radio input as checked.
             $("#categoriesList label").first().addClass("active");
             $("#categoriesList input").first().prop("checked", true);
@@ -57,8 +55,8 @@
                 });
                 toastr.success("Category was successfully removed.");
             },
-            error: function () {
-                toastr.error("Category is not removable, it has subcategories.");
+            error: function (result) {
+                toastr.error(result.responseJSON.error);
             },
         }
         $.ajax("/CategoriesManagement/DeleteBookCategory/", ajaxSettings);
@@ -76,8 +74,8 @@
                 });
                 toastr.success("Subcategory was successfully removed.");
             },
-            error: function () {
-                toastr.error("Subcategory is not removable, it has books.");
+            error: function (result) {
+                toastr.error(result.responseJSON.error);
             },
         }
         $.ajax("/CategoriesManagement/DeleteBookSubcategory/", ajaxSettings);
@@ -94,13 +92,14 @@
     }
 
     function bindCategoryButtons() {
+        $("#categoriesList input").change(categoriesRadioButtonsChange);
         $(".deleteCategory").click(bindCategoryIdToPopUp);
         $("button.btn-edit-category").click(editCategoryClick);
         $("button.save-category-changes").click(categorySaveChangesClick);
         $("button.save-category-changes").mousedown(function (e) {
             $(this).data("mouseDown", true);
         });
-        $("button.save-category-changes").mouseup(function (e) {
+        $("button.save-category-changes").mouseout(function (e) {
             $(this).data("mouseDown", false);
         });
         $("input[name='categoryName']").blur(categoryInputBlur);
@@ -136,7 +135,7 @@
         $("button.save-subcategory-changes").mousedown(function (e) {
             $(this).data("mouseDown", true);
         });
-        $("button.save-subcategory-changes").mouseup(function (e) {
+        $("button.save-subcategory-changes").mouseout(function (e) {
             $(this).data("mouseDown", false);
         });
         $("input[name='subcategoryName']").blur(subcategoryInputBlur);
@@ -220,6 +219,11 @@
     // Categories.
     function editCategoryClick() {
         var root = $(this).closest("label");
+
+        // Exit out of edit mode for all categories.
+        $("#categoriesList label").each(function (index, element) {
+            exitCategoryEditMode($(element));
+        });
 
         enterCategoryEditMode(root);
     }
@@ -307,6 +311,11 @@
     // Subcategories.
     function editSubcategoryClick() {
         var root = $(this).closest("li");
+
+        // Exit out of edit mode for all subcategories.
+        $("#subcategoriesList li").each(function (index, element) {
+            exitSubcategoryEditMode($(element));
+        });
 
         enterSubcategoryEditMode(root);
     }

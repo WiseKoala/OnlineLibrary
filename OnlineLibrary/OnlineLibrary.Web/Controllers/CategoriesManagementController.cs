@@ -121,10 +121,15 @@ namespace OnlineLibrary.Web.Controllers
                 _categoryService.DeleteBookCategory(categoryId);
                 return Json(JsonRequestBehavior.AllowGet);
             }
-            catch( BookCategoryIsNotRemovableException )
+            catch (BookCategoryIsNotRemovableException)
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(JsonRequestBehavior.AllowGet);
+                return Json(new { error = "Cateogry is not removable" }, JsonRequestBehavior.AllowGet);
+            }
+            catch(BookCategoryNotFoundException)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { error = "Category not found"}, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -136,10 +141,15 @@ namespace OnlineLibrary.Web.Controllers
                 _categoryService.DeleteBookSubcategory(subcategoryId);
                 return Json(JsonRequestBehavior.AllowGet);
             }
-            catch ( BookSubcateogryIsNotRemovableException )
+            catch (BookSubcateogryIsNotRemovableException)
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(JsonRequestBehavior.AllowGet);
+                return Json(new { error = "Subcategory is not removable" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (BookSubcategoryNotFoundException)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { error = "Subcategory not found" }, JsonRequestBehavior.AllowGet);
             }
         }
 
