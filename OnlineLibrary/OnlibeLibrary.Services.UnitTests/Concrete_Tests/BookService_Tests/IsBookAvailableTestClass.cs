@@ -49,7 +49,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         }
 
         [Test]
-        public void IsBookAvailable_Should_RetrunFalse_When_BookCopyIsLoaned()
+        public void Should_RetrunFalse_When_BookCopyIsLoaned()
         {
             // Arrange.           
             var expectedResult = false;
@@ -65,7 +65,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         }
 
         [Test]
-        public void IsBookAvailable_Should_RetrunTrue_When_BookCopyIsNotLoaned()
+        public void Should_RetrunTrue_When_BookCopyIsNotLoaned()
         {
             // Arrange.
             var expectedResult = true;
@@ -81,7 +81,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         }
 
         [Test]
-        public void IsBookAvailable_Should_ThrowKeyNotFoundException_When_BookCopyDoesntExist()
+        public void Should_ThrowKeyNotFoundException_When_BookCopyDoesntExist()
         {
             // Arrange.
             var sut = new BookService(_dbContext);
