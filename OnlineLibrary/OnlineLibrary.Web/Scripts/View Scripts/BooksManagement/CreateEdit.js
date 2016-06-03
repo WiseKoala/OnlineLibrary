@@ -501,7 +501,7 @@ $(document).ready(function () {
                         var year = publishedDate[0];
                         var month = publishedDate[1] || "01";
                         var day = publishedDate[2] || "01";
-                        $("input[name='PublishDate']").val(day + "-" + month + "-" + year);
+                        $("input[name='PublishDate']").val(month + "-" + day + "-" + year);
                         $("#googleJsonCategory").html("<p>The imported Google Books category is: <strong>" + item.volumeInfo.categories + "</strong></p>");
 
                         var divImageLoad = document.getElementById("imageLoad");
