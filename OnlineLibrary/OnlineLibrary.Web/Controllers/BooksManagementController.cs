@@ -681,11 +681,16 @@ namespace OnlineLibrary.Web.Controllers
 
         private IList<SelectListItem> SetCategoriesDropDownItems(IList<Category> categories)
         {
-           return categories.Select(c => new SelectListItem
-                             {
-                                 Text = c.Name,
-                                 Value = c.Id.ToString()
-                             }).ToList();
+            var dropDownItems = new List<SelectListItem>();
+            dropDownItems.Add(new SelectListItem { Text = "Choose a category", Value = "0" });
+
+            dropDownItems.AddRange(categories.Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.Id.ToString()
+            }).ToList());
+
+            return dropDownItems;
         }
 
         /// <summary>
