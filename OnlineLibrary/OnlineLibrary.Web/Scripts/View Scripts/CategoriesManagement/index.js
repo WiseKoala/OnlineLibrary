@@ -29,8 +29,8 @@
 
             ko.mapping.fromJS(data, {}, viewModel.categories);
 
-            setFirstCategoryAsChecked();
             bindCategoryButtons();
+            setFirstCategoryAsChecked();
         };
         settings.error = function (jqXHR) {
             toastr.error(jqXHR.responseJSON.error);
@@ -42,8 +42,8 @@
     function setFirstCategoryAsChecked() {
         // Set first radio input as checked.
         $("#categoriesList label").first().addClass("active");
-        $("#categoriesList input").first().prop("checked", true);
-        $("#categoriesList input").trigger("change");
+        $("#categoriesList input:radio").first().prop("checked", true);
+        $("#categoriesList input:radio").trigger("change");
     }
 
     $("#btnRemoveCategoryConfirm").click(function () {
