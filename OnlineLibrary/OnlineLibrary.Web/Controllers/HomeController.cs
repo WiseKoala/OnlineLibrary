@@ -14,6 +14,7 @@ namespace OnlineLibrary.Web.Controllers
         {
         }
 
+        [HttpGet]
         public ActionResult Index()
         {
             InitializeUserNameSessionVariable();
@@ -41,7 +42,19 @@ namespace OnlineLibrary.Web.Controllers
                 })
                 .ToList();
 
-            return View(booksList);
+            var model = new BooksListViewModel()
+            {
+                Books = booksList
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Index(BooksListViewModel model)
+        {
+            BookSearchViewModel searchModel = model.SearchData;
+            return RedirectToAction("Index");
         }
     }
 }

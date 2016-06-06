@@ -1,5 +1,5 @@
 ﻿@using OnlineLibrary.Web.Models.HomeViewModels
-@model List<BookViewModel>
+@model BooksListViewModel
 @{
     ViewBag.Title = "Home Page";
 }
@@ -8,15 +8,44 @@
     <link href="~/Content/Views stylesheets/Home/Index.css" rel="stylesheet" />
 }
 
-<div class="page-header">
+<div class="row page-header">
     <form id="searchFilters" action="@Url.Action("Index", "Home")" method="post">
-        
+        <div class="form-inline">
+            <div class="form-group">
+                @Html.LabelFor(m => m.SearchData.Title, new { @class = "label-control" })
+                @Html.TextBoxFor(m => m.SearchData.Title, new { @class = "form-control", placeholder = "E.g. Harry Potter" })
+            </div>
+            <button type="submit" class="btn btn-primary">Search <span class="glyphicon glyphicon-search"></span></button>
+            <a type="button" data-toggle="collapse" href="#searchDetails">View additional fields</a>
+        </div>
+        <div class="collapse" id="searchDetails">
+            <div class="form-horizontal col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SearchData.Author, new { @class = "control-label col-sm-3" })
+                    @Html.TextBoxFor(m => m.SearchData.Author, new { @class = "form-control col-sm-9" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SearchData.ReleaseDate, new { @class = "control-label col-sm-3" })
+                    @Html.TextBoxFor(m => m.SearchData.ReleaseDate, new { @class = "form-control col-sm-9" })
+                </div>
+            </div>
+            <div class="form-horizontal col-md-6 ">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SearchData.ISBN, new { @class = "control-label col-sm-3" })
+                    @Html.TextBoxFor(m => m.SearchData.ISBN, new { @class = "form-control col-sm-9" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SearchData.Description, new { @class = "control-label col-sm-3" })
+                    @Html.TextBoxFor(m => m.SearchData.Description, new { @class = "form-control col-sm-9" })
+                </div>
+            </div>
+        </div>        
     </form>
 </div>
 
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
-        @foreach (var book in Model)
+        @foreach (var book in Model.Books)
         {
             <div class="panel panel-default book-item">
                 <div class="panel-body">

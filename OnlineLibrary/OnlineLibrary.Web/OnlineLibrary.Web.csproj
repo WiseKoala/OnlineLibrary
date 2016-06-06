@@ -241,6 +241,8 @@
     <Compile Include="Models\BooksManagement\CreateEditBookViewModels\CreateEditBookViewModel.cs" />
     <Compile Include="Models\BooksManagement\CreateEditBookViewModels\FrontCoverViewModel.cs" />
     <Compile Include="Models\BooksManagement\CreateEditBookViewModels\SubCategoryViewModel.cs" />
+    <Compile Include="Models\HomeViewModels\BookSearchViewModel.cs" />
+    <Compile Include="Models\HomeViewModels\BooksListViewModel.cs" />
     <Compile Include="Models\HomeViewModels\BookViewModel.cs" />
     <Compile Include="Models\CategoriesManagement\CategoryViewModel.cs" />
     <Compile Include="Models\HomeViewModels\CategoryViewModel.cs" />
