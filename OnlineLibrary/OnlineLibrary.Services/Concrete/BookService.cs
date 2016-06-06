@@ -10,6 +10,7 @@ using System.Data.Entity;
 using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.Common.Exceptions;
+using OnlineLibrary.Services.Models;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -168,6 +169,29 @@ namespace OnlineLibrary.Services.Concrete
                 .ToList();
             historyRecords.ForEach(h => h.BookCopyId = null);
             _dbContext.SaveChanges();
+        }
+
+        public IEnumerable<Book> Find(BookSearchServiceModel model)
+        {
+            // Find by title.
+            IQueryable<Book> booksByTitle;
+            if (model.Title != null)
+            {
+                booksByTitle = _dbContext.Books.Where(b => b.Title.Contains(model.Title));
+            }
+
+            // Find by authors.
+            var booksByAuthor = _dbContext.Authors
+                .Where(a => a.FirstName.Contains(model.Author)
+                         || a.MiddleName.Contains(model.Author)
+                         || a.LastName.Contains(model.Author))
+                .SelectMany(a => a.Books);
+
+            var resultSet = booksByTitle
+                .Union(booksByAuthor)
+                .ToList();
+
+            return resultSet;
         }
     }
 }

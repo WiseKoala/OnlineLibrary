@@ -67,6 +67,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Concrete_Tests\BookService_Tests\FindTestClass.cs" />
     <Compile Include="Concrete_Tests\CategoryService_Tests\DeleteBookCategoryTestClass.cs" />
     <Compile Include="Concrete_Tests\CategoryService_Tests\DeleteBookSubcategoryTestClass.cs" />
     <Compile Include="Concrete_Tests\CategoryService_Tests\IsCategoryRemovableTestClass.cs" />

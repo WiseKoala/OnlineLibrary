@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OnlineLibrary.DataAccess.Entities;
+using OnlineLibrary.Services.Models;
 
 namespace OnlineLibrary.Services.Abstract
 {
@@ -16,5 +17,6 @@ namespace OnlineLibrary.Services.Abstract
         BookCopy DeleteBookCopy(int id);
         bool IsBookCopyRemovable(int id);
         Book DeleteBook(int id);
+        IEnumerable<Book> Find(BookSearchServiceModel model);
     }
 }

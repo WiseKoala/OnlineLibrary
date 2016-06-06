@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace OnlineLibrary.Web.Models.HomeViewModels
+namespace OnlineLibrary.Services.Models
 {
-    public class BookSearchViewModel
+    public class BookSearchServiceModel
     {
         public string Title { get; set; }
 
         public string Author { get; set; }
 
-        [DataType(DataType.Date)]
-        [Display(Name = "Publish Date")]
         public DateTime PublishDate { get; set; }
 
         public string ISBN { get; set; }
