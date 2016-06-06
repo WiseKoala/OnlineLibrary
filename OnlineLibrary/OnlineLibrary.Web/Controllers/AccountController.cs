@@ -138,18 +138,10 @@ namespace OnlineLibrary.Web.Controllers
         // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> LogOff()
+        public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             Session.Abandon();
-
-            // Save sign out date.
-            var userToUpdate = _userService.FindById(User.Identity?.GetUserId());
-            if (userToUpdate != null)
-            {
-                userToUpdate.LastSignOutDate = DateTime.Now;
-                await _userService.UpdateAsync(userToUpdate);
-            }
 
             return RedirectToLocal("Home/Index");
         }
