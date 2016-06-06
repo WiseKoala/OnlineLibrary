@@ -141,26 +141,26 @@ namespace OnlineLibrary.Web.Controllers
             var subcategories = DbContext.SubCategories.ToList();
             model.AllBookConditions = PopulateWithBookConditions();
 
+            var categories = DbContext.Categories.ToList();
+            //  Get all categories for each book's category.
+            for (int i = 0; i < model.BookCategories.Count(); i++)
+            {
+                var categoriesDropDownItems = SetCategoriesDropDownItems(categories);
+                model.BookCategories[i].Categories = SetSelectedCategory(categoriesDropDownItems, model.BookCategories[i].Id);
+            }
+
+            // Get all subcategories for each  book's category.
+            for (int i = 0; i < model.BookCategories.Count(); i++)
+            {
+                if (model.BookCategories[i].Subcategory != null)
+                {
+                    var subcategoriesDropDownItems = SetSubCategoriesDropDownItems(subcategories, model.BookCategories[i].Id);
+                    model.BookCategories[i].Subcategories = SetSelectedSubCategory(subcategoriesDropDownItems, model.BookCategories[i].Subcategory.Id);
+                }
+            }
+
             if (!ModelState.IsValid)
             {
-                var categories = DbContext.Categories.ToList();
-                //  Get all categories for each book's category.
-                for (int i = 0; i < model.BookCategories.Count(); i++)
-                {
-                    var categoriesDropDownItems = SetCategoriesDropDownItems(categories);
-                    model.BookCategories[i].Categories = SetSelectedCategory(categoriesDropDownItems, model.BookCategories[i].Id);
-                }
-
-                // Get all subcategories for each  book's category.
-                for (int i = 0; i < model.BookCategories.Count(); i++)
-                {
-                    if (model.BookCategories[i].Subcategory != null)
-                    {
-                        var subcategoriesDropDownItems = SetSubCategoriesDropDownItems(subcategories, model.BookCategories[i].Id);
-                        model.BookCategories[i].Subcategories = SetSelectedSubCategory(subcategoriesDropDownItems, model.BookCategories[i].Subcategory.Id);
-                    }
-                }
-
                 var bookcopies = model.BookCopies.ToList();
 
                 if (bookcopies.Count() > 0)
@@ -377,13 +377,13 @@ namespace OnlineLibrary.Web.Controllers
                         }
                         catch (BookCopyNotAvailableException ex)
                         {
-                            Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                            return Json(new { error = ex.Message });
+                            ModelState.AddModelError("Book Copy", "Book copy with Id # = " + bookcopy.Id + " is currently involved in loans. Unable to remove it.");
+                            return View(model);
                         }
                         catch (KeyNotFoundException ex)
                         {
-                            Response.StatusCode = (int)HttpStatusCode.NotFound;
-                            return Json(new { error = ex.Message });
+                            ModelState.AddModelError("Book Copy", "Book copy with Id # = " + bookcopy.Id + " is not found. Someone may have already deleted it. Please reload page to see latest changes.");
+                            return View(model);
                         }
                     }
                 }

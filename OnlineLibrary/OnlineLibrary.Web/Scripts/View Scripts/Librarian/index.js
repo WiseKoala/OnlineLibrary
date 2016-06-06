@@ -15,6 +15,7 @@
             },
             async: false,
             success: function (response) {
+                dismissModal = false;
 
                 if (response.error != null) {
                     $("#approveLoanErrorAlert").removeClass("hidden");
@@ -39,6 +40,7 @@
                 }
             },
             error: function (jqXHR) {
+                dismissModal = false;
                 toastr.options =
                         {
                             "closeButton": true,
