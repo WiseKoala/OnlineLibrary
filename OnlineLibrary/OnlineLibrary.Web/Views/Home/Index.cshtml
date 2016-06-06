@@ -1,4 +1,4 @@
-﻿@using OnlineLibrary.Web.Models
+﻿@using OnlineLibrary.Web.Models.HomeViewModels
 @model List<BookViewModel>
 @{
     ViewBag.Title = "Home Page";
@@ -9,7 +9,9 @@
 }
 
 <div class="page-header">
-    <h1>Available books</h1>
+    <form id="searchFilters" action="@Url.Action("Index", "Home")" method="post">
+        
+    </form>
 </div>
 
 <div class="row">

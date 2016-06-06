@@ -1,11 +1,9 @@
-﻿using OnlineLibrary.Web.Infrastructure.Abstract;
-using System;
+﻿using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
-using System.Data.Entity;
-using OnlineLibrary.Web.Models;
-using System.Collections.Generic;
 using OnlineLibrary.DataAccess.Abstract;
+using OnlineLibrary.Web.Infrastructure.Abstract;
+using OnlineLibrary.Web.Models.HomeViewModels;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -14,12 +12,11 @@ namespace OnlineLibrary.Web.Controllers
         public HomeController(ILibraryDbContext dbContext)
             : base(dbContext)
         {
-
         }
 
         public ActionResult Index()
         {
-                InitializeUserNameSessionVariable();
+            InitializeUserNameSessionVariable();
 
             // Obtain list of books from the database.
             var booksList = DbContext.Books
