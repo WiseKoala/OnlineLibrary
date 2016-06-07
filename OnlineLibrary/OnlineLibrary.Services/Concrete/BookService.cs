@@ -11,6 +11,7 @@ using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.Common.Exceptions;
 using OnlineLibrary.Services.Models;
+using OnlineLibrary.DataAccess.Infrastructure;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -173,25 +174,16 @@ namespace OnlineLibrary.Services.Concrete
 
         public IEnumerable<Book> Find(BookSearchServiceModel model)
         {
-            // Find by title.
-            IQueryable<Book> booksByTitle;
-            if (model.Title != null)
-            {
-                booksByTitle = _dbContext.Books.Where(b => b.Title.Contains(model.Title));
-            }
+            // Find by basic fields.
+            var books = _dbContext.Books
+                .WhereIf(model.Title != null, b => b.Title.Contains(model.Title))
+                .WhereIf(model.PublishDate != null, b => b.PublishDate == model.PublishDate)
+                .WhereIf(model.ISBN != null, b => b.ISBN == model.ISBN)
+                .WhereIf(model.Description != null, b => b.Description == model.Description);
 
-            // Find by authors.
-            var booksByAuthor = _dbContext.Authors
-                .Where(a => a.FirstName.Contains(model.Author)
-                         || a.MiddleName.Contains(model.Author)
-                         || a.LastName.Contains(model.Author))
-                .SelectMany(a => a.Books);
+            IEnumerable<Book> foundBooks = books.ToList();
 
-            var resultSet = booksByTitle
-                .Union(booksByAuthor)
-                .ToList();
-
-            return resultSet;
+            return foundBooks;
         }
     }
 }

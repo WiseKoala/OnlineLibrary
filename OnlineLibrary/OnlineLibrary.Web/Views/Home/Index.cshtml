@@ -44,7 +44,12 @@
 </div>
 
 <div class="row">
+    @if (Model.Books.Count() == 0)
+    {
+        <h4>Sorry, no books were found...</h4>
+    }
     <div class="col-md-8 col-md-offset-2">
+        
         @foreach (var book in Model.Books)
         {
             <div class="panel panel-default book-item">

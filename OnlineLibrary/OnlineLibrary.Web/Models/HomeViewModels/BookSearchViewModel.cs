@@ -14,7 +14,7 @@ namespace OnlineLibrary.Web.Models.HomeViewModels
 
         [DataType(DataType.Date)]
         [Display(Name = "Publish Date")]
-        public DateTime PublishDate { get; set; }
+        public DateTime? PublishDate { get; set; }
 
         public string ISBN { get; set; }
 

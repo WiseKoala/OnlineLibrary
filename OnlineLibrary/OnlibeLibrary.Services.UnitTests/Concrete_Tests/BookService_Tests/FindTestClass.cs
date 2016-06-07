@@ -25,17 +25,113 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
             // Authors
             var authors = new List<Author>
             {
-                new Author() { Id = 1, FirstName = "Jamie", LastName = "Chan"},                          // Id = 1
-                new Author() { Id = 2, FirstName = "R.", MiddleName = "B.", LastName = "Whitaker" },     // Id = 2
-                new Author() { Id = 3, FirstName = "Brian", LastName = "Goetz" },                        // Id = 3 <---
-                new Author() { Id = 4, FirstName = "Tim", LastName = "Peierls" },                        // Id = 4    |
-                new Author() { Id = 5, FirstName = "Joshua", LastName = "Bloch" },                       // Id = 5    | Same book
-                new Author() { Id = 6, FirstName = "Joseph", LastName = "Bowbeer" },                     // Id = 6    |
-                new Author() { Id = 7, FirstName = "David", LastName = "Holmes" },                       // Id = 7    |
-                new Author() { Id = 8, FirstName = "Doug", LastName = "Lea" },                           // Id = 8 <---
-                new Author() { Id = 9, FirstName = "Harper", LastName = "Lee" },                         // Id = 9
-                new Author() { Id = 10, FirstName = "Bernard", LastName = "Cornwell" },                  // Id = 10
-                new Author() { Id = 11, FirstName = "Peter", MiddleName = "H.", LastName = "Wilson" }    // Id = 11
+                new Author() { Id = 1, FirstName = "Jamie", LastName = "Chan",
+                    Books = new List<Book>
+                    {
+                        new Book()
+                        {
+                             Title = "Learn C# in One Day and Learn It Well: C# for Beginners with Hands-on Project (Learn Coding Fast with Hands-On Project) (Volume 3)",
+                             ISBN = "1518800270",
+                             FrontCover = "~/Content/Images/Books/front-covers/1518800270.jpg",
+                             Description = "If you are a beginning programmer wanting to learn C# .NET programming, this book is the perfect introduction. It is too basic for experienced programmers, but it is just perfect for someone just starting out with C# programming, since it is easy to follow and all the concepts are explained very well.",
+                             PublishDate = new DateTime(2015,10,27),
+                        }
+                    }
+                },
+                new Author() { Id = 2, FirstName = "R.", MiddleName = "B.", LastName = "Whitaker",
+                    Books = new List<Book>
+                    {
+                        new Book()
+                        {                                                      
+                            Title = "The C# Player's Guide (2nd Edition)",
+                            ISBN = "0985580127",
+                            FrontCover = "~/Content/Images/Books/front-covers/0985580127.jpg",
+                            Description = "The C# Player's Guide (2nd Edition) is the ultimate guide for people starting out with C#, whether you are new to programming, or an experienced vet. This guide takes you from your journey's beginning, through the most challenging parts of programming in C#, and does so in a way that is casual, informative, and fun. This version of the book is updated for C# 6.0, .NET 4.6, and Visual Studio 2015.",
+                            PublishDate = new DateTime(2015,9,22),
+                        }
+                    }
+                },
+                new Author() { Id = 3, FirstName = "Brian", LastName = "Goetz",
+                    Books = new List<Book>
+                    {
+                        new Book()
+                        {                                                       
+                            Title = "Java Concurrency in Practice 1st Edition",
+                            ISBN = "7678678676",
+                            FrontCover = "~/Content/Images/Books/front-covers/7678678676.jpg",
+                            Description = "This book will give you a good grounding in concurrent programming in Java.",
+                            PublishDate = new DateTime(2006,5,19),
+                       },
+                    }
+                },
+                new Author() { Id = 4, FirstName = "Tim", LastName = "Peierls",
+                    Books = new List<Book>
+                    {
+                        new Book()
+                        {                                                       
+                            Title = "Java Concurrency in Practice 1st Edition",
+                            ISBN = "7678678676",
+                            FrontCover = "~/Content/Images/Books/front-covers/7678678676.jpg",
+                            Description = "This book will give you a good grounding in concurrent programming in Java.",
+                            PublishDate = new DateTime(2006,5,19),
+                       },
+                    }
+                },
+                new Author() { Id = 5, FirstName = "Joshua", LastName = "Bloch" ,
+                    Books = new List<Book>
+                    {
+                        new Book()
+                        {                                                       
+                            Title = "Java Concurrency in Practice 1st Edition",
+                            ISBN = "7678678676",
+                            FrontCover = "~/Content/Images/Books/front-covers/7678678676.jpg",
+                            Description = "This book will give you a good grounding in concurrent programming in Java.",
+                            PublishDate = new DateTime(2006,5,19),
+                       },
+                    }
+                },                      
+                new Author() { Id = 6, FirstName = "Joseph", LastName = "Bowbeer" ,
+                    Books = new List<Book>
+                    {
+                        new Book()
+                        {                                                       
+                            Title = "Java Concurrency in Practice 1st Edition",
+                            ISBN = "7678678676",
+                            FrontCover = "~/Content/Images/Books/front-covers/7678678676.jpg",
+                            Description = "This book will give you a good grounding in concurrent programming in Java.",
+                            PublishDate = new DateTime(2006,5,19),
+                       },
+                    }
+                },                    
+                new Author() { Id = 7, FirstName = "David", LastName = "Holmes" ,
+                    Books = new List<Book>
+                    {
+                        new Book()
+                        {                                                       
+                            Title = "Java Concurrency in Practice 1st Edition",
+                            ISBN = "7678678676",
+                            FrontCover = "~/Content/Images/Books/front-covers/7678678676.jpg",
+                            Description = "This book will give you a good grounding in concurrent programming in Java.",
+                            PublishDate = new DateTime(2006,5,19),
+                       },
+                    }
+                },                       
+                new Author() { Id = 8, FirstName = "Doug", LastName = "Lea" ,
+                    Books = new List<Book>
+                    {
+                        new Book()
+                        {                                                       
+                            Title = "Java Concurrency in Practice 1st Edition",
+                            ISBN = "7678678676",
+                            FrontCover = "~/Content/Images/Books/front-covers/7678678676.jpg",
+                            Description = "This book will give you a good grounding in concurrent programming in Java.",
+                            PublishDate = new DateTime(2006,5,19),
+                       },
+                    }
+                },                          
+                new Author() { Id = 9, FirstName = "Harper", LastName = "Lee" },                        
+                new Author() { Id = 10, FirstName = "Bernard", LastName = "Cornwell" },                 
+                new Author() { Id = 11, FirstName = "Peter", MiddleName = "H.", LastName = "Wilson" }   
             }
             .AsQueryable();
 
@@ -125,7 +221,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
             var sut = new BookService(_dbContext);
             var model = new BookSearchServiceModel
             {
-                Title = "learn c#"
+                Title = "Learn C#"
             };
 
             // Act.
