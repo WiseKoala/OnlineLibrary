@@ -62,6 +62,7 @@
                         </div>
                         <div class="media-body">
                             <h4 class="media-heading">@Html.RouteLink(book.Title, new { controller = "BookDetails", action = "Index", id = book.Id })</h4>
+                            <p><strong>ISBN:</strong> @book.ISBN</p>
                             <p><strong>@((book.Authors.Count() > 1) ? "Authors:" : "Author:")</strong> @String.Join(", ", book.Authors)</p>
                             <p><strong>Publish Date:</strong> @book.PublishDate.ToShortDateString()</p>
                             <p><strong>Description:</strong> @((book.Description.Length > 265) ? book.Description.Substring(0, 265) + "..." : book.Description) </p>

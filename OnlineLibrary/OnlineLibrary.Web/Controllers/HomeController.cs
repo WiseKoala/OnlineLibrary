@@ -36,6 +36,7 @@ namespace OnlineLibrary.Web.Controllers
                 .Select(b => new BookViewModel
                 {
                     Id = b.Id,
+                    ISBN = b.ISBN,
                     Title = b.Title,
                     PublishDate = b.PublishDate,
                     FrontCover = b.FrontCover,
@@ -75,6 +76,7 @@ namespace OnlineLibrary.Web.Controllers
             var booksViewModel = foundBooks.Select(b => new BookViewModel
                                  {
                                      Id = b.Id,
+                                     ISBN = b.ISBN,
                                      Title = b.Title,
                                      PublishDate = b.PublishDate,
                                      FrontCover = b.FrontCover,
