@@ -179,7 +179,7 @@ namespace OnlineLibrary.Services.Concrete
                 .WhereIf(model.Title != null, b => b.Title.Contains(model.Title))
                 .WhereIf(model.PublishDate != null, b => b.PublishDate == model.PublishDate)
                 .WhereIf(model.ISBN != null, b => b.ISBN == model.ISBN)
-                .WhereIf(model.Description != null, b => b.Description == model.Description);
+                .WhereIf(model.Description != null, b => b.Description.Contains(model.Description));
 
             IEnumerable<Book> foundBooks = books.ToList();
 

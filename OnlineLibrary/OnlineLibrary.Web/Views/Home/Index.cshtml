@@ -39,7 +39,7 @@
                     @Html.TextBoxFor(m => m.SearchData.Description, new { @class = "form-control col-sm-9" })
                 </div>
             </div>
-        </div>        
+        </div>
     </form>
 </div>
 
@@ -49,7 +49,7 @@
         <h4>Sorry, no books were found...</h4>
     }
     <div class="col-md-8 col-md-offset-2">
-        
+
         @foreach (var book in Model.Books)
         {
             <div class="panel panel-default book-item">
@@ -84,3 +84,8 @@
         }
     </div>
 </div>
+
+@section scripts{
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.11.4.min.js"></script>
+}
