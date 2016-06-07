@@ -27,7 +27,7 @@ namespace OnlineLibrary.Web.Controllers
         {
             InitializeUserNameSessionVariable();
 
-            // Obtain list of books from the database.
+            // Retreive list of books.
             var booksList = DbContext.Books
                 .Include(b => b.Authors)
                 .Include(b => b.SubCategories)
@@ -51,9 +51,19 @@ namespace OnlineLibrary.Web.Controllers
                 })
                 .ToList();
 
+            // Retreive list of categories.
+            var categories = DbContext.Categories.Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.Id.ToString()
+            })
+            .ToList();
+
+            // Craft the view model object.
             var model = new BooksListViewModel()
             {
-                Books = booksList
+                Books = booksList,
+                SearchData = new BookSearchViewModel { Categories = categories }
             };
 
             return View(model);

@@ -39,6 +39,14 @@
                     @Html.TextBoxFor(m => m.SearchData.Description, new { @class = "form-control col-sm-9" })
                 </div>
             </div>
+            <div class="form-horizontal col-md-6 ">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SearchData.Categories, new { @class = "control-label col-sm-3" })
+                    @Html.DropDownListFor(m => m.SearchData.SelectedCategoryId, Model.SearchData.Categories, "Choose category...", new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                </div>
+            </div>
         </div>
     </form>
 </div>

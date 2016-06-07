@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace OnlineLibrary.Web.Models.HomeViewModels
 {
@@ -19,5 +20,12 @@ namespace OnlineLibrary.Web.Models.HomeViewModels
         public string ISBN { get; set; }
 
         public string Description { get; set; }
+
+        [Display(Name = "Categories")]
+        public IEnumerable<SelectListItem> Categories { get; set; }
+
+        public int? SelectedCategoryId { get; set; }
+
+        public int? SelectedSubcategoryId { get; set; }
     }
 }
