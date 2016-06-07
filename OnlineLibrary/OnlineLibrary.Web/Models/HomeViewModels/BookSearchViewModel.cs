@@ -21,11 +21,12 @@ namespace OnlineLibrary.Web.Models.HomeViewModels
 
         public string Description { get; set; }
 
-        [Display(Name = "Categories")]
         public IEnumerable<SelectListItem> Categories { get; set; }
 
+        [Display(Name = "Categories")]
         public int? SelectedCategoryId { get; set; }
 
+        [Display(Name = "Subcategories")]
         public int? SelectedSubcategoryId { get; set; }
     }
 }
