@@ -266,5 +266,23 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
             // Assert.
             Assert.AreEqual(expectedResult, returnedResult.Count());
         }
+
+        [Test]
+        public void Should_ReturnOneBook_Given_FullAuthorName()
+        {
+            // Arrange.           
+            var expectedResult = 1;
+            var sut = new BookService(_dbContext);
+            var model = new BookSearchServiceModel
+            {
+                Author = "R. B. Whitaker"
+            };
+
+            // Act.
+            var returnedResult = sut.Find(model);
+
+            // Assert.
+            Assert.AreEqual(expectedResult, returnedResult.Count());
+        }
     }
 }

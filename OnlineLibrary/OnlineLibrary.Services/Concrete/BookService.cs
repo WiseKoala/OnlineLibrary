@@ -181,9 +181,22 @@ namespace OnlineLibrary.Services.Concrete
                 .WhereIf(model.ISBN != null, b => b.ISBN == model.ISBN)
                 .WhereIf(model.Description != null, b => b.Description.Contains(model.Description));
 
-            IEnumerable<Book> foundBooks = books.ToList();
+            // Find by authors.
+            if (model.Author != null)
+            {
+                var booksByAuthors = _dbContext.Authors
+                    .Where(a =>
+                                a.FirstName.Contains(model.Author)
+                             || a.MiddleName.Contains(model.Author)
+                             || a.LastName.Contains(model.Author))
+                    .SelectMany(a => a.Books);
 
-            return foundBooks;
+                books = booksByAuthors.Intersect(books);
+            }
+
+            var foundBooks = books.ToList();
+
+            return books;
         }
     }
 }
