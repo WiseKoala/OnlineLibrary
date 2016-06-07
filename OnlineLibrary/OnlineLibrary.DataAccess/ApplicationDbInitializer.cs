@@ -10,7 +10,7 @@ using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Configuration;
-using System.Web.Security;
+using static OnlineLibrary.Common.Infrastructure.LibraryConstants;
 
 namespace OnlineLibrary.DataAccess
 {
@@ -26,16 +26,17 @@ namespace OnlineLibrary.DataAccess
                 new Role() { Id = Guid.NewGuid().ToString(), Name = UserRoles.SuperAdmin }
             };
             
-            var roleManager = new RoleManager<Role>(new RoleStore<Role>(context));
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
             roles.ForEach(r => roleManager.Create(r));
 
             var userManager = new UserManager<User>(new UserStore<User>(context));
 
-            var superAdminPassword = CreatePassword();
+            var passwordManager = new PasswordManager();
+            var superAdminPassword = passwordManager.CreatePasword();
 
-            if ( CreateSuperAdmin(userManager, roleManager, superAdminPassword) )
+            if (CreateSuperAdmin(userManager, roleManager, superAdminPassword))
             {
-                SaveInConfiguration("SuperAdminPassword", superAdminPassword);
+                SaveInConfiguration(SuperAdminPaswordKey, superAdminPassword);
             }
 
             // Authors
@@ -264,8 +265,6 @@ namespace OnlineLibrary.DataAccess
             };
             loans.ForEach(l => context.Loans.Add(l));
 
-
-
             var history = new List<History>()
             {
                 new History
@@ -317,19 +316,18 @@ namespace OnlineLibrary.DataAccess
                 },
             };
             history.ForEach(h => context.History.Add(h));
-
 #endif
-
             context.SaveChanges();
         }
 
-        private bool CreateSuperAdmin(UserManager<User> userManager, RoleManager<Role> roleManager, string password)
+#region Hepler Methods
+        private bool CreateSuperAdmin(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, string password)
         {
             var superAdmin = new User
             {
-                UserName = LibraryConstants.SuperAdminUserName,
-                FirstName = LibraryConstants.SuperAdminFirstName,
-                LastName = LibraryConstants.SuperAdminLastName
+                UserName = SuperAdminUserName,
+                FirstName = SuperAdminFirstName,
+                LastName = SuperAdminLastName
             };
 
             var result = userManager.Create(superAdmin, password);
@@ -341,25 +339,19 @@ namespace OnlineLibrary.DataAccess
             }
             return false;
         }
-        
-        private void SaveInConfiguration(string key, string value)
+
+        public void SaveInConfiguration(string key, string value)
         {
             Configuration configuration = WebConfigurationManager.OpenWebConfiguration("~");
             AppSettingsSection appSettings = (AppSettingsSection)configuration.GetSection("appSettings");
-            
+
             if (appSettings != null)
             {
-                appSettings.Settings[key].Value = @value;
+                appSettings.Settings[key].Value = value;
                 configuration.Save();
             }
         }
-
-        private string CreatePassword()
-        {
-            int passwordLenght = Int32.Parse(ConfigurationManager.AppSettings["PasswordLength"]);
-            int numberNonAlphanumeric = Int32.Parse(ConfigurationManager.AppSettings["numberNonAlphanumericChars"]);
-
-            return Membership.GeneratePassword(passwordLenght, numberNonAlphanumeric);
-        }
+        #endregion
     }
+
 }
