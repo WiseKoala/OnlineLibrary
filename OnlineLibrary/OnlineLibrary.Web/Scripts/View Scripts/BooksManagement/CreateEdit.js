@@ -44,10 +44,18 @@ $(document).ready(function () {
                 select.name = "BookCategories[" + index + "].Id";
                 $(select).bind("change", addSubcategory);
 
-                for (var i = 0; i < categories.length; i++) {
+                for (var i = 0; i < categories.length + 1; i++) {
                     var option = document.createElement("option");
-                    option.value = categories[i].Value
-                    option.text = categories[i].Name
+                    if (i > 0) {
+                        option.value = categories[i - 1].Value;
+                        option.text = categories[i - 1].Name;
+                    }
+                    else {
+                        option.value = "0";
+                        option.text = "Choose a category";
+                        option.disabled = "disabled";
+                        option.selected = "selected";
+                    }
                     select.appendChild(option);
 
                 }
