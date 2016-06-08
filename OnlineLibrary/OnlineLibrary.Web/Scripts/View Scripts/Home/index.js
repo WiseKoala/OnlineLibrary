@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    $("#SearchData_SelectedCategoryId").change(function (e) {
+    $("#SearchData_CategoryId").change(function (e) {
         var url = $(this).data("subcategoriesUrl");
 
         var settings = {
@@ -8,12 +8,12 @@
             method: "GET",
             success: function (subcategories) {
                 // Clear select list.
-                var subcategoriesSelectList = $("#SearchData_SelectedSubcategoryId");
+                var subcategoriesSelectList = $("#SearchData_SubcategoryId");
                 subcategoriesSelectList.empty();
 
                 // Add 'Choose subcategory' option.
                 var option = $(document.createElement("option"));
-                option.text("Choose subcategory...");
+                option.text("Any");
                 subcategoriesSelectList.append(option);
 
                 // Add option elements for all subcategories.
