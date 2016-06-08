@@ -12,5 +12,6 @@ namespace OnlineLibrary.Common.Infrastructure
         public const string SuperAdminFirstName = "Super";
         public const string SuperAdminLastName = "Admin";
         public const string stringSpace = " ";
+        public const string undefinedISBN = "undefined ISBN";
     }
 }

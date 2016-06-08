@@ -175,7 +175,7 @@ namespace OnlineLibrary.Services.Concrete
         {
             ISBN = ISBN.Trim().Replace("-", string.Empty);
 
-            Regex regex = new Regex(@"[0-9 ]+");
+            Regex regex = new Regex(@"^[0-9 ]+$");
             bool isFormatted = regex.IsMatch(ISBN);
 
             if (isFormatted)

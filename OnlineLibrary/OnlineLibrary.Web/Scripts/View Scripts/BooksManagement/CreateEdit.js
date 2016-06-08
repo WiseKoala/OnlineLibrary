@@ -623,7 +623,7 @@ $(document).ready(function () {
                 $.ajax({
                     url: window.location.protocol + "//" + window.location.host + "/BooksManagement/ValidateISBN",
                     data: { ISBN: $(thisISBN).text() },
-                    async: false,
+                    async: true,
                     method: "POST",
                     success: function (response) {
                         $(thisImage).empty();
@@ -699,24 +699,37 @@ $(document).ready(function () {
     }
 
     $("#ISBN").focusout(function () {
-        $.ajax({
-            url: window.location.protocol + "//" + window.location.host + "/BooksManagement/ValidateISBN",
-            data: { ISBN: $(this).val() },
-            method: "POST",
-            success: function (response) {
-                if (response.success != null && response.invalid != null) {
-                    toastr.options =
-                        {
-                            "closeButton": true,
-                            "onclick": null,
-                            "positionClass": "toast-bottom-right",
-                            "timeOut": 5000,
-                            "extendedTimeOut": 10000
-                        }
-                    toastr.info("ISBN already exists in the system.", "Be careful!");
-                }
+        if ($("#ISBN").val() != "undefined ISBN") {
+            $.ajax({
+                url: window.location.protocol + "//" + window.location.host + "/BooksManagement/ValidateISBN",
+                data: { ISBN: $(this).val() },
+                method: "POST",
+                success: function (response) {
+                    if (response.success != null && response.invalid != null) {
+                        toastr.options =
+                            {
+                                "closeButton": true,
+                                "onclick": null,
+                                "positionClass": "toast-bottom-right",
+                                "timeOut": 5000,
+                                "extendedTimeOut": 10000
+                            }
+                        toastr.info("ISBN already exists in the system.", "Be careful!");
+                    }
 
-                if (response.error) {
+                    if (response.error) {
+                        toastr.options =
+                            {
+                                "closeButton": true,
+                                "onclick": null,
+                                "positionClass": "toast-bottom-right",
+                                "timeOut": 5000,
+                                "extendedTimeOut": 10000
+                            }
+                        toastr.error("Can not verify ISBN.", "Error!");
+                    }
+                },
+                error: function () {
                     toastr.options =
                         {
                             "closeButton": true,
@@ -727,19 +740,8 @@ $(document).ready(function () {
                         }
                     toastr.error("Can not verify ISBN.", "Error!");
                 }
-            },
-            error: function () {
-                toastr.options =
-                    {
-                        "closeButton": true,
-                        "onclick": null,
-                        "positionClass": "toast-bottom-right",
-                        "timeOut": 5000,
-                        "extendedTimeOut": 10000
-                    }
-                toastr.error("Can not verify ISBN.", "Error!");
-            }
-        });
+            });
+        }
     });
 
     $(".book-category .select-category option:first-child").attr("disabled", "disabled");

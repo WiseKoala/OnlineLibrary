@@ -675,13 +675,20 @@ namespace OnlineLibrary.Web.Controllers
         public JsonResult ValidateISBN(string ISBN)
         {
             try {
-                if (_bookService.IsValidISBN(ISBN))
+                if(ISBN != Common.Infrastructure.LibraryConstants.undefinedISBN && ISBN != string.Empty)
                 {
-                    return Json(new { success = true, valid = true }, JsonRequestBehavior.DenyGet);
+                    if (_bookService.IsValidISBN(ISBN))
+                    {
+                        return Json(new { success = true, valid = true }, JsonRequestBehavior.DenyGet);
+                    }
+                    else
+                    {
+                        return Json(new { success = true, invalid = true }, JsonRequestBehavior.DenyGet);
+                    }
                 }
                 else
                 {
-                    return Json(new { success = true, invalid = false }, JsonRequestBehavior.DenyGet);
+                    return Json(new { success = true }, JsonRequestBehavior.DenyGet);
                 }
             }
             catch
