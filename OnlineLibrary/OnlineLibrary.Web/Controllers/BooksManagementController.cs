@@ -160,13 +160,7 @@ namespace OnlineLibrary.Web.Controllers
             }
 
             model.ISBN = _bookService.FormatISBN(model.ISBN);
-
-            if (!_bookService.IsValidISBN(model.ISBN))
-            {
-                ModelState.AddModelError("ISBN", "A book with this ISBN already exists");
-                return View(model);
-            }
-
+            
             if (!ModelState.IsValid)
             {
                 var bookcopies = model.BookCopies.ToList();
@@ -242,6 +236,12 @@ namespace OnlineLibrary.Web.Controllers
             // If book is new.
             if (model.Id < 1)
             {
+                if (!_bookService.IsValidISBN(model.ISBN))
+                {
+                    ModelState.AddModelError("ISBN", "A book with this ISBN already exists");
+                    return View(model);
+                }
+
                 Book book;
                 if (!String.IsNullOrEmpty(model.BookCover.FrontCover))
                 {
