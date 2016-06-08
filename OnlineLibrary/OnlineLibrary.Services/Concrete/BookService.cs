@@ -173,14 +173,14 @@ namespace OnlineLibrary.Services.Concrete
 
         public string FormatISBN(string ISBN)
         {
-            ISBN = ISBN.Trim().Replace("-", string.Empty);
+            // Give ISBN the default value if it is empty.
+            ISBN = ISBN ?? Common.Infrastructure.LibraryConstants.undefinedISBN;
 
-            Regex regex = new Regex(@"^[0-9 ]+$");
-            bool isFormatted = regex.IsMatch(ISBN);
-
-            if (isFormatted)
+            // Format ISBN if it is not the default unknown ISBN value.
+            if (!string.Equals(ISBN, Common.Infrastructure.LibraryConstants.undefinedISBN))
             {
-                // Remove spaces if there are only numbers and spaces in ISBN.
+                // Remove spaces and slashes
+                ISBN = ISBN.Trim().Replace("-", string.Empty);
                 ISBN = ISBN.Replace(Common.Infrastructure.LibraryConstants.stringSpace, string.Empty);
             }
 
@@ -191,7 +191,9 @@ namespace OnlineLibrary.Services.Concrete
         {
             ISBN = FormatISBN(ISBN);
 
-            return !_dbContext.Books.Where(b => b.ISBN == ISBN).Any();
+            // ISBN is valid if it is unique or if it is the default unknown ISBN.
+            return string.Equals(ISBN, Common.Infrastructure.LibraryConstants.undefinedISBN)
+                    || !_dbContext.Books.Where(b => b.ISBN == ISBN).Any();
         }
     }
 }
