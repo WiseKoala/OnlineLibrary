@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -51,22 +52,28 @@ namespace OnlineLibrary.Web.Controllers
                 })
                 .ToList();
 
-            // Retreive list of categories.
-            var categories = DbContext.Categories.Select(c => new SelectListItem
-            {
-                Text = c.Name,
-                Value = c.Id.ToString()
-            })
-            .ToList();
-
             // Craft the view model object.
             var model = new BooksListViewModel()
             {
                 Books = booksList,
-                SearchData = new BookSearchViewModel { Categories = categories }
+                SearchData = new BookSearchViewModel
+                {
+                    Categories = GetCategories()
+                }
             };
 
             return View(model);
+        }
+
+        private List<SelectListItem> GetCategories()
+        {
+            List<SelectListItem> categories = DbContext.Categories.Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.Id.ToString()
+            }).ToList();
+
+            return categories;
         }
 
         [HttpPost]
@@ -103,8 +110,26 @@ namespace OnlineLibrary.Web.Controllers
                                  });
 
             model.Books = booksViewModel;
+            model.SearchData.Categories = GetCategories();
+            model.SearchData.Subcategories = GetSubcategories(searchModel.CategoryId);
 
             return View(model);
+        }
+
+        private IEnumerable<SelectListItem> GetSubcategories(int? categoryId)
+        {
+            if (categoryId != null)
+            {
+                var subcategories = DbContext.SubCategories
+                    .Where(sc => sc.CategoryId == categoryId)
+                    .Select(sc => new SelectListItem { Text = sc.Name, Value = sc.Id.ToString() })
+                    .ToList();
+                return subcategories;
+            }
+            else
+            {
+                return Enumerable.Empty<SelectListItem>();
+            }
         }
     }
 }
