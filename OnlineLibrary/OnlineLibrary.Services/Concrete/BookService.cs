@@ -194,6 +194,23 @@ namespace OnlineLibrary.Services.Concrete
                 books = booksByAuthors.Intersect(books);
             }
 
+            // Find by categories.
+            if (model.CategoryId != null && model.SubcategoryId == null)
+            {
+                //var query = _dbContext.Categories
+                //    .Include(c => c.SubCategories)
+                //    .Include("SubCategories.Books")
+                //    .Where(c => c.Id == model.CategoryId);
+                var booksByCategory = (from c in _dbContext.Categories
+                                       join sc in _dbContext.SubCategories.Include(sc => sc.Books)
+                                       on c.Id equals sc.CategoryId
+                                       where c.Id == model.CategoryId
+                                       select sc.Books)
+                                       .SelectMany(lb => lb);
+
+                books = booksByCategory.Intersect(books);
+            }
+
             var foundBooks = books.ToList();
 
             return books;

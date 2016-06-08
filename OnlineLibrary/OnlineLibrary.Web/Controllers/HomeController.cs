@@ -79,7 +79,9 @@ namespace OnlineLibrary.Web.Controllers
                 Description = searchModel.Description,
                 ISBN = searchModel.ISBN,
                 PublishDate = searchModel.PublishDate,
-                Title = searchModel.Title
+                Title = searchModel.Title,
+                CategoryId= searchModel.CategoryId,
+                SubcategoryId = searchModel.SubcategoryId
             };
 
             IEnumerable<Book> foundBooks = _bookService.Find(searchServiceModel);
