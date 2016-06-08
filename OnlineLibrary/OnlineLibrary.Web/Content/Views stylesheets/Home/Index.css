@@ -6,3 +6,5 @@ ul.book-categories {
     list-style-type: none;
     padding-left: 0;
 }
+
+#searchDetails { margin-top: 15px; }
