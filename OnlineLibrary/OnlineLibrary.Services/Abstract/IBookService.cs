@@ -16,5 +16,7 @@ namespace OnlineLibrary.Services.Abstract
         BookCopy DeleteBookCopy(int id);
         bool IsBookCopyRemovable(int id);
         Book DeleteBook(int id);
+        string FormatISBN(string ISBN);
+        bool IsValidISBN(string ISBN);
     }
 }

@@ -10,6 +10,7 @@ using System.Data.Entity;
 using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.Common.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -168,6 +169,31 @@ namespace OnlineLibrary.Services.Concrete
                 .ToList();
             historyRecords.ForEach(h => h.BookCopyId = null);
             _dbContext.SaveChanges();
+        }
+
+        public string FormatISBN(string ISBN)
+        {
+            // Give ISBN the default value if it is empty.
+            ISBN = ISBN ?? Common.Infrastructure.LibraryConstants.undefinedISBN;
+
+            // Format ISBN if it is not the default unknown ISBN value.
+            if (!string.Equals(ISBN, Common.Infrastructure.LibraryConstants.undefinedISBN))
+            {
+                // Remove spaces and slashes
+                ISBN = ISBN.Trim().Replace("-", string.Empty);
+                ISBN = ISBN.Replace(Common.Infrastructure.LibraryConstants.stringSpace, string.Empty);
+            }
+
+            return ISBN;
+        }
+
+        public bool IsValidISBN(string ISBN)
+        {
+            ISBN = FormatISBN(ISBN);
+
+            // ISBN is valid if it is unique or if it is the default unknown ISBN.
+            return string.Equals(ISBN, Common.Infrastructure.LibraryConstants.undefinedISBN)
+                    || !_dbContext.Books.Where(b => b.ISBN == ISBN).Any();
         }
     }
 }
