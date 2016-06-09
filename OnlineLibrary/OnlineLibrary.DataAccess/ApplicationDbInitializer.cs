@@ -340,7 +340,7 @@ namespace OnlineLibrary.DataAccess
             return false;
         }
 
-        public void SaveInConfiguration(string key, string value)
+        private void SaveInConfiguration(string key, string value)
         {
             Configuration configuration = WebConfigurationManager.OpenWebConfiguration("~");
             AppSettingsSection appSettings = (AppSettingsSection)configuration.GetSection("appSettings");
