@@ -176,19 +176,30 @@ namespace OnlineLibrary.Services.Concrete
         {
             // Find by basic fields.
             var books = _dbContext.Books
-                .WhereIf(model.Title != null, b => b.Title.Contains(model.Title))
                 .WhereIf(model.PublishDate != null, b => b.PublishDate == model.PublishDate)
-                .WhereIf(model.ISBN != null, b => b.ISBN == model.ISBN)
-                .WhereIf(model.Description != null, b => b.Description.Contains(model.Description));
+                .WhereIf(model.ISBN != null, b => b.ISBN.Contains(model.ISBN));
+
+            if (model.Title != null)
+            {
+                string[] words = model.Title.Split(' ');
+                var booksByTitle = _dbContext.Books.Where(b => words.Any(w => b.Title.Contains(w)));
+                books = books.Intersect(booksByTitle);
+            }
+
+            if (model.Description != null)
+            {
+                string[] words = model.Description.Split(' ');
+                var booksByDescription = _dbContext.Books.Where(b => words.Any(w => b.Description.Contains(w)));
+                books = books.Intersect(booksByDescription);
+            }
 
             // Find by authors.
             if (model.Author != null)
             {
+                string[] words = model.Author.Split(' ');
+
                 var booksByAuthors = _dbContext.Authors
-                    .Where(a =>
-                                a.FirstName.Contains(model.Author)
-                             || a.MiddleName.Contains(model.Author)
-                             || a.LastName.Contains(model.Author))
+                    .Where(a => words.Any(w => a.FirstName.Contains(w) || a.MiddleName.Contains(w) || a.LastName.Contains(w)))
                     .SelectMany(a => a.Books);
 
                 books = booksByAuthors.Intersect(books);
