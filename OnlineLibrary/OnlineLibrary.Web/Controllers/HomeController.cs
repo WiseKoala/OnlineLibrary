@@ -24,12 +24,15 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult Index()
+        public ActionResult Index(BooksListViewModel model)
         {
             InitializeUserNameSessionVariable();
 
             // Retreive list of books.
-            var booksList = DbContext.Books
+            IEnumerable<BookViewModel> booksList = null;
+            if (model.SearchData == null)
+            {
+                booksList = DbContext.Books
                 .Include(b => b.Authors)
                 .Include(b => b.SubCategories)
                 .Include("SubCategories.Category")
@@ -51,9 +54,42 @@ namespace OnlineLibrary.Web.Controllers
                     Description = b.Description
                 })
                 .ToList();
+            }
+            else
+            {
+                BookSearchViewModel searchModel = model.SearchData;
+                var searchServiceModel = new BookSearchServiceModel()
+                {
+                    Author = searchModel.Author,
+                    Description = searchModel.Description,
+                    ISBN = searchModel.ISBN,
+                    PublishDate = searchModel.PublishDate,
+                    Title = searchModel.Title,
+                    CategoryId = searchModel.CategoryId,
+                    SubcategoryId = searchModel.SubcategoryId
+                };
+
+                IEnumerable<Book> foundBooks = _bookService.Find(searchServiceModel);
+                booksList = foundBooks.Select(b => new BookViewModel
+                {
+                    Id = b.Id,
+                    ISBN = b.ISBN,
+                    Title = b.Title,
+                    PublishDate = b.PublishDate,
+                    FrontCover = b.FrontCover,
+                    Authors = b.Authors.Select(a =>
+                            string.Join(" ", a.FirstName, (a.MiddleName ?? ""), a.LastName)),
+                    Categories = b.SubCategories.Select(sc => new CategoryViewModel
+                    {
+                        Category = sc.Category.Name,
+                        SubCategory = sc.Name
+                    }),
+                    Description = b.Description
+                });
+            }
 
             // Craft the view model object.
-            var model = new BooksListViewModel()
+            var viewModel = new BooksListViewModel()
             {
                 Books = booksList,
                 SearchData = new BookSearchViewModel
@@ -62,7 +98,12 @@ namespace OnlineLibrary.Web.Controllers
                 }
             };
 
-            return View(model);
+            if (model.SearchData != null)
+            {
+                viewModel.SearchData.Subcategories = model.SearchData.Subcategories = GetSubcategories(model.SearchData.CategoryId);
+            }
+
+            return View(viewModel);
         }
 
         private List<SelectListItem> GetCategories()
@@ -74,46 +115,6 @@ namespace OnlineLibrary.Web.Controllers
             }).ToList();
 
             return categories;
-        }
-
-        [HttpPost]
-        public ActionResult Index(BooksListViewModel model)
-        {
-            BookSearchViewModel searchModel = model.SearchData;
-            var searchServiceModel = new BookSearchServiceModel()
-            {
-                Author = searchModel.Author,
-                Description = searchModel.Description,
-                ISBN = searchModel.ISBN,
-                PublishDate = searchModel.PublishDate,
-                Title = searchModel.Title,
-                CategoryId= searchModel.CategoryId,
-                SubcategoryId = searchModel.SubcategoryId
-            };
-
-            IEnumerable<Book> foundBooks = _bookService.Find(searchServiceModel);
-            var booksViewModel = foundBooks.Select(b => new BookViewModel
-                                 {
-                                     Id = b.Id,
-                                     ISBN = b.ISBN,
-                                     Title = b.Title,
-                                     PublishDate = b.PublishDate,
-                                     FrontCover = b.FrontCover,
-                                     Authors = b.Authors.Select(a =>
-                                             string.Join(" ", a.FirstName, (a.MiddleName ?? ""), a.LastName)),
-                                     Categories = b.SubCategories.Select(sc => new CategoryViewModel
-                                     {
-                                         Category = sc.Category.Name,
-                                         SubCategory = sc.Name
-                                     }),
-                                     Description = b.Description
-                                 });
-
-            model.Books = booksViewModel;
-            model.SearchData.Categories = GetCategories();
-            model.SearchData.Subcategories = GetSubcategories(searchModel.CategoryId);
-
-            return View(model);
         }
 
         private IEnumerable<SelectListItem> GetSubcategories(int? categoryId)
