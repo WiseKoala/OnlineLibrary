@@ -44,10 +44,18 @@ $(document).ready(function () {
                 select.name = "BookCategories[" + index + "].Id";
                 $(select).bind("change", addSubcategory);
 
-                for (var i = 0; i < categories.length; i++) {
+                for (var i = 0; i < categories.length + 1; i++) {
                     var option = document.createElement("option");
-                    option.value = categories[i].Value
-                    option.text = categories[i].Name
+                    if (i > 0) {
+                        option.value = categories[i - 1].Value;
+                        option.text = categories[i - 1].Name;
+                    }
+                    else {
+                        option.value = "0";
+                        option.text = "Choose a category";
+                        option.disabled = "disabled";
+                        option.selected = "selected";
+                    }
                     select.appendChild(option);
 
                 }
@@ -362,237 +370,305 @@ $(document).ready(function () {
 
     var googleBooksJson = {};
     var imageUrl = [];
+    var imageToRemove = [];
+    var isbnInformation = [];
 
     $("#searchByISBN").click(function () {
 
         $("#validationMessage").text("");
         $("#resultTable").html("");
 
-            $.ajax({
-                url: "https://www.googleapis.com/books/v1/volumes?q=" + setURL(),
-                success: function (response) {
-                    if (response.items === undefined) {
-                        $("#validationMessage").text("No books with such ISBN were found.");
-                    }
-                    else {
-                        googleBooksJson = response;
-
-                        for (var i = 0; i < response.items.length; i++) {
-
-                            var item = response.items[i];
-
-                            var resultTable = document.getElementById("resultTable");
-
-                            var tr_td1 = document.createElement("td");
-                            tr_td1.setAttribute("rowspan", "6");
-                            tr_td1.setAttribute("style", "border: 1px solid #ddd; padding: 10px;");
-                            tr_td1.innerHTML = "#" + (i + 1);
-
-                            if (item.volumeInfo.imageLinks != undefined) {
-                                if (item.volumeInfo.imageLinks.thumbnail != undefined) {
-                                    imageUrl[i] = item.volumeInfo.imageLinks.thumbnail;
-                                }
-                                else if (item.volumeInfo.imageLinks.smallThumbnail != undefined) {
-                                    imageUrl[i] = item.volumeInfo.imageLinks.smallThumbnail;
-                                }
-                            }
-
-                            for (var j = 0; j < 7; j++) {
-
-                                var tr = document.createElement("tr");
-                                var tr_td2 = document.createElement("td");
-                                tr_td2.className = "col-sm-2";
-                                var tr_td3 = document.createElement("td");
-                                tr_td3.className = "col-sm-9";
-                                var td_ul = document.createElement("ul");
-
-                                switch (j) {
-                                    case 0: 
-                                        tr.appendChild(tr_td1);
-                                        tr_td2.innerHTML = "ISBN";
-                                        tr_td3.innerHTML = getISBN(item);
-                                        tr.appendChild(tr_td2);
-                                        tr.appendChild(tr_td3);
-
-                                        var tr_td4 = document.createElement("td");
-                                        tr_td4.setAttribute("style", "border: 1px solid #ddd; padding: 10px; text-align: center; vertical-align: top;");
-                                        tr_td4.setAttribute("rowspan", "6");
-                                        tr_td4.className = "col-sm-2";
-
-                                        if (imageUrl[i] != null) {
-                                            var td_image = document.createElement("img");
-                                            td_image.src = imageUrl[i];
-                                            td_image.width = "120";
-                                            td_image.setAttribute("style", "margin-bottom: 10px;");
-                                            tr_td4.appendChild(td_image);
-                                        }
-
-                                        var td_button = document.createElement("button");
-                                        td_button.className = "btn btn-primary btn-sm selectGoogleBookButton";
-                                        td_button.innerHTML = "Select Book";
-                                        td_button.setAttribute("data-bookresult", i);
-                                        td_button.setAttribute("data-dismiss", "modal");
-                                        tr_td4.appendChild(td_button);
-
-                                        tr.appendChild(tr_td4);
-                                        break;
-                                    case 1: tr_td2.innerHTML = "Title";
-                                        tr_td3.innerHTML = item.volumeInfo.title;
-                                        tr.appendChild(tr_td2);
-                                        tr.appendChild(tr_td3);
-                                        break;
-                                    case 2: tr_td2.innerHTML = "Publish Date";
-                                        tr_td3.innerHTML = item.volumeInfo.publishedDate;
-                                        tr.appendChild(tr_td2);
-                                        tr.appendChild(tr_td3);
-                                        break;
-                                    case 3: tr_td2.innerHTML = "Authors";
-                                        if (item.volumeInfo.authors != undefined) {
-                                            for (k = 0; k < item.volumeInfo.authors.length; k++) {
-                                                var ul_li = document.createElement("li");
-                                                ul_li.innerHTML = item.volumeInfo.authors[k];
-                                                td_ul.appendChild(ul_li);
-                                                td_ul.setAttribute("style", "margin-left: -28px; margin-bottom: 0px;");
-                                                tr_td3.appendChild(td_ul);
-                                            }
-                                        }
-                                        else {
-                                            tr_td3.innerHTML = "undefined";
-                                        }
-                                        tr.appendChild(tr_td2);
-                                        tr.appendChild(tr_td3);
-                                        break;
-                                    case 4: tr_td2.innerHTML = "Category/Subecategory";
-                                        tr_td3.innerHTML = item.volumeInfo.categories;
-                                        tr.appendChild(tr_td2);
-                                        tr.appendChild(tr_td3);
-                                        break;
-                                    case 5: tr_td2.innerHTML = "Description";
-                                        tr_td3.innerHTML = item.volumeInfo.description;
-                                        tr.appendChild(tr_td2);
-                                        tr.appendChild(tr_td3);
-                                        break;
-                                    case 6:
-                                        var tdSpace = document.createElement("td");
-                                        tdSpace.setAttribute("style", "height: 10px; border-top:1px solid #ddd;");
-                                        tdSpace.setAttribute("colspan", "4");
-                                        tr.appendChild(tdSpace);
-                                        break;
-                                    default: break;
-                                };
-                                tr_td2.setAttribute("style", "font-weight: bold; vertical-align: text-top; padding: 5px; border:1px solid #ddd;");
-                                tr_td3.setAttribute("style", "padding: 10px; border:1px solid #ddd;");
-
-
-
-                                resultTable.appendChild(tr);
-                            }
-                            resultTable.setAttribute("cellpadding", "10");
-                        }
-                    }
-                    $(".selectGoogleBookButton").click(function () {
-                        var itemNr = $(this).attr("data-bookresult");
-                        var item = googleBooksJson.items[itemNr];
-                        $("#Title").val(item.volumeInfo.title);
-                        $("#Description").val(item.volumeInfo.description);
-                        $("#ISBN").val(getISBN(item));
-
-                        var publishedDate = item.volumeInfo.publishedDate.split("-");
-                        var year = publishedDate[0];
-                        var month = publishedDate[1] || "01";
-                        var day = publishedDate[2] || "01";
-                        $("input[name='PublishDate']").val(month + "-" + day + "-" + year);
-                        $("#googleJsonCategory").html("<p>The imported Google Books category is: <strong>" + item.volumeInfo.categories + "</strong></p>");
-
-                        var divImageLoad = document.getElementById("imageLoad");
-
-                        if (imageUrl[itemNr] != null) {
-                            var imgImageShow = document.getElementById("imageShow");
-
-                            if (imgImageShow === null)
-                            {
-                                imgImageShow = document.createElement("img");
-                            }
-                            if (!imgImageShow.src.includes("books.google.com"))
-                            {
-                                if ($("#oldImagePath").val() == "") {
-                                    $("#oldImagePath").attr("value", imgImageShow.src);
-                                }
-                            }
-                            
-                            imgImageShow.className = "img-small-responsive margin-bottom-10";
-                            imgImageShow.src = imageUrl[itemNr];
-                            imgImageShow.id = "imageShow";
-                            
-                            var imgImageInput = document.getElementById("imageInput");
-
-                            if (imgImageInput === null) {
-                                imgImageInput = document.createElement("input");
-                                imgImageInput.type = "hidden";
-                                imgImageInput.value = imageUrl[itemNr];
-                                imgImageInput.name = "BookCover.FrontCover";
-                                imgImageInput.id = "imageInput";
-                                divImageLoad.insertBefore(imgImageShow, divImageLoad.childNodes[0]);
-                                divImageLoad.insertBefore(imgImageInput, divImageLoad.childNodes[0]);
-                            }
-                            else {
-                                imgImageInput.value = imageUrl[itemNr];
-                                divImageLoad.insertBefore(imgImageShow, divImageLoad.childNodes[0]);
-                                divImageLoad.insertBefore(imgImageInput, divImageLoad.childNodes[0]);
-                            }
-                            
-                            $("#inputFile").val("");
-                            $("#textImageFileName").text("");
-                        }
-
-                        if (item.volumeInfo.authors != undefined) {
-                            
-                            for (count = 0; count < $("#bookAuthors tbody tr").length; count++ ) {
-                                var btnSelected = $("#bookAuthors tbody tr #tdRemoveAuthorButton button").eq(count);
-                                var authorIdToRemove = $(btnSelected).closest(".book-author").data("authorId");
-                                $("#bookAuthors table tbody tr[data-author-id='" + authorIdToRemove + "'] .is-removed").first().val(true);
-                                var authorRowToRemove = $("#bookAuthors table tbody tr[data-author-id='" + authorIdToRemove + "']");
-                                authorRowToRemove.fadeOut(1000);
-                            }
-
-                            for (var authorNr = 0; authorNr < item.volumeInfo.authors.length; authorNr++) {
-
-                                var authorName = item.volumeInfo.authors[authorNr].split(" ");
-
-                                var authorFirstName = authorName[0];
-                                var authorMiddleName;
-                                var authorLastName;
-
-                                if (authorName.length > 2) {
-                                    authorLastName = authorName[authorName.length - 1];
-
-                                    authorMiddleName = "";
-                                    for (var authorMiddleNameNr = 1; authorMiddleNameNr < authorName.length - 1; authorMiddleNameNr++) {
-                                        authorMiddleName += authorName[authorMiddleNameNr] + " ";
-                                    }
-                                }
-                                else if (authorName.length == 2) {
-                                    authorLastName = authorName[1];
-                                }
-
-                                executeAddBookAuthor(authorFirstName, authorMiddleName, authorLastName);
-                            }
-                        }
-                    })
-                },
-
-                error: function () {
-                    toastr.options =
-                        {
-                            "closeButton": true,
-                            "onclick": null,
-                            "positionClass": "toast-bottom-right",
-                            "timeOut": 5000,
-                            "extendedTimeOut": 10000
-                        }
-                    toastr.error("Can not access Google Books.", "Error!");
+        $.ajax({
+            url: "https://www.googleapis.com/books/v1/volumes?q=" + setURL(),
+            async: false,
+            success: function (response) {
+                if (response.items === undefined) {
+                    $("#validationMessage").text("No books with such ISBN were found.");
                 }
-            })
+                else {
+                    googleBooksJson = response;
+
+                    for (var i = 0; i < response.items.length; i++) {
+
+                        var item = response.items[i];
+
+                        var resultTable = document.getElementById("resultTable");
+
+                        var tr_td1 = document.createElement("td");
+                        tr_td1.setAttribute("rowspan", "6");
+                        tr_td1.setAttribute("style", "border: 1px solid #ddd; padding: 10px;");
+                        tr_td1.innerHTML = "#" + (i + 1);
+
+                        if (item.volumeInfo.imageLinks != undefined) {
+                            if (item.volumeInfo.imageLinks.thumbnail != undefined) {
+                                imageUrl[i] = item.volumeInfo.imageLinks.thumbnail;
+                            }
+                            else if (item.volumeInfo.imageLinks.smallThumbnail != undefined) {
+                                imageUrl[i] = item.volumeInfo.imageLinks.smallThumbnail;
+                            }
+                        }
+
+                        for (var j = 0; j < 7; j++) {
+
+                            var tr = document.createElement("tr");
+                            var tr_td2 = document.createElement("td");
+                            tr_td2.className = "col-sm-2";
+                            var tr_td3 = document.createElement("td");
+                            tr_td3.className = "col-sm-9 google-book-ISBN";
+                            var td_ul = document.createElement("ul");
+
+                            switch (j) {
+                                case 0:
+                                    tr.appendChild(tr_td1);
+                                    tr_td2.innerHTML = "ISBN";
+
+                                    var validateISBN = $(document.createElement("span"));
+                                    $(validateISBN).addClass("validate-ISBN");
+                                    $(validateISBN).text(getISBN(item));
+
+                                    $(tr_td3).append($(validateISBN));
+
+                                    var loaderUrl = window.location.protocol + "//" + window.location.host + "/Content/Images/loader.gif";
+                                    var imageLoading = $(document.createElement("img"));
+                                    $(imageLoading).addClass("loading-image");
+                                    $(imageLoading).attr("src", loaderUrl);
+                                    $(imageLoading).attr("style", "width: 15px; height: 15px;");
+                                    $(imageLoading).attr("alt", "loading");
+                                    imageToRemove[i] = $(imageLoading);
+
+                                    var ISBNvalidationMessage = $(document.createElement("span"));
+                                    $(ISBNvalidationMessage).addClass("ISBN-validation-message text-danger");
+                                    $(ISBNvalidationMessage).attr("style", "margin-left: 10px;");
+
+                                    $(tr_td3).append($(ISBNvalidationMessage));
+                                    $(ISBNvalidationMessage).append($(imageLoading));
+                                    isbnInformation[i] = $(ISBNvalidationMessage);
+
+                                    tr.appendChild(tr_td2);
+                                    tr.appendChild(tr_td3);
+
+                                    var tr_td4 = document.createElement("td");
+                                    tr_td4.setAttribute("style", "border: 1px solid #ddd; padding: 10px; text-align: center; vertical-align: top;");
+                                    tr_td4.setAttribute("rowspan", "6");
+                                    tr_td4.className = "col-sm-2";
+
+                                    if (imageUrl[i] != null) {
+                                        var td_image = document.createElement("img");
+                                        td_image.src = imageUrl[i];
+                                        td_image.width = "120";
+                                        td_image.setAttribute("style", "margin-bottom: 10px;");
+                                        tr_td4.appendChild(td_image);
+                                    }
+
+                                    var td_button = document.createElement("button");
+                                    td_button.className = "btn btn-primary btn-sm selectGoogleBookButton";
+                                    td_button.innerHTML = "Select Book";
+                                    td_button.setAttribute("data-bookresult", i);
+                                    td_button.setAttribute("data-dismiss", "modal");
+                                    tr_td4.appendChild(td_button);
+
+                                    tr.appendChild(tr_td4);
+                                    break;
+                                case 1: tr_td2.innerHTML = "Title";
+                                    tr_td3.innerHTML = item.volumeInfo.title;
+                                    tr.appendChild(tr_td2);
+                                    tr.appendChild(tr_td3);
+                                    break;
+                                case 2: tr_td2.innerHTML = "Publish Date";
+                                    tr_td3.innerHTML = item.volumeInfo.publishedDate;
+                                    tr.appendChild(tr_td2);
+                                    tr.appendChild(tr_td3);
+                                    break;
+                                case 3: tr_td2.innerHTML = "Authors";
+                                    if (item.volumeInfo.authors != undefined) {
+                                        for (k = 0; k < item.volumeInfo.authors.length; k++) {
+                                            var ul_li = document.createElement("li");
+                                            ul_li.innerHTML = item.volumeInfo.authors[k];
+                                            td_ul.appendChild(ul_li);
+                                            td_ul.setAttribute("style", "margin-left: -28px; margin-bottom: 0px;");
+                                            tr_td3.appendChild(td_ul);
+                                        }
+                                    }
+                                    else {
+                                        tr_td3.innerHTML = "undefined";
+                                    }
+                                    tr.appendChild(tr_td2);
+                                    tr.appendChild(tr_td3);
+                                    break;
+                                case 4: tr_td2.innerHTML = "Category/Subecategory";
+                                    tr_td3.innerHTML = item.volumeInfo.categories;
+                                    tr.appendChild(tr_td2);
+                                    tr.appendChild(tr_td3);
+                                    break;
+                                case 5: tr_td2.innerHTML = "Description";
+                                    tr_td3.innerHTML = item.volumeInfo.description;
+                                    tr.appendChild(tr_td2);
+                                    tr.appendChild(tr_td3);
+                                    break;
+                                case 6:
+                                    var tdSpace = document.createElement("td");
+                                    tdSpace.setAttribute("style", "height: 10px; border-top:1px solid #ddd;");
+                                    tdSpace.setAttribute("colspan", "4");
+                                    tr.appendChild(tdSpace);
+                                    break;
+                                default: break;
+                            };
+                            tr_td2.setAttribute("style", "font-weight: bold; vertical-align: text-top; padding: 5px; border:1px solid #ddd;");
+                            tr_td3.setAttribute("style", "padding: 10px; border:1px solid #ddd;");
+                            
+                            resultTable.appendChild(tr);
+                        }
+                        resultTable.setAttribute("cellpadding", "10");
+                    }
+                }
+
+                $(".selectGoogleBookButton").click(function () {
+                    var itemNr = $(this).attr("data-bookresult");
+                    var item = googleBooksJson.items[itemNr];
+                    $("#Title").val(item.volumeInfo.title);
+                    $("#Description").val(item.volumeInfo.description);
+                    $("#ISBN").val(getISBN(item));
+
+                    var publishedDate = item.volumeInfo.publishedDate.split("-");
+                    var year = publishedDate[0];
+                    var month = publishedDate[1] || "01";
+                    var day = publishedDate[2] || "01";
+                    $("input[name='PublishDate']").val(month + "-" + day + "-" + year);
+                    $("#googleJsonCategory").html("<p>The imported Google Books category is: <strong>" + item.volumeInfo.categories + "</strong></p>");
+
+                    var divImageLoad = document.getElementById("imageLoad");
+
+                    if (imageUrl[itemNr] != null) {
+                        var imgImageShow = document.getElementById("imageShow");
+
+                        if (imgImageShow === null) {
+                            imgImageShow = document.createElement("img");
+                        }
+                        if (!imgImageShow.src.includes("books.google.com")) {
+                            if ($("#oldImagePath").val() == "") {
+                                $("#oldImagePath").attr("value", imgImageShow.src);
+                            }
+                        }
+
+                        imgImageShow.className = "img-small-responsive margin-bottom-10";
+                        imgImageShow.src = imageUrl[itemNr];
+                        imgImageShow.id = "imageShow";
+
+                        var imgImageInput = document.getElementById("imageInput");
+
+                        if (imgImageInput === null) {
+                            imgImageInput = document.createElement("input");
+                            imgImageInput.type = "hidden";
+                            imgImageInput.value = imageUrl[itemNr];
+                            imgImageInput.name = "BookCover.FrontCover";
+                            imgImageInput.id = "imageInput";
+                            divImageLoad.insertBefore(imgImageShow, divImageLoad.childNodes[0]);
+                            divImageLoad.insertBefore(imgImageInput, divImageLoad.childNodes[0]);
+                        }
+                        else {
+                            imgImageInput.value = imageUrl[itemNr];
+                            divImageLoad.insertBefore(imgImageShow, divImageLoad.childNodes[0]);
+                            divImageLoad.insertBefore(imgImageInput, divImageLoad.childNodes[0]);
+                        }
+
+                        $("#inputFile").val("");
+                        $("#textImageFileName").text("");
+                    }
+
+                    if (item.volumeInfo.authors != undefined) {
+
+                        for (count = 0; count < $("#bookAuthors tbody tr").length; count++) {
+                            var btnSelected = $("#bookAuthors tbody tr #tdRemoveAuthorButton button").eq(count);
+                            var authorIdToRemove = $(btnSelected).closest(".book-author").data("authorId");
+                            $("#bookAuthors table tbody tr[data-author-id='" + authorIdToRemove + "'] .is-removed").first().val(true);
+                            var authorRowToRemove = $("#bookAuthors table tbody tr[data-author-id='" + authorIdToRemove + "']");
+                            authorRowToRemove.fadeOut(1000);
+                        }
+
+                        for (var authorNr = 0; authorNr < item.volumeInfo.authors.length; authorNr++) {
+
+                            var authorName = item.volumeInfo.authors[authorNr].split(" ");
+
+                            var authorFirstName = authorName[0];
+                            var authorMiddleName;
+                            var authorLastName;
+
+                            if (authorName.length > 2) {
+                                authorLastName = authorName[authorName.length - 1];
+
+                                authorMiddleName = "";
+                                for (var authorMiddleNameNr = 1; authorMiddleNameNr < authorName.length - 1; authorMiddleNameNr++) {
+                                    authorMiddleName += authorName[authorMiddleNameNr] + " ";
+                                }
+                            }
+                            else if (authorName.length == 2) {
+                                authorLastName = authorName[1];
+                            }
+
+                            executeAddBookAuthor(authorFirstName, authorMiddleName, authorLastName);
+                        }
+                    }
+                })
+            },
+
+            error: function () {
+                toastr.options =
+                    {
+                        "closeButton": true,
+                        "onclick": null,
+                        "positionClass": "toast-bottom-right",
+                        "timeOut": 5000,
+                        "extendedTimeOut": 10000
+                    }
+                toastr.error("Can not access Google Books.", "Error!");
+            }
+        }).done(function () {
+
+            $(".validate-ISBN").each(function () {
+                var thisISBN = $(this);
+                var thisImage = $(this).siblings(".ISBN-validation-message").first();
+
+                $.ajax({
+                    url: window.location.protocol + "//" + window.location.host + "/BooksManagement/ValidateISBN",
+                    data: { ISBN: $(thisISBN).text() },
+                    async: true,
+                    method: "POST",
+                    success: function (response) {
+                        $(thisImage).empty();
+
+                        if (response.success != null && response.invalid != null) {
+                            $(thisImage).addClass("label label-warning");
+                            $(thisImage).text("Existing ISBN");
+                        }
+
+                        if (response.error) {
+                            toastr.options =
+                                {
+                                    "closeButton": true,
+                                    "onclick": null,
+                                    "positionClass": "toast-bottom-right",
+                                    "timeOut": 5000,
+                                    "extendedTimeOut": 10000
+                                }
+                            toastr.error("Can not verify ISBN " + $(thisISBN).val(), "Error!");
+                        }
+                    },
+                    error: function () {
+                        $(thisImage).empty();
+
+                        toastr.options =
+                            {
+                                "closeButton": true,
+                                "onclick": null,
+                                "positionClass": "toast-bottom-right",
+                                "timeOut": 5000,
+                                "extendedTimeOut": 10000
+                            }
+                        toastr.error("Can not verify ISBN " + $(thisISBN).val(), "Error!");
+                    }
+                });
+            });
+        });
     });
 
     $("#inputFile").click(function () {
@@ -629,6 +705,52 @@ $(document).ready(function () {
             return $("#searchString").val() + "&maxResults=40";
         }
     }
+
+    $("#ISBN").focusout(function () {
+        if ($("#ISBN").val() != "undefined ISBN") {
+            $.ajax({
+                url: window.location.protocol + "//" + window.location.host + "/BooksManagement/ValidateISBN",
+                data: { ISBN: $(this).val() },
+                method: "POST",
+                success: function (response) {
+                    if (response.success != null && response.invalid != null) {
+                        toastr.options =
+                            {
+                                "closeButton": true,
+                                "onclick": null,
+                                "positionClass": "toast-bottom-right",
+                                "timeOut": 5000,
+                                "extendedTimeOut": 10000
+                            }
+                        toastr.info("ISBN already exists in the system.", "Be careful!");
+                    }
+
+                    if (response.error) {
+                        toastr.options =
+                            {
+                                "closeButton": true,
+                                "onclick": null,
+                                "positionClass": "toast-bottom-right",
+                                "timeOut": 5000,
+                                "extendedTimeOut": 10000
+                            }
+                        toastr.error("Can not verify ISBN.", "Error!");
+                    }
+                },
+                error: function () {
+                    toastr.options =
+                        {
+                            "closeButton": true,
+                            "onclick": null,
+                            "positionClass": "toast-bottom-right",
+                            "timeOut": 5000,
+                            "extendedTimeOut": 10000
+                        }
+                    toastr.error("Can not verify ISBN.", "Error!");
+                }
+            });
+        }
+    });
 
     $(".book-category .select-category option:first-child").attr("disabled", "disabled");
 });

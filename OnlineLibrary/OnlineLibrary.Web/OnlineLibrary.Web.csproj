@@ -267,6 +267,7 @@
     <Content Include="Content\Images\Books\front-covers\0985580127.jpg" />
     <Content Include="Content\Images\Books\front-covers\778587687.jpg" />
     <Content Include="Content\Images\Books\front-covers\32830723.jpg" />
+    <Content Include="Content\Images\loader.gif" />
     <Content Include="Content\Images\logo.png" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
