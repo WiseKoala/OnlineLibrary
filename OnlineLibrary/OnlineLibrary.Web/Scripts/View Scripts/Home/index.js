@@ -1,4 +1,12 @@
 ﻿$(document).ready(function () {
+
+    $(".datepicker").datepicker({
+        dateFormat: "mm/dd/yy",
+        changeMonth: true,
+        changeYear: true,
+        yearRange: "-160:+0"
+    });
+
     $("#SearchData_CategoryId").change(function (e) {
         var url = $(this).data("subcategoriesUrl");
 
@@ -28,5 +36,16 @@
         };
 
         $.ajax(settings);
+    });
+
+    $("#toggleSearch").click(function () {
+        if ($(this).find("span").hasClass("glyphicon-chevron-down")) {
+            $(this).find("span").removeClass("glyphicon glyphicon-chevron-down");
+            $(this).find("span").addClass("glyphicon glyphicon-chevron-up");
+        }
+        else {
+            $(this).find("span").removeClass("glyphicon glyphicon-chevron-up");
+            $(this).find("span").addClass("glyphicon glyphicon-chevron-down");
+        }
     });
 });
