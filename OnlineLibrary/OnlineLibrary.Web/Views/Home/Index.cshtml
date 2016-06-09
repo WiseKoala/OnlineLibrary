@@ -11,15 +11,22 @@
 
 <div class="row page-header">
     <form id="searchFilters" action="@Url.Action("Index", "Home")" method="post">
-        <div class="form-inline">
-            <div class="form-group">
-                @Html.LabelFor(m => m.SearchData.Title, new { @class = "label-control" })
-                @Html.TextBoxFor(m => m.SearchData.Title, new { @class = "form-control", placeholder = "E.g. Harry Potter" })
+        <div class="row">
+            <div class="form-horizontal col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SearchData.Title, new { @class = "control-label col-sm-3", @style = "text-align: right;" })
+                    <span class="input-group" style="display: block;">
+                        @Html.TextBoxFor(m => m.SearchData.Title, new { @class = "form-control col-sm-8", placeholder = "E.g. Harry Potter" })
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+                            <a type="button" id="toggleSearch" class="btn btn-warning" data-toggle="collapse" href="#searchDetails"><span class="glyphicon glyphicon-chevron-down"></span></a>
+                        </span>
+                    </span>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Search <span class="glyphicon glyphicon-search"></span></button>
-            <a type="button" id="toggleSearch" class="btn btn-warning" data-toggle="collapse" href="#searchDetails"><span class="glyphicon glyphicon-chevron-down"></span></a>
+            <div class="form-horizontal col-md-6 "></div>
         </div>
-        <div class="collapse" id="searchDetails">
+        <div class="collapse row" id="searchDetails">
             <div class="form-horizontal col-md-6">
                 <div class="form-group">
                     @Html.LabelFor(m => m.SearchData.Author, new { @class = "control-label col-sm-3" })
