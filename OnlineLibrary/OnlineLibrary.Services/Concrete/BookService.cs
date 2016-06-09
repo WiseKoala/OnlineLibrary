@@ -179,6 +179,7 @@ namespace OnlineLibrary.Services.Concrete
                 .WhereIf(model.PublishDate != null, b => b.PublishDate == model.PublishDate)
                 .WhereIf(model.ISBN != null, b => b.ISBN.Contains(model.ISBN));
 
+            // Find by title.
             if (model.Title != null)
             {
                 string[] words = model.Title.Split(' ');
@@ -186,6 +187,7 @@ namespace OnlineLibrary.Services.Concrete
                 books = books.Intersect(booksByTitle);
             }
 
+            // Find by description.
             if (model.Description != null)
             {
                 string[] words = model.Description.Split(' ');
