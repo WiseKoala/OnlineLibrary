@@ -16,7 +16,7 @@
                 <div class="form-group">
                     @Html.LabelFor(m => m.SearchData.Title, new { @class = "control-label col-sm-3", @style = "text-align: right;" })
                     <span class="input-group" style="display: block;">
-                        @Html.TextBoxFor(m => m.SearchData.Title, new { @class = "form-control col-sm-8", placeholder = "E.g. Harry Potter" })
+                        @Html.TextBoxFor(m => m.SearchData.Title, new { @class = "form-control col-sm-8", placeholder = "Title" })
                         <span class="input-group-btn">
                             <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
                             <a type="button" id="toggleSearch" class="btn btn-warning" data-toggle="collapse" href="#searchDetails"><span class="glyphicon glyphicon-chevron-down"></span></a>
@@ -30,11 +30,12 @@
             <div class="form-horizontal col-md-6">
                 <div class="form-group">
                     @Html.LabelFor(m => m.SearchData.Author, new { @class = "control-label col-sm-3" })
-                    @Html.TextBoxFor(m => m.SearchData.Author, new { @class = "form-control col-sm-9" })
+                    @Html.TextBoxFor(m => m.SearchData.Author, new { @class = "form-control col-sm-9", placeholder = "Author" })
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(m => m.SearchData.PublishDate, new { @class = "control-label col-sm-3" })
-                    @Html.TextBoxFor(m => m.SearchData.PublishDate, new { @class = "form-control col-sm-9 datepicker", value = @Model.SearchData.PublishDate?.ToShortDateString(), placeholder = "Choose a date..." })
+                    @Html.TextBoxFor(m => m.SearchData.PublishDate, new { @class = "form-control col-sm-9 datepicker",
+                        value = @Model.SearchData.PublishDate?.ToShortDateString(), placeholder = "Publish Date" })
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(m => m.SearchData.CategoryId, new { @class = "control-label col-sm-3" })
@@ -46,11 +47,11 @@
             <div class="form-horizontal col-md-6 ">
                 <div class="form-group">
                     @Html.LabelFor(m => m.SearchData.ISBN, new { @class = "control-label col-sm-3" })
-                    @Html.TextBoxFor(m => m.SearchData.ISBN, new { @class = "form-control col-sm-9" })
+                    @Html.TextBoxFor(m => m.SearchData.ISBN, new { @class = "form-control col-sm-9", placeholder = "ISBN" })
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(m => m.SearchData.Description, new { @class = "control-label col-sm-3" })
-                    @Html.TextBoxFor(m => m.SearchData.Description, new { @class = "form-control col-sm-9" })
+                    @Html.TextBoxFor(m => m.SearchData.Description, new { @class = "form-control col-sm-9", placeholder = "Description" })
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(m => m.SearchData.SubcategoryId, new { @class = "control-label col-sm-3" })
