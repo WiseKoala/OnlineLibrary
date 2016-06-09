@@ -55,6 +55,7 @@
                 <div class="form-group">
                     @Html.LabelFor(m => m.SearchData.SubcategoryId, new { @class = "control-label col-sm-3" })
                     @Html.DropDownListFor(m => m.SearchData.SubcategoryId, Model.SearchData.Subcategories,
+                        "Any",
                         new { @class = "form-control" })
                 </div>
             </div>
