@@ -8,8 +8,6 @@ namespace OnlineLibrary.Common.Infrastructure
 {
     public class PasswordManager
     {
-        private string _password;
-
         private string GeneratePassword()
         {
             int passwordLenght = Int32.Parse(ConfigurationManager.AppSettings["PasswordLength"]);
@@ -31,8 +29,6 @@ namespace OnlineLibrary.Common.Infrastructure
                 superAdminPassword = GeneratePassword();
             }
             while (!IsValidPassword(superAdminPassword));
-
-            _password = superAdminPassword;
 
             return superAdminPassword;
         }
