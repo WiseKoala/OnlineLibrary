@@ -707,7 +707,7 @@ $(document).ready(function () {
     }
 
     $("#ISBN").focusout(function () {
-        if ($("#ISBN").val() != "undefined ISBN") {
+        if ($("#ISBN").val() != "undefined ISBN" && $("#ISBN").val() != $(this).attr("data-old-isbn")) {
             $.ajax({
                 url: window.location.protocol + "//" + window.location.host + "/BooksManagement/ValidateISBN",
                 data: { ISBN: $(this).val() },
@@ -722,7 +722,7 @@ $(document).ready(function () {
                                 "timeOut": 5000,
                                 "extendedTimeOut": 10000
                             }
-                        toastr.info("ISBN already exists in the system.", "Be careful!");
+                        toastr.warning("ISBN already exists in the system.", "Be careful!");
                     }
 
                     if (response.error) {
