@@ -10,7 +10,8 @@ using System.Data.Entity;
 using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.Common.Exceptions;
-using System.Text.RegularExpressions;
+using OnlineLibrary.Services.Models;
+using OnlineLibrary.DataAccess.Infrastructure;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -194,6 +195,76 @@ namespace OnlineLibrary.Services.Concrete
             // ISBN is valid if it is unique or if it is the default unknown ISBN.
             return string.Equals(ISBN, Common.Infrastructure.LibraryConstants.undefinedISBN)
                     || !_dbContext.Books.Where(b => b.ISBN == ISBN).Any();
+
+        }
+
+        public IEnumerable<Book> Find(BookSearchServiceModel model)
+        {
+            // Find by basic fields.
+            var books = _dbContext.Books
+                .WhereIf(model.PublishDate != null, b => b.PublishDate == model.PublishDate)
+                .WhereIf(model.ISBN != null, b => b.ISBN.Contains(model.ISBN));
+
+            // Find by title.
+            if (model.Title != null)
+            {
+                string[] words = model.Title.Split(' ');
+                var booksByTitle = _dbContext.Books.Where(b => words.Any(w => b.Title.Contains(w)));
+                books = books.Intersect(booksByTitle);
+            }
+
+            // Find by description.
+            if (model.Description != null)
+            {
+                string[] words = model.Description.Split(' ');
+                var booksByDescription = _dbContext.Books.Where(b => words.Any(w => b.Description.Contains(w)));
+                books = books.Intersect(booksByDescription);
+            }
+
+            // Find by authors.
+            if (model.Author != null)
+            {
+                string[] words = model.Author.Split(' ');
+
+                var booksByAuthors = _dbContext.Authors
+                    .Where(a => words.Any(w =>
+                           (a.FirstName != null && a.FirstName.Contains(w))
+                        || (a.MiddleName != null && a.MiddleName.Contains(w))
+                        || (a.LastName != null && a.LastName.Contains(w))))
+                    .SelectMany(a => a.Books);
+
+                books = booksByAuthors.Intersect(books);
+            }
+
+            // Find by categories.
+            if (model.CategoryId != null && model.SubcategoryId == null)
+            {
+                var booksByCategory = (from c in _dbContext.Categories
+                                       join sc in _dbContext.SubCategories.Include(sc => sc.Books)
+                                       on c.Id equals sc.CategoryId
+                                       where c.Id == model.CategoryId
+                                       select sc.Books)
+                                       .SelectMany(lb => lb)
+                                       .Distinct();
+
+                books = booksByCategory.Intersect(books);
+            }
+
+            // Find by subcategories.
+            if (model.SubcategoryId != null)
+            {
+                var booksBySubcategory = _dbContext.SubCategories
+                    .Include(sc => sc.Books)
+                    .Where(sc => sc.Id == model.SubcategoryId)
+                    .SelectMany(sc => sc.Books)
+                    .Distinct();
+
+                books = booksBySubcategory.Intersect(books);
+            }
+
+            var foundBooks = books.ToList();
+
+            return books;
         }
     }
 }

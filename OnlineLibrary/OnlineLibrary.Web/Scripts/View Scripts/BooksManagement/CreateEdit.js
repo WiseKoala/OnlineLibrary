@@ -124,7 +124,7 @@ $(document).ready(function () {
 
     // Implement datepicker for datetime inputs on this page.
     $('.datepicker').datepicker({
-        dateFormat: "mm-dd-yy",
+        dateFormat: "mm/dd/yy",
         changeMonth: true,
         changeYear: true,
         yearRange: "-160:+0"

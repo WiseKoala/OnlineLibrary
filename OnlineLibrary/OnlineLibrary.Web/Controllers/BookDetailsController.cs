@@ -9,6 +9,8 @@ using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.Services.Abstract;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models;
+using OnlineLibrary.Web.Models.HomeViewModels;
+using OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -49,7 +51,7 @@ namespace OnlineLibrary.Web.Controllers
                 ISBN = book.ISBN,
                 NrOfBooks = DbContext.BookCopies.Count(n => n.BookId == id),
                 HowManyInThisCondition = conditionStr,
-                Categories = book.SubCategories.Select(sc => new CategoryViewModel
+                Categories = book.SubCategories.Select(sc => new Models.HomeViewModels.CategoryViewModel
                 {
                     Category = sc.Category.Name,
                     SubCategory = sc.Name

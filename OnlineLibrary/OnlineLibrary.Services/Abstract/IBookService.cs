@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OnlineLibrary.DataAccess.Entities;
+using OnlineLibrary.Services.Models;
 
 namespace OnlineLibrary.Services.Abstract
 {
@@ -17,6 +18,7 @@ namespace OnlineLibrary.Services.Abstract
         bool IsBookCopyRemovable(int id);
         Book DeleteBook(int id);
         string FormatISBN(string ISBN);
+        IEnumerable<Book> Find(BookSearchServiceModel model);
         bool IsValidISBN(string ISBN);
     }
 }

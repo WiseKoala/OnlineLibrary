@@ -23,10 +23,6 @@ textarea {
     max-width: 280px;
 }
 
-.ui-datepicker {
-    background-color: rgba(255, 255, 255, 0.9);
-}
-
 .navbar-default .navbar-collapse, .navbar-default .navbar-form{
     border: none;
 }
@@ -63,4 +59,9 @@ display: inline-block
 
 .margin-bottom-10{
     margin-bottom: 10px;
+}
+
+.ui-datepicker {
+    background: #ffffff;
+    border: 1px solid #cccccc;
 }
