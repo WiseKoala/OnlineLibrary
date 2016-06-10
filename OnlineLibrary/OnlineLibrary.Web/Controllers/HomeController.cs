@@ -28,10 +28,10 @@ namespace OnlineLibrary.Web.Controllers
         {
             InitializeUserNameSessionVariable();
 
-            // Retreive list of books.
             IEnumerable<BookViewModel> booksList = null;
             if (model.SearchData == null)
             {
+                // Retreive list of all books.
                 booksList = DbContext.Books
                 .Include(b => b.Authors)
                 .Include(b => b.SubCategories)
@@ -57,16 +57,16 @@ namespace OnlineLibrary.Web.Controllers
             }
             else
             {
-                BookSearchViewModel searchModel = model.SearchData;
+                BookSearchViewModel searchViewModel = model.SearchData;
                 var searchServiceModel = new BookSearchServiceModel()
                 {
-                    Author = searchModel.Author,
-                    Description = searchModel.Description,
-                    ISBN = searchModel.ISBN,
-                    PublishDate = searchModel.PublishDate,
-                    Title = searchModel.Title,
-                    CategoryId = searchModel.CategoryId,
-                    SubcategoryId = searchModel.SubcategoryId
+                    Author = searchViewModel.Author,
+                    Description = searchViewModel.Description,
+                    ISBN = searchViewModel.ISBN,
+                    PublishDate = searchViewModel.PublishDate,
+                    Title = searchViewModel.Title,
+                    CategoryId = searchViewModel.CategoryId,
+                    SubcategoryId = searchViewModel.SubcategoryId
                 };
 
                 IEnumerable<Book> foundBooks = _bookService.Find(searchServiceModel);

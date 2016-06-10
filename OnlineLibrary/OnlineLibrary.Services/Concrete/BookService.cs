@@ -201,7 +201,10 @@ namespace OnlineLibrary.Services.Concrete
                 string[] words = model.Author.Split(' ');
 
                 var booksByAuthors = _dbContext.Authors
-                    .Where(a => words.Any(w => a.FirstName.Contains(w) || a.MiddleName.Contains(w) || a.LastName.Contains(w)))
+                    .Where(a => words.Any(w => 
+                           (a.FirstName != null && a.FirstName.Contains(w))
+                        || (a.MiddleName != null && a.MiddleName.Contains(w)) 
+                        || (a.LastName != null && a.LastName.Contains(w))))
                     .SelectMany(a => a.Books);
 
                 books = booksByAuthors.Intersect(books);

@@ -214,42 +214,6 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         }
 
         [Test]
-        public void Should_ReturnOneBook_Given_CompleteBookTitle()
-        {
-            // Arrange.           
-            var expectedResult = 1;
-            var sut = new BookService(_dbContext);
-            var model = new BookSearchServiceModel
-            {
-                Title = "Learn C# in One Day and Learn It Well: C# for Beginners with Hands-on Project (Learn Coding Fast with Hands-On Project) (Volume 3)"
-            };
-
-            // Act.
-            var returnedResult = sut.Find(model);
-
-            // Assert.
-            Assert.AreEqual(expectedResult, returnedResult.Count());
-        }
-
-        [Test]
-        public void Should_ReturnOneBook_Given_PartialBookTitle()
-        {
-            // Arrange.           
-            var expectedResult = 1;
-            var sut = new BookService(_dbContext);
-            var model = new BookSearchServiceModel
-            {
-                Title = "Learn C#"
-            };
-
-            // Act.
-            var returnedResult = sut.Find(model);
-
-            // Assert.
-            Assert.AreEqual(expectedResult, returnedResult.Count());
-        }
-
-        [Test]
         public void Should_ReturnTwoBooks_Given_PartialBookTitle()
         {
             // Arrange.           
@@ -276,6 +240,24 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
             var model = new BookSearchServiceModel
             {
                 Author = "R. B. Whitaker"
+            };
+
+            // Act.
+            var returnedResult = sut.Find(model);
+
+            // Assert.
+            Assert.AreEqual(expectedResult, returnedResult.Count());
+        }
+
+        [Test]
+        public void Should_ReturnOneBook_Given_PartialDescription()
+        {
+            // Arrange.           
+            var expectedResult = 1;
+            var sut = new BookService(_dbContext);
+            var model = new BookSearchServiceModel
+            {
+                Description = "concurrent Java"
             };
 
             // Act.
