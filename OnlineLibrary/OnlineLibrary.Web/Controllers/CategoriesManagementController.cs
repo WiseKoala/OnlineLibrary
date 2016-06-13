@@ -89,6 +89,7 @@ namespace OnlineLibrary.Web.Controllers
             return Json(categories, JsonRequestBehavior.AllowGet);
         }
 
+        [AllowAnonymous]
         public JsonResult GetSubCategories(int categoryId)
         {
             try

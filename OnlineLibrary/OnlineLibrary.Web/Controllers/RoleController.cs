@@ -113,26 +113,7 @@ namespace OnlineLibrary.Web.Controllers
 
         private bool HasAdminPrivileges(IPrincipal user)
         {
-            return IsFirstLogin() || user.IsInRole(UserRoles.SysAdmin) || user.IsInRole(UserRoles.SuperAdmin);
-        }
-
-        public bool IsFirstLogin()
-        {
-            bool isFirstUserLogin = false;
-
-            if (DbContext.Users.Count() == 2)
-            {
-                // Retrieve users into memory.
-                var users = DbContext.Users.ToList();
-
-                // Check if there're any users in the role users
-                // that don't have the last sign out date set.
-                isFirstUserLogin = users.Any(u =>
-                    _userService.IsInRole(u.Id, UserRoles.User)
-                    && u.LastSignOutDate == null);
-            }
-
-            return isFirstUserLogin;
+            return user.IsInRole(UserRoles.SysAdmin) || user.IsInRole(UserRoles.SuperAdmin);
         }
 
         #endregion Helper Methods

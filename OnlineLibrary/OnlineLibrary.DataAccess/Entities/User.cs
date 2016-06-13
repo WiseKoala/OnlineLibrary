@@ -11,7 +11,6 @@ namespace OnlineLibrary.DataAccess.Entities
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public DateTime? LastSignOutDate { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager)
         {

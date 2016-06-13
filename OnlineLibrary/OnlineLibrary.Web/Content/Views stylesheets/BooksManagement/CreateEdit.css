@@ -9,11 +9,6 @@
 
 #bookAuthors .book-author { margin-bottom: 10px; }
 
-.ui-datepicker {
-    background: #ffffff;
-    border: 1px solid #cccccc;
-}
-
 label.inputFileButton input[type="file"] {
     position: fixed;
     top: -1000px;

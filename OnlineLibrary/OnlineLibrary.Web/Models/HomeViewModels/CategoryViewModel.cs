@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace OnlineLibrary.Web.Models
+namespace OnlineLibrary.Web.Models.HomeViewModels
 {
     public class CategoryViewModel
     {

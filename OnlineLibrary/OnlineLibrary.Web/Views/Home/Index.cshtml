@@ -1,20 +1,77 @@
-﻿@using OnlineLibrary.Web.Models
-@model List<BookViewModel>
+﻿@using OnlineLibrary.Web.Models.HomeViewModels
+@model BooksListViewModel
 @{
     ViewBag.Title = "Home Page";
 }
 
 @section CSS {
     <link href="~/Content/Views stylesheets/Home/Index.css" rel="stylesheet" />
+    @Styles.Render("~/Content/cssjqueryUI")
 }
 
-<div class="page-header">
-    <h1>Available books</h1>
+<div class="row page-header">
+    <form id="searchFilters" action="@Url.Action("Index", "Home")" method="get">
+        <div class="row">
+            <div class="form-horizontal col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SearchData.Title, new { @class = "control-label col-sm-3", @style = "text-align: right;" })
+                    <span class="input-group" style="display: block;">
+                        @Html.TextBoxFor(m => m.SearchData.Title, new { @class = "form-control col-sm-8", placeholder = "Title" })
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+                            <a type="button" id="toggleSearch" class="btn btn-warning" data-toggle="collapse" href="#searchDetails"><span class="glyphicon glyphicon-chevron-down"></span></a>
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-horizontal col-md-6 "></div>
+        </div>
+        <div class="collapse row" id="searchDetails">
+            <div class="form-horizontal col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SearchData.Author, new { @class = "control-label col-sm-3" })
+                    @Html.TextBoxFor(m => m.SearchData.Author, new { @class = "form-control col-sm-9", placeholder = "Author" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SearchData.PublishDate, new { @class = "control-label col-sm-3" })
+                    @Html.TextBoxFor(m => m.SearchData.PublishDate, new { @class = "form-control col-sm-9 datepicker",
+                        value = @Model.SearchData.PublishDate?.ToShortDateString(), placeholder = "Publish Date" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SearchData.CategoryId, new { @class = "control-label col-sm-3" })
+                    @Html.DropDownListFor(m => m.SearchData.CategoryId, Model.SearchData.Categories,
+                        "Any",
+                        new { @class = "form-control", data_subcategories_url = Url.Action("GetSubCategories", "CategoriesManagement") })
+                </div>
+            </div>
+            <div class="form-horizontal col-md-6 ">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SearchData.ISBN, new { @class = "control-label col-sm-3" })
+                    @Html.TextBoxFor(m => m.SearchData.ISBN, new { @class = "form-control col-sm-9", placeholder = "ISBN" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SearchData.Description, new { @class = "control-label col-sm-3" })
+                    @Html.TextBoxFor(m => m.SearchData.Description, new { @class = "form-control col-sm-9", placeholder = "Description" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SearchData.SubcategoryId, new { @class = "control-label col-sm-3" })
+                    @Html.DropDownListFor(m => m.SearchData.SubcategoryId, Model.SearchData.Subcategories,
+                        "Any",
+                        new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 
 <div class="row">
+    @if (Model.Books.Count() == 0)
+    {
+        <h4>Sorry, no books were found...</h4>
+    }
     <div class="col-md-8 col-md-offset-2">
-        @foreach (var book in Model)
+
+        @foreach (var book in Model.Books)
         {
             <div class="panel panel-default book-item">
                 <div class="panel-body">
@@ -26,6 +83,7 @@
                         </div>
                         <div class="media-body">
                             <h4 class="media-heading">@Html.RouteLink(book.Title, new { controller = "BookDetails", action = "Index", id = book.Id })</h4>
+                            <p><strong>ISBN:</strong> @book.ISBN</p>
                             <p><strong>@((book.Authors.Count() > 1) ? "Authors:" : "Author:")</strong> @String.Join(", ", book.Authors)</p>
                             <p><strong>Publish Date:</strong> @book.PublishDate.ToShortDateString()</p>
                             <p><strong>Description:</strong> @((book.Description.Length > 265) ? book.Description.Substring(0, 265) + "..." : book.Description) </p>
@@ -47,3 +105,8 @@
         }
     </div>
 </div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryui")
+    <script src="~/Scripts/View Scripts/Home/index.js"></script>
+}

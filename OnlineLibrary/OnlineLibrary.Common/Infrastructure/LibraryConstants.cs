@@ -1,9 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace OnlineLibrary.Common.Infrastructure
 {
     public static class LibraryConstants
@@ -11,5 +5,9 @@ namespace OnlineLibrary.Common.Infrastructure
         public const string SuperAdminUserName = "Admin";
         public const string SuperAdminFirstName = "Super";
         public const string SuperAdminLastName = "Admin";
+        public const string stringSpace = " ";
+        public const string undefinedISBN = "undefined ISBN";
+        public const string PasswordPatern = "<|>|&|'|\"";
+        public const string SuperAdminPaswordKey = "SuperAdminPassword";
     }
 }
