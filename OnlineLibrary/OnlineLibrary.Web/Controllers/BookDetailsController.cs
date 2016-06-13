@@ -51,7 +51,7 @@ namespace OnlineLibrary.Web.Controllers
                 ISBN = book.ISBN,
                 NrOfBooks = DbContext.BookCopies.Count(n => n.BookId == id),
                 HowManyInThisCondition = conditionStr,
-                Categories = book.SubCategories.Select(sc => new Models.HomeViewModels.CategoryViewModel
+                Categories = book.SubCategories.Select(sc => new Models.CategoryViewModel
                 {
                     Category = sc.Category.Name,
                     SubCategory = sc.Name

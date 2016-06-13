@@ -151,12 +151,12 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult ReturnBook(int loanId)
+        public ActionResult ReturnBook(int loanId, BookCondition bookCondition)
         {
             try
             {
                 var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
-                _librarianService.ReturnBook(loanId, librarian);
+                _librarianService.ReturnBook(loanId, librarian, bookCondition);
                 return Json(new { success = 1 });
             }
             catch (KeyNotFoundException ex)
