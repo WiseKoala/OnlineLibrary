@@ -30,7 +30,6 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
 
         [Required]
         [MinLength(10, ErrorMessage = "ISBN field is too short.")]
-        [MaxLength(13, ErrorMessage = "ISBN field is too long.")]
         public string ISBN { get; set; }
 
         public FrontCoverViewModel BookCover { get; set; }
@@ -51,5 +50,7 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         public IDictionary<BookCondition, string> AllBookConditions { get; set; }
 
         public IList<CategoryViewModel> BookCategories { get; set; }
+
+        public string OldImagePath { get; set; }
     }
 }

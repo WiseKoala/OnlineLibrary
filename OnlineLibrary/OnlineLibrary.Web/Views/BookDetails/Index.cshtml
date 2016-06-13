@@ -62,7 +62,7 @@
                                 <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" 
                                         @if (!((User.IsInRole(UserRoles.User)) || (User.IsInRole(UserRoles.Librarian)) || (User.IsInRole(UserRoles.SysAdmin))))
                                         { <text> title = "Log in to loan a book." </text> }
-                                        @if (Model.AvailableCopies == 0 || string.IsNullOrEmpty(User.Identity.Name))
+                                        @if (Model.AvailableCopies == 0 || string.IsNullOrEmpty(User.Identity.Name) || (User.IsInRole(UserRoles.SuperAdmin)))
                                         {
                                             @: disabled="disabled"
                                         } >Loan</button>

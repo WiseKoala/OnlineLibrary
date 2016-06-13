@@ -11,7 +11,7 @@
     <link href="~/Content/toastr.css" rel="stylesheet" />
 }
 
-@Html.ActionLink("Add a new book", "CreateEdit", "BooksManagement", new { id = 0 }, new { @class = "btn btn-default" })
+@Html.ActionLink("Add a new book", "CreateEdit", "BooksManagement", new { id = 0 }, new { @class = "btn btn-primary" })
 
 <table class="table table-hover">
     <thead>
@@ -34,7 +34,7 @@
                 <td>@book.ISBN</td>
                 <td>@book.PublishDate.ToShortDateString()</td>
                 <td class="text-center">
-                    <a href="@Url.Action("CreateEdit", "BooksManagement", new { id = book.Id })" class="btn btn-default btn-sm">
+                    <a href="@Url.Action("CreateEdit", "BooksManagement", new { id = book.Id })" class="btn btn-primary btn-sm">
                         Edit
                     </a>
                     
