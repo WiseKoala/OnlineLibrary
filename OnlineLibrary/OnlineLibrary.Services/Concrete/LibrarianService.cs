@@ -138,7 +138,7 @@ namespace OnlineLibrary.Services.Concrete
                                 .Where(l => l.Id == loanId)
                                 .SingleOrDefault();
 
-            var bookCopy = _dbContext.BookCopies.Find(loan.BookCopy);
+            var bookCopy = _dbContext.BookCopies.Find(loan.BookCopy.Id);
             if (bookCopy != null)
             {
                 bookCopy.Condition = finalBookCondition;

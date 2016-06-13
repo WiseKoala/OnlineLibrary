@@ -219,9 +219,12 @@
     });
 
     $('#returnLoanedBook button[type="submit"]').click(function () {
-        $.ajax({
+        var settings = {
             url: $(this).attr("data-url"),
-            data: { loanId: $("#returnLoanedBook").find('input[id="loanId"]').val() },
+            data: {
+                loanId: $("#returnLoanedBook").find('input[id="loanId"]').val(),
+                bookCondition: $("#returnLoanedBook .form-group").find('select[id="BookCondition"]').val()
+            },
             method: "POST",
             success: function (response) {
                 var itemToRemove = $('tr button[data-loan-id="' + $("#returnLoanedBook").find('input[id="loanId"]').val() + '"]').closest("tr");
@@ -236,6 +239,8 @@
                             "extendedTimeOut": 10000
                         };
                 toastr.success("The loaned book has been successfully marked as returned.", "Success.");
+
+                resetBookConditionSelect();
             },
             error: function (jqXHR) {
                 toastr.options =
@@ -253,9 +258,18 @@
                 else {
                     toastr.error("An error has occured.", "Error.");
                 }
+
+                resetBookConditionSelect();
             }
-        });
+        };
+
+        $.ajax(settings);
     });
+
+    function resetBookConditionSelect() {
+        var selectList = $("#returnLoanedBook .form-group").find('select[id="BookCondition"]');
+        selectList.prop("selectedIndex", 0);
+    }
 
     $('#lostLoanedBook button[type="submit"]').click(function () {
         $.ajax({

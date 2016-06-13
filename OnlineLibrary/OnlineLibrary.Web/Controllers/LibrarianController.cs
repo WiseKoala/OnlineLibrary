@@ -12,6 +12,7 @@ using System.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using Microsoft.AspNet.Identity;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -155,18 +156,14 @@ namespace OnlineLibrary.Web.Controllers
         {
             try
             {
-                var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
+                var librarian = DbContext.Users.Find(User.Identity.GetUserId());
                 _librarianService.ReturnBook(loanId, librarian, bookCondition);
-                return Json(new { success = 1 });
+                return Json("The book has been successfully returned", JsonRequestBehavior.DenyGet);
             }
             catch (KeyNotFoundException ex)
             {
                 Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return Json(new { error = ex.Message });
-            }
-            catch
-            {
-                return Json(new { error = 1 });
             }
         }
 
