@@ -1,4 +1,5 @@
-﻿@model OnlineLibrary.Web.Models.LibrarianLoansViewModels.LibrarianIndexViewModel
+﻿@using OnlineLibrary.DataAccess.Enums
+@model OnlineLibrary.Web.Models.LibrarianLoansViewModels.LibrarianIndexViewModel
 @section CSS {
     <link href="~/Content/Views stylesheets/Librarian/Index.css" rel="stylesheet" />
     <link href="~/Content/toastr.css" rel="stylesheet" />
@@ -414,9 +415,13 @@
                 <label>Are you sure you want to mark this loan as returned?</label>
             </div>
             <div class="modal-footer">
-                <div id="returnLoanedBook">
+                <div id="returnLoanedBook" class="form-inline">
                     <input id="loanId" name="loanId" hidden="hidden" />
-                    <button type="submit" class="btn btn-default" data-dismiss="modal" data-url="@Url.Action("ReturnBook", "Librarian")">Yes</button>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.BookCondition)
+                        @Html.EnumDropDownListFor(m => m.BookCondition, new { @class = "form-control" })
+                    </div>
+                    <button type="submit" class="btn btn-danger" data-dismiss="modal" data-url="@Url.Action("ReturnBook", "Librarian")">Confirm</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
                 </div>
             </div>
