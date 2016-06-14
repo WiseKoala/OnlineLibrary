@@ -165,7 +165,7 @@ namespace OnlineLibrary.Services.Concrete
             _dbContext.SaveChanges();
         }
 
-        public void LostBook(int loanId, User librarian)
+        public void MoveLostBookCopyToHistory(int loanId, User librarian)
         {
             var loan = _dbContext.Loans
                                  .Include(l => l.Book)
@@ -187,7 +187,6 @@ namespace OnlineLibrary.Services.Concrete
                 Status = HistoryStatus.LostBook
             };
 
-            _dbContext.BookCopies.Find(loan.BookCopyId).IsLost = true;
             _dbContext.History.Add(historyLoan);
             _dbContext.Loans.Remove(loan);
             

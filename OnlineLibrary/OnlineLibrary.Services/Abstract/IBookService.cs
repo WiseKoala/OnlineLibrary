@@ -20,5 +20,6 @@ namespace OnlineLibrary.Services.Abstract
         string FormatISBN(string ISBN);
         IEnumerable<Book> Find(BookSearchServiceModel model);
         bool IsValidISBN(string ISBN);
+        void ChangeIsLostStatus(int bookcopyId, bool isLost);
     }
 }

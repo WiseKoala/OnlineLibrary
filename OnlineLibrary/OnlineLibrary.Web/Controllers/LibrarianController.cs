@@ -18,11 +18,13 @@ namespace OnlineLibrary.Web.Controllers
     public class LibrarianController : BaseController
     {
         private ILibrarianService _librarianService;
+        private IBookService _bookService;
 
-        public LibrarianController(ILibraryDbContext dbContext, ILibrarianService librarianService)
+        public LibrarianController(ILibraryDbContext dbContext, ILibrarianService librarianService, IBookService bookService)
             : base(dbContext)
         {
             _librarianService = librarianService;
+            _bookService = bookService;
         }
 
         [Authorize(Roles = "Librarian, System administrator")]
@@ -175,8 +177,16 @@ namespace OnlineLibrary.Web.Controllers
         {
             try
             {
+                var bookCopyId = DbContext.Loans.Find(loanId).BookCopyId;
+                if (bookCopyId != null)
+                {
+                    _bookService.ChangeIsLostStatus((int)bookCopyId, true);
+                }
+
                 var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
-                _librarianService.LostBook(loanId, librarian);
+                _librarianService.MoveLostBookCopyToHistory(loanId, librarian);
+                
+
                 return Json(new { success = 1 });
             }
             catch (KeyNotFoundException ex)
@@ -184,10 +194,7 @@ namespace OnlineLibrary.Web.Controllers
                 Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return Json(new { error = ex.Message });
             }
-            //catch
-            //{
-            //    return Json(new { error = 1 });
-            //}
+
         }
 
         [HttpPost]

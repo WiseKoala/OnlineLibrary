@@ -67,6 +67,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Concrete_Tests\BookService_Tests\ChangeIsLostStatusTest.cs" />
     <Compile Include="Concrete_Tests\BookService_Tests\IsValidISBNTestClass.cs" />
     <Compile Include="Concrete_Tests\BookService_Tests\FindTestClass.cs" />
     <Compile Include="Concrete_Tests\CategoryService_Tests\DeleteBookCategoryTestClass.cs" />

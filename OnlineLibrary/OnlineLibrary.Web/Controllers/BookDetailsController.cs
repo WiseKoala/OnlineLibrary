@@ -32,7 +32,8 @@ namespace OnlineLibrary.Web.Controllers
             string conditionStr = "None";
             if (bookCopies.Any())
             {
-                conditionStr = bookCopies.GroupBy(e => e.Condition)
+                conditionStr = bookCopies.Where(bc => !bc.IsLost).
+                    GroupBy(e => e.Condition)
                    .OrderBy(e => e.Key)
                    .Select(e => string.Concat(e.Count(), " ", _bookService.GetConditionDescription(e.Key)))
                    .ToList()

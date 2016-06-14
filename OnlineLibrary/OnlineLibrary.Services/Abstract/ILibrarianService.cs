@@ -14,6 +14,6 @@ namespace OnlineLibrary.Services.Abstract
 
         void ReturnBook(int loanId, User librarian /*, BookCondition finalBookCondition*/);
 
-        void LostBook(int loanId, User librarian);
+        void MoveLostBookCopyToHistory(int loanId, User librarian);
     }
 }

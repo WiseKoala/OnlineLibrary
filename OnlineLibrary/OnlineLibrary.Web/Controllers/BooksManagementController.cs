@@ -73,7 +73,8 @@ namespace OnlineLibrary.Web.Controllers
                     BookCopies = book.BookCopies.Select(bc => new BookCopyViewModel
                     {
                         Id = bc.Id,
-                        BookCondition = bc.Condition
+                        BookCondition = bc.Condition,
+                        IsLost = bc.IsLost
                     }).ToList(),
 
                     Authors = book.Authors.Select(a => new BookAuthorViewModel
@@ -165,7 +166,7 @@ namespace OnlineLibrary.Web.Controllers
             {
                 var bookcopies = model.BookCopies.ToList();
 
-                if (bookcopies.Count() > 0)
+                if (bookcopies.Count > 0)
                 {
                     foreach (var bookcopy in bookcopies)
                     {
@@ -176,7 +177,7 @@ namespace OnlineLibrary.Web.Controllers
                     }
                 }
 
-                for (int i = 0; i < model.Authors.Count(); i++)
+                for (int i = 0; i < model.Authors.Count; i++)
                 {
                     if (model.Authors[i].IsRemoved)
                     {
@@ -394,6 +395,10 @@ namespace OnlineLibrary.Web.Controllers
                             return View(model);
                         }
                     }
+                    else
+                    {
+                        _bookService.ChangeIsLostStatus(bookcopy.Id, bookcopy.IsLost);
+                    }
                 }
 
                 if (DbContextChanged)
@@ -405,6 +410,7 @@ namespace OnlineLibrary.Web.Controllers
 
                 foreach (var bookCopyModel in model.BookCopies)
                 {
+
                     if (bookCopyModel.IsToBeDeleted == false)
                     {
                         BookCopy bookCopy = DbContext.BookCopies.Find(bookCopyModel.Id);

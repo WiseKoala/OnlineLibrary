@@ -31,7 +31,7 @@
                         <img id="imageShow" class="img-small-responsive margin-bottom-10" src=@Url.Content(Model.BookCover.FrontCover) />
                         <input id="imageInput" type="hidden" value="@Model.BookCover.FrontCover" name="BookCover.FrontCover" />
                     }
-                    
+
                     @*Load Image*@
                     <div id="imageLoad" class="form-group">
                         <label class="inputFileButton">
@@ -170,9 +170,9 @@
                 </div>
             }
         </div>
-       
+
         <button type="button" id="add-category" class="btn btn-primary" style="margin-top: 10px">Add Category</button>
-        
+
         <p></p>
 
         <div id="googleJsonCategory"></div>
@@ -194,18 +194,21 @@
                                 <select name="BookCopies[@i].BookCondition" class="form-control">
                                     @foreach (var item in Model.AllBookConditions)
                                     {
-                                        <option value="@item.Key"
-                                                @if (item.Key == Model.BookCopies[i].BookCondition) { @: selected="selected"
-                                                                                                }>
+                                        <option value="@item.Key" @if (item.Key == Model.BookCopies[i].BookCondition)
+                                                                      { 
+                                                                          @: selected="selected" 
+                                                                      }>
                                             @item.Value
-                                                                                            </option>
-                                    }
+                                        </option>
+}
                                 </select>
-                                @*@Html.EnumDropDownListFor(m => m.BookCopies[i].BookCondition, new { @class = "form-control" })*@
                                 <input class="IsToBeDeleted" type="hidden" name="BookCopies[@(i)].IsToBeDeleted" value="false" />
                             </div>
                         </td>
-                        <td class="col-sm-7">
+                        <td class="col-sm-3">Book was lost: 
+                            @Html.CheckBox("BookCopies[" + @i + "].IsLost", Model.BookCopies[i].IsLost)
+                        </td>
+                        <td class="col-sm-4">
                             <!-- Trigger Button for DeleteBookCopyModal -->
                             <button type="button" class="btn btn-danger btn-sm passBookCopyForDelete" data-toggle="modal" data-target="#deleteCopy" data-book-copy-row-id="@i">
                                 <span class="glyphicon glyphicon-remove"></span>
@@ -278,7 +281,7 @@
     </div>
 </div>
 
-@section scripts {    
+@section scripts {
     @Scripts.Render("~/bundles/jqueryui")
     <script src="~/Scripts/toastr.min.js"></script>
     <script src="~/Scripts/View Scripts/BooksManagement/CreateEdit.js"></script>
