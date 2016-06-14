@@ -26,30 +26,57 @@ namespace OnlineLibrary.Services.Concrete
 
         public int GetNumberOfAvailableCopies(int bookId)
         {
-            // Determine not available book copies.
-            var notAvailableBookCopies = from b in _dbContext.Books
-                                         join bc in _dbContext.BookCopies
-                                         on b.Id equals bc.BookId
-                                         join l in _dbContext.Loans
-                                         on bc.Id equals l.BookCopyId
-                                         where b.Id == bookId 
-                                            && (l.Status == LoanStatus.Approved || l.Status == LoanStatus.InProgress)
-                                         select bc;
 
-            // Obtain all book copies for the specified book.
-            var allBookCopies = from b in _dbContext.Books
-                                join bc in _dbContext.BookCopies
-                                on b.Id equals bc.BookId
-                                where b.Id == bookId
-                                select bc;
+            var book = _dbContext.Books.Include(b => b.Loans)
+                                    .Include(b => b.BookCopies)
+                                    .SingleOrDefault(b => b.Id == bookId);
 
-            // Calculate the difference between the total number of book copies
-            // and not available ones.
-            int numberOfAvailableBookCopies = allBookCopies
-                .Except(notAvailableBookCopies)
-                .Count();
+            int countIsAvailable = 0;
 
-            return numberOfAvailableBookCopies;
+            foreach (var item in book.BookCopies)
+            {
+                if (!item.IsLost)
+                {
+                    if (item.Loans.Any())
+                    {
+                        if (!(item.Loans.SingleOrDefault().Status == LoanStatus.Approved || item.Loans.SingleOrDefault().Status == LoanStatus.InProgress))
+                        {
+                            countIsAvailable++;
+                        }
+                    }
+                    else
+                    {
+                        countIsAvailable++;
+                    }
+                }
+            }
+
+            return countIsAvailable;
+
+            //// Determine not available book copies.
+            //var notAvailableBookCopies = (from b in _dbContext.Books
+            //                              join bc in _dbContext.BookCopies
+            //                              on b.Id equals bc.BookId
+            //                              join l in _dbContext.Loans
+            //                              on bc.Id equals l.BookCopyId
+            //                              where bc.BookId == bookId
+            //                                 && (l.Status == LoanStatus.Approved || l.Status == LoanStatus.InProgress)
+            //                              select bc).ToList();                                          
+
+            //// Obtain all book copies for the specified book.
+            //var allBookCopies = (from b in _dbContext.Books
+            //                     join bc in _dbContext.BookCopies
+            //                     on b.Id equals bc.BookId
+            //                     where b.Id == bookId
+            //                     select bc).ToList();                                             
+
+            //// Calculate the difference between the total number of book copies
+            //// and not available ones.
+            //int numberOfAvailableBookCopies = allBookCopies
+            //    .Except(notAvailableBookCopies)
+            //    .Count();
+
+            //return numberOfAvailableBookCopies;
         }
 
         public DateTime? GetEarliestAvailableDate(int bookId)
@@ -265,6 +292,13 @@ namespace OnlineLibrary.Services.Concrete
             var foundBooks = books.ToList();
 
             return books;
+        }
+
+        public void ChangeIsLostStatus(int bookcopyId, bool isLost)
+        {
+            var bookcopy = _dbContext.BookCopies.Find(bookcopyId);
+            bookcopy.IsLost = isLost;
+            _dbContext.SaveChanges();
         }
     }
 }

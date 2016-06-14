@@ -77,7 +77,7 @@ namespace OnlineLibrary.DataAccess
             // Book items
             var bookCopies = new List<BookCopy>
             {
-                new BookCopy() { Id = 1, Condition = BookCondition.New },           // Id = 1   <-- same book  
+                new BookCopy() { Id = 1, Condition = BookCondition.New , IsLost = true },           // Id = 1   <-- same book  
                 new BookCopy() { Id = 2, Condition = BookCondition.Poor },          // Id = 2   <--
                                  
                 new BookCopy() { Id = 3, Condition = BookCondition.New },           // Id = 3   <--

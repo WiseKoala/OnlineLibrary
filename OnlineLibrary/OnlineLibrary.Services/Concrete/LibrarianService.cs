@@ -165,14 +165,14 @@ namespace OnlineLibrary.Services.Concrete
             _dbContext.SaveChanges();
         }
 
-        public void LostBook(int loanId, User librarian)
+        public void MoveLostBookCopyToHistory(int loanId, User librarian)
         {
             var loan = _dbContext.Loans
-                                .Include(l => l.Book)
-                                .Include(l => l.User)
-                                .Include(l => l.BookCopy)
-                                .Where(l => l.Id == loanId)
-                                .SingleOrDefault();
+                                 .Include(l => l.Book)
+                                 .Include(l => l.User)
+                                 .Include(l => l.BookCopy)
+                                 .Where(l => l.Id == loanId)
+                                 .SingleOrDefault();
 
             var historyLoan = new History
             {
@@ -188,9 +188,8 @@ namespace OnlineLibrary.Services.Concrete
             };
 
             _dbContext.History.Add(historyLoan);
-
             _dbContext.Loans.Remove(loan);
-
+            
             _dbContext.SaveChanges();
         }
     }
