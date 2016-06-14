@@ -27,14 +27,15 @@ namespace OnlineLibrary.Web.Controllers
         public ActionResult Index(int id)
         {
             var book = DbContext.Books.Include(b => b.BookCopies).First(b => b.Id == id);
+            var bookCopies = book.BookCopies.Where(bc => !bc.IsLost);
 
-            var query = book.BookCopies;
             string conditionStr = "None";
-            if (query.Any())
+            if (bookCopies.Any())
             {
-                conditionStr = query.GroupBy(e => e.Condition)
+                conditionStr = bookCopies.GroupBy(e => e.Condition)
                    .OrderBy(e => e.Key)
-                   .Select(e => string.Concat(e.Count(), " ", _bookService.GetConditionDescription(e.Key))).ToList()
+                   .Select(e => string.Concat(e.Count(), " ", _bookService.GetConditionDescription(e.Key)))
+                   .ToList()
                    .Aggregate((current, next) => current + ", " + next);
             }
                    
@@ -49,7 +50,7 @@ namespace OnlineLibrary.Web.Controllers
                         string.Join(" ", a.FirstName, (a.MiddleName ?? ""), a.LastName)),
                 Description = book.Description,
                 ISBN = book.ISBN,
-                NrOfBooks = DbContext.BookCopies.Count(n => n.BookId == id),
+                NrOfBooks = DbContext.BookCopies.Count(bc => bc.BookId == id && !bc.IsLost),
                 HowManyInThisCondition = conditionStr,
                 Categories = book.SubCategories.Select(sc => new Models.HomeViewModels.CategoryViewModel
                 {
@@ -57,7 +58,7 @@ namespace OnlineLibrary.Web.Controllers
                     SubCategory = sc.Name
                 }),
                 AvailableCopies = _bookService.GetNumberOfAvailableCopies(id),
-                EarliestDateAvailable = _bookService.GetEarliestAvailableDate(id)
+                EarliestDateAvailable = _bookService.GetEarliestAvailableDate(id),
             };
             return View(book_view);
         }

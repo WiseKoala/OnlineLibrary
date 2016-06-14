@@ -184,10 +184,10 @@ namespace OnlineLibrary.Web.Controllers
                 Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return Json(new { error = ex.Message });
             }
-            catch
-            {
-                return Json(new { error = 1 });
-            }
+            //catch
+            //{
+            //    return Json(new { error = 1 });
+            //}
         }
 
         [HttpPost]
