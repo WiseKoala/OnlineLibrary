@@ -26,32 +26,15 @@ namespace OnlineLibrary.Services.Concrete
 
         public int GetNumberOfAvailableCopies(int bookId)
         {
-
-            var book = _dbContext.Books.Include(b => b.Loans)
+            var count = _dbContext.Books.Include(b => b.Loans)
                                     .Include(b => b.BookCopies)
-                                    .SingleOrDefault(b => b.Id == bookId);
-
-            int countIsAvailable = 0;
-
-            foreach (var item in book.BookCopies)
-            {
-                if (!item.IsLost)
-                {
-                    if (item.Loans.Any())
-                    {
-                        if (!(item.Loans.SingleOrDefault().Status == LoanStatus.Approved || item.Loans.SingleOrDefault().Status == LoanStatus.InProgress))
-                        {
-                            countIsAvailable++;
-                        }
-                    }
-                    else
-                    {
-                        countIsAvailable++;
-                    }
-                }
-            }
-
-            return countIsAvailable;
+                                    .SingleOrDefault(b => b.Id == bookId)
+                                    .BookCopies
+                                    .Count(bc => !bc.IsLost && 
+                                                 !(bc.Loans?.Any(l => l.Status == LoanStatus.Approved || 
+                                                                      l.Status == LoanStatus.InProgress) ?? true));
+           
+            return count;
         }
 
         public DateTime? GetEarliestAvailableDate(int bookId)
