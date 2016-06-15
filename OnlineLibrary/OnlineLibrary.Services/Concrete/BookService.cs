@@ -52,31 +52,6 @@ namespace OnlineLibrary.Services.Concrete
             }
 
             return countIsAvailable;
-
-            //// Determine not available book copies.
-            //var notAvailableBookCopies = (from b in _dbContext.Books
-            //                              join bc in _dbContext.BookCopies
-            //                              on b.Id equals bc.BookId
-            //                              join l in _dbContext.Loans
-            //                              on bc.Id equals l.BookCopyId
-            //                              where bc.BookId == bookId
-            //                                 && (l.Status == LoanStatus.Approved || l.Status == LoanStatus.InProgress)
-            //                              select bc).ToList();                                          
-
-            //// Obtain all book copies for the specified book.
-            //var allBookCopies = (from b in _dbContext.Books
-            //                     join bc in _dbContext.BookCopies
-            //                     on b.Id equals bc.BookId
-            //                     where b.Id == bookId
-            //                     select bc).ToList();                                             
-
-            //// Calculate the difference between the total number of book copies
-            //// and not available ones.
-            //int numberOfAvailableBookCopies = allBookCopies
-            //    .Except(notAvailableBookCopies)
-            //    .Count();
-
-            //return numberOfAvailableBookCopies;
         }
 
         public DateTime? GetEarliestAvailableDate(int bookId)
