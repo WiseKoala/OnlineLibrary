@@ -288,7 +288,10 @@ $(document).ready(function () {
                 newTd2.className = "col-sm-3";
 
                 var newTd3 = document.createElement("td");
-                newTd3.className = "col-sm-7";
+                newTd3.className = "col-sm-3";
+
+                var newTd4 = document.createElement("td");
+                newTd4.className = "col-sm-4";
 
                 var newDiv = document.createElement("div");
                 newDiv.className = "bookCopy"
@@ -329,10 +332,11 @@ $(document).ready(function () {
                 newDiv.appendChild(newInput);
                 newDiv.appendChild(bookCopySelect);
                 newTd2.appendChild(newDiv);
-                newTd3.appendChild(newRemoveButton);
+                newTd4.appendChild(newRemoveButton);
                 newTr.appendChild(newTd);
                 newTr.appendChild(newTd2);
                 newTr.appendChild(newTd3);
+                newTr.appendChild(newTd4);
 
                 $("#bookCopies table").append(newTr);
 

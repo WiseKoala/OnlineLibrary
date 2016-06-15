@@ -397,7 +397,7 @@ namespace OnlineLibrary.Web.Controllers
                             return View(model);
                         }
                     }
-                    else
+                    else if (bookcopy.Id != 0)
                     {
                         _librarianService.ChangeIsLostStatus(bookcopy.Id, bookcopy.IsLost);
                     }
