@@ -31,8 +31,8 @@ namespace OnlineLibrary.Services.Concrete
                                     .SingleOrDefault(b => b.Id == bookId)
                                     .BookCopies
                                     .Count(bc => !bc.IsLost && 
-                                                 !(bc.Loans?.Any(l => l.Status == LoanStatus.Approved || 
-                                                                      l.Status == LoanStatus.InProgress) ?? true));
+                                                 !(bc.Loans.Any(l => l.Status == LoanStatus.Approved || 
+                                                                     l.Status == LoanStatus.InProgress)));
            
             return count;
         }

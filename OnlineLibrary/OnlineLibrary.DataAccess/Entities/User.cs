@@ -2,7 +2,6 @@
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System;
 
 namespace OnlineLibrary.DataAccess.Entities
 {
