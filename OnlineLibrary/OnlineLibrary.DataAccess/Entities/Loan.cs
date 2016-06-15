@@ -32,8 +32,8 @@ namespace OnlineLibrary.DataAccess.Entities
         [DataType(DataType.Date)]
         public DateTime? ApprovingDate { get; set; }
 
-        public User User { get; set; }
-        public BookCopy BookCopy { get; set; }
-        public Book Book { get; set; }
+        public virtual User User { get; set; }
+        public virtual BookCopy BookCopy { get; set; }
+        public virtual Book Book { get; set; }
     }
 }
