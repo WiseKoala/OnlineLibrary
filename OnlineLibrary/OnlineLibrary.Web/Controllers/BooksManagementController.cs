@@ -379,7 +379,7 @@ namespace OnlineLibrary.Web.Controllers
 
                 foreach (var bookcopy in model.BookCopies)
                 {
-                    if (bookcopy.IsToBeDeleted == true && bookcopy.Id != 0)
+                    if (bookcopy.IsToBeDeleted == true && !IsNewBookCopy(bookcopy.Id))
                     {
                         try
                         {
@@ -397,7 +397,7 @@ namespace OnlineLibrary.Web.Controllers
                             return View(model);
                         }
                     }
-                    else if (bookcopy.Id != 0)
+                    else if (!IsNewBookCopy(bookcopy.Id))
                     {
                         _librarianService.ChangeIsLostStatus(bookcopy.Id, bookcopy.IsLost);
                     }
@@ -768,6 +768,10 @@ namespace OnlineLibrary.Web.Controllers
             }).ToList();
         }
 
+        private bool IsNewBookCopy(int bookcopyId)
+        {
+            return bookcopyId == 0;
+        }
         #endregion
     }
 }
