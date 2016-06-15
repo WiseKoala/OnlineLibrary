@@ -206,5 +206,20 @@ namespace OnlineLibrary.Web.Controllers
                 return Json(new { error = 1 });
             }
         }
+
+        [HttpGet]
+        public ActionResult GetBookCopyStatusByLoan(int? loanId)
+        {
+            Loan loan = DbContext.Loans.Include(l => l.BookCopy).Single(l => l.Id == loanId);
+
+            if (loan.BookCopy != null)
+            {
+                return Json(new { bookCondition = loan.BookCopy.Condition.ToString() }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { error = "There's no book copy associated with this loan." }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

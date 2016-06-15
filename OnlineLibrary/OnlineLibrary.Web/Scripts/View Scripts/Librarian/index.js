@@ -222,12 +222,12 @@
         var settings = {
             url: $(this).attr("data-url"),
             data: {
-                loanId: $("#returnLoanedBook").find('input[id="loanId"]').val(),
-                bookCondition: $("#returnLoanedBook .form-group").find('select[id="BookCondition"]').val()
+                loanId: $("#returnLoanedBookOptions").find('input[id="loanId"]').val(),
+                bookCondition: $("#returnLoanedBookOptions .form-group").find('select[id="BookCondition"]').val()
             },
             method: "POST",
             success: function (response) {
-                var itemToRemove = $('tr button[data-loan-id="' + $("#returnLoanedBook").find('input[id="loanId"]').val() + '"]').closest("tr");
+                var itemToRemove = $('tr button[data-loan-id="' + $("#returnLoanedBookOptions").find('input[id="loanId"]').val() + '"]').closest("tr");
                 itemToRemove.fadeOut(1000, function () { itemToRemove.remove(); });
 
                 toastr.options =
@@ -267,7 +267,7 @@
     });
 
     function resetBookConditionSelect() {
-        var selectList = $("#returnLoanedBook .form-group").find('select[id="BookCondition"]');
+        var selectList = $("#returnLoanedBookOptions .form-group").find('select[id="BookCondition"]');
         selectList.prop("selectedIndex", 0);
     }
 
@@ -292,13 +292,13 @@
             },
             error: function (jqXHR) {
                 toastr.options =
-                        {
-                            "closeButton": true,
-                            "onclick": null,
-                            "positionClass": "toast-bottom-right",
-                            "timeOut": 5000,
-                            "extendedTimeOut": 10000
-                        }
+                {
+                    "closeButton": true,
+                    "onclick": null,
+                    "positionClass": "toast-bottom-right",
+                    "timeOut": 5000,
+                    "extendedTimeOut": 10000
+                };
 
                 if (jqXHR.status == 404) {
                     toastr.error(jqXHR.responseJSON.error, jqXHR.statusText);
@@ -333,8 +333,35 @@
         });
 
         $(".return").click(function () {
+
+            // Set loan id into the hidden form input in the model window.
             var loanId = $(this).data('loanId');
-            $("#returnLoanedBook").find('input[id="loanId"]').attr("value",loanId);
+            $("#returnLoanedBookOptions").find('input[id="loanId"]').attr("value", loanId);
+
+            // Obtain book condition by loan ID.
+            var url = $("#loansInProgress").data("bookConditionByLoanUrl");
+
+            var settings = {
+                url: url,
+                method: "GET",
+                data: { loanId: loanId },
+                success: function (data) {
+                    $("#returnLoanedBookOptions").find("#currentBookConditionValue").text(data.bookCondition);
+                },
+                error: function (jqXHR) {
+                    toastr.options =
+                    {
+                        "closeButton": true,
+                        "onclick": null,
+                        "positionClass": "toast-bottom-right",
+                        "timeOut": 5000,
+                        "extendedTimeOut": 10000
+                    };
+                    toastr.error(jqXHR.responseJSON.error, "Error");
+                }
+            };
+
+            $.ajax(settings);
         });
 
         $(".lost").click(function () {
