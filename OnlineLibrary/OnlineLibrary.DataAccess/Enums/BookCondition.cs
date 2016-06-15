@@ -1,7 +1,15 @@
-﻿namespace OnlineLibrary.DataAccess.Enums
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace OnlineLibrary.DataAccess.Enums
 {
     public enum BookCondition
     {
-        New, Fine, VeryGood, Good, Fair, Poor
+        New,
+        Fine,
+        [Display(Name = "Very Good")]
+        VeryGood,
+        Good,
+        Fair,
+        Poor
     }
 }

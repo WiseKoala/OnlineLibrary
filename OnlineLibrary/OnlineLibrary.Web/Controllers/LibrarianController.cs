@@ -11,6 +11,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using OnlineLibrary.DataAccess.Entities;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -150,22 +152,18 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult ReturnBook(int loanId)
+        public ActionResult ReturnBook(int loanId, BookCondition? bookCondition)
         {
             try
             {
-                var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
-                _librarianService.ReturnBook(loanId, librarian);
-                return Json(new { success = 1 });
+                var librarian = DbContext.Users.Find(User.Identity.GetUserId());
+                _librarianService.ReturnBook(loanId, librarian, bookCondition);
+                return Json("The book has been successfully returned", JsonRequestBehavior.DenyGet);
             }
             catch (KeyNotFoundException ex)
             {
                 Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return Json(new { error = ex.Message });
-            }
-            catch
-            {
-                return Json(new { error = 1 });
             }
         }
 
@@ -209,6 +207,21 @@ namespace OnlineLibrary.Web.Controllers
             catch
             {
                 return Json(new { error = 1 });
+            }
+        }
+
+        [HttpGet]
+        public ActionResult GetBookCopyStatusByLoan(int? loanId)
+        {
+            Loan loan = DbContext.Loans.Include(l => l.BookCopy).Single(l => l.Id == loanId);
+
+            if (loan.BookCopy != null)
+            {
+                return Json(new { bookCondition = loan.BookCopy.Condition.ToString() }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { error = "There's no book copy associated with this loan." }, JsonRequestBehavior.AllowGet);
             }
         }
     }

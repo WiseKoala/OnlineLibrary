@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using OnlineLibrary.DataAccess.Enums;
 
 namespace OnlineLibrary.Web.Models.LibrarianLoansViewModels
 {
@@ -10,5 +12,8 @@ namespace OnlineLibrary.Web.Models.LibrarianLoansViewModels
         public byte PendingStatusValue { get; set; }
         public byte ApprovedStatusValue { get; set; }
         public byte InProgressStatusValue { get; set; }
+
+        [Display(Name = "New Book Condition")]
+        public BookCondition? BookCondition { get; set; }
     }
 }
