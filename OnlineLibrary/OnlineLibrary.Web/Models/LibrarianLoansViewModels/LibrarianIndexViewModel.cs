@@ -13,7 +13,7 @@ namespace OnlineLibrary.Web.Models.LibrarianLoansViewModels
         public byte ApprovedStatusValue { get; set; }
         public byte InProgressStatusValue { get; set; }
 
-        [Display(Name = "Book Condition")]
-        public BookCondition BookCondition { get; set; }
+        [Display(Name = "New Book Condition")]
+        public BookCondition? BookCondition { get; set; }
     }
 }

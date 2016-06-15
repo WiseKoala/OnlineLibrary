@@ -419,7 +419,7 @@
                     <input id="loanId" name="loanId" hidden="hidden" />
                     <div class="form-group">
                         @Html.LabelFor(m => m.BookCondition)
-                        @Html.EnumDropDownListFor(m => m.BookCondition, new { @class = "form-control" })
+                        @Html.EnumDropDownListFor(m => m.BookCondition, "Select Condition...", new { @class = "form-control" })
                     </div>
                     <button type="submit" class="btn btn-danger" data-dismiss="modal" data-url="@Url.Action("ReturnBook", "Librarian")">Confirm</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">No</button>

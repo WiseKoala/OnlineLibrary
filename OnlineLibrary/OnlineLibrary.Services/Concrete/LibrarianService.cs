@@ -6,6 +6,7 @@ using OnlineLibrary.Services.Abstract;
 using System;
 using System.Data.Entity;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -129,7 +130,7 @@ namespace OnlineLibrary.Services.Concrete
             }
         }
 
-        public void ReturnBook(int loanId, User librarian, BookCondition finalBookCondition)
+        public void ReturnBook(int loanId, User librarian, BookCondition? finalBookCondition)
         {
             var loan = _dbContext.Loans
                                 .Include(l => l.Book)
@@ -139,9 +140,17 @@ namespace OnlineLibrary.Services.Concrete
                                 .SingleOrDefault();
 
             var bookCopy = _dbContext.BookCopies.Find(loan.BookCopy.Id);
-            if (bookCopy != null)
+            if (bookCopy == null)
             {
-                bookCopy.Condition = finalBookCondition;
+                throw new KeyNotFoundException("Book Copy not found.");
+            }
+            else
+            {
+                // If new book copy condition was specified.
+                if (finalBookCondition.HasValue)
+                {
+                    bookCopy.Condition = finalBookCondition.Value;
+                }
             }
 
             var historyLoan = new History

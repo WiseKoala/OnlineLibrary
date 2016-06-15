@@ -152,7 +152,7 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult ReturnBook(int loanId, BookCondition bookCondition)
+        public ActionResult ReturnBook(int loanId, BookCondition? bookCondition)
         {
             try
             {

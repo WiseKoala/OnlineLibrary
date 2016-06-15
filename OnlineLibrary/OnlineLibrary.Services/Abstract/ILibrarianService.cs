@@ -13,7 +13,7 @@ namespace OnlineLibrary.Services.Abstract
 
         void CancelApprovedLoan(int loanId, User librarian);
 
-        void ReturnBook(int loanId, User librarian, BookCondition finalBookCondition);
+        void ReturnBook(int loanId, User librarian, BookCondition? finalBookCondition);
 
         void LostBook(int loanId, User librarian);
     }
