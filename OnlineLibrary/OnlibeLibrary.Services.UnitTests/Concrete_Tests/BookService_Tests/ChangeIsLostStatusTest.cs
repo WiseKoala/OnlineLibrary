@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using NSubstitute;
+﻿using NSubstitute;
 using NUnit.Framework;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.Services.Concrete;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 
 namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
 {
@@ -45,7 +45,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         public void Should_ChangeIsLostStatusToTrue_IfIsLostStatusIsFalse()
         {
             // Arrange.
-            var sut = new BookService(_dbContext);
+            var sut = new LibrarianService(_dbContext);
             var bookCopyId = 1;
             var isLost = true;
             var expectedResult = true;
@@ -62,7 +62,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         public void Should_ChangeIsLostStatusToFalse_IfIsLostStatusIsTrue()
         {
             // Arrange.
-            var sut = new BookService(_dbContext);
+            var sut = new LibrarianService(_dbContext);
             var bookCopyId = 2;
             var isLost = false;
             var expectedResult = false;
