@@ -192,5 +192,12 @@ namespace OnlineLibrary.Services.Concrete
             
             _dbContext.SaveChanges();
         }
+
+        public void ChangeIsLostStatus(int bookcopyId, bool isLost)
+        {
+            var bookcopy = _dbContext.BookCopies.Find(bookcopyId);
+            bookcopy.IsLost = isLost;
+            _dbContext.SaveChanges();
+        }
     }
 }

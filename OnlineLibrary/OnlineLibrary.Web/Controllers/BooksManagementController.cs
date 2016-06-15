@@ -22,11 +22,13 @@ namespace OnlineLibrary.Web.Controllers
     public class BooksManagementController : BaseController
     {
         private IBookService _bookService;
+        private ILibrarianService _librarianService;
 
-        public BooksManagementController(ILibraryDbContext dbContext, IBookService bookService)
+        public BooksManagementController(ILibraryDbContext dbContext, IBookService bookService ,ILibrarianService librarianService)
             : base(dbContext)
         {
             _bookService = bookService;
+            _librarianService = librarianService;
         }
 
         public ActionResult Index()
@@ -397,7 +399,7 @@ namespace OnlineLibrary.Web.Controllers
                     }
                     else
                     {
-                        _bookService.ChangeIsLostStatus(bookcopy.Id, bookcopy.IsLost);
+                        _librarianService.ChangeIsLostStatus(bookcopy.Id, bookcopy.IsLost);
                     }
                 }
 

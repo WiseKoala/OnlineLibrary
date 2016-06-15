@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using OnlineLibrary.DataAccess.Entities;
 using System.Security.Claims;

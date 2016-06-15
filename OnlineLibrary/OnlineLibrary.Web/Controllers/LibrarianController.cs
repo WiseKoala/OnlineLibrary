@@ -1,30 +1,27 @@
-﻿using System.Data.Entity;
-using System.Linq;
-using System.Web.Mvc;
-using OnlineLibrary.Common.Exceptions;
+﻿using OnlineLibrary.Common.Exceptions;
 using OnlineLibrary.DataAccess.Abstract;
-using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.Services.Abstract;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models.LibrarianLoansViewModels;
-using System.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.Entity;
+using System.Linq;
 using System.Net;
+using System.Web.Mvc;
 
 namespace OnlineLibrary.Web.Controllers
 {
     public class LibrarianController : BaseController
     {
         private ILibrarianService _librarianService;
-        private IBookService _bookService;
 
-        public LibrarianController(ILibraryDbContext dbContext, ILibrarianService librarianService, IBookService bookService)
+        public LibrarianController(ILibraryDbContext dbContext, ILibrarianService librarianService)
             : base(dbContext)
         {
             _librarianService = librarianService;
-            _bookService = bookService;
         }
 
         [Authorize(Roles = "Librarian, System administrator")]
@@ -180,12 +177,11 @@ namespace OnlineLibrary.Web.Controllers
                 var bookCopyId = DbContext.Loans.Find(loanId).BookCopyId;
                 if (bookCopyId != null)
                 {
-                    _bookService.ChangeIsLostStatus((int)bookCopyId, true);
+                    _librarianService.ChangeIsLostStatus((int)bookCopyId, true);
                 }
 
                 var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
                 _librarianService.MoveLostBookCopyToHistory(loanId, librarian);
-                
 
                 return Json(new { success = 1 });
             }
@@ -194,7 +190,6 @@ namespace OnlineLibrary.Web.Controllers
                 Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return Json(new { error = ex.Message });
             }
-
         }
 
         [HttpPost]
