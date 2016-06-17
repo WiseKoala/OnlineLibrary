@@ -77,7 +77,7 @@ namespace OnlineLibrary.DataAccess
             // Book items
             var bookCopies = new List<BookCopy>
             {
-                new BookCopy() { Id = 1, Condition = BookCondition.New , IsLost = true },           // Id = 1   <-- same book  
+                new BookCopy() { Id = 1, Condition = BookCondition.New, IsLost = true },           // Id = 1   <-- same book  
                 new BookCopy() { Id = 2, Condition = BookCondition.Poor },          // Id = 2   <--
                                  
                 new BookCopy() { Id = 3, Condition = BookCondition.New },           // Id = 3   <--
@@ -201,15 +201,6 @@ namespace OnlineLibrary.DataAccess
             // Add loans.
             var loans = new List<Loan>()
             {
-                new Loan
-                {
-                    BookCopyId = 1,
-                    BookId = 1,
-                    Status = LoanStatus.InProgress,
-                    UserId = "7937c4fb-1bbd-4ca8-af79-331c21d74328",
-                    StartDate = new DateTime(2016, 4, 25),
-                    ExpectedReturnDate = new DateTime(2016, 5, 9)
-                },
                 new Loan
                 {
                     BookCopyId = 2,
