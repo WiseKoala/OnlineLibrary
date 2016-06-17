@@ -150,31 +150,13 @@ namespace OnlineLibrary.Services.Concrete
                 if (finalBookCondition.HasValue)
                 {
                     bookCopy.Condition = finalBookCondition.Value;
+                    _dbContext.SaveChanges();
                 }
+                MoveBookCopyToHistory(loanId, librarian, finalBookCondition);
             }
-
-            var historyLoan = new History
-            {
-                UserName = loan.User.UserName,
-                ISBN = loan.Book.ISBN,
-                BookCopyId = loan.BookCopyId,
-                StartDate = loan.StartDate,
-                ActualReturnDate = DateTime.Now,
-                ExpectedReturnDate = loan.ExpectedReturnDate,
-                FinalBookCondition = finalBookCondition,
-                InitialBookCondition = loan.BookCopy.Condition,
-                LibrarianUserName = librarian.UserName,
-                Status = HistoryStatus.Completed
-            };
-
-            _dbContext.History.Add(historyLoan);
-
-            _dbContext.Loans.Remove(loan);
-
-            _dbContext.SaveChanges();
         }
 
-        public void MoveLostBookCopyToHistory(int loanId, User librarian)
+        public void MoveBookCopyToHistory(int loanId, User librarian, BookCondition? finalBookCondition)
         {
             var loan = _dbContext.Loans
                                  .Include(l => l.Book)
@@ -192,6 +174,7 @@ namespace OnlineLibrary.Services.Concrete
                 ActualReturnDate = DateTime.Now,
                 ExpectedReturnDate = loan.ExpectedReturnDate,
                 InitialBookCondition = loan.BookCopy.Condition,
+                FinalBookCondition = finalBookCondition,
                 LibrarianUserName = librarian.UserName,
                 Status = HistoryStatus.LostBook
             };

@@ -10,7 +10,7 @@ namespace OnlineLibrary.Services.Abstract
         void PerformLoan(int loanId);
         void CancelApprovedLoan(int loanId, User librarian);
         void ReturnBook(int loanId, User librarian, BookCondition? finalBookCondition);
-        void MoveLostBookCopyToHistory(int loanId, User librarian);
+        void MoveBookCopyToHistory(int loanId, User librarian, BookCondition? finalBookCondition);
         void ChangeIsLostStatus(int bookcopyId, bool isLost);
     }
 }

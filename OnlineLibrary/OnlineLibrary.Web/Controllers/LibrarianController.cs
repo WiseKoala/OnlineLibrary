@@ -179,7 +179,7 @@ namespace OnlineLibrary.Web.Controllers
                 }
 
                 var librarian = DbContext.Users.Where(u => u.UserName == User.Identity.Name).Single();
-                _librarianService.MoveLostBookCopyToHistory(loanId, librarian);
+                _librarianService.MoveBookCopyToHistory(loanId, librarian, null);
 
                 return Json(new { success = 1 });
             }
