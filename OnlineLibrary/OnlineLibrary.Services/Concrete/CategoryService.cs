@@ -135,7 +135,7 @@ namespace OnlineLibrary.Services.Concrete
             // Try to find category with the same name.
             string trimmedName = name.Trim();
             bool duplicateExists = _dbContext.Categories
-                .Any(c => c.Name.ToLower() == trimmedName.ToLower());
+                .Any(c => string.Compare(c.Name, trimmedName, true) == 0);
 
             if (duplicateExists)
             {
@@ -161,7 +161,7 @@ namespace OnlineLibrary.Services.Concrete
             // to the specified category.
             string trimmedName = name.Trim();
             bool duplicateExists = category.SubCategories
-                .Any(sc => sc.Name.ToLower() == trimmedName.ToLower());
+                .Any(sc => string.Compare(sc.Name, trimmedName, true) == 0);
 
             if (duplicateExists)
             {
