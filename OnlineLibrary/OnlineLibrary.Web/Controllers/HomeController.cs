@@ -28,8 +28,14 @@ namespace OnlineLibrary.Web.Controllers
         {
             InitializeUserNameSessionVariable();
 
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult GetBooks(BookSearchViewModel searchModel)
+        {
             IEnumerable<BookViewModel> booksList = null;
-            if (model.SearchData == null)
+            if (searchModel == null)
             {
                 // Retreive list of all books.
                 booksList = DbContext.Books
@@ -57,7 +63,7 @@ namespace OnlineLibrary.Web.Controllers
             }
             else
             {
-                BookSearchViewModel searchViewModel = model.SearchData;
+                BookSearchViewModel searchViewModel = searchModel;
                 var searchServiceModel = new BookSearchServiceModel()
                 {
                     Author = searchViewModel.Author,
@@ -88,22 +94,7 @@ namespace OnlineLibrary.Web.Controllers
                 });
             }
 
-            // Craft the view model object.
-            var viewModel = new BooksListViewModel()
-            {
-                Books = booksList,
-                SearchData = new BookSearchViewModel
-                {
-                    Categories = GetCategories()
-                }
-            };
-
-            if (model.SearchData != null)
-            {
-                viewModel.SearchData.Subcategories = model.SearchData.Subcategories = GetSubcategories(model.SearchData.CategoryId);
-            }
-
-            return View(viewModel);
+            return Json(booksList, JsonRequestBehavior.AllowGet);
         }
 
         private List<SelectListItem> GetCategories()
