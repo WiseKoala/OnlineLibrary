@@ -11,10 +11,10 @@
 
 /* Loans tables */
 .loans-table col:nth-child(1) { width: 20%; }
-.loans-table col:nth-child(2) { width: 60%; }
+.loans-table col:nth-child(2) { width: 40%; }
 .loans-table col:nth-child(3) { width: 20%; }
+.loans-table col:nth-child(4) { width: 20%; }
 
-.loans-table.approved-table col:nth-child(2) { width: 40%; }
 .late-approved-loan-sign { color: #FF1414; }
 
 /* Approve loan modal window form */
