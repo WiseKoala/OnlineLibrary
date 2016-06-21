@@ -15,5 +15,6 @@ namespace OnlineLibrary.Web.Models.HomeViewModels
         public DateTime PublishDate { get; set; }
         public IEnumerable<CategoryViewModel> Categories { get; set; }
         public string Description { get; set; }
+        public string BookLink { get; set; }
     }
 }

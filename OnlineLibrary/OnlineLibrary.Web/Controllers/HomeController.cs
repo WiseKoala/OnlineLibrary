@@ -24,11 +24,14 @@ namespace OnlineLibrary.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult Index(BooksListViewModel model)
+        public ActionResult Index()
         {
             InitializeUserNameSessionVariable();
 
-            return View();
+            var model = new BookSearchViewModel();
+            model.Categories = GetCategories();
+            
+            return View(model);
         }
 
         [HttpGet]
@@ -49,7 +52,7 @@ namespace OnlineLibrary.Web.Controllers
                     ISBN = b.ISBN,
                     Title = b.Title,
                     PublishDate = b.PublishDate,
-                    FrontCover = b.FrontCover,
+                    FrontCover = Url.Content(b.FrontCover),
                     Authors = b.Authors.Select(a =>
                         string.Join(" ", a.FirstName, (a.MiddleName ?? ""), a.LastName)),
                     Categories = b.SubCategories.Select(sc => new CategoryViewModel
@@ -57,7 +60,8 @@ namespace OnlineLibrary.Web.Controllers
                         Category = sc.Category.Name,
                         SubCategory = sc.Name
                     }),
-                    Description = b.Description
+                    Description = b.Description,
+                    BookLink = Url.RouteUrl("Default", new { controller = "BookDetails", action = "Index", id = b.Id })
                 })
                 .ToList();
             }

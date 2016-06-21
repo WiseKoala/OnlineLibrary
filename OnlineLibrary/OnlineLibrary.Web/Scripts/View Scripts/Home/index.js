@@ -1,5 +1,28 @@
 ﻿$(document).ready(function () {
 
+    function BooksViewModel() {
+        var self = this;
+        self.books = ko.observableArray([]);
+
+    }
+
+    // Activate knockout.js
+    var viewModel = new BooksViewModel();
+    ko.applyBindings(viewModel);
+
+    (function loadBooks() {
+
+        var settings = {
+            type: "GET",
+            data:{ searchModel: null},
+            success: function (jqXHR) {
+                ko.mapping.fromJS(jqXHR, {}, viewModel.books);
+          }   
+        };
+        $.ajax("/Home/GetBooks/", settings);
+
+    })();
+
     $(".datepicker").datepicker({
         dateFormat: "mm/dd/yy",
         changeMonth: true,
