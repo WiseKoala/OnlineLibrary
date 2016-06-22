@@ -2,26 +2,54 @@
 
     function BooksViewModel() {
         var self = this;
-        self.books = ko.observableArray([]);
-
+        self.Books = ko.observableArray([]);
+        self.FirstPage = ko.observable(1);
+        self.NumberOfPages = ko.observable();
+        self.CurrentPage = ko.observable(1);
     }
 
     // Activate knockout.js
     var viewModel = new BooksViewModel();
     ko.applyBindings(viewModel);
 
-    (function loadBooks() {
+    function loadBooks() {
+        $.ajax(
+             {
+                 url: '/Home/GetBooks',
+                 dataType: 'json',
+                 data: $("#searchFilters").serialize(),
+                 type: 'GET',
+                 success: function (result) {
+                     ko.mapping.fromJS(result, {}, viewModel);
+                 }
+             });
+    }
 
-        var settings = {
-            type: "GET",
-            data:{ searchModel: null},
-            success: function (jqXHR) {
-                ko.mapping.fromJS(jqXHR, {}, viewModel.books);
-          }   
-        };
-        $.ajax("/Home/GetBooks/", settings);
+    // Set initial page number in request form.
+    $("#page-number").val(viewModel.FirstPage());
 
-    })();
+    // Load all books when page is refreshed.
+    loadBooks()
+
+    function loadPreviousPage() {
+        var requetedPage = viewModel.CurrentPage() - 1;
+        // Set page number in request form.
+        $("#page-number").val(requetedPage);
+        viewModel.CurrentPage(requetedPage);
+        loadBooks();
+    }
+
+    function loadNextPage() {
+        var requetedPage = viewModel.CurrentPage() + 1;
+        // Set page number in request form.
+        $("#page-number").val(requetedPage);
+        viewModel.CurrentPage(requetedPage);
+        loadBooks();
+    }
+    
+    $("#previous-page").click(loadPreviousPage)
+    $("#next-page").click(loadNextPage);
+    $("#search-button").click(loadBooks);
 
     $(".datepicker").datepicker({
         dateFormat: "mm/dd/yy",
@@ -61,14 +89,15 @@
         $.ajax(settings);
     });
 
-    $("#toggleSearch").click(function () {
-        if ($(this).find("span").hasClass("glyphicon-chevron-down")) {
-            $(this).find("span").removeClass("glyphicon glyphicon-chevron-down");
-            $(this).find("span").addClass("glyphicon glyphicon-chevron-up");
-        }
-        else {
-            $(this).find("span").removeClass("glyphicon glyphicon-chevron-up");
-            $(this).find("span").addClass("glyphicon glyphicon-chevron-down");
-        }
-    });
+$("#toggleSearch").click(function () {
+    if ($(this).find("span").hasClass("glyphicon-chevron-down")) {
+        $(this).find("span").removeClass("glyphicon glyphicon-chevron-down");
+        $(this).find("span").addClass("glyphicon glyphicon-chevron-up");
+    }
+    else {
+        $(this).find("span").removeClass("glyphicon glyphicon-chevron-up");
+        $(this).find("span").addClass("glyphicon glyphicon-chevron-down");
+    }
 });
+});
+

@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web.Mvc;
-using OnlineLibrary.DataAccess.Abstract;
+﻿using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Services.Abstract;
 using OnlineLibrary.Services.Models;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models.HomeViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -30,75 +28,55 @@ namespace OnlineLibrary.Web.Controllers
 
             var model = new BookSearchViewModel();
             model.Categories = GetCategories();
-            
+
             return View(model);
         }
 
         [HttpGet]
         public JsonResult GetBooks(BookSearchViewModel searchModel)
         {
-            IEnumerable<BookViewModel> booksList = null;
-            if (searchModel == null)
-            {
-                // Retreive list of all books.
-                booksList = DbContext.Books
-                .Include(b => b.Authors)
-                .Include(b => b.SubCategories)
-                .Include("SubCategories.Category")
-                .ToList()
-                .Select(b => new BookViewModel
-                {
-                    Id = b.Id,
-                    ISBN = b.ISBN,
-                    Title = b.Title,
-                    PublishDate = b.PublishDate,
-                    FrontCover = Url.Content(b.FrontCover),
-                    Authors = b.Authors.Select(a =>
-                        string.Join(" ", a.FirstName, (a.MiddleName ?? ""), a.LastName)),
-                    Categories = b.SubCategories.Select(sc => new CategoryViewModel
-                    {
-                        Category = sc.Category.Name,
-                        SubCategory = sc.Name
-                    }),
-                    Description = b.Description,
-                    BookLink = Url.RouteUrl("Default", new { controller = "BookDetails", action = "Index", id = b.Id })
-                })
-                .ToList();
-            }
-            else
-            {
-                BookSearchViewModel searchViewModel = searchModel;
-                var searchServiceModel = new BookSearchServiceModel()
-                {
-                    Author = searchViewModel.Author,
-                    Description = searchViewModel.Description,
-                    ISBN = searchViewModel.ISBN,
-                    PublishDate = searchViewModel.PublishDate,
-                    Title = searchViewModel.Title,
-                    CategoryId = searchViewModel.CategoryId,
-                    SubcategoryId = searchViewModel.SubcategoryId
-                };
+            int itemPerPage = 2;
 
-                IEnumerable<Book> foundBooks = _bookService.Find(searchServiceModel);
-                booksList = foundBooks.Select(b => new BookViewModel
-                {
-                    Id = b.Id,
-                    ISBN = b.ISBN,
-                    Title = b.Title,
-                    PublishDate = b.PublishDate,
-                    FrontCover = b.FrontCover,
-                    Authors = b.Authors.Select(a =>
+            var searchServiceModel = new BookSearchServiceModel()
+            {
+                Author = searchModel.Author,
+                Description = searchModel.Description,
+                ISBN = searchModel.ISBN,
+                PublishDate = searchModel.PublishDate,
+                Title = searchModel.Title,
+                CategoryId = searchModel.CategoryId,
+                SubcategoryId = searchModel.SubcategoryId,
+                ItemPerPage = itemPerPage,
+                PageNumber = searchModel.PageNumber,
+            };
+
+            var findResult = _bookService.Find(searchServiceModel);
+            var booksList = findResult.Books.Select(b => new BookViewModel
+            {
+                Id = b.Id,
+                ISBN = b.ISBN,
+                Title = b.Title,
+                PublishDate = b.PublishDate.ToShortDateString(),
+                FrontCover = Url.Content(b.FrontCover),
+                Authors = b.Authors.Select(a =>
                             string.Join(" ", a.FirstName, (a.MiddleName ?? ""), a.LastName)),
-                    Categories = b.SubCategories.Select(sc => new CategoryViewModel
-                    {
-                        Category = sc.Category.Name,
-                        SubCategory = sc.Name
-                    }),
-                    Description = b.Description
-                });
-            }
+                Categories = b.SubCategories.Select(sc => new CategoryViewModel
+                {
+                    Category = sc.Category.Name,
+                    SubCategory = sc.Name
+                }),
+                Description = b.Description,
+                BookLink = Url.RouteUrl("Default", new { controller = "BookDetails", action = "Index", id = b.Id })
+            }).ToList();
 
-            return Json(booksList, JsonRequestBehavior.AllowGet);
+
+            var bookListViewModel = new BooksListViewModel()
+            {
+                NumberOfPages = (int)Math.Ceiling((double)findResult.NumberOfBooks / itemPerPage),
+                Books = booksList,
+            };
+
+            return Json(bookListViewModel, JsonRequestBehavior.AllowGet);
         }
 
         private List<SelectListItem> GetCategories()

@@ -36,5 +36,7 @@ namespace OnlineLibrary.Web.Models.HomeViewModels
         public int? SubcategoryId { get; set; }
 
         public IEnumerable<SelectListItem> Subcategories { get; set; }
+
+        public int PageNumber { get; set; }
     }
 }

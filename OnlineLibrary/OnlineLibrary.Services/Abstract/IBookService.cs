@@ -15,7 +15,7 @@ namespace OnlineLibrary.Services.Abstract
         bool IsBookCopyRemovable(int id);
         Book DeleteBook(int id);
         string FormatISBN(string ISBN);
-        IEnumerable<Book> Find(BookSearchServiceModel model);
+        BookPaginationModel Find(BookSearchServiceModel model);
         bool IsValidISBN(string ISBN);
     }
 }
