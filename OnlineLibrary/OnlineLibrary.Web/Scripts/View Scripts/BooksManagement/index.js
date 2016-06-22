@@ -36,15 +36,21 @@
 
     loadData(viewModel.currentPage());
 
-    $("#prevButton").click(function (e) {
-        loadData(viewModel.currentPage() - 1);
-        viewModel.currentPage(viewModel.currentPage() - 1);
+    function switchToPage(pageNumber) {
+        loadData(pageNumber);
+        viewModel.currentPage(pageNumber);
         $("html, body").animate({ scrollTop: 0 }, "slow");
+
+        $("#booksList tbody").fadeOut(function () {
+            $("#booksList tbody").fadeIn();
+        });
+    }
+
+    $("#prevButton").click(function (e) {
+        switchToPage(viewModel.currentPage() - 1);
     });
 
     $("#nextButton").click(function (e) {
-        loadData(viewModel.currentPage() + 1);
-        viewModel.currentPage(viewModel.currentPage() + 1);
-        $("html, body").animate({ scrollTop: 0 }, "slow");
+        switchToPage(viewModel.currentPage() + 1);
     });
 });
