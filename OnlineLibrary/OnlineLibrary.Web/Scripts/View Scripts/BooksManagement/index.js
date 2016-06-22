@@ -39,10 +39,12 @@
     $("#prevButton").click(function (e) {
         loadData(viewModel.currentPage() - 1);
         viewModel.currentPage(viewModel.currentPage() - 1);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
     });
 
     $("#nextButton").click(function (e) {
         loadData(viewModel.currentPage() + 1);
         viewModel.currentPage(viewModel.currentPage() + 1);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
     });
 });
