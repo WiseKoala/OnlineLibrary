@@ -306,7 +306,7 @@
     <Content Include="Content\toastr.css" />
     <Content Include="Content\toastr.min.css" />
     <Content Include="Content\Views stylesheets\BlueTheme.css" />
-    <Content Include="Content\Views stylesheets\BookDetails\Index.css" />
+    <Content Include="Content\Views stylesheets\BookDetails\Show.css" />
     <Content Include="Content\Views stylesheets\BooksManagement\CreateEdit.css" />
     <Content Include="Content\Views stylesheets\BooksManagement\Index.css" />
     <Content Include="Content\Views stylesheets\CategoriesManagement\Index.css" />
@@ -345,7 +345,7 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\toastr.js" />
     <Content Include="Scripts\toastr.min.js" />
-    <Content Include="Scripts\View Scripts\BookDetails\Index.js" />
+    <Content Include="Scripts\View Scripts\BookDetails\Show.js" />
     <Content Include="Scripts\View Scripts\BooksManagement\CreateEdit.js" />
     <Content Include="Scripts\View Scripts\BooksManagement\DeleteBook.js" />
     <Content Include="Scripts\View Scripts\BooksManagement\index.js" />
