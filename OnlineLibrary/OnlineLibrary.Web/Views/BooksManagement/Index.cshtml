@@ -26,7 +26,7 @@
             <td>
                 <img data-bind="attr: { src: FrontCover }" width="100" alt="Book cover" />
             </td>
-            <td><a data-bind="attr: { href: '@Url.Action("Index", "BookDetails")/' + Id }, text: Title"></a></td>
+            <td><a data-bind="attr: { href: '@Url.Action("Show", "BookDetails")/' + Id }, text: Title"></a></td>
             <td data-bind="text: ISBN"></td>
             <td data-bind="text: PublishDate"></td>
             <td class="text-center">

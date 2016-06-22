@@ -373,7 +373,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
     <Content Include="Views\Account\Authorize.cshtml" />
-    <Content Include="Views\BookDetails\Index.cshtml" />
+    <Content Include="Views\BookDetails\Show.cshtml" />
     <Content Include="Views\Librarian\Index.cshtml" />
     <Content Include="Views\UserLoans\MyLoans.cshtml" />
     <Content Include="Views\BooksManagement\Index.cshtml" />
