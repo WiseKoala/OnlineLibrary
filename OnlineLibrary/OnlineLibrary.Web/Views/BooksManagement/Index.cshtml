@@ -11,7 +11,9 @@
 
 @Html.ActionLink("Add a new book", "CreateEdit", "BooksManagement", new { id = 0 }, new { @class = "btn btn-primary" })
 
-<table id="booksList" class="table table-hover" data-get-books-url="@Url.Action("GetBooks", "BooksManagement")">
+<p data-bind="visible: books().length == 0">No books found...</p>
+
+<table id="booksList" class="table table-hover" data-bind="visible: books().length > 0" data-get-books-url="@Url.Action("GetBooks", "BooksManagement")">
     <thead>
         <tr>
             <th class="col-xs-1"></th>
