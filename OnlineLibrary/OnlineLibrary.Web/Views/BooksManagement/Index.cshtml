@@ -43,6 +43,19 @@
         </tr>
     </tbody>
 </table>
+<nav>
+    <ul class="books-pager">
+        <li>
+            <button id="prevButton" class="btn btn-default" data-bind="disable: currentPage() == 1"><span class="glyphicon glyphicon-arrow-left"></span></button>
+        </li>
+        <li>
+            <strong data-bind="text: currentPage"></strong> of <strong data-bind="text: totalPages"></strong>
+        </li>
+        <li>
+            <button id="nextButton" class="btn btn-default" data-bind="disable: currentPage() == totalPages()"><span class="glyphicon glyphicon-arrow-right"></span></button>
+        </li>
+    </ul>
+</nav>
 
 <!-- Remove Modal -->
 <div class="modal fade" id="remove-modal" tabindex="-1" role="dialog" aria-labelledby="removeModalLabel">

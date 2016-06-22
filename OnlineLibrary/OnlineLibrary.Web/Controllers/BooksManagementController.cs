@@ -57,7 +57,9 @@ namespace OnlineLibrary.Web.Controllers
                                      Title = b.Title
                                  });
 
-            return Json(books, JsonRequestBehavior.AllowGet);
+            int totalPages = (int)Math.Ceiling(DbContext.Books.Count() / (double)pageSize);
+
+            return Json(new { books = books, totalPages = totalPages }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]

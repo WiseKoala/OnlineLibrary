@@ -4,21 +4,27 @@
         var self = this;
 
         self.books = ko.observableArray([]);
+        self.currentPage = ko.observable(1);
+        self.totalPages = ko.observable();
     }
 
     // Activate knockout.js
     var viewModel = new BooksViewModel();
     ko.applyBindings(viewModel);
 
-    function loadData() {
+    function loadData(pageNumber) {
         var settings = {
             url: $("#booksList").first().data("getBooksUrl"),
             method: "GET",
-            data: { pageNumber: 1 },
-            success: function (books) {
-                for (var i = 0; i < books.length; i++) {
-                    viewModel.books.push(books[i]);
+            data: { pageNumber: pageNumber },
+            success: function (data) {
+                viewModel.books.removeAll();
+
+                for (var i = 0; i < data.books.length; i++) {
+                    viewModel.books.push(data.books[i]);
                 }
+
+                viewModel.totalPages(data.totalPages);
             },
             error: function () {
                 alert('Error');
@@ -28,5 +34,15 @@
         $.ajax(settings);
     }
 
-    loadData();
+    loadData(viewModel.currentPage());
+
+    $("#prevButton").click(function (e) {
+        loadData(viewModel.currentPage() - 1);
+        viewModel.currentPage(viewModel.currentPage() - 1);
+    });
+
+    $("#nextButton").click(function (e) {
+        loadData(viewModel.currentPage() + 1);
+        viewModel.currentPage(viewModel.currentPage() + 1);
+    });
 });
