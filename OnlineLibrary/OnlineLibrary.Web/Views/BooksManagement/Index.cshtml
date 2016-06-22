@@ -1,6 +1,4 @@
-﻿@using OnlineLibrary.Web.Models.BooksManagement
-@model IEnumerable<BookManagementViewModel>
-@{
+﻿@{
     ViewBag.Title = "Book List";
 }
 
@@ -13,7 +11,7 @@
 
 @Html.ActionLink("Add a new book", "CreateEdit", "BooksManagement", new { id = 0 }, new { @class = "btn btn-primary" })
 
-<table class="table table-hover">
+<table id="booksList" class="table table-hover" data-get-books-url="@Url.Action("GetBooks", "BooksManagement")">
     <thead>
         <tr>
             <th class="col-xs-1"></th>
@@ -23,28 +21,26 @@
             <th class="col-xs-3"></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var book in Model)
-        {
-            <tr class ="tr-to-remove" id="book@(book.Id)">
-                <td>
-                    <img src="@Url.Content(book.FrontCover)" width="100" alt="Book cover" />
-                </td>
-                <td>@Html.ActionLink(book.Title, "Index", "BookDetails", new { id = book.Id }, null)</td>
-                <td>@book.ISBN</td>
-                <td>@book.PublishDate.ToShortDateString()</td>
-                <td class="text-center">
-                    <a href="@Url.Action("CreateEdit", "BooksManagement", new { id = book.Id })" class="btn btn-primary btn-sm">
-                        Edit
-                    </a>
-                    
-                    <!-- Remove Modal Trigger Button -->
-                    <button type="button" class="btn btn-danger btn-sm pass-id-to-remove" data-toggle="modal" data-target="#remove-modal" data-book-id="@book.Id">
-                        Remove
-                    </button>
-                </td>
-            </tr>
-        }
+    <tbody data-bind="foreach: books">
+        <tr class ="tr-to-remove" data-bind="attr: { id: Id }">
+            <td>
+                <img data-bind="attr: { src: FrontCover }" width="100" alt="Book cover" />
+            </td>
+            <td><a data-bind="attr: { href: '@Url.Action("Index", "BookDetails")/' + Id }, text: Title"></a></td>
+            <td data-bind="text: ISBN"></td>
+            <td data-bind="text: PublishDate"></td>
+            <td class="text-center">
+                <a data-bind="attr: { href: '@Url.Action("CreateEdit", "BooksManagement")/' + Id }" class="btn btn-primary btn-sm">
+                    Edit
+                </a>
+                
+                <!-- Remove Modal Trigger Button -->
+                <button type="button" class="btn btn-danger btn-sm pass-id-to-remove" data-toggle="modal" data-target="#remove-modal" 
+                        data-bind="attr: { 'data-book-id' : Id }">
+                    Remove
+                </button>
+            </td>
+        </tr>
     </tbody>
 </table>
 
@@ -68,6 +64,8 @@
 </div>
 
 @section scripts{
+    <script src="~/Scripts/knockout-3.4.0.js"></script>
     <script src="~/Scripts/View Scripts/BooksManagement/DeleteBook.js"></script>
+    <script src="~/Scripts/View Scripts/BooksManagement/index.js"></script>
     <script src="~/Scripts/toastr.min.js"></script>
 }
