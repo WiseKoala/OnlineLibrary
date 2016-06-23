@@ -62,8 +62,8 @@
             viewModel.currentPage(this.params.currentPage);
             $("html, body").animate({ scrollTop: 0 }, "slow");
             
-            $("#booksList tbody").fadeOut(function () {
-                $("#booksList tbody").fadeIn();
+            $("#booksList tbody").fadeOut(100, function () {
+                $("#booksList tbody").fadeIn(1000);
             });
         })
     }).run();
