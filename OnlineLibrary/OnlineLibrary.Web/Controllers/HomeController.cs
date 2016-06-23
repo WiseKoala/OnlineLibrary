@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using System.Configuration;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -35,7 +36,7 @@ namespace OnlineLibrary.Web.Controllers
         [HttpGet]
         public JsonResult GetBooks(BookSearchViewModel searchModel)
         {
-            int itemPerPage = 2;
+            int itemPerPage = Int32.Parse(ConfigurationManager.AppSettings["PageSize"]);
 
             var searchServiceModel = new BookSearchServiceModel()
             {
