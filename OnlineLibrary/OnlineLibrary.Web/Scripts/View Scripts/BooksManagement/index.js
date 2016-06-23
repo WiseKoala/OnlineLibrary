@@ -37,20 +37,26 @@
     loadData(viewModel.currentPage());
 
     function switchToPage(pageNumber) {
-        loadData(pageNumber);
-        viewModel.currentPage(pageNumber);
-        $("html, body").animate({ scrollTop: 0 }, "slow");
-
-        $("#booksList tbody").fadeOut(function () {
-            $("#booksList tbody").fadeIn();
-        });
+        location.hash = pageNumber;
     }
 
     $("#prevButton").click(function (e) {
-        switchToPage(viewModel.currentPage() - 1);
+        switchToPage(parseInt(viewModel.currentPage()) - 1);
     });
 
     $("#nextButton").click(function (e) {
-        switchToPage(viewModel.currentPage() + 1);
+        switchToPage(parseInt(viewModel.currentPage()) + 1);
     });
+
+    Sammy(function () {
+        this.get('#:currentPage', function () {
+            loadData(this.params.currentPage);
+            viewModel.currentPage(this.params.currentPage);
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            
+            $("#booksList tbody").fadeOut(function () {
+                $("#booksList tbody").fadeIn();
+            });
+        })
+    }).run();
 });
