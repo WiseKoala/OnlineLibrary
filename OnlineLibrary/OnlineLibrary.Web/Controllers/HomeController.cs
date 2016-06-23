@@ -67,7 +67,7 @@ namespace OnlineLibrary.Web.Controllers
                     SubCategory = sc.Name
                 }),
                 Description = b.Description,
-                BookLink = Url.RouteUrl("Default", new { controller = "BookDetails", action = "Index", id = b.Id })
+                BookLink = Url.RouteUrl("Default", new { controller = "BookDetails", action = "Show", id = b.Id })
             }).ToList();
 
 

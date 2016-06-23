@@ -28,28 +28,35 @@
     // Set initial page number in request form.
     $("#page-number").val(viewModel.FirstPage());
 
-    // Load all books when page is refreshed.
-    loadBooks()
-
-    function loadPreviousPage() {
-        var requetedPage = viewModel.CurrentPage() - 1;
-        // Set page number in request form.
-        $("#page-number").val(requetedPage);
-        viewModel.CurrentPage(requetedPage);
-        loadBooks();
+    function switchToPage(pageNumber) {
+        location.hash = pageNumber;
     }
 
-    function loadNextPage() {
-        var requetedPage = viewModel.CurrentPage() + 1;
-        // Set page number in request form.
-        $("#page-number").val(requetedPage);
-        viewModel.CurrentPage(requetedPage);
-        loadBooks();
-    }
-    
-    $("#previous-page").click(loadPreviousPage)
-    $("#next-page").click(loadNextPage);
-    $("#search-button").click(loadBooks);
+    $("#previous-page").click(function (e) {
+        switchToPage(parseInt(viewModel.CurrentPage()) - 1);
+    });
+
+    $("#next-page").click(function (e) {
+        switchToPage(parseInt(viewModel.CurrentPage()) + 1);
+    });
+
+    $("#search-button").click(function () {
+        switchToPage(viewModel.FirstPage());
+    });
+
+    Sammy(function () {
+        this.get('#:CurrentPage', function () {
+
+            viewModel.CurrentPage(this.params.CurrentPage);
+            $("#page-number").val(this.params.CurrentPage);
+            loadBooks();
+
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            $(".BookList").fadeOut(100, function () {
+                $(".BookList").fadeIn(1000);
+            });
+        })
+    }).run();
 
     $(".datepicker").datepicker({
         dateFormat: "mm/dd/yy",
