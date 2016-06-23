@@ -6,6 +6,14 @@
         self.books = ko.observableArray([]);
         self.currentPage = ko.observable(1);
         self.totalPages = ko.observable();
+
+        self.CopyBookIdToConfirmButton = function (book) {
+            $("#removeBookConfirmButton").data("bookIdToRemove", book.Id);
+        };
+
+        self.rowFadeOut = function (element) {
+            $(element).fadeOut(1000);
+        }
     }
 
     // Activate knockout.js
@@ -59,4 +67,48 @@
             });
         })
     }).run();
+
+    $('#removeBookConfirmButton').click(function () {
+        var settings = {
+            url: $(this).data("url"),
+            data: { 'id': $(this).data("bookIdToRemove") },
+            method: "POST",
+            success: function (removedBook) {
+                // Remove book from the model object.
+                viewModel.books.remove(function (book) {
+                    return book.Id == removedBook.Id;
+                });
+
+                // Show toastr notification.
+                toastr.options =
+                    {
+                        "closeButton": true,
+                        "onclick": null,
+                        "positionClass": "toast-bottom-right",
+                        "timeOut": 5000,
+                        "extendedTimeOut": 10000
+                    }
+                toastr.success('The book with ISBN ' + removedBook.ISBN +
+                    ' has been successfully deleted. All it\'s book copies were also removed.', 'Success!');
+            },
+
+            error: function (jqXHR) {
+                toastr.options = {
+                    "closeButton": true,
+                    "onclick": null,
+                    "positionClass": "toast-bottom-right",
+                    "timeOut": 5000,
+                    "extendedTimeOut": 10000
+                }
+
+                if (jqXHR.status == 404 || jqXHR.status == 400) {
+                    toastr.error(jqXHR.responseJSON.error, jqXHR.statusText);
+                }
+                else {
+                    toastr.error("An error has occured.", "Error.");
+                }
+            }
+        };
+        $.ajax(settings);
+    });
 });

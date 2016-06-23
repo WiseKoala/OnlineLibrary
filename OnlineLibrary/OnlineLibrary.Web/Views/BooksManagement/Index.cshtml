@@ -23,7 +23,7 @@
             <th class="col-xs-3"></th>
         </tr>
     </thead>
-    <tbody data-bind="foreach: books">
+    <tbody data-bind="foreach: { data: books, beforeRemove: rowFadeOut }">
         <tr class ="tr-to-remove" data-bind="attr: { id: Id }">
             <td>
                 <img data-bind="attr: { src: FrontCover }" width="100" alt="Book cover" />
@@ -37,8 +37,8 @@
                 </a>
                 
                 <!-- Remove Modal Trigger Button -->
-                <button type="button" class="btn btn-danger btn-sm pass-id-to-remove" data-toggle="modal" data-target="#remove-modal" 
-                        data-bind="attr: { 'data-book-id' : Id }">
+                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#remove-modal" 
+                        data-bind="click: $root.CopyBookIdToConfirmButton">
                     Remove
                 </button>
             </td>
@@ -72,7 +72,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
-                <button type="button" class="btn btn-danger remove-book" id="pass-id-to-remove-here" data-url="@Url.Action("DeleteBook", "BooksManagement")" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-danger" id="removeBookConfirmButton" data-url="@Url.Action("DeleteBook", "BooksManagement")" data-dismiss="modal">Yes</button>
             </div>
         </div>
     </div>
@@ -81,7 +81,6 @@
 @section scripts{
     <script src="~/Scripts/sammy-0.7.5.min.js"></script>
     <script src="~/Scripts/knockout-3.4.0.js"></script>
-    <script src="~/Scripts/View Scripts/BooksManagement/DeleteBook.js"></script>
     <script src="~/Scripts/View Scripts/BooksManagement/index.js"></script>
     <script src="~/Scripts/toastr.min.js"></script>
 }
