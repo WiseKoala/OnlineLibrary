@@ -23,7 +23,7 @@
             <th class="col-xs-3"></th>
         </tr>
     </thead>
-    <tbody data-bind="foreach: { data: books, beforeRemove: rowFadeOut }">
+    <tbody data-bind="foreach: books">
         <tr class ="tr-to-remove" data-bind="attr: { id: Id }">
             <td>
                 <img data-bind="attr: { src: FrontCover }" width="100" alt="Book cover" />

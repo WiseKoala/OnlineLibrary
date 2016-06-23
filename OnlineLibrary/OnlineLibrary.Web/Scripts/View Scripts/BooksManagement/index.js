@@ -10,10 +10,6 @@
         self.CopyBookIdToConfirmButton = function (book) {
             $("#removeBookConfirmButton").data("bookIdToRemove", book.Id);
         };
-
-        self.rowFadeOut = function (element) {
-            $(element).fadeOut(1000);
-        }
     }
 
     // Activate knockout.js
@@ -74,10 +70,12 @@
             data: { 'id': $(this).data("bookIdToRemove") },
             method: "POST",
             success: function (removedBook) {
-                // Remove book from the model object.
-                viewModel.books.remove(function (book) {
-                    return book.Id == removedBook.Id;
-                });
+                if (viewModel.currentPage() == viewModel.totalPages() && viewModel.currentPage() != 1) {
+                    location.hash = viewModel.currentPage() - 1;
+                }
+                else {
+                    loadData(viewModel.currentPage());
+                }
 
                 // Show toastr notification.
                 toastr.options =
