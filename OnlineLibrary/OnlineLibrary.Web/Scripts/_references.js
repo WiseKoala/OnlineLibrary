@@ -9,10 +9,10 @@
 /// <reference path="knockout-3.4.0.js" />
 /// <reference path="modernizr-2.6.2.js" />
 /// <reference path="respond.js" />
+/// <reference path="sammy-0.7.5.min.js" />
 /// <reference path="toastr.min.js" />
-/// <reference path="view scripts/bookdetails/index.js" />
+/// <reference path="view scripts/bookdetails/show.js" />
 /// <reference path="view scripts/booksmanagement/createedit.js" />
-/// <reference path="view scripts/booksmanagement/deletebook.js" />
+/// <reference path="view scripts/booksmanagement/index.js" />
 /// <reference path="view scripts/categoriesmanagement/index.js" />
-/// <reference path="view scripts/home/index.js" />
 /// <reference path="view scripts/librarian/index.js" />

@@ -77,12 +77,12 @@
                 <div class="panel-body">
                     <div class="media">
                         <div class="media-left">
-                            <a href="@Url.RouteUrl("Default", new { controller = "BookDetails", action = "Index", id = book.Id })">
+                            <a href="@Url.RouteUrl("Default", new { controller = "BookDetails", action = "Show", id = book.Id })">
                                 <img class="media-object book-cover" src="@Url.Content(book.FrontCover)" alt="@book.Title">
                             </a>
                         </div>
                         <div class="media-body">
-                            <h4 class="media-heading">@Html.RouteLink(book.Title, new { controller = "BookDetails", action = "Index", id = book.Id })</h4>
+                            <h4 class="media-heading">@Html.RouteLink(book.Title, new { controller = "BookDetails", action = "Show", id = book.Id })</h4>
                             <p><strong>ISBN:</strong> @book.ISBN</p>
                             <p><strong>@((book.Authors.Count() > 1) ? "Authors:" : "Author:")</strong> @String.Join(", ", book.Authors)</p>
                             <p><strong>Publish Date:</strong> @book.PublishDate.ToShortDateString()</p>
