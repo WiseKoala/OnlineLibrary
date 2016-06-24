@@ -2,10 +2,18 @@
 
     function BooksViewModel() {
         var self = this;
-        self.Books = ko.observableArray([]);
-        self.FirstPage = ko.observable(1);
-        self.NumberOfPages = ko.observable();
-        self.CurrentPage = ko.observable(1);
+        self.books = ko.observableArray([]);
+        self.numberOfPages = ko.observable();
+        self.pageNumber = ko.observable(1);
+
+        // Search filters.
+        self.title = ko.observable();
+        self.author = ko.observable();
+        self.publishDate = ko.observable();
+        self.category = ko.observable();
+        self.isbn = ko.observable();
+        self.description = ko.observable();
+        self.subcategory = ko.observable();
     }
 
     // Activate knockout.js
@@ -16,48 +24,77 @@
 
         var settings = {
             url: $("#booksList").data("getBooksUrl"),
-            data: $("#searchFilters").serialize(),
+            data: {
+                title: viewModel.title(),
+                author: viewModel.author(),
+                publishDate: viewModel.publishDate(),
+                categoryId: viewModel.category(),
+                isbn: viewModel.isbn(),
+                description: viewModel.description(),
+                subcategoryId: viewModel.subcategory(),
+                pageNumber: viewModel.pageNumber()
+            },
             type: 'GET',
             success: function (result) {
-                ko.mapping.fromJS(result, {}, viewModel);
+                for (var i = 0; i < result.Books.length; i++) {
+                    viewModel.books.push(result.Books[i]);
+                }
+                viewModel.numberOfPages(result.NumberOfPages);
             }
         };
         $.ajax(settings);
     }
 
-    // Set initial page number in request form.
-    $("#page-number").val(viewModel.FirstPage());
-    loadBooks();
+    function fillUrlFromViewModel() {
+        var url =
+            "title=" + viewModel.title() + "&author=" + viewModel.author() + "&publishDate=" + viewModel.publishDate() +
+            "&category=" + viewModel.category() + "&isbn=" + viewModel.isbn() + "&description=" + viewModel.description() +
+            "&subcategory=" + viewModel.subcategory() + "&pageNumber=" + viewModel.pageNumber();
+
+        location.hash = url;
+    }
 
     function switchToPage(pageNumber) {
-        var a = viewModel.NumberOfPages();
-        if (viewModel.CurrentPage() == pageNumber) {
+        fillUrlFromViewModel();
+
+        if (viewModel.pageNumber() == pageNumber) {
             LoadPage(pageNumber);
         }
-        location.hash = pageNumber;
     }
 
     $("#previous-page").click(function (e) {
-        switchToPage(parseInt(viewModel.CurrentPage()) - 1);
+        switchToPage(viewModel.pageNumber() - 1);
     });
 
     $("#next-page").click(function (e) {
-        switchToPage(parseInt(viewModel.CurrentPage()) + 1);
+        switchToPage(viewModel.pageNumber() + 1);
     });
 
     $("#search-button").click(function (e) {
-        switchToPage(parseInt(viewModel.FirstPage()));
+        switchToPage(1);
     });
 
     Sammy(function () {
-        this.get('#:CurrentPage', function () {
-            LoadPage(this.params.CurrentPage);
-        });
+        this.get(/\#title=(.*)&author=(.*)&publishDate=(.*)&category=(.*)&isbn=(.*)&description=(.*)&subcategory=(.*)&pageNumber=(.*)/,
+            function (context) {
+                var queryStringParameters = this.params['splat'];
+
+                viewModel.title(queryStringParameters[0]);
+                viewModel.author(queryStringParameters[1]);
+                viewModel.publishDate(queryStringParameters[2]);
+                viewModel.category(queryStringParameters[3]);
+                viewModel.isbn(queryStringParameters[4]);
+                viewModel.description(queryStringParameters[5]);
+                viewModel.subcategory(queryStringParameters[6]);
+                viewModel.pageNumber(queryStringParameters[7]);
+
+                LoadPage();
+            });
     }).run();
 
-    function LoadPage(pageNumber) {
-        viewModel.CurrentPage(pageNumber);
-        $("#page-number").val(pageNumber);
+    location.hash = "title=&author=&publishDate=&category=&isbn=&description=&subcategory=&pageNumber=1";
+
+    function LoadPage() {
         loadBooks();
 
         $("html, body").animate({ scrollTop: 0 }, "slow");
