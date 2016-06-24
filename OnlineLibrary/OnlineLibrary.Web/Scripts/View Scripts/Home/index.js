@@ -30,12 +30,11 @@
     loadBooks();
 
     function switchToPage(pageNumber) {
+        var a = viewModel.NumberOfPages();
         if (viewModel.CurrentPage() == pageNumber) {
             LoadPage(pageNumber);
         }
-        else {
-            location.hash = pageNumber;
-        }     
+        location.hash = pageNumber;
     }
 
     $("#previous-page").click(function (e) {
