@@ -81,7 +81,7 @@
 
 <div class="row">
     <h4 data-bind="visible: Books().length == 0">No records...</h4>
-    <div class="col-md-8 col-md-offset-2 BookList" data-bind="foreach: Books">
+    <div id="booksList" class="col-md-8 col-md-offset-2" data-bind="foreach: Books" data-get-books-url="@Url.Action("GetBooks", "Home")">
         <div class="panel panel-default book-item">
             <div class="panel-body">
                 <div class="media">

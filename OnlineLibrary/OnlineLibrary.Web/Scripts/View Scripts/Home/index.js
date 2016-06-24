@@ -13,16 +13,16 @@
     ko.applyBindings(viewModel);
 
     function loadBooks() {
-        $.ajax(
-             {
-                 url: '/Home/GetBooks',
-                 dataType: 'json',
-                 data: $("#searchFilters").serialize(),
-                 type: 'GET',
-                 success: function (result) {
-                     ko.mapping.fromJS(result, {}, viewModel);
-                 }
-             });
+
+        var settings = {
+            url: $("#booksList").data("getBooksUrl"),
+            data: $("#searchFilters").serialize(),
+            type: 'GET',
+            success: function (result) {
+                ko.mapping.fromJS(result, {}, viewModel);
+            }
+        };
+        $.ajax(settings);
     }
 
     // Set initial page number in request form.
@@ -61,8 +61,8 @@
         loadBooks();
 
         $("html, body").animate({ scrollTop: 0 }, "slow");
-        $(".BookList").fadeOut(100, function () {
-            $(".BookList").fadeIn(1000);
+        $("#booksList").fadeOut(100, function () {
+            $(".booksList").fadeIn(1000);
         });
     }
 
@@ -104,15 +104,15 @@
         $.ajax(settings);
     });
 
-$("#toggleSearch").click(function () {
-    if ($(this).find("span").hasClass("glyphicon-chevron-down")) {
-        $(this).find("span").removeClass("glyphicon glyphicon-chevron-down");
-        $(this).find("span").addClass("glyphicon glyphicon-chevron-up");
-    }
-    else {
-        $(this).find("span").removeClass("glyphicon glyphicon-chevron-up");
-        $(this).find("span").addClass("glyphicon glyphicon-chevron-down");
-    }
-});
+    $("#toggleSearch").click(function () {
+        if ($(this).find("span").hasClass("glyphicon-chevron-down")) {
+            $(this).find("span").removeClass("glyphicon glyphicon-chevron-down");
+            $(this).find("span").addClass("glyphicon glyphicon-chevron-up");
+        }
+        else {
+            $(this).find("span").removeClass("glyphicon glyphicon-chevron-up");
+            $(this).find("span").addClass("glyphicon glyphicon-chevron-down");
+        }
+    });
 });
 
