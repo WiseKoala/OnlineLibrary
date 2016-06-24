@@ -1,5 +1,5 @@
 ﻿@using OnlineLibrary.Web.Models.HomeViewModels
-@model BooksListViewModel
+@model BookSearchViewModel
 @{
     ViewBag.Title = "Home Page";
 }
@@ -9,16 +9,26 @@
     @Styles.Render("~/Content/cssjqueryUI")
 }
 
+@section scripts{
+
+    @Scripts.Render("~/bundles/jqueryui")
+    <script src="~/Scripts/View Scripts/Home/index.js"></script>
+    <script src="~/Scripts/toastr.min.js"></script>
+    <script src="~/Scripts/knockout-3.4.0.js"></script>
+    <script src="~/Scripts/knockout.mapping-latest.js"></script>
+    <script src="~/Scripts/sammy-0.7.5.min.js"></script>
+}
+
 <div class="row page-header">
-    <form id="searchFilters" action="@Url.Action("Index", "Home")" method="get">
+    <form id="searchFilters">
         <div class="row">
             <div class="form-horizontal col-md-6">
                 <div class="form-group">
-                    @Html.LabelFor(m => m.SearchData.Title, new { @class = "control-label col-sm-3", @style = "text-align: right;" })
+                    @Html.LabelFor(m => m.Title, new { @class = "control-label col-sm-3", @style = "text-align: right;" })
                     <span class="input-group" style="display: block;">
-                        @Html.TextBoxFor(m => m.SearchData.Title, new { @class = "form-control col-sm-8", placeholder = "Title" })
+                        @Html.TextBoxFor(m => m.Title, new { @class = "form-control col-sm-8", placeholder = "Title"})
                         <span class="input-group-btn">
-                            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+                            <button type="button" class="btn btn-primary" id="search-button"><span class="glyphicon glyphicon-search"></span></button>
                             <a type="button" id="toggleSearch" class="btn btn-warning" data-toggle="collapse" href="#searchDetails"><span class="glyphicon glyphicon-chevron-down"></span></a>
                         </span>
                     </span>
@@ -29,84 +39,94 @@
         <div class="collapse row" id="searchDetails">
             <div class="form-horizontal col-md-6">
                 <div class="form-group">
-                    @Html.LabelFor(m => m.SearchData.Author, new { @class = "control-label col-sm-3" })
-                    @Html.TextBoxFor(m => m.SearchData.Author, new { @class = "form-control col-sm-9", placeholder = "Author" })
+                    @Html.LabelFor(m => m.Author, new { @class = "control-label col-sm-3" })
+                    @Html.TextBoxFor(m => m.Author, new { @class = "form-control col-sm-9", placeholder = "Author"})
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(m => m.SearchData.PublishDate, new { @class = "control-label col-sm-3" })
-                    @Html.TextBoxFor(m => m.SearchData.PublishDate, new { @class = "form-control col-sm-9 datepicker",
-                        value = @Model.SearchData.PublishDate?.ToShortDateString(), placeholder = "Publish Date" })
+                    @Html.LabelFor(m => m.PublishDate, new { @class = "control-label col-sm-3" })
+                    @Html.TextBoxFor(m => m.PublishDate, new
+               {
+                   @class = "form-control col-sm-9 datepicker",
+                   value = @Model.PublishDate?.ToShortDateString(),
+                   placeholder = "Publish Date",
+               })
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(m => m.SearchData.CategoryId, new { @class = "control-label col-sm-3" })
-                    @Html.DropDownListFor(m => m.SearchData.CategoryId, Model.SearchData.Categories,
+                    @Html.LabelFor(m => m.CategoryId, new { @class = "control-label col-sm-3" })
+                    @Html.DropDownListFor(m => m.CategoryId, Model.Categories,
                         "Any",
                         new { @class = "form-control", data_subcategories_url = Url.Action("GetSubCategories", "CategoriesManagement") })
                 </div>
             </div>
             <div class="form-horizontal col-md-6 ">
                 <div class="form-group">
-                    @Html.LabelFor(m => m.SearchData.ISBN, new { @class = "control-label col-sm-3" })
-                    @Html.TextBoxFor(m => m.SearchData.ISBN, new { @class = "form-control col-sm-9", placeholder = "ISBN" })
+                    @Html.LabelFor(m => m.ISBN, new { @class = "control-label col-sm-3" })
+                    @Html.TextBoxFor(m => m.ISBN, new { @class = "form-control col-sm-9", placeholder = "ISBN" })
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(m => m.SearchData.Description, new { @class = "control-label col-sm-3" })
-                    @Html.TextBoxFor(m => m.SearchData.Description, new { @class = "form-control col-sm-9", placeholder = "Description" })
+                    @Html.LabelFor(m => m.Description, new { @class = "control-label col-sm-3" })
+                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control col-sm-9", placeholder = "Description" })
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(m => m.SearchData.SubcategoryId, new { @class = "control-label col-sm-3" })
-                    @Html.DropDownListFor(m => m.SearchData.SubcategoryId, Model.SearchData.Subcategories,
-                        "Any",
-                        new { @class = "form-control" })
+                    @Html.LabelFor(m => m.SubcategoryId, new { @class = "control-label col-sm-3" })
+                    @Html.DropDownListFor(m => m.SubcategoryId, Model.Subcategories,
+                                          "Any",
+                                          new { @class = "form-control" })
                 </div>
+                @Html.HiddenFor(m => m.PageNumber, new { id = "page-number" })
             </div>
         </div>
     </form>
 </div>
 
 <div class="row">
-    @if (Model.Books.Count() == 0)
-    {
-        <h4>Sorry, no books were found...</h4>
-    }
-    <div class="col-md-8 col-md-offset-2">
-
-        @foreach (var book in Model.Books)
-        {
-            <div class="panel panel-default book-item">
-                <div class="panel-body">
-                    <div class="media">
-                        <div class="media-left">
-                            <a href="@Url.RouteUrl("Default", new { controller = "BookDetails", action = "Show", id = book.Id })">
-                                <img class="media-object book-cover" src="@Url.Content(book.FrontCover)" alt="@book.Title">
-                            </a>
-                        </div>
-                        <div class="media-body">
-                            <h4 class="media-heading">@Html.RouteLink(book.Title, new { controller = "BookDetails", action = "Show", id = book.Id })</h4>
-                            <p><strong>ISBN:</strong> @book.ISBN</p>
-                            <p><strong>@((book.Authors.Count() > 1) ? "Authors:" : "Author:")</strong> @String.Join(", ", book.Authors)</p>
-                            <p><strong>Publish Date:</strong> @book.PublishDate.ToShortDateString()</p>
-                            <p><strong>Description:</strong> @((book.Description.Length > 265) ? book.Description.Substring(0, 265) + "..." : book.Description) </p>
-                            <p>
-                                <strong>Categories:</strong>
-                                <ul class="book-categories">
-                                    @foreach (CategoryViewModel category in book.Categories)
-                                    {
-                                        <li>
-                                            <span class="label label-default">@category.Category</span> > <span class="label label-info">@category.SubCategory</span>
-                                        </li>
-                                    }
-                                </ul>
-                            </p>
+    <h4 data-bind="visible: Books().length == 0">No records...</h4>
+    <div class="col-md-8 col-md-offset-2 BookList" data-bind="foreach: Books">
+        <div class="panel panel-default book-item">
+            <div class="panel-body">
+                <div class="media">
+                    <div class="media-left">
+                        <a data-bind="attr: { href: BookLink }">
+                            <img class="media-object book-cover" data-bind="attr: { src: FrontCover }" />
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <a data-bind="attr:{ href: BookLink }">
+                            <h4><strong>Title: </strong><span class="media-heading" data-bind="text: Title"></span></h4>
+                        </a>
+                        <p><strong>Authors: </strong> <span data-bind="text: Authors"> </span> </p>
+                        <p><strong>Publish Date: </strong> <span data-bind="text: PublishDate"> </span> </p>
+                        <p><strong>Description: </strong> <span data-bind="text: Description"> </span> </p>
+                        <strong>Categories: </strong>
+                        <div data-bind="foreach: Categories">
+                            <ul class="book-categories">
+                                <li>
+                                    <span data-bind="text: Category" class="label label-default"></span>
+                                    <span data-bind="text: SubCategory" class="label label-info"></span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-        }
+        </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-5"></div>
+    <nav>
+        <ul class="book-pagination">
+            <li>
+                <button id="previous-page" data-bind="disable: CurrentPage() == FirstPage()" class="glyphicon glyphicon-chevron-left btn btn-group-xs"></button>
+            </li>
+            <li>
+                <strong data-bind="text: CurrentPage"></strong> <span>of</span> <strong data-bind="text: NumberOfPages"></strong>
+            </li>
+            <li>
+                <button id="next-page" data-bind="disable: CurrentPage() == NumberOfPages()" class="glyphicon glyphicon-chevron-right btn btn-group-xs"></button>
+            </li>
+        </ul>
+    </nav>
+    <div class="col-md-5"></div>
+</div>
 
-@section scripts{
-    @Scripts.Render("~/bundles/jqueryui")
-    <script src="~/Scripts/View Scripts/Home/index.js"></script>
-}

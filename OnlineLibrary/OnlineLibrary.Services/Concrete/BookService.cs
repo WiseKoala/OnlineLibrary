@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OnlineLibrary.DataAccess;
-using OnlineLibrary.DataAccess.Entities;
-using OnlineLibrary.Services.Abstract;
-using System.Data.Entity;
-using OnlineLibrary.DataAccess.Enums;
+﻿using OnlineLibrary.Common.Exceptions;
 using OnlineLibrary.DataAccess.Abstract;
-using OnlineLibrary.Common.Exceptions;
-using OnlineLibrary.Services.Models;
+using OnlineLibrary.DataAccess.Entities;
+using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.DataAccess.Infrastructure;
+using OnlineLibrary.Services.Abstract;
+using OnlineLibrary.Services.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -33,7 +30,6 @@ namespace OnlineLibrary.Services.Concrete
                                     .Count(bc => !bc.IsLost && 
                                                  !(bc.Loans.Any(l => l.Status == LoanStatus.Approved || 
                                                                      l.Status == LoanStatus.InProgress)));
-           
             return count;
         }
 
@@ -183,7 +179,7 @@ namespace OnlineLibrary.Services.Concrete
 
         }
 
-        public IEnumerable<Book> Find(BookSearchServiceModel model)
+        public BookPaginationModel Find(BookSearchServiceModel model)
         {
             // Find by basic fields.
             var books = _dbContext.Books
@@ -247,9 +243,20 @@ namespace OnlineLibrary.Services.Concrete
                 books = booksBySubcategory.Intersect(books);
             }
 
-            var foundBooks = books.ToList();
+            var result = new BookPaginationModel();
 
-            return books;
+            // Set the number of all books.
+            result.NumberOfBooks = books.Count();
+
+            // Take books of a specific page.
+            var foundBooks = books.OrderBy( b => b.Id)
+                                  .Skip((model.PageNumber - 1) * model.ItemPerPage)
+                                  .Take(model.ItemPerPage)
+                                  .ToList();
+
+            result.Books = foundBooks;
+
+            return result;
         }
     }
 }

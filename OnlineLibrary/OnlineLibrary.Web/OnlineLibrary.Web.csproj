@@ -351,6 +351,7 @@
     <Content Include="Scripts\View Scripts\BooksManagement\CreateEdit.js" />
     <Content Include="Scripts\View Scripts\BooksManagement\index.js" />
     <Content Include="Scripts\View Scripts\CategoriesManagement\index.js" />
+    <Content Include="Scripts\View Scripts\Home\index.js" />
     <Content Include="Scripts\View Scripts\Librarian\index.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config">
