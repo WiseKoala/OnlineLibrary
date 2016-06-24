@@ -47,6 +47,11 @@ namespace OnlineLibrary.EmailService
 
                         SendNotification(email, bookTitle);
                     }
+
+                    if (loansSet.Tables[0].Rows.Count == 0)
+                    {
+                        WriteToConsole(ConsoleColor.DarkGray, "Info", ConsoleColor.Gray, "No emails were sent, because no due loans have been found.");
+                    }
                 }
             }
             catch (SystemException ex)
@@ -77,7 +82,7 @@ namespace OnlineLibrary.EmailService
                 }
 
                 message.Subject = ConfigurationManager.AppSettings["MessageSubject"];
-                message.Body = ConfigurationManager.AppSettings["MessageBody"] + bookTitle;
+                message.Body = string.Format(ConfigurationManager.AppSettings["MessageBody"], bookTitle);
 
                 string host = ConfigurationManager.AppSettings["HostAddress"];
                 int port = int.Parse(ConfigurationManager.AppSettings["HostPort"]);
