@@ -117,18 +117,24 @@
                     <col>
                     <col>
                     <col>
+                    <col>
                 </colgroup>
                 <thead>
                     <tr>
                         <th>User Name</th>
                         <th>Book Title</th>
+                        <th>Expected Return Date</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: inProgress">
-                    <tr>
+                    <tr data-bind="css: { warning: IsExpectedReturnDateLate }">
                         <td data-bind="text: UserName"></td>
                         <td data-bind="text: BookTitle"></td>
+                        <td>
+                            <span data-bind="visible: IsExpectedReturnDateLate" class="glyphicon glyphicon-exclamation-sign late-approved-loan-sign"></span> 
+                            <span data-bind="text: ExpectedReturnDate"></span>
+                        </td>
                         <td>
                             <div class="form-inline">
                                 <!-- Trigger Button for ReturnModal -->

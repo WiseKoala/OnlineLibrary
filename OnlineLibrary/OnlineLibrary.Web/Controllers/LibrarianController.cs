@@ -53,7 +53,9 @@ namespace OnlineLibrary.Web.Controllers
                                      BookTitle = l.Book.Title,
                                      UserName = l.User.UserName,
                                      ApprovingDate = l.ApprovingDate.HasValue ? l.ApprovingDate.Value.ToShortDateString() : "unknown",
-                                     IsApprovedLoanLate = l.BookPickUpLimitDate.HasValue && (l.BookPickUpLimitDate < DateTime.Now)
+                                     IsApprovedLoanLate = l.BookPickUpLimitDate.HasValue && (l.BookPickUpLimitDate < DateTime.Now),
+                                     ExpectedReturnDate = l.ExpectedReturnDate.HasValue ? l.ExpectedReturnDate.Value.ToShortDateString() : "undefined",
+                                     IsExpectedReturnDateLate = l.ExpectedReturnDate.HasValue && (l.ExpectedReturnDate < DateTime.Now)
                                  });
 
             return Json(model, JsonRequestBehavior.AllowGet);
