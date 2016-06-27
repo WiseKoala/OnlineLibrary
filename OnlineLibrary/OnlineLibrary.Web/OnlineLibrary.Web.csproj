@@ -234,9 +234,7 @@
     <Compile Include="Infrastructure\Abstract\SessionHelper.cs" />
     <Compile Include="Infrastructure\ActionResults\ChallengeResult.cs" />
     <Compile Include="Infrastructure\CustomAttributes\AtLeastOneProperySetAttribute.cs" />
-    <Compile Include="Infrastructure\CustomAttributes\CountLimitAttribute.cs" />
     <Compile Include="Infrastructure\CustomAttributes\DateRangeAttribute.cs" />
-    <Compile Include="Infrastructure\CustomAttributes\NotEmptyList.cs" />
     <Compile Include="Models\BookDetailsViewModel.cs" />
     <Compile Include="Models\BooksManagement\BookManagementViewModel.cs" />
     <Compile Include="Models\BooksManagement\CreateEditBookViewModels\AuthorNameViewModel.cs" />

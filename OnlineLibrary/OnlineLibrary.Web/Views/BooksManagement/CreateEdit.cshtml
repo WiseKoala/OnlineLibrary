@@ -76,36 +76,39 @@
             <h3>Authors:</h3>
             <table class="table table-hover">
                 <tbody>
-                    @for (int i = 0; i < Model.Authors.Count(); i++)
+                    @if (Model.Authors != null && Model.Authors.Any())
                     {
-                        <tr class="book-author" data-author-id="@i">
-                            <td>
-                                <input type="hidden" name="Authors[@i].Id" value="@Model.Authors[i].Id" class="form-control" />
-                                <input type="hidden" name="Authors[@i].IsRemoved" value="false" class="form-control is-removed" />
-                                @Html.LabelFor(m => m.Authors[i].AuthorName.FirstName)
-                                <input type="text" name="Authors[@i].AuthorName.FirstName" value="@Model.Authors[i].AuthorName.FirstName" class="form-control" />
-                                @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.FirstName)
-                            </td>
-                            <td>
-                                @Html.LabelFor(m => m.Authors[i].AuthorName.MiddleName)
-                                <input type="text" name="Authors[@i].AuthorName.MiddleName" value="@Model.Authors[i].AuthorName.MiddleName" class="form-control" />
-                                @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.MiddleName)
-                            </td>
-                            <td>
-                                @Html.LabelFor(m => m.Authors[i].AuthorName.LastName)
-                                <input type="text" name="Authors[@i].AuthorName.LastName" value="@Model.Authors[i].AuthorName.LastName" class="form-control" />
-                                @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.LastName)
-                            </td>
-                            <td id="tdRemoveAuthorButton">
-                                <button class="btn btn-sm btn-danger btn-remove-author-modal" data-toggle="modal"
-                                        data-target="#removeAuthorConfirmation" type="button">
-                                    <span class="glyphicon glyphicon-remove"></span>
-                                </button>
-                            </td>
-                        </tr>
-                        @Html.ValidationMessageFor(m => m.Authors[i].AuthorName)
+                        for (int i = 0; i < Model.Authors.Count(); i++)
+                        {
+                            <tr class="book-author" data-author-id="@i">
+                                <td>
+                                    <input type="hidden" name="Authors[@i].Id" value="@Model.Authors[i].Id" class="form-control" />
+                                    <input type="hidden" name="Authors[@i].IsRemoved" value="false" class="form-control is-removed" />
+                                    @Html.LabelFor(m => m.Authors[i].AuthorName.FirstName)
+                                    <input type="text" name="Authors[@i].AuthorName.FirstName" value="@Model.Authors[i].AuthorName.FirstName" class="form-control" />
+                                    @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.FirstName)
+                                </td>
+                                <td>
+                                    @Html.LabelFor(m => m.Authors[i].AuthorName.MiddleName)
+                                    <input type="text" name="Authors[@i].AuthorName.MiddleName" value="@Model.Authors[i].AuthorName.MiddleName" class="form-control" />
+                                    @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.MiddleName)
+                                </td>
+                                <td>
+                                    @Html.LabelFor(m => m.Authors[i].AuthorName.LastName)
+                                    <input type="text" name="Authors[@i].AuthorName.LastName" value="@Model.Authors[i].AuthorName.LastName" class="form-control" />
+                                    @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.LastName)
+                                </td>
+                                <td id="tdRemoveAuthorButton">
+                                    <button class="btn btn-sm btn-danger btn-remove-author-modal" data-toggle="modal"
+                                            data-target="#removeAuthorConfirmation" type="button">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                            @Html.ValidationMessageFor(m => m.Authors[i].AuthorName)
+                        }
                     }
-                    @if (!Model.Authors.Any())
+                    else
                     {
                         <tr>
                             <td>
@@ -149,26 +152,36 @@
                     <h4>Book Subcategory</h4>
                 </div>
             </div>
-            @for (int i = 0; i < Model.BookCategories.Count(); i++)
+            @if (Model.BookCategories != null && Model.BookCategories.Any())
             {
-                <div class="row book-category-subcategory" style="margin-top: 10px">
-                    @Html.HiddenFor(m => m.BookCategories[i].IsRemoved, new { @class = "is-book-category-removed" })
-                    <div class="col-md-3 book-category">
-                        @Html.DropDownList($"BookCategories[{i}].Id", Model.BookCategories[i].Categories, new { @class = "form-control select-category" })
-                    </div>
-                    <div class="col-md-3 book-subcategory">
-                        @if (Model.BookCategories[i].Subcategories != null)
+                for (int i = 0; i < Model.BookCategories.Count(); i++)
+                {
+                    <div class="row book-category-subcategory" style="margin-top: 10px">
+                        @Html.HiddenFor(m => m.BookCategories[i].IsRemoved, new { @class = "is-book-category-removed" })
+                        <div class="col-md-3 book-category">
+                            @Html.DropDownList($"BookCategories[{i}].Id", Model.BookCategories[i].Categories, new { @class = "form-control select-category" })
+                        </div>
+                        <div class="col-md-3 book-subcategory">
+                            @if (Model.BookCategories[i].Subcategories != null)
                         {
-                            @Html.DropDownList($"BookCategories[{i}].Subcategory.Id", Model.BookCategories[i].Subcategories, new { @class = "form-control" })
-                        }
+                                @Html.DropDownList($"BookCategories[{i}].Subcategory.Id", Model.BookCategories[i].Subcategories, new { @class = "form-control" })
+                            }
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-sm btn-danger remove-book-category" type="button">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-sm btn-danger remove-book-category" type="button">
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </button>
-                    </div>
+                }
+            }
+            else
+            {
+                <div style="margin-top: 10px">
+                    @Html.ValidationMessageFor(m => m.BookCategories)
                 </div>
             }
+
         </div>
 
         <button type="button" id="add-category" class="btn btn-primary" style="margin-top: 10px">Add Category</button>

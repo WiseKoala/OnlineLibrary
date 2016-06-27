@@ -8,25 +8,27 @@ namespace OnlineLibrary.Web.Infrastructure.CustomAttributes
     {
         public override bool IsValid(object value)
         {
-            // Get the information about the class.
-            var typeInfo = value.GetType();
-
-            // Get the properties of the class.
-            var propertyInfo = typeInfo.GetProperties();
-
-            foreach (var property in propertyInfo)
+            if (value != null)
             {
-                if (property.GetValue(value, null) != null)
+                // Get the information about the class.
+                var typeInfo = value.GetType();
+
+                // Get the properties of the class.
+                var propertyInfo = typeInfo.GetProperties();
+
+                foreach (var property in propertyInfo)
                 {
-                    if (!string.IsNullOrEmpty(property.ToString()))
+                    if (property.GetValue(value, null) != null)
                     {
-                        // There is at least one property with a value.
-                        return true;
+                        if (!string.IsNullOrEmpty(property.ToString()))
+                        {
+                            // There is at least one property with a value.
+                            return true;
+                        }
                     }
                 }
             }
 
-            // All properties are null.
             return false;
         }
     }

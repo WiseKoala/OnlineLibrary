@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Drawing;
-using System.Web;
-using OnlineLibrary.Web.Infrastructure.CustomAttributes;
-using System.Web.Mvc;
 using OnlineLibrary.DataAccess.Enums;
+using OnlineLibrary.Web.Infrastructure.CustomAttributes;
 
 namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
 {
@@ -16,8 +13,8 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
             BookCopies = new List<BookCopyViewModel>();
             Authors = new List<BookAuthorViewModel>();
             AllBookConditions = new Dictionary<BookCondition, string>();
-    }
-        
+        }
+
         public int Id { get; set; }
 
         [Required]
@@ -40,15 +37,14 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         [DateRange]
         public DateTime PublishDate { get; set; }
 
-        [NotEmptyList(ErrorMessage = "There has to be at least one author.")]
-        [CountLimit(ErrorMessage = "The authors number is too big.")]
+        [Required(ErrorMessage = "There has to be at least one author.")]
         public IList<BookAuthorViewModel> Authors { get; set; }
 
-        [CountLimit(ErrorMessage = "The book copies number is too big.")]
         public IList<BookCopyViewModel> BookCopies { get; set; }
 
         public IDictionary<BookCondition, string> AllBookConditions { get; set; }
 
+        [Required(ErrorMessage = "There has to be at least one book category.")]
         public IList<CategoryViewModel> BookCategories { get; set; }
 
         public string OldImagePath { get; set; }

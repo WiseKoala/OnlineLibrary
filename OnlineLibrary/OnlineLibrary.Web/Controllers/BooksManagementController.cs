@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -15,7 +16,6 @@ using OnlineLibrary.Services.Models.BookServiceModels;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Models.BooksManagement;
 using OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels;
-using System.Configuration;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -140,68 +140,63 @@ namespace OnlineLibrary.Web.Controllers
         [HttpPost]
         public ActionResult CreateEdit(CreateEditBookViewModel model)
         {
-            // Remove ModelState Errors for each author marked as removed.
-            for (int i = 0; i < model.Authors.Count; i++)
+            if (model.Authors != null && model.Authors.Any())
             {
-                if (model.Authors[i].IsRemoved)
+                // Remove ModelState Errors for each author marked as removed.
+                for (int i = 0; i < model.Authors.Count; i++)
                 {
-                    if (ModelState.ContainsKey(string.Concat("Authors[", i, "].IsRemoved")))
-                    {
-                        foreach (var state in ModelState.ToArray())
-                        {
-                            if (state.Key.StartsWith(string.Concat("Authors[", i)))
-                            {
-                                ModelState.Remove(state);
-                            }
-                        }
-                    }
-
                     if (model.Authors[i].IsRemoved)
                     {
-                        model.Authors.Remove(model.Authors[i]);
-                    }
-
-                    if (!model.Authors.Any())
-                    {
-                        ModelState.AddModelError("Authors", "There has to be at least one author.");
-                    }
-                }
-            }
-
-            // Remove ModelState Error for each book category marked as removed.
-            for (int i = 0; i < model.BookCategories.Count(); i++)
-            {
-                if (model.BookCategories[i].IsRemoved)
-                {
-                    if (ModelState.ContainsKey(string.Concat("BookCategories[", i, "].IsRemoved")))
-                    {
-                        foreach (var state in ModelState.ToArray())
+                        if (ModelState.ContainsKey(string.Concat("Authors[", i, "].IsRemoved")))
                         {
-                            if (state.Key.StartsWith(string.Concat("BookCategories[", i)))
+                            var keysToRemove = ModelState
+                                .Where(ms => ms.Key.StartsWith(string.Concat("Authors[", i)))
+                                .Select(ms => ms.Key)
+                                .ToList();
+
+                            foreach (var key in keysToRemove)
                             {
-                                ModelState.Remove(state);
+                                ModelState[key].Errors.Clear();
                             }
                         }
                     }
+                }
+            }
 
+            if (model.BookCategories != null)
+            {
+                // Remove ModelState Error for each book category marked as removed.
+                for (int i = 0; i < model.BookCategories.Count(); i++)
+                {
                     if (model.BookCategories[i].IsRemoved)
                     {
-                        model.BookCategories.Remove(model.BookCategories[i]);
-                    }
+                        if (ModelState.ContainsKey(string.Concat("BookCategories[", i, "].IsRemoved")))
+                        {
+                            var keysToRemove = ModelState
+                                .Where(ms => ms.Key.StartsWith(string.Concat("BookCategories[", i)))
+                                .Select(ms => ms.Key)
+                                .ToList();
 
-                    if (!model.BookCategories.Any())
-                    {
-                        ModelState.AddModelError("Book Categories",
-                            "There has to be at least one Book Category.");
+                            foreach (var key in keysToRemove)
+                            {
+                                ModelState[key].Errors.Clear();
+                            }
+                        }
                     }
                 }
             }
-            
+
             var serviceModel = Mapper.Map<CreateEditBookServiceModel>(model);
             var modelErrors = new Dictionary<string, string>();
 
             model.AllBookConditions = _bookService.PopulateWithBookConditions();
             PrepareDropdowns(model);
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             _bookService.CreateEditPreparations(serviceModel, out modelErrors);
 
             // Update model State and return the view if it's not valid.
@@ -215,8 +210,8 @@ namespace OnlineLibrary.Web.Controllers
                 return View(model);
             }
 
-            // At this state, the model is valid so remove the needed book copies from database.
-            _bookService.RemoveMarkedBookCopiesFromDatabase(serviceModel, modelErrors);
+            // At this state, the model is valid so remove the needed data from database.
+            _bookService.RemoveDataFromDatabase(serviceModel, modelErrors);
 
             // Update model State and return the view if it's not valid.
             foreach (var error in modelErrors)
@@ -238,22 +233,22 @@ namespace OnlineLibrary.Web.Controllers
             model.AllBookConditions = _bookService.PopulateWithBookConditions();
             PrepareDropdowns(model);
 
-            if(model.Id <= 0)
+            if (model.Id <= 0)
             {
                 return RedirectToAction("Index", "BooksManagement");
             }
 
             return View(model);
         }
-        
+
         [HttpPost]
         public JsonResult DeleteBook(int id)
         {
             Book removedBook = null;
-
             try
             {
-                removedBook = _bookService.DeleteBook(id);
+                removedBook = _bookService.GetBook(id);
+                removedBook = _bookService.DeleteBook(id, Path.Combine(Server.MapPath(removedBook.FrontCover)));
             }
             catch (BookNotAvailableException ex)
             {
@@ -385,23 +380,26 @@ namespace OnlineLibrary.Web.Controllers
 
         private void PrepareDropdowns(CreateEditBookViewModel model)
         {
-            var categories = DbContext.Categories.ToList();
-            var subcategories = DbContext.SubCategories.ToList();
-
-            //  Get all categories for each book's category.
-            for (int i = 0; i < model.BookCategories.Count(); i++)
+            if (model.BookCategories != null && model.BookCategories.Any())
             {
-                var categoriesDropDownItems = SetCategoriesDropDownItems(categories);
-                model.BookCategories[i].Categories = SetSelectedCategory(categoriesDropDownItems, model.BookCategories[i].Id);
-            }
+                var categories = DbContext.Categories.ToList();
+                var subcategories = DbContext.SubCategories.ToList();
 
-            // Get all subcategories for each  book's category.
-            for (int i = 0; i < model.BookCategories.Count(); i++)
-            {
-                if (model.BookCategories[i].Subcategory != null)
+                //  Get all categories for each book's category.
+                for (int i = 0; i < model.BookCategories.Count(); i++)
                 {
-                    var subcategoriesDropDownItems = SetSubCategoriesDropDownItems(subcategories, model.BookCategories[i].Id);
-                    model.BookCategories[i].Subcategories = SetSelectedSubCategory(subcategoriesDropDownItems, model.BookCategories[i].Subcategory.Id);
+                    var categoriesDropDownItems = SetCategoriesDropDownItems(categories);
+                    model.BookCategories[i].Categories = SetSelectedCategory(categoriesDropDownItems, model.BookCategories[i].Id);
+                }
+
+                // Get all subcategories for each  book's category.
+                for (int i = 0; i < model.BookCategories.Count(); i++)
+                {
+                    if (model.BookCategories[i].Subcategory != null)
+                    {
+                        var subcategoriesDropDownItems = SetSubCategoriesDropDownItems(subcategories, model.BookCategories[i].Id);
+                        model.BookCategories[i].Subcategories = SetSelectedSubCategory(subcategoriesDropDownItems, model.BookCategories[i].Subcategory.Id);
+                    }
                 }
             }
         }

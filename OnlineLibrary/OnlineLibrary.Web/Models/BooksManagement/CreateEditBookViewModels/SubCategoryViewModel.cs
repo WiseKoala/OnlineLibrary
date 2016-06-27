@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
-
-namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
+﻿namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
 {
     public class SubCategoryViewModel
     {
