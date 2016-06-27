@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Configuration;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -33,18 +34,32 @@ namespace OnlineLibrary.Web.Controllers
 
         public ActionResult Index()
         {
-            var books = DbContext.Books
-                                .Select(b => new BookManagementViewModel
-                                {
-                                    Id = b.Id,
-                                    FrontCover = b.FrontCover,
-                                    ISBN = b.ISBN,
-                                    PublishDate = b.PublishDate,
-                                    Title = b.Title
-                                })
-                                .ToList();
+            return View();
+        }
 
-            return View(books);
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult GetBooks(int pageNumber = 1)
+        {
+            int pageSize = int.Parse(ConfigurationManager.AppSettings["PageSize"]);
+
+            var books = DbContext.Books
+                                 .OrderBy(b => b.Id)
+                                 .Skip((pageNumber - 1) * pageSize)
+                                 .Take(pageSize)
+                                 .ToList()
+                                 .Select(b => new BookManagementViewModel
+                                 {
+                                     Id = b.Id,
+                                     FrontCover = Url.Content(b.FrontCover),
+                                     ISBN = b.ISBN,
+                                     PublishDate = b.PublishDate.ToShortDateString(),
+                                     Title = b.Title
+                                 });
+
+            int totalPages = (int)Math.Ceiling(DbContext.Books.Count() / (double)pageSize);
+
+            return Json(new { books = books, totalPages = totalPages }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]

@@ -24,7 +24,7 @@ namespace OnlineLibrary.Web.Controllers
             _bookService = bookService;
         }
 
-        public ActionResult Index(int id)
+        public ActionResult Show(int id)
         {
             var book = DbContext.Books.Include(b => b.BookCopies).First(b => b.Id == id);
             var bookCopies = book.BookCopies.Where(bc => !bc.IsLost);

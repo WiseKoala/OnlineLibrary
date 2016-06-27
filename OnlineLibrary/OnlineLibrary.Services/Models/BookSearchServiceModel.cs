@@ -21,5 +21,9 @@ namespace OnlineLibrary.Services.Models
         public int? CategoryId { get; set; }
 
         public int? SubcategoryId { get; set; }
+
+        public int PageNumber { get; set; }
+
+        public int ItemPerPage { get; set; }
     }
 }

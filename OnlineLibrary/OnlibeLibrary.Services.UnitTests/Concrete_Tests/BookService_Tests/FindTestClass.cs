@@ -309,10 +309,10 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
             };
 
             // Act.
-            var returnedResult = sut.Find(model);
+            var returnedResult = sut.Find(model).NumberOfBooks;
 
             // Assert.
-            Assert.AreEqual(expectedResult, returnedResult.Count());
+            Assert.AreEqual(expectedResult, returnedResult);
         }
 
         [Test]
@@ -327,10 +327,10 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
             };
 
             // Act.
-            var returnedResult = sut.Find(model);
+            var returnedResult = sut.Find(model).NumberOfBooks;
 
             // Assert.
-            Assert.AreEqual(expectedResult, returnedResult.Count());
+            Assert.AreEqual(expectedResult, returnedResult);
         }
 
         [Test]
@@ -345,10 +345,10 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
             };
 
             // Act.
-            var returnedResult = sut.Find(model);
+            var returnedResult = sut.Find(model).NumberOfBooks;
 
             // Assert.
-            Assert.AreEqual(expectedResult, returnedResult.Count());
+            Assert.AreEqual(expectedResult, returnedResult);
         }
 
         [Test]
@@ -363,10 +363,10 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
             };
 
             // Act.
-            var returnedResult = sut.Find(model);
+            var returnedResult = sut.Find(model).NumberOfBooks;
 
             // Assert.
-            Assert.AreEqual(expectedResult, returnedResult.Count());
+            Assert.AreEqual(expectedResult, returnedResult);
         }
 
         [Test]
@@ -381,10 +381,10 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
             };
 
             // Act.
-            var returnedResult = sut.Find(model);
+            var returnedResult = sut.Find(model).NumberOfBooks;
 
             // Assert.
-            Assert.AreEqual(expectedResult, returnedResult.Count());
+            Assert.AreEqual(expectedResult, returnedResult);
         }
 
         [Test]
@@ -399,10 +399,10 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
             };
 
             // Act.
-            var returnedResult = sut.Find(model);
+            var returnedResult = sut.Find(model).NumberOfBooks;
 
             // Assert.
-            Assert.AreEqual(expectedResult, returnedResult.Count());
+            Assert.AreEqual(expectedResult, returnedResult);
         }
     }
 }
