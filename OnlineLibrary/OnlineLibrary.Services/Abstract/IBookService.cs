@@ -17,7 +17,7 @@ namespace OnlineLibrary.Services.Abstract
         Book DeleteBook(int id);
         string FormatISBN(string ISBN);
         void FormatAuthorNames(IList<BookAuthorServiceModel> authors);
-        IEnumerable<Book> Find(BookSearchServiceModel model);
+        BookPaginationModel Find(BookSearchServiceModel model);
         void CreateEditPreparations(CreateEditBookServiceModel model, out Dictionary<string, string> modelErrors);
         void CreateEdit(CreateEditBookServiceModel model, string serverImagePath);
         void RemoveMarkedBookCopiesFromDatabase(CreateEditBookServiceModel model, Dictionary<string, string> modelErrors);

@@ -6,3 +6,11 @@ ul.book-categories {
     list-style-type: none;
     padding-left: 0;
 }
+
+ul.book-pagination {
+    list-style-type: none;
+    padding-left: 0;
+}
+ul.book-pagination li{
+    display: inline-block;
+}

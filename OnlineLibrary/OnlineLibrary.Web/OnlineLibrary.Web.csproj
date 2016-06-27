@@ -311,7 +311,7 @@
     <Content Include="Content\toastr.css" />
     <Content Include="Content\toastr.min.css" />
     <Content Include="Content\Views stylesheets\BlueTheme.css" />
-    <Content Include="Content\Views stylesheets\BookDetails\Index.css" />
+    <Content Include="Content\Views stylesheets\BookDetails\Show.css" />
     <Content Include="Content\Views stylesheets\BooksManagement\CreateEdit.css" />
     <Content Include="Content\Views stylesheets\BooksManagement\Index.css" />
     <Content Include="Content\Views stylesheets\CategoriesManagement\Index.css" />
@@ -348,12 +348,15 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\sammy-0.7.5.js" />
+    <Content Include="Scripts\sammy-0.7.5.min.js" />
     <Content Include="Scripts\toastr.js" />
     <Content Include="Scripts\toastr.min.js" />
-    <Content Include="Scripts\View Scripts\BookDetails\Index.js" />
+    <Content Include="Scripts\View Scripts\BookDetails\Show.js" />
     <Content Include="Scripts\View Scripts\BooksManagement\CreateEdit.js" />
-    <Content Include="Scripts\View Scripts\BooksManagement\DeleteBook.js" />
+    <Content Include="Scripts\View Scripts\BooksManagement\index.js" />
     <Content Include="Scripts\View Scripts\CategoriesManagement\index.js" />
+    <Content Include="Scripts\View Scripts\Home\index.js" />
     <Content Include="Scripts\View Scripts\Librarian\index.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config">
@@ -377,7 +380,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
     <Content Include="Views\Account\Authorize.cshtml" />
-    <Content Include="Views\BookDetails\Index.cshtml" />
+    <Content Include="Views\BookDetails\Show.cshtml" />
     <Content Include="Views\Librarian\Index.cshtml" />
     <Content Include="Views\UserLoans\MyLoans.cshtml" />
     <Content Include="Views\BooksManagement\Index.cshtml" />

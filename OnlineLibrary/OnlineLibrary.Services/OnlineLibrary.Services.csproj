@@ -96,6 +96,7 @@
     <Compile Include="Concrete\RoleManagementService.cs" />
     <Compile Include="Concrete\SignInService.cs" />
     <Compile Include="Concrete\UserManagementService.cs" />
+    <Compile Include="Models\BookPaginationModel.cs" />
     <Compile Include="Models\BookServiceModels\AuthorNameServiceModel.cs" />
     <Compile Include="Models\BookServiceModels\BookAuthorServiceModel.cs" />
     <Compile Include="Models\BookServiceModels\BookCopyServiceModel.cs" />
