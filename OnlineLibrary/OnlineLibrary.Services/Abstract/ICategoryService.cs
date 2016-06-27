@@ -1,9 +1,5 @@
-﻿using System;
+﻿using OnlineLibrary.DataAccess.Entities;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OnlineLibrary.DataAccess.Entities;
 
 namespace OnlineLibrary.Services.Abstract
 {

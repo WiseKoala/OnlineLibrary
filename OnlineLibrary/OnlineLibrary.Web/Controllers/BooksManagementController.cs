@@ -22,11 +22,13 @@ namespace OnlineLibrary.Web.Controllers
     public class BooksManagementController : BaseController
     {
         private IBookService _bookService;
+        private ILibrarianService _librarianService;
 
-        public BooksManagementController(ILibraryDbContext dbContext, IBookService bookService)
+        public BooksManagementController(ILibraryDbContext dbContext, IBookService bookService ,ILibrarianService librarianService)
             : base(dbContext)
         {
             _bookService = bookService;
+            _librarianService = librarianService;
         }
 
         public ActionResult Index()
@@ -73,7 +75,8 @@ namespace OnlineLibrary.Web.Controllers
                     BookCopies = book.BookCopies.Select(bc => new BookCopyViewModel
                     {
                         Id = bc.Id,
-                        BookCondition = bc.Condition
+                        BookCondition = bc.Condition,
+                        IsLost = bc.IsLost
                     }).ToList(),
 
                     Authors = book.Authors.Select(a => new BookAuthorViewModel
@@ -165,7 +168,7 @@ namespace OnlineLibrary.Web.Controllers
             {
                 var bookcopies = model.BookCopies.ToList();
 
-                if (bookcopies.Count() > 0)
+                if (bookcopies.Count > 0)
                 {
                     foreach (var bookcopy in bookcopies)
                     {
@@ -176,7 +179,7 @@ namespace OnlineLibrary.Web.Controllers
                     }
                 }
 
-                for (int i = 0; i < model.Authors.Count(); i++)
+                for (int i = 0; i < model.Authors.Count; i++)
                 {
                     if (model.Authors[i].IsRemoved)
                     {
@@ -376,7 +379,7 @@ namespace OnlineLibrary.Web.Controllers
 
                 foreach (var bookcopy in model.BookCopies)
                 {
-                    if (bookcopy.IsToBeDeleted == true && bookcopy.Id != 0)
+                    if (bookcopy.IsToBeDeleted == true && !IsNewBookCopy(bookcopy.Id))
                     {
                         try
                         {
@@ -394,6 +397,10 @@ namespace OnlineLibrary.Web.Controllers
                             return View(model);
                         }
                     }
+                    else if (!IsNewBookCopy(bookcopy.Id))
+                    {
+                        _librarianService.ChangeIsLostStatus(bookcopy.Id, bookcopy.IsLost);
+                    }
                 }
 
                 if (DbContextChanged)
@@ -405,6 +412,7 @@ namespace OnlineLibrary.Web.Controllers
 
                 foreach (var bookCopyModel in model.BookCopies)
                 {
+
                     if (bookCopyModel.IsToBeDeleted == false)
                     {
                         BookCopy bookCopy = DbContext.BookCopies.Find(bookCopyModel.Id);
@@ -760,6 +768,10 @@ namespace OnlineLibrary.Web.Controllers
             }).ToList();
         }
 
+        private bool IsNewBookCopy(int bookcopyId)
+        {
+            return bookcopyId == 0;
+        }
         #endregion
     }
 }

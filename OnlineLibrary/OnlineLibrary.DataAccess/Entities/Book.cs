@@ -27,5 +27,19 @@ namespace OnlineLibrary.DataAccess.Entities
         public virtual ICollection<SubCategory> SubCategories { get; set; }
         public virtual ICollection<BookCopy> BookCopies { get; set; }
         public virtual ICollection<Loan> Loans { get; set; }
+
+        public override int GetHashCode()
+        {
+            return this.Id;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Book)
+            {
+                return ((Book)obj).Id == this.Id;
+            }
+            return false;
+        }
     }
 }

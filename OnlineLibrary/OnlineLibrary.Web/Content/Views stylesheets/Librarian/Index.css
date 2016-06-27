@@ -19,3 +19,8 @@
 
 /* Approve loan modal window form */
 #approveLoanErrorAlert { margin-top: 10px; }
+
+/* Return book modal window */
+#currentBookConditionCaption { font-style: italic; }
+
+#returnLoanedBookOptions .form-group { margin-bottom: 0; }

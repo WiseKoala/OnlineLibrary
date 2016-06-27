@@ -15,5 +15,6 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         [Display(Name = "Condition")]
         public BookCondition BookCondition { get; set; }
         public bool IsToBeDeleted { get; set; }
+        public bool IsLost { get; set; }
     }
 }

@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin;
 using OnlineLibrary.DataAccess;
+using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OnlineLibrary.DataAccess.Abstract;
 
 namespace OnlineLibrary.Services.Concrete
 {

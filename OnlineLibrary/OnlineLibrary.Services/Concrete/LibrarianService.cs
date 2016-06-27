@@ -6,6 +6,7 @@ using OnlineLibrary.Services.Abstract;
 using System;
 using System.Data.Entity;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace OnlineLibrary.Services.Concrete
 {
@@ -129,7 +130,7 @@ namespace OnlineLibrary.Services.Concrete
             }
         }
 
-        public void ReturnBook(int loanId, User librarian /*, BookCondition finalBookCondition*/)
+        public void ReturnBook(int loanId, User librarian, BookCondition? finalBookCondition)
         {
             var loan = _dbContext.Loans
                                 .Include(l => l.Book)
@@ -138,41 +139,31 @@ namespace OnlineLibrary.Services.Concrete
                                 .Where(l => l.Id == loanId)
                                 .SingleOrDefault();
 
-            //var bookCopy = _dbContext.BookCopies.Find(loan.BookCopy);
-            //if (bookCopy != null)
-            //{
-            //    bookCopy.Condition = finalBookCondition;
-            //}
-
-            var historyLoan = new History
+            var bookCopy = _dbContext.BookCopies.Find(loan.BookCopy.Id);
+            if (bookCopy == null)
             {
-                UserName = loan.User.UserName,
-                ISBN = loan.Book.ISBN,
-                BookCopyId = loan.BookCopyId,
-                StartDate = loan.StartDate,
-                ActualReturnDate = DateTime.Now,
-                ExpectedReturnDate = loan.ExpectedReturnDate,
-                //FinalBookCondition = finalBookCondition,
-                InitialBookCondition = loan.BookCopy.Condition,
-                LibrarianUserName = librarian.UserName,
-                Status = HistoryStatus.Completed
-            };
-
-            _dbContext.History.Add(historyLoan);
-
-            _dbContext.Loans.Remove(loan);
-
-            _dbContext.SaveChanges();
+                throw new KeyNotFoundException("Book Copy not found.");
+            }
+            else
+            {
+                // If new book copy condition was specified.
+                if (finalBookCondition.HasValue)
+                {
+                    bookCopy.Condition = finalBookCondition.Value;
+                    _dbContext.SaveChanges();
+                }
+                MoveBookCopyToHistory(loanId, librarian, finalBookCondition);
+            }
         }
 
-        public void LostBook(int loanId, User librarian)
+        public void MoveBookCopyToHistory(int loanId, User librarian, BookCondition? finalBookCondition)
         {
             var loan = _dbContext.Loans
-                                .Include(l => l.Book)
-                                .Include(l => l.User)
-                                .Include(l => l.BookCopy)
-                                .Where(l => l.Id == loanId)
-                                .SingleOrDefault();
+                                 .Include(l => l.Book)
+                                 .Include(l => l.User)
+                                 .Include(l => l.BookCopy)
+                                 .Where(l => l.Id == loanId)
+                                 .SingleOrDefault();
 
             var historyLoan = new History
             {
@@ -183,14 +174,21 @@ namespace OnlineLibrary.Services.Concrete
                 ActualReturnDate = DateTime.Now,
                 ExpectedReturnDate = loan.ExpectedReturnDate,
                 InitialBookCondition = loan.BookCopy.Condition,
+                FinalBookCondition = finalBookCondition,
                 LibrarianUserName = librarian.UserName,
                 Status = HistoryStatus.LostBook
             };
 
             _dbContext.History.Add(historyLoan);
-
             _dbContext.Loans.Remove(loan);
+            
+            _dbContext.SaveChanges();
+        }
 
+        public void ChangeIsLostStatus(int bookcopyId, bool isLost)
+        {
+            var bookcopy = _dbContext.BookCopies.Find(bookcopyId);
+            bookcopy.IsLost = isLost;
             _dbContext.SaveChanges();
         }
     }

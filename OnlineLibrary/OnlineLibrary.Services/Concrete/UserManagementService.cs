@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin;
 using OnlineLibrary.DataAccess;
+using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using OnlineLibrary.DataAccess.Abstract;
-using OnlineLibrary.Services.Abstract;
 using System.Threading.Tasks;
 
 namespace OnlineLibrary.Services.Concrete

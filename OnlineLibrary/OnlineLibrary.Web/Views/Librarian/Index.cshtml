@@ -1,4 +1,5 @@
-﻿@model OnlineLibrary.Web.Models.LibrarianLoansViewModels.LibrarianIndexViewModel
+﻿@using OnlineLibrary.DataAccess.Enums
+@model OnlineLibrary.Web.Models.LibrarianLoansViewModels.LibrarianIndexViewModel
 @section CSS {
     <link href="~/Content/Views stylesheets/Librarian/Index.css" rel="stylesheet" />
     <link href="~/Content/toastr.css" rel="stylesheet" />
@@ -111,7 +112,7 @@
         </div>
         <div role="tabpanel" class="tab-pane fade" id="inProgress">
             <p data-bind="visible: inProgress().length == 0">No records...</p>
-            <table class="table loans-table" data-bind="visible: inProgress().length > 0">
+            <table id="loansInProgress" class="table loans-table" data-bind="visible: inProgress().length > 0" data-book-condition-by-loan-url="@Url.Action("GetBookCopyStatusByLoan", "Librarian")">
                 <colgroup>
                     <col>
                     <col>
@@ -347,7 +348,7 @@
             <div class="modal-footer">
                 <form id="reject" action="@Url.Action("RejectLoanRequest", "Librarian")" method="post">
                     <input id="loanId" name="loanId" hidden="hidden" />
-                    <button type="submit" class="btn btn-default">OK</button>
+                    <button type="submit" class="btn btn-primary">OK</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     </form>
                 </div>
@@ -370,7 +371,7 @@
                 <div class="modal-footer">
                     <div id="performLoan">
                         <input id="loanId" name="loanId" hidden="hidden" />
-                        <button type="submit" class="btn btn-default" data-dismiss="modal" data-url="@Url.Action("PerformLoan", "Librarian")">Yes</button>
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" data-url="@Url.Action("PerformLoan", "Librarian")">Yes</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
                     </div>
                 </div>
@@ -393,7 +394,7 @@
             <div class="modal-footer">
                 <div id="cancelApprovedLoan">
                     <input id="loanId" name="loanId" hidden="hidden" />
-                    <button type="submit" class="btn btn-default" data-dismiss="modal" data-url="@Url.Action("CancelApprovedLoan", "Librarian")">Yes</button>
+                    <button type="submit" class="btn btn-primary" data-dismiss="modal" data-url="@Url.Action("CancelApprovedLoan", "Librarian")">Yes</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
                 </div>
             </div>
@@ -411,12 +412,21 @@
             </div>
 
             <div class="modal-body">
-                <label>Are you sure you want to mark this loan as returned?</label>
+                <p>Are you sure you want to mark this loan as returned?</p>
+                <div id="returnLoanedBookOptions" class="form-horizontal">
+                    <input id="loanId" name="loanId" hidden="hidden" />
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.BookCondition, new { @class = "col-sm-4 control-label" })
+                        <div class="col-sm-8">
+                            @Html.EnumDropDownListFor(m => m.BookCondition, "Select Condition...", new { @class = "form-control" })
+                            <small id="currentBookConditionCaption">Book condition at the loan: <strong id="currentBookConditionValue"></strong></small>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <div id="returnLoanedBook">
-                    <input id="loanId" name="loanId" hidden="hidden" />
-                    <button type="submit" class="btn btn-default" data-dismiss="modal" data-url="@Url.Action("ReturnBook", "Librarian")">Yes</button>
+                <div id="returnLoanedBook" class="form-inline">
+                    <button type="submit" class="btn btn-primary" data-dismiss="modal" data-url="@Url.Action("ReturnBook", "Librarian")">Confirm</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
                 </div>
             </div>
@@ -439,7 +449,7 @@
             <div class="modal-footer">
                 <div id="lostLoanedBook">
                     <input id="loanId" name="loanId" hidden="hidden" />
-                    <button type="submit" class="btn btn-default" data-dismiss="modal" data-url="@Url.Action("LostBook", "Librarian")">Yes</button>
+                    <button type="submit" class="btn btn-primary" data-dismiss="modal" data-url="@Url.Action("LostBook", "Librarian")">Yes</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
                 </div>
             </div>
