@@ -302,7 +302,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         {
             // Arrange.           
             var expectedResult = 2;
-            var sut = new BookService(_dbContext);
+            var sut = new BookService(_dbContext, null);
             var model = new BookSearchServiceModel
             {
                 Title = "C#"
@@ -320,7 +320,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         {
             // Arrange.           
             var expectedResult = 1;
-            var sut = new BookService(_dbContext);
+            var sut = new BookService(_dbContext, null);
             var model = new BookSearchServiceModel
             {
                 Author = "R. B. Whitaker"
@@ -338,7 +338,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         {
             // Arrange.           
             var expectedResult = 1;
-            var sut = new BookService(_dbContext);
+            var sut = new BookService(_dbContext, null);
             var model = new BookSearchServiceModel
             {
                 Description = "concurrent Java"
@@ -356,7 +356,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         {
             // Arrange.           
             var expectedResult = 1;
-            var sut = new BookService(_dbContext);
+            var sut = new BookService(_dbContext, null);
             var model = new BookSearchServiceModel
             {
                 PublishDate = new DateTime(2015, 9, 22)
@@ -374,7 +374,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         {
             // Arrange.           
             var expectedResult = 3;
-            var sut = new BookService(_dbContext);
+            var sut = new BookService(_dbContext, null);
             var model = new BookSearchServiceModel
             {
                 CategoryId = 1
@@ -392,7 +392,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         {
             // Arrange.           
             var expectedResult = 2;
-            var sut = new BookService(_dbContext);
+            var sut = new BookService(_dbContext, null);
             var model = new BookSearchServiceModel
             {
                 SubcategoryId = 1
