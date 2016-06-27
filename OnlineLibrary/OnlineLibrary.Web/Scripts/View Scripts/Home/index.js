@@ -86,15 +86,6 @@
 
     })(window);
 
-    function switchToPage(pageNumber) {
-        viewModel.searchData.pageNumber(pageNumber);
-
-        var searchFormJson = JSON.parse(ko.toJSON(viewModel.searchData));
-        var searchFormText = $.param(searchFormJson);
-
-        History.pushState(searchFormJson, null, "?" + searchFormText);
-    }
-
     $("#previous-page").click(function (e) {
         switchToPage(viewModel.searchData.pageNumber() - 1);
     });
@@ -105,12 +96,20 @@
 
     $("#search-button").click(function (e) {
         viewModel.searchData.pageNumber(1);
-
-        var searchFormJson = ko.toJS(viewModel.searchData);
-        var searchFormText = $.param(searchFormJson);
-
-        History.pushState(searchFormJson, null, "?" + searchFormText);
+        pushViewModelToHistory();
     });
+
+    function switchToPage(pageNumber) {
+        viewModel.searchData.pageNumber(pageNumber);
+        pushViewModelToHistory();
+    }
+
+    function pushViewModelToHistory() {
+        var searchDataJson = ko.mapping.toJS(viewModel.searchData);
+        var searchDataText = $.param(searchDataJson);
+
+        History.pushState(searchDataJson, null, "?" + searchDataText);
+    }
 
     $.fn.serializeObject = function () {
         var o = {};
@@ -135,22 +134,27 @@
         yearRange: "-160:+0"
     });
 
-    $("#SearchData_CategoryId").change(function (e) {
+    $("#CategoryId").change(function (e) {
         var url = $(this).data("subcategoriesUrl");
+
+        var categoriesSelectList = $(this);
+        var subcategoriesSelectList = $("#SubcategoryId");
+
+        if (!categoriesSelectList.val()) {
+            subcategoriesSelectList.empty();
+            addAnyOptionToSelectList(subcategoriesSelectList);
+            return;
+        }
 
         var settings = {
             url: url,
-            data: { categoryId: $(this).val() },
+            data: { categoryId: categoriesSelectList.val() },
             method: "GET",
             success: function (subcategories) {
                 // Clear select list.
-                var subcategoriesSelectList = $("#SearchData_SubcategoryId");
                 subcategoriesSelectList.empty();
 
-                // Add 'Choose subcategory' option.
-                var option = $(document.createElement("option"));
-                option.text("Any");
-                subcategoriesSelectList.append(option);
+                addAnyOptionToSelectList(subcategoriesSelectList);
 
                 // Add option elements for all subcategories.
                 for (var i = 0; i < subcategories.length; i++) {
@@ -165,6 +169,12 @@
 
         $.ajax(settings);
     });
+
+    function addAnyOptionToSelectList(element) {
+        var option = $(document.createElement("option"));
+        option.text("Any");
+        element.append(option);
+    }
 
     $("#toggleSearch").click(function () {
         if ($(this).find("span").hasClass("glyphicon-chevron-down")) {
