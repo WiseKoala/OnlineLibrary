@@ -1,41 +1,38 @@
 ﻿$(document).ready(function () {
 
+    function SearchViewModel() {
+        var self = this;
+
+        self.title = ko.observable();
+        self.author = ko.observable();
+        self.publishDate = ko.observable();
+        self.categoryId = ko.observable();
+        self.isbn = ko.observable();
+        self.description = ko.observable();
+        self.subcategoryId = ko.observable();
+        self.pageNumber = ko.observable(1);
+    }
+
     function BooksViewModel() {
         var self = this;
         self.books = ko.observableArray([]);
         self.numberOfPages = ko.observable();
-        self.pageNumber = ko.observable(1);
 
-        // Search filters.
-        self.title = ko.observable();
-        self.author = ko.observable();
-        self.publishDate = ko.observable();
-        self.category = ko.observable();
-        self.isbn = ko.observable();
-        self.description = ko.observable();
-        self.subcategory = ko.observable();
+        self.searchData = new SearchViewModel();
     }
 
     // Activate knockout.js
     var viewModel = new BooksViewModel();
     ko.applyBindings(viewModel);
 
-    function loadBooks() {
+    function loadBooks(data) {
 
         var settings = {
             url: $("#booksList").data("getBooksUrl"),
-            data: {
-                title: viewModel.title(),
-                author: viewModel.author(),
-                publishDate: viewModel.publishDate(),
-                categoryId: viewModel.category(),
-                isbn: viewModel.isbn(),
-                description: viewModel.description(),
-                subcategoryId: viewModel.subcategory(),
-                pageNumber: viewModel.pageNumber()
-            },
+            data: data,
             type: 'GET',
             success: function (result) {
+                viewModel.books.removeAll();
                 for (var i = 0; i < result.Books.length; i++) {
                     viewModel.books.push(result.Books[i]);
                 }
@@ -45,63 +42,91 @@
         $.ajax(settings);
     }
 
-    function fillUrlFromViewModel() {
-        var url =
-            "title=" + viewModel.title() + "&author=" + viewModel.author() + "&publishDate=" + viewModel.publishDate() +
-            "&category=" + viewModel.category() + "&isbn=" + viewModel.isbn() + "&description=" + viewModel.description() +
-            "&subcategory=" + viewModel.subcategory() + "&pageNumber=" + viewModel.pageNumber();
+    loadBooks(null);
 
-        location.hash = url;
-    }
-
-    function switchToPage(pageNumber) {
-        fillUrlFromViewModel();
-
-        if (viewModel.pageNumber() == pageNumber) {
-            LoadPage(pageNumber);
-        }
-    }
-
-    $("#previous-page").click(function (e) {
-        switchToPage(viewModel.pageNumber() - 1);
-    });
-
-    $("#next-page").click(function (e) {
-        switchToPage(viewModel.pageNumber() + 1);
-    });
-
-    $("#search-button").click(function (e) {
-        switchToPage(1);
-    });
-
-    Sammy(function () {
-        this.get(/\#title=(.*)&author=(.*)&publishDate=(.*)&category=(.*)&isbn=(.*)&description=(.*)&subcategory=(.*)&pageNumber=(.*)/,
-            function (context) {
-                var queryStringParameters = this.params['splat'];
-
-                viewModel.title(queryStringParameters[0]);
-                viewModel.author(queryStringParameters[1]);
-                viewModel.publishDate(queryStringParameters[2]);
-                viewModel.category(queryStringParameters[3]);
-                viewModel.isbn(queryStringParameters[4]);
-                viewModel.description(queryStringParameters[5]);
-                viewModel.subcategory(queryStringParameters[6]);
-                viewModel.pageNumber(queryStringParameters[7]);
-
-                LoadPage();
-            });
-    }).run();
-
-    location.hash = "title=&author=&publishDate=&category=&isbn=&description=&subcategory=&pageNumber=1";
-
-    function LoadPage() {
-        loadBooks();
+    function LoadPage(data) {
+        loadBooks(data);
 
         $("html, body").animate({ scrollTop: 0 }, "slow");
         $("#booksList").fadeOut(100, function () {
-            $(".booksList").fadeIn(1000);
+            $("#booksList").fadeIn(1000);
         });
     }
+
+    // Establish Variables
+    var History = window.History;
+
+    function LoadDataBasedOnState() {
+        var state = History.getState(); // Note: We are using History.getState() instead of event.state
+        console.log('statechange:', state.data, state.title, state.url);
+
+        LoadPage(state.data);
+    }
+    LoadDataBasedOnState();
+
+    (function (window, undefined) {
+
+        // Bind to State Change
+        History.Adapter.bind(window, 'statechange', function () { // Note: We are using statechange instead of popstate
+            LoadDataBasedOnState();
+            var state = History.getState(); // Note: We are using History.getState() instead of event.state
+
+            ko.mapping.fromJS(state.data, {}, viewModel.searchData);
+
+            var pageNumber;
+            if (state.data.pageNumber) {
+                pageNumber = state.data.pageNumber;
+            }
+            else {
+                pageNumber = 1;
+            }
+
+            viewModel.searchData.pageNumber(pageNumber);
+        });
+
+    })(window);
+
+    function switchToPage(pageNumber) {
+        viewModel.searchData.pageNumber(pageNumber);
+
+        var searchFormJson = JSON.parse(ko.toJSON(viewModel.searchData));
+        var searchFormText = $.param(searchFormJson);
+
+        History.pushState(searchFormJson, null, "?" + searchFormText);
+    }
+
+    $("#previous-page").click(function (e) {
+        switchToPage(viewModel.searchData.pageNumber() - 1);
+    });
+
+    $("#next-page").click(function (e) {
+        switchToPage(viewModel.searchData.pageNumber() + 1);
+    });
+
+    $("#search-button").click(function (e) {
+        viewModel.searchData.pageNumber(1);
+
+        var searchFormJson = ko.toJS(viewModel.searchData);
+        var searchFormText = $.param(searchFormJson);
+
+        History.pushState(searchFormJson, null, "?" + searchFormText);
+    });
+
+    $.fn.serializeObject = function () {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function () {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
 
     $(".datepicker").datepicker({
         dateFormat: "mm/dd/yy",

@@ -10,17 +10,16 @@
 }
 
 @section scripts{
-
     @Scripts.Render("~/bundles/jqueryui")
     <script src="~/Scripts/View Scripts/Home/index.js"></script>
     <script src="~/Scripts/toastr.min.js"></script>
     <script src="~/Scripts/knockout-3.4.0.js"></script>
     <script src="~/Scripts/knockout.mapping-latest.js"></script>
-    <script src="~/Scripts/sammy-0.7.5.min.js"></script>
+    <script src="~/Scripts/jquery.history.js"></script>
 }
 
 <div class="row page-header">
-    <form id="searchFilters">
+    <form id="searchFilters" data-bind="with: searchData">
         <div class="row">
             <div class="form-horizontal col-md-6">
                 <div class="form-group">
@@ -59,7 +58,7 @@
                         new
                         {
                             @class = "form-control", data_subcategories_url = Url.Action("GetSubCategories", "CategoriesManagement"),
-                            data_bind = "value: category"
+                            data_bind = "value: categoryId"
                         })
                 </div>
             </div>
@@ -79,7 +78,7 @@
                                           new
                                           {
                                               @class = "form-control",
-                                              data_bind = "value: subcategory"
+                                              data_bind = "value: subcategoryId"
                                           })
                 </div>
             </div>
@@ -125,13 +124,13 @@
     <nav>
         <ul class="book-pagination">
             <li>
-                <button id="previous-page" data-bind="disable: pageNumber() == 1" class="glyphicon glyphicon-chevron-left btn btn-group-xs"></button>
+                <button id="previous-page" data-bind="disable: searchData.pageNumber() == 1" class="glyphicon glyphicon-chevron-left btn btn-group-xs"></button>
             </li>
             <li>
-                <strong data-bind="text: pageNumber"></strong> <span>of</span> <strong data-bind="text: numberOfPages"></strong>
+                <strong data-bind="text: searchData.pageNumber"></strong> <span>of</span> <strong data-bind="text: numberOfPages"></strong>
             </li>
             <li>
-                <button id="next-page" data-bind="disable: pageNumber() == numberOfPages()" class="glyphicon glyphicon-chevron-right btn btn-group-xs"></button>
+                <button id="next-page" data-bind="disable: searchData.pageNumber() == numberOfPages()" class="glyphicon glyphicon-chevron-right btn btn-group-xs"></button>
             </li>
         </ul>
     </nav>
