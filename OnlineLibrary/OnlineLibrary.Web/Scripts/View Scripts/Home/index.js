@@ -60,9 +60,22 @@
         var state = History.getState(); // Note: We are using History.getState() instead of event.state
         console.log('statechange:', state.data, state.title, state.url);
 
+        if (!isEmpty(state.data)) {
+            ko.mapping.fromJS(state.data, {}, viewModel.searchData);
+        }
+
         LoadPage(state.data);
     }
     LoadDataBasedOnState();
+
+    function isEmpty(obj) {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     (function (window, undefined) {
 
