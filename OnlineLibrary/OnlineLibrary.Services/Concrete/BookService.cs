@@ -836,7 +836,58 @@ namespace OnlineLibrary.Services.Concrete
 
         public bool IsBookDuplicate(DuplicateBookServiceModel model)
         {
-            throw new NotImplementedException();
+            var books = _dbContext.Books.Include(b => b.Authors).Select(b => new DuplicateBookServiceModel
+            {
+                Title = b.Title,
+                PublishDate = b.PublishDate,
+                Authors = b.Authors.Select(a => new DuplicateAuthorServiceModel
+                {
+                    FirstName = a.FirstName,
+                    MiddleName = a.MiddleName,
+                    LastName = a.LastName
+                })
+            })
+            .ToList();
+
+            bool isTitleDuplicate = false;
+            bool isAuthorDuplicate = false;
+            bool isPublishDateDuplicate = false;
+
+            foreach (var book in books)
+            {
+                // Trim book title.
+                book.Title = Regex.Replace(book.Title, @"[^A-Za-z]", string.Empty);
+
+                isTitleDuplicate = string.Equals(book.Title, model.Title, StringComparison.InvariantCultureIgnoreCase);
+
+                if (isTitleDuplicate)
+                {
+                    isAuthorDuplicate = book.Authors.Any(author =>
+                        model.Authors.Any(a =>
+                            string.Equals(author.FirstName, a.FirstName, StringComparison.InvariantCultureIgnoreCase)
+                            && string.Equals(author.MiddleName, a.MiddleName, StringComparison.InvariantCultureIgnoreCase)
+                            && string.Equals(author.LastName, a.LastName, StringComparison.InvariantCultureIgnoreCase)));
+
+                    if (isAuthorDuplicate)
+                    {
+                        break;
+                    }
+
+                    isPublishDateDuplicate = book.PublishDate.Year.Equals(model.PublishDate.Year);
+
+                    if (isPublishDateDuplicate)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (isTitleDuplicate && isAuthorDuplicate || isTitleDuplicate && isPublishDateDuplicate)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         #region ImageHelepers

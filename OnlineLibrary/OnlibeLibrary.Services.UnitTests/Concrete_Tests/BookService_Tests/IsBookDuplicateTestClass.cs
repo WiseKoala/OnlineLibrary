@@ -91,6 +91,15 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
                             Description = "This book will give you a good grounding in concurrent programming in Java.",
                             PublishDate = new DateTime(2006,5,19),
                        },
+                       new Book()
+                       {
+                           Id = 2,
+                           Title = "The C# Player's Guide (2nd Edition)",
+                           ISBN = "0985580127",
+                           FrontCover = "~/Content/Images/Books/front-covers/0985580127.jpg",
+                           Description = "The C# Player's Guide (2nd Edition) is the ultimate guide for people starting out with C#, whether you are new to programming, or an experienced vet. This guide takes you from your journey's beginning, through the most challenging parts of programming in C#, and does so in a way that is casual, informative, and fun. This version of the book is updated for C# 6.0, .NET 4.6, and Visual Studio 2015.",
+                           PublishDate = new DateTime(2015,9,22),
+                       }
                     }
                 },
                 new Author() { Id = 6, FirstName = "Joseph", LastName = "Bowbeer" ,
@@ -199,6 +208,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
             ((IQueryable<Book>)booksSet).Expression.Returns(books.Expression);
             ((IQueryable<Book>)booksSet).ElementType.Returns(books.ElementType);
             ((IQueryable<Book>)booksSet).GetEnumerator().Returns(books.GetEnumerator());
+            booksSet.Include(Arg.Any<string>()).Returns(ci => booksSet);
 
             var authorsSet = Substitute.For<DbSet<Author>, IQueryable<Author>>();
             ((IQueryable<Author>)authorsSet).Provider.Returns(authors.Provider);
