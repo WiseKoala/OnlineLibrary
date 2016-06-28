@@ -288,8 +288,6 @@ namespace OnlineLibrary.Services.Concrete
 
         public void CreateEditPreparations(CreateEditBookServiceModel model, out Dictionary<string, string> modelErrors)
         {
-            var book = GetBook(model.Id);
-
             modelErrors = new Dictionary<string, string>();
 
             // Format and trim model fields.
@@ -302,7 +300,6 @@ namespace OnlineLibrary.Services.Concrete
             RemoveMarkedAuthorsFromModel(model);
             RemoveMarkedBookCategoriesFromModel(model);
             RemoveDupliacteAuthors(model);
-            RemoveDupliacteCategories(model);
 
             // Manually validate needed fields.
             ValidateISBN(model, modelErrors);
@@ -315,14 +312,15 @@ namespace OnlineLibrary.Services.Concrete
 
         private void RemoveMarkedBookCopiesFromModel(CreateEditBookServiceModel model)
         {
+            // Remove Book copies only from model only if not in book.
             if (model.BookCopies.Any())
             {
+                var book = GetBook(model.Id);
                 var bookCopiesToBeDeleted = model.BookCopies.Where(bc => bc.IsToBeDeleted).ToList();
 
                 foreach (var bookCopy in bookCopiesToBeDeleted)
                 {
-                    // Remove the marked book copies from model only if they are not in the database.
-                    if (!_dbContext.BookCopies.Any(bc => bc.Id == bookCopy.Id))
+                    if (book == null || (book != null && !book.BookCopies.Any(a => a.Id == bookCopy.Id)))
                     {
                         model.BookCopies.Remove(bookCopy);
                     }
@@ -358,7 +356,8 @@ namespace OnlineLibrary.Services.Concrete
 
                 foreach (var category in categoriesToBeRemoved)
                 {
-                    if (book == null || (book != null && !book.SubCategories.Any(sc => sc.Id == category.Subcategory.Id)))
+                    if (book == null || (book != null && !book.SubCategories
+                                                         .Any(sc => sc.Id == category.Subcategory.Id)))
                     {
                         model.BookCategories.Remove(category);
                     }
@@ -368,14 +367,31 @@ namespace OnlineLibrary.Services.Concrete
 
         public void RemoveDataFromDatabase(CreateEditBookServiceModel model, Dictionary<string, string> modelErrors)
         {
-            RemoveBookCopies(model, modelErrors);
+            var bookCopiesToBeRemoved = model.BookCopies.Where(bc => bc.IsToBeDeleted).ToList();
+            var allBookCopiesAreRemovable = true;
 
-            RemoveAuthors(model);
+            foreach (var bookCopy in bookCopiesToBeRemoved)
+            {
+                if (!IsBookCopyRemovable(bookCopy.Id))
+                {
+                    allBookCopiesAreRemovable = false;
+                    break;
+                }
+            }
 
-            RemoveBookCategories(model);
+            if (allBookCopiesAreRemovable)
+            {
+                bool saveChanges = true;
+
+                RemoveBookCopies(model, modelErrors, saveChanges);
+
+                RemoveAuthors(model, saveChanges);
+
+                RemoveBookCategories(model, saveChanges);
+            }
         }
 
-        private void RemoveBookCopies(CreateEditBookServiceModel model, Dictionary<string, string> modelErrors)
+        private void RemoveBookCopies(CreateEditBookServiceModel model, Dictionary<string, string> modelErrors, bool saveChanges)
         {
             if (model.BookCopies.Any())
             {
@@ -404,34 +420,43 @@ namespace OnlineLibrary.Services.Concrete
                     }
                 }
 
-                _dbContext.SaveChanges();
+                if (saveChanges)
+                {
+                    _dbContext.SaveChanges();
+                }
             }
         }
 
-        private void RemoveAuthors(CreateEditBookServiceModel model)
+        private void RemoveAuthors(CreateEditBookServiceModel model, bool saveChanges)
         {
             if (model.Authors.Any())
             {
+                var book = GetBook(model.Id);
+
                 var authorsToBeRemoved = model.Authors
                     .Where(a => a.IsRemoved)
                     .ToList();
 
                 foreach (var author in authorsToBeRemoved)
                 {
-                    // Remove the marked category from database and then remove it from model.
+                    // Remove the marked auhots from database and then remove it from model.
                     var dbAuthor = _dbContext.Authors.Find(author.Id);
-                    _dbContext.Authors.Remove(dbAuthor);
+                    book.Authors.Remove(dbAuthor);
                     model.Authors.Remove(author);
                 }
-
-                _dbContext.SaveChanges();
+                
+                if (saveChanges)
+                {
+                    _dbContext.SaveChanges();
+                }
             }
         }
 
-        private void RemoveBookCategories(CreateEditBookServiceModel model)
+        private void RemoveBookCategories(CreateEditBookServiceModel model, bool saveChanges)
         {
             if (model.BookCategories.Any())
             {
+                var book = GetBook(model.Id);
                 var categoriesToBeRemoved = model.BookCategories
                     .Where(c => c.IsRemoved)
                     .ToList();
@@ -439,12 +464,17 @@ namespace OnlineLibrary.Services.Concrete
                 foreach (var category in categoriesToBeRemoved)
                 {
                     // Remove the marked category from database and then remove it from model.
-                    var dbCategory = _dbContext.Categories.Find(category.Id);
-                    _dbContext.Categories.Remove(dbCategory);
-                    model.BookCategories.Remove(category);
+                    var dbSubcategory = _dbContext.SubCategories.Find(category.Subcategory.Id);
+
+                    book.SubCategories.Remove(dbSubcategory);
+                    model.BookCategories.Remove(
+                        model.BookCategories.SingleOrDefault(c => c.Subcategory.Id == dbSubcategory.Id));
                 }
 
-                _dbContext.SaveChanges();
+                if (saveChanges)
+                {
+                    _dbContext.SaveChanges();
+                }
             }
         }
 
@@ -465,18 +495,6 @@ namespace OnlineLibrary.Services.Concrete
                         a.AuthorName.LastName
                     })
                     .Select(g => g.First())
-                    .ToList();
-            }
-        }
-
-        private void RemoveDupliacteCategories(CreateEditBookServiceModel model)
-        {
-            // Remove duplicate subcategories from model.
-            if (model.BookCategories.Any())
-            {
-                model.BookCategories = model.BookCategories
-                    .GroupBy(bc => bc.Subcategory.Id)
-                    .Select(bc => bc.First())
                     .ToList();
             }
         }
@@ -564,10 +582,8 @@ namespace OnlineLibrary.Services.Concrete
 
         private void Create(CreateEditBookServiceModel model, string imagePath)
         {
-            Book book;
-
             // Create new book.
-            book = new Book()
+            var book = new Book()
             {
                 Id = model.Id,
                 Title = model.Title,
@@ -637,26 +653,22 @@ namespace OnlineLibrary.Services.Concrete
         {
             // Find and update book.
             Book book = GetBook(model.Id);
-
-            // Update title if needed.
+            
             if (model.Title != book.Title)
             {
                 book.Title = model.Title;
             }
-
-            // Update description if needed.
+            
             if (model.Description != book.Description)
             {
                 book.Description = model.Description;
             }
 
-            // Update ISBN if needed.
             if (model.ISBN != book.ISBN)
             {
                 book.ISBN = model.ISBN;
             }
 
-            // Update publish date if needed.
             if (model.PublishDate != book.PublishDate)
             {
                 book.PublishDate = model.PublishDate;
@@ -709,18 +721,16 @@ namespace OnlineLibrary.Services.Concrete
                             BookId = book.Id
                         };
 
-                        _dbContext.BookCopies.Add(newBookCopy);
                         book.BookCopies.Add(newBookCopy);
+                        _dbContext.SaveChanges();
                     }
                 }
-
-                _dbContext.SaveChanges();
             }
 
             // Update authors.
             foreach (var authorModel in model.Authors)
             {
-                // See if the book already has such an author
+                // See if the book already has such an author.
                 var bookAuthor = book.Authors
                     .FirstOrDefault(a => a.FirstName == authorModel.AuthorName.FirstName
                     && a.MiddleName == authorModel.AuthorName.MiddleName
@@ -728,15 +738,11 @@ namespace OnlineLibrary.Services.Concrete
 
                 if (bookAuthor == null)
                 {
-                    // Variable "authorByName" is checking whether the author with same name is already in the database.
-                    // It selects the item or returns null if not found.
+                    // Check whether the author with same name already exists.
                     var authorByName = _dbContext.Authors
                         .FirstOrDefault(a => a.FirstName == authorModel.AuthorName.FirstName
                         && a.MiddleName == authorModel.AuthorName.MiddleName
                         && a.LastName == authorModel.AuthorName.LastName);
-
-                    // Select author from database with id coresponding to current author iterated from model.
-                    var authorById = _dbContext.Authors.Find(authorModel.Id);
 
                     if (authorByName != null)
                     {
@@ -756,7 +762,10 @@ namespace OnlineLibrary.Services.Concrete
                         book.Authors.Add(newAuthor);
                     }
 
-                    // If user edits existing author name, previous author name is removed.
+                    // Select author from database with id coresponding to current author iterated from model.
+                    var authorById = _dbContext.Authors.Find(authorModel.Id);
+
+                    // If user edits existing author name, previous author is removed.
                     if (authorById != null)
                     {
                         if (authorById.FirstName != authorModel.AuthorName.FirstName
@@ -775,8 +784,8 @@ namespace OnlineLibrary.Services.Concrete
                 if (!book.SubCategories.Any(sc => sc.Id == category.Subcategory.Id))
                 {
                     // If the book has no such subcategory, add it.
-                    var adedSubcategory = _dbContext.SubCategories.Find(category.Subcategory.Id);
-                    book.SubCategories.Add(adedSubcategory);
+                    var addedSubcategory = _dbContext.SubCategories.Find(category.Subcategory.Id);
+                    book.SubCategories.Add(addedSubcategory);
                 }
             }
 
@@ -831,8 +840,7 @@ namespace OnlineLibrary.Services.Concrete
             // Delete the file if the old image path refers to a valid image relative save path.
             if (oldImagePath.IndexOf(imageSavePath) > -1)
             {
-                string relativeImagePath = "~" + oldImagePath
-                    .Substring(oldImagePath.IndexOf(imageSavePath));
+                string relativeImagePath = oldImagePath.Substring(oldImagePath.IndexOf(imageSavePath));
 
                 File.Delete(relativeImagePath);
             }
