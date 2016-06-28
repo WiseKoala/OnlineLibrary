@@ -22,6 +22,11 @@ namespace OnlineLibrary.Services.Concrete
         private ILibraryDbContext _dbContext;
         private ILibrarianService _librarianService;
 
+        public BookService(ILibraryDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
         public BookService(ILibraryDbContext dbContext, ILibrarianService librarianService)
         {
             _dbContext = dbContext;
@@ -827,6 +832,11 @@ namespace OnlineLibrary.Services.Concrete
             }
 
             return bookConditions;
+        }
+
+        public bool IsBookDuplicate(DuplicateBookServiceModel model)
+        {
+            throw new NotImplementedException();
         }
 
         #region ImageHelepers

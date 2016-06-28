@@ -40,5 +40,7 @@ namespace OnlineLibrary.Services.Abstract
         Book GetBook(int id);
 
         Dictionary<BookCondition, string> PopulateWithBookConditions();
+
+        bool IsBookDuplicate(DuplicateBookServiceModel model);
     }
 }
