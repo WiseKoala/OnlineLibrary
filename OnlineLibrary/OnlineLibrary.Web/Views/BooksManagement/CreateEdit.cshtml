@@ -86,6 +86,8 @@
                                     <input type="hidden" name="Authors[@i].IsRemoved" value="false" class="form-control is-removed" />
                                     @Html.LabelFor(m => m.Authors[i].AuthorName.FirstName)
                                     <input type="text" name="Authors[@i].AuthorName.FirstName" value="@Model.Authors[i].AuthorName.FirstName" class="form-control" />
+                                    @Html.ValidationMessageFor(m => m.Authors[i])
+                                    @Html.ValidationMessageFor(m => m.Authors[i].AuthorName)
                                     @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.FirstName)
                                 </td>
                                 <td>
@@ -105,16 +107,7 @@
                                     </button>
                                 </td>
                             </tr>
-                            @Html.ValidationMessageFor(m => m.Authors[i].AuthorName)
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td>
-                                @Html.ValidationMessageFor(m => m.Authors)
-                            </td>
-                        </tr>
                     }
                 </tbody>
             </table>

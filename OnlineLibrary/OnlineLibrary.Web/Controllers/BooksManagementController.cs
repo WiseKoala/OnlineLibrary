@@ -210,9 +210,9 @@ namespace OnlineLibrary.Web.Controllers
                 return View(model);
             }
 
-            // At this state, the model is valid so remove the needed data from database.
+            // Remove the needed data from database.
             _bookService.RemoveDataFromDatabase(serviceModel, modelErrors);
-
+            
             // Update model State and return the view if it's not valid.
             foreach (var error in modelErrors)
             {
@@ -225,14 +225,21 @@ namespace OnlineLibrary.Web.Controllers
             }
 
             // Call Create / Edit service method.
-            string absolutePathToImages = Server.MapPath(ConfigurationManager.AppSettings["BookCoverRelativePath"]);
+            string absolutePathToImages = Server.MapPath(
+                ConfigurationManager.AppSettings["BookCoverRelativePath"]);
+
             _bookService.CreateEdit(serviceModel, absolutePathToImages);
 
+            var bookCover = model.BookCover;
+
             model = Mapper.Map<CreateEditBookServiceModel, CreateEditBookViewModel>(serviceModel);
+
+            model.BookCover = bookCover;
 
             model.AllBookConditions = _bookService.PopulateWithBookConditions();
             PrepareDropdowns(model);
 
+            // On successful book create return to the list page.
             if (model.Id <= 0)
             {
                 return RedirectToAction("Index", "BooksManagement");
@@ -393,12 +400,14 @@ namespace OnlineLibrary.Web.Controllers
                 }
 
                 // Get all subcategories for each  book's category.
-                for (int i = 0; i < model.BookCategories.Count(); i++)
+                var modelCategories = model.BookCategories.ToList();
+
+                foreach (var category in modelCategories)
                 {
-                    if (model.BookCategories[i].Subcategory != null)
+                    if (!category.IsRemoved && category.Subcategory != null)
                     {
-                        var subcategoriesDropDownItems = SetSubCategoriesDropDownItems(subcategories, model.BookCategories[i].Id);
-                        model.BookCategories[i].Subcategories = SetSelectedSubCategory(subcategoriesDropDownItems, model.BookCategories[i].Subcategory.Id);
+                        var subcategoriesDropDownItems = SetSubCategoriesDropDownItems(subcategories, category.Id);
+                        category.Subcategories = SetSelectedSubCategory(subcategoriesDropDownItems, category.Subcategory.Id);
                     }
                 }
             }
