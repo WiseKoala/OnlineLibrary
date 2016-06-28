@@ -230,7 +230,11 @@ namespace OnlineLibrary.Web.Controllers
 
             _bookService.CreateEdit(serviceModel, absolutePathToImages);
 
+            var bookCover = model.BookCover;
+
             model = Mapper.Map<CreateEditBookServiceModel, CreateEditBookViewModel>(serviceModel);
+
+            model.BookCover = bookCover;
 
             model.AllBookConditions = _bookService.PopulateWithBookConditions();
             PrepareDropdowns(model);

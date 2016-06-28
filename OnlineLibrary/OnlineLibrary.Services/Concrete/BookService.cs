@@ -677,7 +677,7 @@ namespace OnlineLibrary.Services.Concrete
             // Delete old book cover image if new image was added.
             if (!string.IsNullOrEmpty(model.OldImagePath))
             {
-                DeleteOldBookCoverImage(model.OldImagePath);
+                DeleteOldBookCoverImage(model.OldImagePath, imagePath);
             }
 
             // Save image from Url address in case image is imported.
@@ -831,7 +831,7 @@ namespace OnlineLibrary.Services.Concrete
 
         #region ImageHelepers
 
-        private void DeleteOldBookCoverImage(string oldImagePath)
+        private void DeleteOldBookCoverImage(string oldImagePath, string pathToImages)
         {
             // Get the image relative save path without tilda sign at the beginning.
             string imageSavePath = ConfigurationManager.AppSettings["BookCoverRelativePath"]
@@ -840,9 +840,10 @@ namespace OnlineLibrary.Services.Concrete
             // Delete the file if the old image path refers to a valid image relative save path.
             if (oldImagePath.IndexOf(imageSavePath) > -1)
             {
-                string relativeImagePath = oldImagePath.Substring(oldImagePath.IndexOf(imageSavePath));
+                string imageTitle = oldImagePath.Substring(oldImagePath.LastIndexOf("/"));
+                string absoluteDeletePath = string.Concat(pathToImages, "\\", imageTitle);
 
-                File.Delete(relativeImagePath);
+                File.Delete(absoluteDeletePath);
             }
         }
 
@@ -865,7 +866,7 @@ namespace OnlineLibrary.Services.Concrete
 
         private string SaveImage(HttpPostedFileServiceModel image, string pathToImages)
         {
-            string imageSavePath = null;
+            string imageRelativeSavePath = null;
 
             if (image != null)
             {
@@ -878,19 +879,24 @@ namespace OnlineLibrary.Services.Concrete
                 if (allowedContentTypes.Contains(image.ContentType))
                 {
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
-                    imageSavePath = Path.Combine(pathToImages, fileName);
+                    string imageSavePath = Path.Combine(pathToImages, fileName);
                     SaveStreamToPath(image.InputStream, imageSavePath);
+
+                    string relativePathToImageFolder = ConfigurationManager.AppSettings["BookCoverRelativePath"];
+                    imageRelativeSavePath = string.Concat(relativePathToImageFolder, "/", fileName);
                 }
             }
 
-            return imageSavePath;
+            return imageRelativeSavePath;
         }
 
         private void SaveStreamToPath(Stream stream, string savePath)
         {
+            using (var memoryStream = new MemoryStream())
             using (var file = new FileStream(savePath, FileMode.Create, FileAccess.Write))
             {
-                ((MemoryStream)stream).WriteTo(file);
+                stream.CopyTo(memoryStream);
+                memoryStream.WriteTo(file);
             }
         }
 

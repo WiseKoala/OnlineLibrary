@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System;
+using System.Web;
 using OnlineLibrary.Services.Models.BookServiceModels;
 using OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels;
 
@@ -22,8 +23,8 @@ namespace OnlineLibrary.Web
 
                 // View models to Service models.
                 config.CreateMap<CreateEditBookServiceModel, CreateEditBookViewModel>();
-                config.CreateMap<FrontCoverServiceModel, FrontCoverViewModel>();
-                config.CreateMap<HttpPostedFileServiceModel, HttpPostedFileBase>();
+                config.CreateMap<FrontCoverServiceModel, FrontCoverViewModel>()
+                      .ForMember(ce => ce.Image, t => t.Ignore());
                 config.CreateMap<BookAuthorServiceModel, BookAuthorViewModel>();
                 config.CreateMap<AuthorNameServiceModel, AuthorNameViewModel>();
                 config.CreateMap<BookCopyServiceModel, BookCopyViewModel>();

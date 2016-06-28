@@ -4,9 +4,9 @@ namespace OnlineLibrary.Services.Models.BookServiceModels
 {
     public class HttpPostedFileServiceModel
     {
-        public int ContentLength { get; }
-        public string ContentType { get; }
-        public string FileName { get; }
-        public Stream InputStream { get; }
+        public int ContentLength { get; set; }
+        public string ContentType { get; set; }
+        public string FileName { get; set; }
+        public Stream InputStream { get; set; }
     }
 }
