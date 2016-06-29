@@ -336,6 +336,16 @@ namespace OnlineLibrary.Web.Controllers
                 return Json(new { error = true }, JsonRequestBehavior.DenyGet);
             }
         }
+        
+        [HttpPost]
+        public JsonResult CheckDuplicate(DuplicateBookViewModel model)
+        {
+            var serviceModel = Mapper.Map<DuplicateBookViewModel, DuplicateBookServiceModel>(model);
+
+            bool response = _bookService.IsBookDuplicate(serviceModel);
+
+            return Json(new { duplicate = response }, JsonRequestBehavior.AllowGet);
+        }
 
         #region Helpers
 

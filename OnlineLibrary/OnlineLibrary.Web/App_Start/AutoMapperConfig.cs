@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using OnlineLibrary.Services.Models.BookServiceModels;
+using OnlineLibrary.Web.Models.BooksManagement;
 using OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels;
 
 namespace OnlineLibrary.Web
@@ -30,6 +31,8 @@ namespace OnlineLibrary.Web
                 config.CreateMap<BookCopyServiceModel, BookCopyViewModel>();
                 config.CreateMap<CategoryServiceModel, CategoryViewModel>();
                 config.CreateMap<SubCategoryServiceModel, SubCategoryViewModel>();
+                config.CreateMap<DuplicateBookViewModel, DuplicateBookServiceModel>();
+                config.CreateMap<AuthorNameViewModel, DuplicateAuthorServiceModel>();
             });
         }
     }

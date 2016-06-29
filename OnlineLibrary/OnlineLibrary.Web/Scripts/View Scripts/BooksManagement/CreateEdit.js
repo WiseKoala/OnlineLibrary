@@ -757,4 +757,71 @@ $(document).ready(function () {
     });
 
     $(".book-category .select-category option:first-child").attr("disabled", "disabled");
+    
+    function getAuthorsArray() {
+        var bookAuthors = new Array();
+
+        $("#bookAuthors .book-author").each(function () {
+            if ($(this).find(".is-removed").first().val() == "false") {
+
+                var author = {};
+
+                // First Name
+                var key = "FirstName";
+                var value = $(this).find("input[name*='FirstName']").first().val();
+                author[key] = value;
+
+                // Middle Name
+                key = "MiddleName";
+                value = $(this).find("input[name*='MiddleName']").first().val();
+                author[key] = value;
+
+                // Last Name
+                key = "LastName";
+                value = $(this).find("input[name*='LastName']").first().val();
+                author[key] = value;
+
+                bookAuthors.push(author);
+            }
+        })
+
+        return bookAuthors;
+    }
+
+    // Show the modal only when the book is duplicate.
+    $("#save-button").click(function () {
+        var ajaxData = {
+            url: $(this).attr("data-duplicate-check-url"),
+            data: {
+                title: $("#Title").val(),
+                authors: getAuthorsArray(),
+                publishDate: $("#PublishDate").val()
+            },
+            method: "POST",
+            success: function (response) {
+                if (response.duplicate) {
+                    $("#duplicateBookModal .modal-title")
+                        .text("Possible duplicate.");
+                    $("#duplicate-book-modal-content")
+                        .text("It seems that the book has duplicates in the system. We suggest to recheck.");
+                    $("#duplicateBookModal").modal('show');
+                }
+                else {
+                    $("#bookForm").submit();
+                }
+            },
+            error: function (jqXhr) {
+                $("#duplicateBookModal .modal-title")
+                    .text("Error!");
+                $("#duplicate-book-modal-content")
+                    .text("An error has occured while checking the book for duplicates.");
+                $("#duplicateBookModal").modal('show');
+            }
+        };
+        $.ajax(ajaxData);
+    });
+
+    $("#submit-book-anyway").click(function () {
+        $("#bookForm").submit();
+    });
 });
