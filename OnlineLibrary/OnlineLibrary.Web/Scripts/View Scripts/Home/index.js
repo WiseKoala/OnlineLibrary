@@ -61,7 +61,14 @@
         console.log('statechange:', state.data, state.title, state.url);
 
         if (!isEmpty(state.data)) {
-            ko.mapping.fromJS(state.data, {}, viewModel.searchData);
+            viewModel.searchData.title(state.data.title);
+            viewModel.searchData.author(state.data.author);
+            viewModel.searchData.publishDate(state.data.publishDate);
+            viewModel.searchData.categoryId(state.data.categoryId);
+            viewModel.searchData.isbn(state.data.isbn);
+            viewModel.searchData.description(state.data.description);
+            viewModel.searchData.subcategoryId(state.data.subcategoryId);
+            viewModel.searchData.pageNumber(state.data.pageNumber);
         }
 
         LoadPage(state.data);
@@ -84,7 +91,14 @@
             LoadDataBasedOnState();
             var state = History.getState(); // Note: We are using History.getState() instead of event.state
 
-            ko.mapping.fromJS(state.data, {}, viewModel.searchData);
+            viewModel.searchData.title(state.data.title);
+            viewModel.searchData.author(state.data.author);
+            viewModel.searchData.publishDate(state.data.publishDate);
+            viewModel.searchData.categoryId(state.data.categoryId);
+            viewModel.searchData.isbn(state.data.isbn);
+            viewModel.searchData.description(state.data.description);
+            viewModel.searchData.subcategoryId(state.data.subcategoryId);
+            viewModel.searchData.pageNumber(state.data.pageNumber);
 
             var pageNumber;
             if (state.data.pageNumber) {
