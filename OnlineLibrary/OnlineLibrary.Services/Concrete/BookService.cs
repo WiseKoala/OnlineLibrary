@@ -855,6 +855,11 @@ namespace OnlineLibrary.Services.Concrete
 
             foreach (var book in books)
             {
+
+                isTitleDuplicate = false;
+                isAuthorDuplicate = false;
+                isPublishDateDuplicate = false;
+
                 // Trim book title.
                 book.Title = Regex.Replace(book.Title, @"[^A-Za-z]", string.Empty);
 

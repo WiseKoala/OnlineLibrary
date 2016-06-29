@@ -18,7 +18,7 @@
 <div>
     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#googleImportModal">Import from Google Books</button>
 
-    @using (Html.BeginForm("CreateEdit", "BooksManagement", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (Html.BeginForm("CreateEdit", "BooksManagement", FormMethod.Post, new { enctype = "multipart/form-data", id = "bookForm" }))
     {
         @Html.ValidationSummary("", new { @class = "text-danger" })
         <div class="row">
@@ -58,7 +58,7 @@
                 </div>
                 <div class="form-group">
                     <label>Publish Date</label>
-                    <input type="text" class="form-control datepicker ui-datepicker" name="PublishDate" placeholder="Choose a date..." value="@(Model.PublishDate == DateTime.MinValue ? string.Empty : Model.PublishDate.ToShortDateString())" />
+                    <input type="text" id="PublishDate" class="form-control datepicker ui-datepicker" name="PublishDate" placeholder="Choose a date..." value="@(Model.PublishDate == DateTime.MinValue ? string.Empty : Model.PublishDate.ToShortDateString())" />
                     @Html.ValidationMessageFor(m => m.PublishDate)
                 </div>
             </div>
@@ -85,19 +85,19 @@
                                     <input type="hidden" name="Authors[@i].Id" value="@Model.Authors[i].Id" class="form-control" />
                                     <input type="hidden" name="Authors[@i].IsRemoved" value="false" class="form-control is-removed" />
                                     @Html.LabelFor(m => m.Authors[i].AuthorName.FirstName)
-                                    <input type="text" name="Authors[@i].AuthorName.FirstName" value="@Model.Authors[i].AuthorName.FirstName" class="form-control" />
+                                    <input type="text" name="Authors[@i].AuthorName.FirstName" value="@Model.Authors[i].AuthorName.FirstName" data-name="FirstName" class="form-control" />
                                     @Html.ValidationMessageFor(m => m.Authors[i])
                                     @Html.ValidationMessageFor(m => m.Authors[i].AuthorName)
                                     @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.FirstName)
                                 </td>
                                 <td>
                                     @Html.LabelFor(m => m.Authors[i].AuthorName.MiddleName)
-                                    <input type="text" name="Authors[@i].AuthorName.MiddleName" value="@Model.Authors[i].AuthorName.MiddleName" class="form-control" />
+                                    <input type="text" name="Authors[@i].AuthorName.MiddleName" value="@Model.Authors[i].AuthorName.MiddleName" data-name="MiddleName" class="form-control" />
                                     @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.MiddleName)
                                 </td>
                                 <td>
                                     @Html.LabelFor(m => m.Authors[i].AuthorName.LastName)
-                                    <input type="text" name="Authors[@i].AuthorName.LastName" value="@Model.Authors[i].AuthorName.LastName" class="form-control" />
+                                    <input type="text" name="Authors[@i].AuthorName.LastName" value="@Model.Authors[i].AuthorName.LastName" data-name="LastName" class="form-control" />
                                     @Html.ValidationMessageFor(m => m.Authors[i].AuthorName.LastName)
                                 </td>
                                 <td id="tdRemoveAuthorButton">
@@ -231,7 +231,7 @@
         @Html.ValidationMessageFor(m => m.BookCopies)
 
         <div class="form-group">
-            <input type="submit" value="Save" class="btn btn-primary" />
+            <input type="button" id="save-button" data-duplicate-check-url="@Url.Action("CheckDuplicate", "BooksManagement")" value="Save" class="btn btn-primary" />
         </div>
     }
 </div>
@@ -281,6 +281,28 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Duplicate book modal -->
+<div class="container">
+    <div class="modal fade" id="duplicateBookModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Possible duplicate.</h4>
+                </div>
+                <div class="modal-body">
+                    <h4 class="duplicate-book-modal-title">Are you sure you want to save the book data anyway?</h4>
+                    <div id="duplicate-book-modal-content"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="button" id="submit-book-anyway" class="btn btn-warning" data-dismiss="modal">Yes</button>
                 </div>
             </div>
         </div>
