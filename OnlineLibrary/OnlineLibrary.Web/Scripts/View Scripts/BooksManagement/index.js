@@ -75,16 +75,6 @@
                 correctedPage = 1;
             }
 
-            //if (this.params.currentPage != correctedPage) {
-            //    window.setTimeout(function () {
-            //        context.app.location_proxy.unbind();
-            //        context.app.setLocation('#/');
-            //        context.app.last_location = '#/';
-            //        context.app.location_proxy.bind();
-            //    }, 55); 
-            //    return false;
-            //}
-
             loadData(correctedPage);
             viewModel.currentPage(correctedPage);
 
