@@ -31,7 +31,16 @@
                 viewModel.totalPages(data.totalPages);
             },
             error: function () {
-                alert('Error');
+                // Show toastr notification.
+                toastr.options =
+                    {
+                        "closeButton": true,
+                        "onclick": null,
+                        "positionClass": "toast-bottom-right",
+                        "timeOut": 5000,
+                        "extendedTimeOut": 10000
+                    }
+                toastr.error('An error has occured. Try to refresh the page. If the error persists - contact the website adminsitrator.', 'Error!');
             }
         };
 
