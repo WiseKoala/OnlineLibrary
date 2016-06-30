@@ -16,6 +16,7 @@
     var viewModel = new BooksViewModel();
     ko.applyBindings(viewModel);
 
+    function loadData(pageNumber){
         var settings = {
             url: $("#booksList").first().data("getBooksUrl"),
             method: "GET",
