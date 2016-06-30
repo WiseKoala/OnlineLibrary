@@ -22,6 +22,7 @@ namespace OnlineLibrary.Services.Models.BookServiceModels
                 _title = Regex.Replace(value, @"[^A-Za-z]", string.Empty);
             }
         }
+        public int Id { get; set; }
         public DateTime PublishDate { get; set; }
         public IEnumerable<DuplicateAuthorServiceModel> Authors { get; set; }
     }

@@ -795,7 +795,8 @@ $(document).ready(function () {
             data: {
                 title: $("#Title").val(),
                 authors: getAuthorsArray(),
-                publishDate: $("#PublishDate").val()
+                publishDate: $("#PublishDate").val(),
+                id: $("#Id").val()
             },
             method: "POST",
             success: function (response) {

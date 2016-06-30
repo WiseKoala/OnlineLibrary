@@ -11,6 +11,7 @@ namespace OnlineLibrary.Web.Models.BooksManagement
             Authors = new List<AuthorNameViewModel>();
         }
 
+        public int Id { get; set; }
         public string Title { get; set; }
         public DateTime PublishDate { get; set; }
         public IEnumerable<AuthorNameViewModel> Authors { get; set; }
