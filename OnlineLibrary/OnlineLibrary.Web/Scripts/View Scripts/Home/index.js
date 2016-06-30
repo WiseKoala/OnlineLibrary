@@ -1,70 +1,158 @@
 ﻿$(document).ready(function () {
 
+    function SearchViewModel() {
+        var self = this;
+
+        self.title = ko.observable();
+        self.author = ko.observable();
+        self.publishDate = ko.observable();
+        self.categoryId = ko.observable();
+        self.isbn = ko.observable();
+        self.description = ko.observable();
+        self.subcategoryId = ko.observable();
+        self.pageNumber = ko.observable(1);
+    }
+
     function BooksViewModel() {
         var self = this;
-        self.Books = ko.observableArray([]);
-        self.FirstPage = ko.observable(1);
-        self.NumberOfPages = ko.observable();
-        self.CurrentPage = ko.observable(1);
+        self.books = ko.observableArray([]);
+        self.numberOfPages = ko.observable();
+
+        self.searchData = new SearchViewModel();
     }
 
     // Activate knockout.js
     var viewModel = new BooksViewModel();
     ko.applyBindings(viewModel);
 
-    function loadBooks() {
-        $.ajax(
-             {
-                 url: '/Home/GetBooks',
-                 dataType: 'json',
-                 data: $("#searchFilters").serialize(),
-                 type: 'GET',
-                 success: function (result) {
-                     ko.mapping.fromJS(result, {}, viewModel);
-                 }
-             });
+    function loadBooks(data) {
+
+        var settings = {
+            url: $("#booksList").data("getBooksUrl"),
+            data: data,
+            type: 'GET',
+            success: function (result) {
+                viewModel.books.removeAll();
+                for (var i = 0; i < result.Books.length; i++) {
+                    viewModel.books.push(result.Books[i]);
+                }
+                viewModel.numberOfPages(result.NumberOfPages);
+            }
+        };
+        $.ajax(settings);
     }
 
-    // Set initial page number in request form.
-    $("#page-number").val(viewModel.FirstPage());
-    loadBooks();
+    loadBooks(null);
 
-    function switchToPage(pageNumber) {
-        var a = viewModel.NumberOfPages();
-        if (viewModel.CurrentPage() == pageNumber) {
-            LoadPage(pageNumber);
+    function LoadPage(data) {
+        loadBooks(data);
+
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        $("#booksList").fadeOut(100, function () {
+            $("#booksList").fadeIn(1000);
+        });
+    }
+
+    // Establish Variables
+    var History = window.History;
+
+    function LoadDataBasedOnState() {
+        var state = History.getState(); // Note: We are using History.getState() instead of event.state
+        console.log('statechange:', state.data, state.title, state.url);
+
+        if (!isEmpty(state.data)) {
+            viewModel.searchData.title(state.data.title);
+            viewModel.searchData.author(state.data.author);
+            viewModel.searchData.publishDate(state.data.publishDate);
+            viewModel.searchData.categoryId(state.data.categoryId);
+            viewModel.searchData.isbn(state.data.isbn);
+            viewModel.searchData.description(state.data.description);
+            viewModel.searchData.subcategoryId(state.data.subcategoryId);
+            viewModel.searchData.pageNumber(state.data.pageNumber);
         }
-        location.hash = pageNumber;
+
+        LoadPage(state.data);
     }
+    LoadDataBasedOnState();
+
+    function isEmpty(obj) {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    (function (window, undefined) {
+
+        // Bind to State Change
+        History.Adapter.bind(window, 'statechange', function () { // Note: We are using statechange instead of popstate
+            LoadDataBasedOnState();
+            var state = History.getState(); // Note: We are using History.getState() instead of event.state
+
+            viewModel.searchData.title(state.data.title);
+            viewModel.searchData.author(state.data.author);
+            viewModel.searchData.publishDate(state.data.publishDate);
+            viewModel.searchData.categoryId(state.data.categoryId);
+            viewModel.searchData.isbn(state.data.isbn);
+            viewModel.searchData.description(state.data.description);
+            viewModel.searchData.subcategoryId(state.data.subcategoryId);
+            viewModel.searchData.pageNumber(state.data.pageNumber);
+
+            var pageNumber;
+            if (state.data.pageNumber) {
+                pageNumber = state.data.pageNumber;
+            }
+            else {
+                pageNumber = 1;
+            }
+
+            viewModel.searchData.pageNumber(pageNumber);
+        });
+
+    })(window);
 
     $("#previous-page").click(function (e) {
-        switchToPage(parseInt(viewModel.CurrentPage()) - 1);
+        switchToPage(viewModel.searchData.pageNumber() - 1);
     });
 
     $("#next-page").click(function (e) {
-        switchToPage(parseInt(viewModel.CurrentPage()) + 1);
+        switchToPage(viewModel.searchData.pageNumber() + 1);
     });
 
     $("#search-button").click(function (e) {
-        switchToPage(parseInt(viewModel.FirstPage()));
+        viewModel.searchData.pageNumber(1);
+        pushViewModelToHistory();
     });
 
-    Sammy(function () {
-        this.get('#:CurrentPage', function () {
-            LoadPage(this.params.CurrentPage);
-        });
-    }).run();
-
-    function LoadPage(pageNumber) {
-        viewModel.CurrentPage(pageNumber);
-        $("#page-number").val(pageNumber);
-        loadBooks();
-
-        $("html, body").animate({ scrollTop: 0 }, "slow");
-        $(".BookList").fadeOut(100, function () {
-            $(".BookList").fadeIn(1000);
-        });
+    function switchToPage(pageNumber) {
+        viewModel.searchData.pageNumber(pageNumber);
+        pushViewModelToHistory();
     }
+
+    function pushViewModelToHistory() {
+        var searchDataJson = ko.mapping.toJS(viewModel.searchData);
+        var searchDataText = $.param(searchDataJson);
+
+        History.pushState(searchDataJson, null, "?" + searchDataText);
+    }
+
+    $.fn.serializeObject = function () {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function () {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
 
     $(".datepicker").datepicker({
         dateFormat: "mm/dd/yy",
@@ -73,22 +161,27 @@
         yearRange: "-160:+0"
     });
 
-    $("#SearchData_CategoryId").change(function (e) {
+    $("#CategoryId").change(function (e) {
         var url = $(this).data("subcategoriesUrl");
+
+        var categoriesSelectList = $(this);
+        var subcategoriesSelectList = $("#SubcategoryId");
+
+        if (!categoriesSelectList.val()) {
+            subcategoriesSelectList.empty();
+            addAnyOptionToSelectList(subcategoriesSelectList);
+            return;
+        }
 
         var settings = {
             url: url,
-            data: { categoryId: $(this).val() },
+            data: { categoryId: categoriesSelectList.val() },
             method: "GET",
             success: function (subcategories) {
                 // Clear select list.
-                var subcategoriesSelectList = $("#SearchData_SubcategoryId");
                 subcategoriesSelectList.empty();
 
-                // Add 'Choose subcategory' option.
-                var option = $(document.createElement("option"));
-                option.text("Any");
-                subcategoriesSelectList.append(option);
+                addAnyOptionToSelectList(subcategoriesSelectList);
 
                 // Add option elements for all subcategories.
                 for (var i = 0; i < subcategories.length; i++) {
@@ -104,15 +197,21 @@
         $.ajax(settings);
     });
 
-$("#toggleSearch").click(function () {
-    if ($(this).find("span").hasClass("glyphicon-chevron-down")) {
-        $(this).find("span").removeClass("glyphicon glyphicon-chevron-down");
-        $(this).find("span").addClass("glyphicon glyphicon-chevron-up");
+    function addAnyOptionToSelectList(element) {
+        var option = $(document.createElement("option"));
+        option.text("Any");
+        element.append(option);
     }
-    else {
-        $(this).find("span").removeClass("glyphicon glyphicon-chevron-up");
-        $(this).find("span").addClass("glyphicon glyphicon-chevron-down");
-    }
-});
+
+    $("#toggleSearch").click(function () {
+        if ($(this).find("span").hasClass("glyphicon-chevron-down")) {
+            $(this).find("span").removeClass("glyphicon glyphicon-chevron-down");
+            $(this).find("span").addClass("glyphicon glyphicon-chevron-up");
+        }
+        else {
+            $(this).find("span").removeClass("glyphicon glyphicon-chevron-up");
+            $(this).find("span").addClass("glyphicon glyphicon-chevron-down");
+        }
+    });
 });
 
