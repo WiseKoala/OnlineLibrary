@@ -16,19 +16,24 @@
     var viewModel = new BooksViewModel();
     ko.applyBindings(viewModel);
 
-    function loadData(pageNumber) {
         var settings = {
             url: $("#booksList").first().data("getBooksUrl"),
             method: "GET",
-            data: { pageNumber: pageNumber },
+            data: { pageNumber: parseInt(pageNumber) || 1 },
             success: function (data) {
-                viewModel.books.removeAll();
-
-                for (var i = 0; i < data.books.length; i++) {
-                    viewModel.books.push(data.books[i]);
+                if (data.totalPages < pageNumber) {
+                    viewModel.currentPage(1);
+                    loadData(1);
                 }
+                else {
+                    viewModel.books.removeAll();
 
-                viewModel.totalPages(data.totalPages);
+                    for (var i = 0; i < data.books.length; i++) {
+                        viewModel.books.push(data.books[i]);
+                    }
+
+                    viewModel.totalPages(data.totalPages);
+                }
             },
             error: function () {
                 // Show toastr notification.
@@ -50,7 +55,7 @@
     loadData(viewModel.currentPage());
 
     function switchToPage(pageNumber) {
-        location.hash = pageNumber;
+        location.hash = (parseInt(pageNumber) || 1);
     }
 
     $("#prevButton").click(function (e) {
@@ -60,11 +65,29 @@
     $("#nextButton").click(function (e) {
         switchToPage(parseInt(viewModel.currentPage()) + 1);
     });
-
+    
     Sammy(function () {
         this.get('#:currentPage', function () {
-            loadData(this.params.currentPage);
-            viewModel.currentPage(this.params.currentPage);
+
+            var correctedPage = parseInt(this.params.currentPage) || 1;
+
+            if (correctedPage < 1) {
+                correctedPage = 1;
+            }
+
+            //if (this.params.currentPage != correctedPage) {
+            //    window.setTimeout(function () {
+            //        context.app.location_proxy.unbind();
+            //        context.app.setLocation('#/');
+            //        context.app.last_location = '#/';
+            //        context.app.location_proxy.bind();
+            //    }, 55); 
+            //    return false;
+            //}
+
+            loadData(correctedPage);
+            viewModel.currentPage(correctedPage);
+
             $("html, body").animate({ scrollTop: 0 }, "slow");
             
             $("#booksList tbody").fadeOut(100, function () {
