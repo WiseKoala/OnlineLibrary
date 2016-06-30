@@ -79,7 +79,7 @@
             data: { 'id': $(this).data("bookIdToRemove") },
             method: "POST",
             success: function (removedBook) {
-                if (viewModel.currentPage() == viewModel.totalPages() && viewModel.currentPage() != 1) {
+                if (viewModel.currentPage() == viewModel.totalPages() && viewModel.currentPage() != 1 && viewModel.books().length == 1) {
                     location.hash = viewModel.currentPage() - 1;
                 }
                 else {
