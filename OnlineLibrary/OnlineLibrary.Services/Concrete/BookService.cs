@@ -836,17 +836,21 @@ namespace OnlineLibrary.Services.Concrete
 
         public bool IsBookDuplicate(DuplicateBookServiceModel model)
         {
-            var books = _dbContext.Books.Include(b => b.Authors).Select(b => new DuplicateBookServiceModel
-            {
-                Title = b.Title,
-                PublishDate = b.PublishDate,
-                Authors = b.Authors.Select(a => new DuplicateAuthorServiceModel
+            var books = _dbContext
+                .Books.Include(b => b.Authors)
+                .Where(b => b.Id != model.Id)
+                .Select(b => new DuplicateBookServiceModel
                 {
-                    FirstName = a.FirstName,
-                    MiddleName = a.MiddleName,
-                    LastName = a.LastName
+                    Id = b.Id,
+                    Title = b.Title,
+                    PublishDate = b.PublishDate,
+                    Authors = b.Authors.Select(a => new DuplicateAuthorServiceModel
+                    {
+                        FirstName = a.FirstName,
+                        MiddleName = a.MiddleName,
+                        LastName = a.LastName
+                    })
                 })
-            })
             .ToList();
 
             bool isTitleDuplicate = false;
@@ -855,7 +859,6 @@ namespace OnlineLibrary.Services.Concrete
 
             foreach (var book in books)
             {
-
                 isTitleDuplicate = false;
                 isAuthorDuplicate = false;
                 isPublishDateDuplicate = false;
