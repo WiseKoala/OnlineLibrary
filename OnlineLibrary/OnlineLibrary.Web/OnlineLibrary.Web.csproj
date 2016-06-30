@@ -44,6 +44,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.2.1\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Glimpse.Ado, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Glimpse.Ado.1.7.3\lib\net45\Glimpse.Ado.dll</HintPath>
       <Private>True</Private>
@@ -206,6 +210,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\AutoMapperConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -229,9 +234,7 @@
     <Compile Include="Infrastructure\Abstract\SessionHelper.cs" />
     <Compile Include="Infrastructure\ActionResults\ChallengeResult.cs" />
     <Compile Include="Infrastructure\CustomAttributes\AtLeastOneProperySetAttribute.cs" />
-    <Compile Include="Infrastructure\CustomAttributes\CountLimitAttribute.cs" />
     <Compile Include="Infrastructure\CustomAttributes\DateRangeAttribute.cs" />
-    <Compile Include="Infrastructure\CustomAttributes\NotEmptyList.cs" />
     <Compile Include="Models\BookDetailsViewModel.cs" />
     <Compile Include="Models\BooksManagement\BookManagementViewModel.cs" />
     <Compile Include="Models\BooksManagement\CreateEditBookViewModels\AuthorNameViewModel.cs" />
@@ -241,6 +244,7 @@
     <Compile Include="Models\BooksManagement\CreateEditBookViewModels\CreateEditBookViewModel.cs" />
     <Compile Include="Models\BooksManagement\CreateEditBookViewModels\FrontCoverViewModel.cs" />
     <Compile Include="Models\BooksManagement\CreateEditBookViewModels\SubCategoryViewModel.cs" />
+    <Compile Include="Models\BooksManagement\DuplicateBookViewModel.cs" />
     <Compile Include="Models\CategoriesManagement\CategoryViewModel.cs" />
     <Compile Include="Models\HomeViewModels\BookSearchViewModel.cs" />
     <Compile Include="Models\HomeViewModels\BooksListViewModel.cs" />
@@ -332,6 +336,7 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.11.4.js" />
     <Content Include="Scripts\jquery-ui-1.11.4.min.js" />
+    <Content Include="Scripts\jquery.history.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />

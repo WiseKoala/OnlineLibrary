@@ -97,7 +97,17 @@
     <Compile Include="Concrete\SignInService.cs" />
     <Compile Include="Concrete\UserManagementService.cs" />
     <Compile Include="Models\BookPaginationModel.cs" />
+    <Compile Include="Models\BookServiceModels\AuthorNameServiceModel.cs" />
+    <Compile Include="Models\BookServiceModels\BookAuthorServiceModel.cs" />
+    <Compile Include="Models\BookServiceModels\BookCopyServiceModel.cs" />
     <Compile Include="Models\BookSearchServiceModel.cs" />
+    <Compile Include="Models\BookServiceModels\CategoryServiceModel.cs" />
+    <Compile Include="Models\BookServiceModels\CreateEditBookServiceModel.cs" />
+    <Compile Include="Models\BookServiceModels\DuplicateBookServiceModel.cs" />
+    <Compile Include="Models\BookServiceModels\FrontCoverServiceModel.cs" />
+    <Compile Include="Models\BookServiceModels\HttpPostedFileServiceModel.cs" />
+    <Compile Include="Models\BookServiceModels\SubCategoryServiceModel.cs" />
+    <Compile Include="Models\BookServiceModels\DuplicateAuthorServiceModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace OnlineLibrary.Web.Models.BooksManagement
+﻿namespace OnlineLibrary.Web.Models.BooksManagement
 {
     public class BookManagementViewModel
     {

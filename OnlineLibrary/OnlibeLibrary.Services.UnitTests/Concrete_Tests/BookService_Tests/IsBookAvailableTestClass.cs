@@ -53,7 +53,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         {
             // Arrange.           
             var expectedResult = false;
-            var sut = new BookService(_dbContext);          
+            var sut = new BookService(_dbContext, null);          
             // Book with status pending
             var bookCopyId = 1;
             
@@ -69,7 +69,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         {
             // Arrange.
             var expectedResult = true;
-            var sut = new BookService(_dbContext);
+            var sut = new BookService(_dbContext, null);
             // Book wich is not loaned 
             var bookCopyId = 2;
 
@@ -84,7 +84,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         public void Should_ThrowKeyNotFoundException_When_BookCopyDoesntExist()
         {
             // Arrange.
-            var sut = new BookService(_dbContext);
+            var sut = new BookService(_dbContext, null);
             // Book that doesn't exist
             var bookCopyId = 3;
 

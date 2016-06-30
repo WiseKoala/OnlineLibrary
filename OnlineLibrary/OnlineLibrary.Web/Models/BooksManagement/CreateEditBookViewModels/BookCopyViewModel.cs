@@ -1,9 +1,5 @@
-﻿using OnlineLibrary.DataAccess.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using OnlineLibrary.DataAccess.Enums;
 
 namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
 {
@@ -14,6 +10,7 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
         [Required(ErrorMessage = "The Condition field is required for a book copy.")]
         [Display(Name = "Condition")]
         public BookCondition BookCondition { get; set; }
+
         public bool IsToBeDeleted { get; set; }
         public bool IsLost { get; set; }
     }

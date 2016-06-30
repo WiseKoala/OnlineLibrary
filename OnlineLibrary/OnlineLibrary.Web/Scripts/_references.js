@@ -1,5 +1,6 @@
 ﻿/// <autosync enabled="true" />
 /// <reference path="bootstrap.js" />
+/// <reference path="jquery.history.js" />
 /// <reference path="jquery.validate.js" />
 /// <reference path="jquery.validate.unobtrusive.js" />
 /// <reference path="jquery-1.10.2.js" />
@@ -15,4 +16,5 @@
 /// <reference path="view scripts/booksmanagement/createedit.js" />
 /// <reference path="view scripts/booksmanagement/index.js" />
 /// <reference path="view scripts/categoriesmanagement/index.js" />
+/// <reference path="View Scripts/Home/index.js" />
 /// <reference path="view scripts/librarian/index.js" />

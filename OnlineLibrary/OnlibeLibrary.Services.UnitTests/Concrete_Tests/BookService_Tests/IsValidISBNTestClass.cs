@@ -217,7 +217,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         {
             // Arrange.           
             var expectedResult = false;
-            var sut = new BookService(_dbContext);
+            var sut = new BookService(_dbContext, null);
             var ISBN = "1518800270";
 
             // Act.
@@ -232,7 +232,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         {
             // Arrange.           
             var expectedResult = true;
-            var sut = new BookService(_dbContext);
+            var sut = new BookService(_dbContext, null);
             var ISBN = "1111111111";
 
             // Act.
@@ -247,7 +247,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         {
             // Arrange.           
             var expectedResult = true;
-            var sut = new BookService(_dbContext);
+            var sut = new BookService(_dbContext, null);
             var ISBN = OnlineLibrary.Common.Infrastructure.LibraryConstants.undefinedISBN;
 
             // Act.
@@ -262,7 +262,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         {
             // Arrange.
             var expectedResult = true;
-            var sut = new BookService(_dbContext);
+            var sut = new BookService(_dbContext, null);
             string ISBN = null;
 
             // Act.

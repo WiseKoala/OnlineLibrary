@@ -60,7 +60,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         public void Calculates(int bookCopyId, bool expectedResult)
         {
             // Arrange.
-            var bookService = new BookService(_dbContext);
+            var bookService = new BookService(_dbContext, null);
 
             // Act.
             bool actualResult = bookService.IsBookCopyRemovable(bookCopyId);
@@ -73,7 +73,7 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
         public void ThrowsException()
         {
             // Arrange.
-            var bookService = new BookService(_dbContext);
+            var bookService = new BookService(_dbContext, null);
             int bookCopyId = 100; // Non-existing book copy.
 
             // Act.

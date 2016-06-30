@@ -8,9 +8,11 @@ namespace OnlineLibrary.Web.Models.BooksManagement.CreateEditBookViewModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
+
         [Required]
         public SubCategoryViewModel Subcategory { get; set; }
-        public IEnumerable<SelectListItem> Subcategories{ get; set; }
+
+        public IEnumerable<SelectListItem> Subcategories { get; set; }
         public IEnumerable<SelectListItem> Categories { get; set; }
         public bool IsRemoved { get; set; }
     }
