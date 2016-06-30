@@ -31,6 +31,7 @@
             url: $("#booksList").data("getBooksUrl"),
             data: data,
             type: 'GET',
+            async: false,
             success: function (result) {
                 viewModel.books.removeAll();
                 for (var i = 0; i < result.Books.length; i++) {
