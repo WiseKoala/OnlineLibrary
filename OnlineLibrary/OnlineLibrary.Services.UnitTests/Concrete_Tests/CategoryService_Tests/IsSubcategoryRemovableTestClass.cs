@@ -1,42 +1,44 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
-using OnlineLibrary.Common.Exceptions;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Services.Concrete;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
+namespace OnlineLibrary.Services.UnitTests.Concrete_Tests.CategoryService_Tests
 {
     [TestFixture]
-    public class IsCategoryRemovableTestClass
+    class IsSubcategoryRemovableTestClass
     {
         private ILibraryDbContext _dbContext;
 
         [OneTimeSetUp]
         public void init()
         {
-            var categories = new List<Category>
-            {
-                new Category { Id = 1 }
-            }
-            .AsQueryable();
-
             // Set subcategories with categories and without.
             var subcateogories = new List<SubCategory>
             {
-                new SubCategory { Id = 1, CategoryId = categories.First().Id },
+                new SubCategory { Id = 1 },
                 new SubCategory { Id = 2 }
             }
             .AsQueryable();
 
-            var categoriesSet = Substitute.For<DbSet<Category>, IQueryable<Category>>();
-            ((IQueryable<Category>)categoriesSet).Provider.Returns(categories.Provider);
-            ((IQueryable<Category>)categoriesSet).Expression.Returns(categories.Expression);
-            ((IQueryable<Category>)categoriesSet).ElementType.Returns(categories.ElementType);
-            ((IQueryable<Category>)categoriesSet).GetEnumerator().Returns(categories.GetEnumerator());
+            var book = new Book
+            {
+                Id = 1,
+                SubCategories = new List<SubCategory> { subcateogories.FirstOrDefault(sc => sc.Id == 1) }
+            };
+
+            var books = new List<Book>
+            {
+                book
+            }
+            .AsQueryable();
 
             var subcategoriesSet = Substitute.For<DbSet<SubCategory>, IQueryable<SubCategory>>();
             ((IQueryable<SubCategory>)subcategoriesSet).Provider.Returns(subcateogories.Provider);
@@ -44,35 +46,42 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
             ((IQueryable<SubCategory>)subcategoriesSet).ElementType.Returns(subcateogories.ElementType);
             ((IQueryable<SubCategory>)subcategoriesSet).GetEnumerator().Returns(subcateogories.GetEnumerator());
 
+            var booksSet = Substitute.For<DbSet<Book>, IQueryable<Book>>();
+            ((IQueryable<Book>)booksSet).Provider.Returns(books.Provider);
+            ((IQueryable<Book>)booksSet).Expression.Returns(books.Expression);
+            ((IQueryable<Book>)booksSet).ElementType.Returns(books.ElementType);
+            ((IQueryable<Book>)booksSet).GetEnumerator().Returns(books.GetEnumerator());
+
             _dbContext = Substitute.For<ILibraryDbContext>();
-            _dbContext.Categories.Returns(categoriesSet);
             _dbContext.SubCategories.Returns(subcategoriesSet);
+            _dbContext.Books.Returns(booksSet);
         }
+
         [Test]
-        public void Should_RetrunFalse_When_CategoryHasSubcategories()
+        public void Should_RetrunFalse_When_BooksHasCurrentSubcategory()
         {
             // Arrange.
             var sut = new CategoryService(_dbContext);
-            var categoryId = 1;
-            bool expectedResult = false; 
+            var expectedResult = false;
+            var subcategoryId = 1;
 
             // Act.
-            var result = sut.IsCategoryRemovable(categoryId);
+            var result = sut.IsSubcategoryRemovable(subcategoryId);
 
             // Assert.
             Assert.AreEqual(result, expectedResult);
         }
 
         [Test]
-        public void Should_RetrunTrue_When_CategoryHasNoSuncategories()
+        public void Should_RetrunTrue_When_NoBooksHasCurrentSubcategory()
         {
             // Arrange.
             var sut = new CategoryService(_dbContext);
-            var categoryId = 2;
-            bool expectedResult = true;
+            var expectedResult = true;
+            var subcategoryId = 2;
 
             // Act.
-            var result = sut.IsCategoryRemovable(categoryId);
+            var result = sut.IsSubcategoryRemovable(subcategoryId);
 
             // Assert.
             Assert.AreEqual(result, expectedResult);

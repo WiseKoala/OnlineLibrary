@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NUnit.3.11.0\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.11.0\build\NUnit.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{35782033-307B-4869-A4E1-E6824211B4FC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>OnlineLibrary.Services.UnitTests</RootNamespace>
+    <AssemblyName>OnlineLibrary.Services.UnitTests</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.3.11.0\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core">
+      <HintPath>..\packages\Castle.Core.4.3.1\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Threading.Tasks.Extensions">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.3.0\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="NSubstitute">
+      <HintPath>..\packages\NSubstitute.4.0.0\lib\net45\NSubstitute.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Concrete_Tests\BookService_Tests\BookServiceFindTests.cs" />
+    <Compile Include="Concrete_Tests\BookService_Tests\Builders\BookBuilder.cs" />
+    <Compile Include="Concrete_Tests\BookService_Tests\Builders\LibraryDbBuilder.cs" />
+    <Compile Include="Concrete_Tests\BookService_Tests\ChangeIsLostStatusTest.cs" />
+    <Compile Include="Concrete_Tests\BookService_Tests\IsBookAvailableTestClass.cs" />
+    <Compile Include="Concrete_Tests\BookService_Tests\IsBookCopyRemovableTestClass.cs" />
+    <Compile Include="Concrete_Tests\BookService_Tests\IsBookDuplicateTestClass.cs" />
+    <Compile Include="Concrete_Tests\BookService_Tests\IsValidISBNTestClass.cs" />
+    <Compile Include="Concrete_Tests\CategoryService_Tests\CreateCategoryTestClass.cs" />
+    <Compile Include="Concrete_Tests\CategoryService_Tests\CreateSubCategoryTestClass.cs" />
+    <Compile Include="Concrete_Tests\CategoryService_Tests\DeleteBookCategoryTestClass.cs" />
+    <Compile Include="Concrete_Tests\CategoryService_Tests\DeleteBookSubcategoryTestClass.cs" />
+    <Compile Include="Concrete_Tests\CategoryService_Tests\GetSubCategoriesTestClass.cs" />
+    <Compile Include="Concrete_Tests\CategoryService_Tests\IsCategoryRemovableTestClass.cs" />
+    <Compile Include="Concrete_Tests\CategoryService_Tests\IsSubcategoryRemovableTestClass.cs" />
+    <Compile Include="Concrete_Tests\CategoryService_Tests\UpdateCategoryTestClass.cs" />
+    <Compile Include="Concrete_Tests\CategoryService_Tests\UpdateSubCategoryTestClass.cs" />
+    <Compile Include="Concrete_Tests\BookService_Tests\Builders\BookServiceBuilder.cs" />
+    <Compile Include="Concrete_Tests\BookService_Tests\Builders\AuthorBuilder.cs" />
+    <Compile Include="Concrete_Tests\BookService_Tests\Builders\SubCategoryBuilder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Concrete_Tests\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OnlineLibrary.Services\OnlineLibrary.Services.csproj">
+      <Project>{7EC4ABF2-350E-4994-8F5B-21946B749F35}</Project>
+      <Name>OnlineLibrary.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OnlineLibrary.DataAccess\OnlineLibrary.DataAccess.csproj">
+      <Project>{E2CDDCDE-8E6C-49BF-BC53-FB995D568D05}</Project>
+      <Name>OnlineLibrary.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OnlineLibrary.Common\OnlineLibrary.Common.csproj">
+      <Project>{09039153-55E6-47B8-8B2C-B498B817BF42}</Project>
+      <Name>OnlineLibrary.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

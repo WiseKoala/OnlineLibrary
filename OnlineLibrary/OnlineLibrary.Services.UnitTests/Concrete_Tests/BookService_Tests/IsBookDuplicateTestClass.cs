@@ -10,7 +10,7 @@ using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.Services.Concrete;
 using OnlineLibrary.Services.Models.BookServiceModels;
 
-namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
+namespace OnlineLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
 {
     [TestFixture]
     public class IsBookDuplicateTestClass

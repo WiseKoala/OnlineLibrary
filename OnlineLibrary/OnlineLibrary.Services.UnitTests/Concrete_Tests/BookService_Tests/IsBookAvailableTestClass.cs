@@ -1,42 +1,36 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using NSubstitute;
+﻿using NSubstitute;
 using NUnit.Framework;
 using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.Services.Concrete;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 
-namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
+namespace OnlineLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
 {
     [TestFixture]
-    public class IsBookCopyRemovableTestClass
+    public class IsBookAvailableTestClass
     {
         private ILibraryDbContext _dbContext;
 
         [OneTimeSetUp]
         public void Init()
         {
-            // Prepare test data.
             var bookCopies = new List<BookCopy>
                 {
                     new BookCopy { Id = 1, Condition = BookCondition.Fine },
                     new BookCopy { Id = 2, Condition = BookCondition.VeryGood },
-                    new BookCopy { Id = 3, Condition = BookCondition.Good },
-                    new BookCopy { Id = 4, Condition = BookCondition.Poor },
                 }
-            .AsQueryable();
+           .AsQueryable();
 
             var loans = new List<Loan>
                 {
                     new Loan { BookCopyId = 1, Status = LoanStatus.Pending },
-                    new Loan { BookCopyId = 3, Status = LoanStatus.Approved },
-                    new Loan { BookCopyId = 4, Status = LoanStatus.InProgress }
                 }
             .AsQueryable();
 
-            // Prepare DbSets
             var bookCopiesSet = Substitute.For<DbSet<BookCopy>, IQueryable<BookCopy>>();
             ((IQueryable<BookCopy>)bookCopiesSet).Provider.Returns(bookCopies.Provider);
             ((IQueryable<BookCopy>)bookCopiesSet).Expression.Returns(bookCopies.Expression);
@@ -49,35 +43,53 @@ namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
             ((IQueryable<Loan>)loansSet).ElementType.Returns(loans.ElementType);
             ((IQueryable<Loan>)loansSet).GetEnumerator().Returns(loans.GetEnumerator());
 
-            // Configure the DbContext.
             _dbContext = Substitute.For<ILibraryDbContext>();
             _dbContext.BookCopies.Returns(bookCopiesSet);
             _dbContext.Loans.Returns(loansSet);
         }
 
-        [TestCase(2, true)]
-        [TestCase(1, false)]
-        public void Calculates(int bookCopyId, bool expectedResult)
+        [Test]
+        public void Should_RetrunFalse_When_BookCopyIsLoaned()
         {
-            // Arrange.
-            var bookService = new BookService(_dbContext, null);
-
+            // Arrange.           
+            var expectedResult = false;
+            var sut = new BookService(_dbContext, null);          
+            // Book with status pending
+            var bookCopyId = 1;
+            
             // Act.
-            bool actualResult = bookService.IsBookCopyRemovable(bookCopyId);
+            var returnedResult = sut.IsBookCopyRemovable(bookCopyId);
 
             // Assert.
-            Assert.AreEqual(expectedResult, actualResult);
+            Assert.AreEqual(expectedResult, returnedResult);
         }
 
         [Test]
-        public void ThrowsException()
+        public void Should_RetrunTrue_When_BookCopyIsNotLoaned()
         {
             // Arrange.
-            var bookService = new BookService(_dbContext, null);
-            int bookCopyId = 100; // Non-existing book copy.
+            var expectedResult = true;
+            var sut = new BookService(_dbContext, null);
+            // Book wich is not loaned 
+            var bookCopyId = 2;
 
             // Act.
-            var testDelegate = new TestDelegate(() => bookService.IsBookCopyRemovable(bookCopyId));
+            var returnedResult = sut.IsBookCopyRemovable(bookCopyId);
+
+            // Assert.
+            Assert.AreEqual(expectedResult, returnedResult);
+        }
+
+        [Test]
+        public void Should_ThrowKeyNotFoundException_When_BookCopyDoesntExist()
+        {
+            // Arrange.
+            var sut = new BookService(_dbContext, null);
+            // Book that doesn't exist
+            var bookCopyId = 3;
+
+            // Act.
+            var testDelegate = new TestDelegate(() => sut.IsBookCopyRemovable(bookCopyId));
 
             // Assert.
             Assert.Throws<KeyNotFoundException>(testDelegate);

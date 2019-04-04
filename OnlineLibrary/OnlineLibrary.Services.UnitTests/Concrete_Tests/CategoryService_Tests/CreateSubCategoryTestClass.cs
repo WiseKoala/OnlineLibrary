@@ -8,7 +8,7 @@ using OnlineLibrary.DataAccess.Abstract;
 using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Services.Concrete;
 
-namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.CategoryService_Tests
+namespace OnlineLibrary.Services.UnitTests.Concrete_Tests.CategoryService_Tests
 {
     [TestFixture]
     internal class CreateSubCategoryTestClass
