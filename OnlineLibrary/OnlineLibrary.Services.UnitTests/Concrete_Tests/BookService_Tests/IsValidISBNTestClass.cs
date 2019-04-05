@@ -11,7 +11,7 @@ using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.DataAccess.Enums;
 using OnlineLibrary.Services.Concrete;
 
-namespace OnlibeLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
+namespace OnlineLibrary.Services.UnitTests.Concrete_Tests.BookService_Tests
 {
     [TestFixture]
     class IsValidISBNTestClass

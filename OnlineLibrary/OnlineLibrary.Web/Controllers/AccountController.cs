@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using OnlineLibrary.Common.Infrastructure;
@@ -8,11 +12,6 @@ using OnlineLibrary.DataAccess.Entities;
 using OnlineLibrary.Services.Concrete;
 using OnlineLibrary.Web.Infrastructure.Abstract;
 using OnlineLibrary.Web.Infrastructure.ActionResults;
-using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Web.Mvc;
 
 namespace OnlineLibrary.Web.Controllers
 {
@@ -23,7 +22,7 @@ namespace OnlineLibrary.Web.Controllers
         private SignInService _signInService;
 
         public AccountController(ILibraryDbContext dbContext, UserManagementService userService, SignInService signInService)
-            : base (dbContext)
+            : base(dbContext)
         {
             _userService = userService;
             _signInService = signInService;
@@ -95,7 +94,7 @@ namespace OnlineLibrary.Web.Controllers
                 case SignInStatus.Failure:
                 default:
                     // If the user does not have an account, then prompt the user to create an account
-                    return RedirectToAction("ExternalLoginConfirmation", new { returnUrl = returnUrl });           
+                    return RedirectToAction("ExternalLoginConfirmation", new { returnUrl = returnUrl });
             }
         }
 
@@ -131,7 +130,7 @@ namespace OnlineLibrary.Web.Controllers
                     }
                 }
             }
-           return RedirectToLocal(returnUrl);
+            return RedirectToLocal(returnUrl);
         }
 
         //
@@ -154,7 +153,6 @@ namespace OnlineLibrary.Web.Controllers
             return View();
         }
 
-
         [HttpGet]
         [Route("power")]
         [AllowAnonymous]
@@ -168,7 +166,6 @@ namespace OnlineLibrary.Web.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> Authorize(string superAdminPassword)
         {
-
             if (string.IsNullOrEmpty(superAdminPassword))
             {
                 ModelState.AddModelError("", "Password can not be empty.");
